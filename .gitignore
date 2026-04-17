@@ -1,0 +1,9 @@
+wwwroot/*.js
+node_modules
+typings
+dist
+.pnpm-debug.log*
+.DS_Store
+.env
+.env.local
+*.tsbuildinfo

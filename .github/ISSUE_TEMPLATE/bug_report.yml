@@ -1,0 +1,51 @@
+name: 🐛 Bug report
+description: Bug in the `@knowledge-stack/ksapi` TypeScript client.
+title: "[bug] "
+labels: ["bug", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This package is generated from the Knowledge Stack OpenAPI spec. API-behavior issues belong upstream in ks-backend; client-side wrapper bugs belong here.
+
+  - type: input
+    id: version
+    attributes:
+      label: @knowledge-stack/ksapi version
+      placeholder: "npm list @knowledge-stack/ksapi"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: runtime
+    attributes:
+      label: Runtime
+      options: ["Node.js", "Bun", "Deno", "Browser", "Cloudflare Workers", "other"]
+    validations:
+      required: true
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: Expected vs. actual. Include request/response if you captured them.
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction
+      render: typescript
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before submitting
+      options:
+        - label: I've verified this isn't an API-level issue (upstream in ks-backend).
+          required: true
+        - label: I've redacted API keys from logs / snippets.
+          required: true
