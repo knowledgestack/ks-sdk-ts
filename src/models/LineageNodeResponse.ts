@@ -13,13 +13,13 @@
  */
 
 import { mapValues } from '../runtime';
-import type { ChunkMetadataOutput } from './ChunkMetadataOutput';
+import type { ChunkMetadata } from './ChunkMetadata';
 import {
-    ChunkMetadataOutputFromJSON,
-    ChunkMetadataOutputFromJSONTyped,
-    ChunkMetadataOutputToJSON,
-    ChunkMetadataOutputToJSONTyped,
-} from './ChunkMetadataOutput';
+    ChunkMetadataFromJSON,
+    ChunkMetadataFromJSONTyped,
+    ChunkMetadataToJSON,
+    ChunkMetadataToJSONTyped,
+} from './ChunkMetadata';
 import type { ChunkType } from './ChunkType';
 import {
     ChunkTypeFromJSON,
@@ -54,10 +54,10 @@ export interface LineageNodeResponse {
     chunkType: ChunkType;
     /**
      * 
-     * @type {ChunkMetadataOutput}
+     * @type {ChunkMetadata}
      * @memberof LineageNodeResponse
      */
-    chunkMetadata: ChunkMetadataOutput;
+    chunkMetadata: ChunkMetadata;
     /**
      * Tenant ID
      * @type {string}
@@ -124,7 +124,7 @@ export function LineageNodeResponseFromJSONTyped(json: any, ignoreDiscriminator:
         'id': json['id'],
         'content': json['content'],
         'chunkType': ChunkTypeFromJSON(json['chunk_type']),
-        'chunkMetadata': ChunkMetadataOutputFromJSON(json['chunk_metadata']),
+        'chunkMetadata': ChunkMetadataFromJSON(json['chunk_metadata']),
         'tenantId': json['tenant_id'],
         'createdAt': (new Date(json['created_at'])),
         'updatedAt': (new Date(json['updated_at'])),
@@ -145,7 +145,7 @@ export function LineageNodeResponseToJSONTyped(value?: LineageNodeResponse | nul
         'id': value['id'],
         'content': value['content'],
         'chunk_type': ChunkTypeToJSON(value['chunkType']),
-        'chunk_metadata': ChunkMetadataOutputToJSON(value['chunkMetadata']),
+        'chunk_metadata': ChunkMetadataToJSON(value['chunkMetadata']),
         'tenant_id': value['tenantId'],
         'created_at': value['createdAt'].toISOString(),
         'updated_at': value['updatedAt'].toISOString(),

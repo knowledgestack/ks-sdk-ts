@@ -13,6 +13,14 @@
  */
 
 import { mapValues } from '../runtime';
+import type { PathPartApprovalState } from './PathPartApprovalState';
+import {
+    PathPartApprovalStateFromJSON,
+    PathPartApprovalStateFromJSONTyped,
+    PathPartApprovalStateToJSON,
+    PathPartApprovalStateToJSONTyped,
+} from './PathPartApprovalState';
+
 /**
  * Response model for a section item in document version contents.
  * @export
@@ -74,6 +82,12 @@ export interface SectionContentItem {
      */
     systemManaged: boolean;
     /**
+     * 
+     * @type {PathPartApprovalState}
+     * @memberof SectionContentItem
+     */
+    approvalState: PathPartApprovalState;
+    /**
      * Creation timestamp
      * @type {Date}
      * @memberof SectionContentItem
@@ -126,6 +140,7 @@ export function instanceOfSectionContentItem(value: object): value is SectionCon
     if (!('depth' in value) || value['depth'] === undefined) return false;
     if (!('materializedPath' in value) || value['materializedPath'] === undefined) return false;
     if (!('systemManaged' in value) || value['systemManaged'] === undefined) return false;
+    if (!('approvalState' in value) || value['approvalState'] === undefined) return false;
     if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
     if (!('updatedAt' in value) || value['updatedAt'] === undefined) return false;
     return true;
@@ -150,6 +165,7 @@ export function SectionContentItemFromJSONTyped(json: any, ignoreDiscriminator: 
         'pageNumber': json['page_number'] == null ? undefined : json['page_number'],
         'materializedPath': json['materialized_path'],
         'systemManaged': json['system_managed'],
+        'approvalState': PathPartApprovalStateFromJSON(json['approval_state']),
         'createdAt': (new Date(json['created_at'])),
         'updatedAt': (new Date(json['updated_at'])),
     };
@@ -175,6 +191,7 @@ export function SectionContentItemToJSONTyped(value?: SectionContentItem | null,
         'page_number': value['pageNumber'],
         'materialized_path': value['materializedPath'],
         'system_managed': value['systemManaged'],
+        'approval_state': PathPartApprovalStateToJSON(value['approvalState']),
         'created_at': value['createdAt'].toISOString(),
         'updated_at': value['updatedAt'].toISOString(),
     };

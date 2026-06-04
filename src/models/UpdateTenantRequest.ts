@@ -41,17 +41,17 @@ export interface UpdateTenantRequest {
      */
     name?: string | null;
     /**
-     * 
+     * Optional external IdP configuration to update
      * @type {IdpConfig}
      * @memberof UpdateTenantRequest
      */
-    idpConfig?: IdpConfig;
+    idpConfig?: IdpConfig | null;
     /**
-     * 
+     * Optional tenant settings to update
      * @type {TenantSettingsUpdate}
      * @memberof UpdateTenantRequest
      */
-    settings?: TenantSettingsUpdate;
+    settings?: TenantSettingsUpdate | null;
 }
 export const UpdateTenantRequestPropertyValidationAttributesMap: {
     [property: string]: {

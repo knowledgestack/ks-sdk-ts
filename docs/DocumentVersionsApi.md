@@ -316,11 +316,9 @@ No authorization required
 
 ## getDocumentVersion
 
-> DocumentVersionResponse getDocumentVersion(versionId, authorization, ksUat)
+> DocumentVersionResponse getDocumentVersion(versionId, includePageScreenshots, authorization, ksUat)
 
 Get Document Version Handler
-
-Get a document version by its ID.
 
 ### Example
 
@@ -338,6 +336,8 @@ async function example() {
   const body = {
     // string | DocumentVersion ID
     versionId: 38400000-8cf0-11bd-b23e-10b96e4ef00d,
+    // boolean | When true, populate page_screenshot_urls with presigned URLs for every per-page WEBP screenshot the ingestion pipeline produced. Off by default to keep typical responses small. (optional)
+    includePageScreenshots: true,
     // string (optional)
     authorization: authorization_example,
     // string (optional)
@@ -362,6 +362,7 @@ example().catch(console.error);
 | Name | Type | Description  | Notes |
 |------------- | ------------- | ------------- | -------------|
 | **versionId** | `string` | DocumentVersion ID | [Defaults to `undefined`] |
+| **includePageScreenshots** | `boolean` | When true, populate page_screenshot_urls with presigned URLs for every per-page WEBP screenshot the ingestion pipeline produced. Off by default to keep typical responses small. | [Optional] [Defaults to `false`] |
 | **authorization** | `string` |  | [Optional] [Defaults to `undefined`] |
 | **ksUat** | `string` |  | [Optional] [Defaults to `undefined`] |
 

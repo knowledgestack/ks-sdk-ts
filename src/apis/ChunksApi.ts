@@ -21,6 +21,7 @@ import type {
   ChunkSearchRequest,
   CreateChunkRequest,
   HTTPValidationError,
+  PartType,
   ScoredChunkResponse,
   UpdateChunkContentRequest,
   UpdateChunkMetadataRequest,
@@ -39,6 +40,8 @@ import {
     CreateChunkRequestToJSON,
     HTTPValidationErrorFromJSON,
     HTTPValidationErrorToJSON,
+    PartTypeFromJSON,
+    PartTypeToJSON,
     ScoredChunkResponseFromJSON,
     ScoredChunkResponseToJSON,
     UpdateChunkContentRequestFromJSON,
@@ -72,7 +75,8 @@ export interface GetChunkNeighborsRequest {
     chunkId: string;
     prev?: number;
     next?: number;
-    chunksOnly?: boolean;
+    contentType?: PartType;
+    withinSection?: boolean;
     authorization?: string | null;
     ksUat?: string | null;
 }
@@ -205,9 +209,10 @@ export interface ChunksApiInterface {
     /**
      * Creates request options for getChunkNeighbors without sending the request
      * @param {string} chunkId 
-     * @param {number} [prev] Number of preceding siblings to include
-     * @param {number} [next] Number of succeeding siblings to include
-     * @param {boolean} [chunksOnly] When true, stop traversal at non-CHUNK siblings (default: false)
+     * @param {number} [prev] Number of preceding items to include (max 50).
+     * @param {number} [next] Number of succeeding items to include (max 50).
+     * @param {PartType} [contentType] Filter by content type: SECTION or CHUNK. Omit to return both. SECTION is rejected when the anchor is a chunk (always).
+     * @param {boolean} [withinSection] When true (default), traverse only the anchor\&#39;s sibling chain under the same parent. When false, traverse the entire document version in DFS order, crossing section boundaries.
      * @param {string} [authorization] 
      * @param {string} [ksUat] 
      * @throws {RequiredError}
@@ -216,12 +221,13 @@ export interface ChunksApiInterface {
     getChunkNeighborsRequestOpts(requestParameters: GetChunkNeighborsRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * Get neighboring siblings by traversing the sibling linked list.  Walks the sibling chain backward (prev) and forward (next) from the anchor chunk. Returns sections and chunks in sibling order within the same parent.  When ``chunks_only=true``, the traversal stops at the first non-CHUNK sibling in each direction, returning only chunk neighbors.
+     * Return a window of items around an anchor chunk.  Two traversal modes:  - ``within_section=true`` (default): walks the sibling linked-list under   the anchor\'s parent. Stops at items outside ``content_type`` when set.   Authorized by the anchor\'s path read permission alone.  - ``within_section=false``: walks the full document version in   depth-first order and slices a window around the anchor. Crosses   section boundaries. Additionally requires read permission on the   enclosing document version\'s path (matching the   ``/v1/document_versions/{id}/contents`` endpoint). USERs whose path   permissions are scoped to a sub-section of the version will get   ``403`` and should use ``within_section=true``.  ``content_type=SECTION`` is rejected with ``400``: the anchor is always a chunk, so a SECTION-only filter would exclude it.
      * @summary Get Chunk Neighbors Handler
      * @param {string} chunkId 
-     * @param {number} [prev] Number of preceding siblings to include
-     * @param {number} [next] Number of succeeding siblings to include
-     * @param {boolean} [chunksOnly] When true, stop traversal at non-CHUNK siblings (default: false)
+     * @param {number} [prev] Number of preceding items to include (max 50).
+     * @param {number} [next] Number of succeeding items to include (max 50).
+     * @param {PartType} [contentType] Filter by content type: SECTION or CHUNK. Omit to return both. SECTION is rejected when the anchor is a chunk (always).
+     * @param {boolean} [withinSection] When true (default), traverse only the anchor\&#39;s sibling chain under the same parent. When false, traverse the entire document version in DFS order, crossing section boundaries.
      * @param {string} [authorization] 
      * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
@@ -231,7 +237,7 @@ export interface ChunksApiInterface {
     getChunkNeighborsRaw(requestParameters: GetChunkNeighborsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ChunkNeighborsResponse>>;
 
     /**
-     * Get neighboring siblings by traversing the sibling linked list.  Walks the sibling chain backward (prev) and forward (next) from the anchor chunk. Returns sections and chunks in sibling order within the same parent.  When ``chunks_only=true``, the traversal stops at the first non-CHUNK sibling in each direction, returning only chunk neighbors.
+     * Return a window of items around an anchor chunk.  Two traversal modes:  - ``within_section=true`` (default): walks the sibling linked-list under   the anchor\'s parent. Stops at items outside ``content_type`` when set.   Authorized by the anchor\'s path read permission alone.  - ``within_section=false``: walks the full document version in   depth-first order and slices a window around the anchor. Crosses   section boundaries. Additionally requires read permission on the   enclosing document version\'s path (matching the   ``/v1/document_versions/{id}/contents`` endpoint). USERs whose path   permissions are scoped to a sub-section of the version will get   ``403`` and should use ``within_section=true``.  ``content_type=SECTION`` is rejected with ``400``: the anchor is always a chunk, so a SECTION-only filter would exclude it.
      * Get Chunk Neighbors Handler
      */
     getChunkNeighbors(requestParameters: GetChunkNeighborsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ChunkNeighborsResponse>;
@@ -303,7 +309,7 @@ export interface ChunksApiInterface {
     searchChunksRequestOpts(requestParameters: SearchChunksRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * Search over chunks using dense vector similarity or BM25 full-text.  Combines vector/keyword search with path-based authorization and optional metadata filters. Uses Qdrant for search and hydrates results from Postgres.
+     * Search over chunks using dense vector, BM25 full-text, or hybrid retrieval.  Combines search with path-based authorization and optional metadata filters. Uses Qdrant for retrieval and hydrates the matched chunks from Postgres.  **Billing note.** SEARCH consume runs *before* path-permission resolution. A request that resolves to an empty permission set (caller has read access to nothing in the requested scope) returns ``[]`` cleanly — without raising — so it is **not** refunded. This is intentional: differential billing for a no-results case would leak access shape to the caller. Callers concerned about charged no-op searches should validate path access client-side first.
      * @summary Search Chunks Handler
      * @param {ChunkSearchRequest} chunkSearchRequest 
      * @param {string} [authorization] 
@@ -315,7 +321,7 @@ export interface ChunksApiInterface {
     searchChunksRaw(requestParameters: SearchChunksRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<ScoredChunkResponse>>>;
 
     /**
-     * Search over chunks using dense vector similarity or BM25 full-text.  Combines vector/keyword search with path-based authorization and optional metadata filters. Uses Qdrant for search and hydrates results from Postgres.
+     * Search over chunks using dense vector, BM25 full-text, or hybrid retrieval.  Combines search with path-based authorization and optional metadata filters. Uses Qdrant for retrieval and hydrates the matched chunks from Postgres.  **Billing note.** SEARCH consume runs *before* path-permission resolution. A request that resolves to an empty permission set (caller has read access to nothing in the requested scope) returns ``[]`` cleanly — without raising — so it is **not** refunded. This is intentional: differential billing for a no-results case would leak access shape to the caller. Callers concerned about charged no-op searches should validate path access client-side first.
      * Search Chunks Handler
      */
     searchChunks(requestParameters: SearchChunksRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<ScoredChunkResponse>>;
@@ -566,8 +572,12 @@ export class ChunksApi extends runtime.BaseAPI implements ChunksApiInterface {
             queryParameters['next'] = requestParameters['next'];
         }
 
-        if (requestParameters['chunksOnly'] != null) {
-            queryParameters['chunks_only'] = requestParameters['chunksOnly'];
+        if (requestParameters['contentType'] != null) {
+            queryParameters['content_type'] = requestParameters['contentType'];
+        }
+
+        if (requestParameters['withinSection'] != null) {
+            queryParameters['within_section'] = requestParameters['withinSection'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -589,7 +599,7 @@ export class ChunksApi extends runtime.BaseAPI implements ChunksApiInterface {
     }
 
     /**
-     * Get neighboring siblings by traversing the sibling linked list.  Walks the sibling chain backward (prev) and forward (next) from the anchor chunk. Returns sections and chunks in sibling order within the same parent.  When ``chunks_only=true``, the traversal stops at the first non-CHUNK sibling in each direction, returning only chunk neighbors.
+     * Return a window of items around an anchor chunk.  Two traversal modes:  - ``within_section=true`` (default): walks the sibling linked-list under   the anchor\'s parent. Stops at items outside ``content_type`` when set.   Authorized by the anchor\'s path read permission alone.  - ``within_section=false``: walks the full document version in   depth-first order and slices a window around the anchor. Crosses   section boundaries. Additionally requires read permission on the   enclosing document version\'s path (matching the   ``/v1/document_versions/{id}/contents`` endpoint). USERs whose path   permissions are scoped to a sub-section of the version will get   ``403`` and should use ``within_section=true``.  ``content_type=SECTION`` is rejected with ``400``: the anchor is always a chunk, so a SECTION-only filter would exclude it.
      * Get Chunk Neighbors Handler
      */
     async getChunkNeighborsRaw(requestParameters: GetChunkNeighborsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ChunkNeighborsResponse>> {
@@ -600,7 +610,7 @@ export class ChunksApi extends runtime.BaseAPI implements ChunksApiInterface {
     }
 
     /**
-     * Get neighboring siblings by traversing the sibling linked list.  Walks the sibling chain backward (prev) and forward (next) from the anchor chunk. Returns sections and chunks in sibling order within the same parent.  When ``chunks_only=true``, the traversal stops at the first non-CHUNK sibling in each direction, returning only chunk neighbors.
+     * Return a window of items around an anchor chunk.  Two traversal modes:  - ``within_section=true`` (default): walks the sibling linked-list under   the anchor\'s parent. Stops at items outside ``content_type`` when set.   Authorized by the anchor\'s path read permission alone.  - ``within_section=false``: walks the full document version in   depth-first order and slices a window around the anchor. Crosses   section boundaries. Additionally requires read permission on the   enclosing document version\'s path (matching the   ``/v1/document_versions/{id}/contents`` endpoint). USERs whose path   permissions are scoped to a sub-section of the version will get   ``403`` and should use ``within_section=true``.  ``content_type=SECTION`` is rejected with ``400``: the anchor is always a chunk, so a SECTION-only filter would exclude it.
      * Get Chunk Neighbors Handler
      */
     async getChunkNeighbors(requestParameters: GetChunkNeighborsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ChunkNeighborsResponse> {
@@ -743,7 +753,7 @@ export class ChunksApi extends runtime.BaseAPI implements ChunksApiInterface {
     }
 
     /**
-     * Search over chunks using dense vector similarity or BM25 full-text.  Combines vector/keyword search with path-based authorization and optional metadata filters. Uses Qdrant for search and hydrates results from Postgres.
+     * Search over chunks using dense vector, BM25 full-text, or hybrid retrieval.  Combines search with path-based authorization and optional metadata filters. Uses Qdrant for retrieval and hydrates the matched chunks from Postgres.  **Billing note.** SEARCH consume runs *before* path-permission resolution. A request that resolves to an empty permission set (caller has read access to nothing in the requested scope) returns ``[]`` cleanly — without raising — so it is **not** refunded. This is intentional: differential billing for a no-results case would leak access shape to the caller. Callers concerned about charged no-op searches should validate path access client-side first.
      * Search Chunks Handler
      */
     async searchChunksRaw(requestParameters: SearchChunksRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<ScoredChunkResponse>>> {
@@ -754,7 +764,7 @@ export class ChunksApi extends runtime.BaseAPI implements ChunksApiInterface {
     }
 
     /**
-     * Search over chunks using dense vector similarity or BM25 full-text.  Combines vector/keyword search with path-based authorization and optional metadata filters. Uses Qdrant for search and hydrates results from Postgres.
+     * Search over chunks using dense vector, BM25 full-text, or hybrid retrieval.  Combines search with path-based authorization and optional metadata filters. Uses Qdrant for retrieval and hydrates the matched chunks from Postgres.  **Billing note.** SEARCH consume runs *before* path-permission resolution. A request that resolves to an empty permission set (caller has read access to nothing in the requested scope) returns ``[]`` cleanly — without raising — so it is **not** refunded. This is intentional: differential billing for a no-results case would leak access shape to the caller. Callers concerned about charged no-op searches should validate path access client-side first.
      * Search Chunks Handler
      */
     async searchChunks(requestParameters: SearchChunksRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<ScoredChunkResponse>> {

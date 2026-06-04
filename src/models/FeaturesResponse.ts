@@ -35,6 +35,24 @@ export interface FeaturesResponse {
     googleLoginEnabled: boolean;
     /**
      * 
+     * @type {boolean}
+     * @memberof FeaturesResponse
+     */
+    microsoftLoginEnabled: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof FeaturesResponse
+     */
+    githubLoginEnabled: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof FeaturesResponse
+     */
+    smsLoginEnabled: boolean;
+    /**
+     * 
      * @type {SupportedLanguage}
      * @memberof FeaturesResponse
      */
@@ -65,6 +83,9 @@ export const FeaturesResponsePropertyValidationAttributesMap: {
  */
 export function instanceOfFeaturesResponse(value: object): value is FeaturesResponse {
     if (!('googleLoginEnabled' in value) || value['googleLoginEnabled'] === undefined) return false;
+    if (!('microsoftLoginEnabled' in value) || value['microsoftLoginEnabled'] === undefined) return false;
+    if (!('githubLoginEnabled' in value) || value['githubLoginEnabled'] === undefined) return false;
+    if (!('smsLoginEnabled' in value) || value['smsLoginEnabled'] === undefined) return false;
     if (!('defaultFrontendLanguage' in value) || value['defaultFrontendLanguage'] === undefined) return false;
     return true;
 }
@@ -80,6 +101,9 @@ export function FeaturesResponseFromJSONTyped(json: any, ignoreDiscriminator: bo
     return {
         
         'googleLoginEnabled': json['google_login_enabled'],
+        'microsoftLoginEnabled': json['microsoft_login_enabled'],
+        'githubLoginEnabled': json['github_login_enabled'],
+        'smsLoginEnabled': json['sms_login_enabled'],
         'defaultFrontendLanguage': SupportedLanguageFromJSON(json['default_frontend_language']),
     };
 }
@@ -96,6 +120,9 @@ export function FeaturesResponseToJSONTyped(value?: FeaturesResponse | null, ign
     return {
         
         'google_login_enabled': value['googleLoginEnabled'],
+        'microsoft_login_enabled': value['microsoftLoginEnabled'],
+        'github_login_enabled': value['githubLoginEnabled'],
+        'sms_login_enabled': value['smsLoginEnabled'],
         'default_frontend_language': SupportedLanguageToJSON(value['defaultFrontendLanguage']),
     };
 }

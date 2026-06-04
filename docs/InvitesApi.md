@@ -8,6 +8,7 @@ All URIs are relative to *http://localhost:8000*
 | [**createInvite**](InvitesApi.md#createinvite) | **POST** /v1/invites | Create Invite |
 | [**deleteInvite**](InvitesApi.md#deleteinvite) | **DELETE** /v1/invites/{invite_id} | Delete Invite |
 | [**listInvites**](InvitesApi.md#listinvites) | **GET** /v1/invites | List Invites Handler |
+| [**updateInvite**](InvitesApi.md#updateinviteoperation) | **PATCH** /v1/invites/{invite_id} | Update Invite Handler |
 
 
 
@@ -17,7 +18,7 @@ All URIs are relative to *http://localhost:8000*
 
 Accept Invite
 
-Update an invite to accepted status and create tenant user.
+Accept an invite OR a tenant invite-link.  The path parameter &#x60;&#x60;invite_id&#x60;&#x60; may be either:   * a Tenant ID (when an admin has enabled &#x60;&#x60;invite_link&#x60;&#x60; on the tenant), OR   * an Invite ID (the traditional per-email invite flow).  Tenant lookup is tried first. If the row is found, the request is treated as an invite-link request — both 400 paths below have *distinct* messages so the frontend can branch on copy:   * \&quot;does not have invite link enabled\&quot; → admin hasn\&#39;t turned it on   * \&quot;does not support inviting users\&quot;   → tenant kill-switch &#x60;&#x60;system_metadata.can_invite&#x60;&#x60; is honored on this path too — it\&#39;s a hard kill switch for self-serve onboarding. Only when no tenant matches do we look up an Invite row.
 
 ### Example
 
@@ -33,7 +34,7 @@ async function example() {
   const api = new InvitesApi();
 
   const body = {
-    // string
+    // string | Either an Invite ID (traditional per-email invite) OR a Tenant ID (when the tenant has ``invite_link.enabled``). Tenant lookup is tried first.
     inviteId: 38400000-8cf0-11bd-b23e-10b96e4ef00d,
     // string (optional)
     authorization: authorization_example,
@@ -58,7 +59,7 @@ example().catch(console.error);
 
 | Name | Type | Description  | Notes |
 |------------- | ------------- | ------------- | -------------|
-| **inviteId** | `string` |  | [Defaults to `undefined`] |
+| **inviteId** | `string` | Either an Invite ID (traditional per-email invite) OR a Tenant ID (when the tenant has &#x60;&#x60;invite_link.enabled&#x60;&#x60;). Tenant lookup is tried first. | [Defaults to `undefined`] |
 | **authorization** | `string` |  | [Optional] [Defaults to `undefined`] |
 | **ksUat** | `string` |  | [Optional] [Defaults to `undefined`] |
 
@@ -304,6 +305,83 @@ No authorization required
 ### HTTP request headers
 
 - **Content-Type**: Not defined
+- **Accept**: `application/json`
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+| **200** | Successful Response |  -  |
+| **422** | Validation Error |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#api-endpoints) [[Back to Model list]](../README.md#models) [[Back to README]](../README.md)
+
+
+## updateInvite
+
+> InviteResponse updateInvite(inviteId, updateInviteRequest, authorization, ksUat)
+
+Update Invite Handler
+
+Update an invite\&#39;s expiry or groups (admin/owner only).  The invite must belong to the caller\&#39;s current tenant. Any provided groups are validated to belong to the same tenant.
+
+### Example
+
+```ts
+import {
+  Configuration,
+  InvitesApi,
+} from '@knowledge-stack/ksapi';
+import type { UpdateInviteOperationRequest } from '@knowledge-stack/ksapi';
+
+async function example() {
+  console.log("🚀 Testing @knowledge-stack/ksapi SDK...");
+  const api = new InvitesApi();
+
+  const body = {
+    // string
+    inviteId: 38400000-8cf0-11bd-b23e-10b96e4ef00d,
+    // UpdateInviteRequest
+    updateInviteRequest: ...,
+    // string (optional)
+    authorization: authorization_example,
+    // string (optional)
+    ksUat: ksUat_example,
+  } satisfies UpdateInviteOperationRequest;
+
+  try {
+    const data = await api.updateInvite(body);
+    console.log(data);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+// Run the test
+example().catch(console.error);
+```
+
+### Parameters
+
+
+| Name | Type | Description  | Notes |
+|------------- | ------------- | ------------- | -------------|
+| **inviteId** | `string` |  | [Defaults to `undefined`] |
+| **updateInviteRequest** | [UpdateInviteRequest](UpdateInviteRequest.md) |  | |
+| **authorization** | `string` |  | [Optional] [Defaults to `undefined`] |
+| **ksUat** | `string` |  | [Optional] [Defaults to `undefined`] |
+
+### Return type
+
+[**InviteResponse**](InviteResponse.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+- **Content-Type**: `application/json`
 - **Accept**: `application/json`
 
 

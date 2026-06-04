@@ -20,6 +20,13 @@ import {
     TagResponseToJSON,
     TagResponseToJSONTyped,
 } from './TagResponse';
+import type { PathPartApprovalState } from './PathPartApprovalState';
+import {
+    PathPartApprovalStateFromJSON,
+    PathPartApprovalStateFromJSONTyped,
+    PathPartApprovalStateToJSON,
+    PathPartApprovalStateToJSONTyped,
+} from './PathPartApprovalState';
 
 /**
  * Folder response model.
@@ -70,6 +77,18 @@ export interface FolderResponse {
      */
     systemManaged: boolean;
     /**
+     * 
+     * @type {PathPartApprovalState}
+     * @memberof FolderResponse
+     */
+    approvalState: PathPartApprovalState;
+    /**
+     * Direct exclusion flag on this folder's path part only. The effective exclusion also applies when any ancestor folder has the flag set — fetch the ancestry to determine effective state.
+     * @type {boolean}
+     * @memberof FolderResponse
+     */
+    excludeFromQdrant: boolean;
+    /**
      * Tenant ID
      * @type {string}
      * @memberof FolderResponse
@@ -93,6 +112,12 @@ export interface FolderResponse {
      * @memberof FolderResponse
      */
     tags?: Array<TagResponse> | null;
+    /**
+     * Whether the current caller has write access to this folder. Only populated by endpoints that compute it (e.g. folder contents).
+     * @type {boolean}
+     * @memberof FolderResponse
+     */
+    canWrite?: boolean | null;
 }
 
 
@@ -133,6 +158,8 @@ export function instanceOfFolderResponse(value: object): value is FolderResponse
     if (!('parentPathPartId' in value) || value['parentPathPartId'] === undefined) return false;
     if (!('materializedPath' in value) || value['materializedPath'] === undefined) return false;
     if (!('systemManaged' in value) || value['systemManaged'] === undefined) return false;
+    if (!('approvalState' in value) || value['approvalState'] === undefined) return false;
+    if (!('excludeFromQdrant' in value) || value['excludeFromQdrant'] === undefined) return false;
     if (!('tenantId' in value) || value['tenantId'] === undefined) return false;
     if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
     if (!('updatedAt' in value) || value['updatedAt'] === undefined) return false;
@@ -156,10 +183,13 @@ export function FolderResponseFromJSONTyped(json: any, ignoreDiscriminator: bool
         'parentPathPartId': json['parent_path_part_id'],
         'materializedPath': json['materialized_path'],
         'systemManaged': json['system_managed'],
+        'approvalState': PathPartApprovalStateFromJSON(json['approval_state']),
+        'excludeFromQdrant': json['exclude_from_qdrant'],
         'tenantId': json['tenant_id'],
         'createdAt': (new Date(json['created_at'])),
         'updatedAt': (new Date(json['updated_at'])),
         'tags': json['tags'] == null ? undefined : ((json['tags'] as Array<any>).map(TagResponseFromJSON)),
+        'canWrite': json['can_write'] == null ? undefined : json['can_write'],
     };
 }
 
@@ -181,10 +211,13 @@ export function FolderResponseToJSONTyped(value?: FolderResponse | null, ignoreD
         'parent_path_part_id': value['parentPathPartId'],
         'materialized_path': value['materializedPath'],
         'system_managed': value['systemManaged'],
+        'approval_state': PathPartApprovalStateToJSON(value['approvalState']),
+        'exclude_from_qdrant': value['excludeFromQdrant'],
         'tenant_id': value['tenantId'],
         'created_at': value['createdAt'].toISOString(),
         'updated_at': value['updatedAt'].toISOString(),
         'tags': value['tags'] == null ? undefined : ((value['tags'] as Array<any>).map(TagResponseToJSON)),
+        'can_write': value['canWrite'],
     };
 }
 

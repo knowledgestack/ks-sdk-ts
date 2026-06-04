@@ -168,8 +168,6 @@ No authorization required
 
 Get Document Handler
 
-Get a document by its document ID.
-
 ### Example
 
 ```ts
@@ -512,7 +510,7 @@ No authorization required
 
 Update Document Handler
 
-Update a document (rename, move, and/or change active version).  To rename: provide &#x60;name&#x60; field. To move: provide &#x60;parent_path_part_id&#x60; field. To change active version: provide &#x60;active_version_id&#x60; field. All can be done in a single request.
+Update a document (rename, move, change active version, Qdrant exclusion).  To rename: provide &#x60;name&#x60; field. To move: provide &#x60;parent_path_part_id&#x60; field. To change active version: provide &#x60;active_version_id&#x60; field. To toggle Qdrant exclusion: provide &#x60;exclude_from_qdrant&#x60; field. Any combination can be sent in a single request.
 
 ### Example
 

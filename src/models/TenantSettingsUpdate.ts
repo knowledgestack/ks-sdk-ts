@@ -20,6 +20,20 @@ import {
     SupportedLanguageToJSON,
     SupportedLanguageToJSONTyped,
 } from './SupportedLanguage';
+import type { DisplayNameFormat } from './DisplayNameFormat';
+import {
+    DisplayNameFormatFromJSON,
+    DisplayNameFormatFromJSONTyped,
+    DisplayNameFormatToJSON,
+    DisplayNameFormatToJSONTyped,
+} from './DisplayNameFormat';
+import type { InviteLinkSettingsRequest } from './InviteLinkSettingsRequest';
+import {
+    InviteLinkSettingsRequestFromJSON,
+    InviteLinkSettingsRequestFromJSONTyped,
+    InviteLinkSettingsRequestToJSON,
+    InviteLinkSettingsRequestToJSONTyped,
+} from './InviteLinkSettingsRequest';
 
 /**
  * Partial tenant settings update.
@@ -40,11 +54,23 @@ export interface TenantSettingsUpdate {
      */
     description?: string | null;
     /**
+     * Industry / company type captured during onboarding
+     * @type {string}
+     * @memberof TenantSettingsUpdate
+     */
+    industry?: string | null;
+    /**
      * IANA timezone (e.g. 'America/New_York')
      * @type {string}
      * @memberof TenantSettingsUpdate
      */
     timezone?: string | null;
+    /**
+     * 
+     * @type {DisplayNameFormat}
+     * @memberof TenantSettingsUpdate
+     */
+    displayName?: DisplayNameFormat;
     /**
      * Custom brand name for logo
      * @type {string}
@@ -63,6 +89,12 @@ export interface TenantSettingsUpdate {
      * @memberof TenantSettingsUpdate
      */
     themeOverrides?: { [key: string]: string; } | null;
+    /**
+     * Tenant-wide invite-link configuration
+     * @type {InviteLinkSettingsRequest}
+     * @memberof TenantSettingsUpdate
+     */
+    inviteLink?: InviteLinkSettingsRequest | null;
 }
 
 
@@ -81,6 +113,12 @@ export const TenantSettingsUpdatePropertyValidationAttributesMap: {
         uniqueItems?: boolean
     }
 } = {
+    description: {
+        maxLength: 5000,
+    },
+    industry: {
+        maxLength: 120,
+    },
 }
 
 
@@ -103,10 +141,13 @@ export function TenantSettingsUpdateFromJSONTyped(json: any, ignoreDiscriminator
         
         'language': json['language'] == null ? undefined : SupportedLanguageFromJSON(json['language']),
         'description': json['description'] == null ? undefined : json['description'],
+        'industry': json['industry'] == null ? undefined : json['industry'],
         'timezone': json['timezone'] == null ? undefined : json['timezone'],
+        'displayName': json['display_name'] == null ? undefined : DisplayNameFormatFromJSON(json['display_name']),
         'brandName': json['brand_name'] == null ? undefined : json['brand_name'],
         'brandColor': json['brand_color'] == null ? undefined : json['brand_color'],
         'themeOverrides': json['theme_overrides'] == null ? undefined : json['theme_overrides'],
+        'inviteLink': json['invite_link'] == null ? undefined : InviteLinkSettingsRequestFromJSON(json['invite_link']),
     };
 }
 
@@ -123,10 +164,13 @@ export function TenantSettingsUpdateToJSONTyped(value?: TenantSettingsUpdate | n
         
         'language': SupportedLanguageToJSON(value['language']),
         'description': value['description'],
+        'industry': value['industry'],
         'timezone': value['timezone'],
+        'display_name': DisplayNameFormatToJSON(value['displayName']),
         'brand_name': value['brandName'],
         'brand_color': value['brandColor'],
         'theme_overrides': value['themeOverrides'],
+        'invite_link': InviteLinkSettingsRequestToJSON(value['inviteLink']),
     };
 }
 

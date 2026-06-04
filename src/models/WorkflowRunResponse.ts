@@ -20,33 +20,86 @@ import {
     WorkflowRunSnapshotToJSON,
     WorkflowRunSnapshotToJSONTyped,
 } from './WorkflowRunSnapshot';
-import type { WorkflowRunStatus } from './WorkflowRunStatus';
+import type { WorkflowExecutionState } from './WorkflowExecutionState';
 import {
-    WorkflowRunStatusFromJSON,
-    WorkflowRunStatusFromJSONTyped,
-    WorkflowRunStatusToJSON,
-    WorkflowRunStatusToJSONTyped,
-} from './WorkflowRunStatus';
-import type { WorkflowRunnerType } from './WorkflowRunnerType';
+    WorkflowExecutionStateFromJSON,
+    WorkflowExecutionStateFromJSONTyped,
+    WorkflowExecutionStateToJSON,
+    WorkflowExecutionStateToJSONTyped,
+} from './WorkflowExecutionState';
+import type { PathPartApprovalState } from './PathPartApprovalState';
 import {
-    WorkflowRunnerTypeFromJSON,
-    WorkflowRunnerTypeFromJSONTyped,
-    WorkflowRunnerTypeToJSON,
-    WorkflowRunnerTypeToJSONTyped,
-} from './WorkflowRunnerType';
+    PathPartApprovalStateFromJSON,
+    PathPartApprovalStateFromJSONTyped,
+    PathPartApprovalStateToJSON,
+    PathPartApprovalStateToJSONTyped,
+} from './PathPartApprovalState';
+import type { UserInfo } from './UserInfo';
+import {
+    UserInfoFromJSON,
+    UserInfoFromJSONTyped,
+    UserInfoToJSON,
+    UserInfoToJSONTyped,
+} from './UserInfo';
 
 /**
  * Workflow run response.
+ * 
+ * Doubles as a discriminated-union variant for folder-listing
+ * responses so the FE can mix WD/Run entries with regular folders +
+ * documents and route based on ``part_type``.
+ * 
+ * Two-step flow note: a NOT_STARTED run has ``started_at=None`` and
+ * ``run_snapshot=None``; both are populated when Start dispatches the
+ * run. The flat ``input_path_part_ids`` list carries the
+ * currently-pinned KB references so the FE can render them on a
+ * NOT_STARTED run (the snapshot's typed list is not available yet).
  * @export
  * @interface WorkflowRunResponse
  */
 export interface WorkflowRunResponse {
+    /**
+     * Path part type
+     * @type {WorkflowRunResponsePartTypeEnum}
+     * @memberof WorkflowRunResponse
+     */
+    partType?: WorkflowRunResponsePartTypeEnum;
     /**
      * 
      * @type {string}
      * @memberof WorkflowRunResponse
      */
     id: string;
+    /**
+     * WORKFLOW_RUN path_part of this run
+     * @type {string}
+     * @memberof WorkflowRunResponse
+     */
+    pathPartId: string;
+    /**
+     * FOLDER path_part of the containing folder
+     * @type {string}
+     * @memberof WorkflowRunResponse
+     */
+    parentPathPartId: string | null;
+    /**
+     * Full materialized path from root
+     * @type {string}
+     * @memberof WorkflowRunResponse
+     */
+    materializedPath: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof WorkflowRunResponse
+     */
+    tenantId: string;
+    /**
+     * Run display name; mirrors ``path_part.name`` (the run's UUID until a slug feature lands).
+     * @type {string}
+     * @memberof WorkflowRunResponse
+     */
+    name: string;
     /**
      * 
      * @type {string}
@@ -55,28 +108,28 @@ export interface WorkflowRunResponse {
     workflowDefinitionId: string;
     /**
      * 
-     * @type {string}
+     * @type {UserInfo}
      * @memberof WorkflowRunResponse
      */
-    userId: string;
+    triggeredBy: UserInfo;
     /**
      * 
-     * @type {WorkflowRunnerType}
+     * @type {WorkflowExecutionState}
      * @memberof WorkflowRunResponse
      */
-    runnerType: WorkflowRunnerType;
+    executionState: WorkflowExecutionState;
     /**
      * 
-     * @type {WorkflowRunStatus}
+     * @type {PathPartApprovalState}
      * @memberof WorkflowRunResponse
      */
-    status: WorkflowRunStatus;
+    approvalState: PathPartApprovalState;
     /**
-     * 
+     * When Start dispatched the run. NULL while the run is NOT_STARTED.
      * @type {Date}
      * @memberof WorkflowRunResponse
      */
-    startedAt: Date;
+    startedAt: Date | null;
     /**
      * 
      * @type {Date}
@@ -84,17 +137,53 @@ export interface WorkflowRunResponse {
      */
     completedAt: Date | null;
     /**
-     * 
+     * Frozen workflow configuration captured at Start time. NULL while the run is NOT_STARTED.
      * @type {WorkflowRunSnapshot}
      * @memberof WorkflowRunResponse
      */
-    runSnapshot: WorkflowRunSnapshot;
+    runSnapshot: WorkflowRunSnapshot | null;
     /**
      * 
      * @type {string}
      * @memberof WorkflowRunResponse
      */
     error: string | null;
+    /**
+     * FOLDER path_part of the run's ``inputs/`` subfolder
+     * @type {string}
+     * @memberof WorkflowRunResponse
+     */
+    inputsPathPartId: string;
+    /**
+     * FOLDER path_part of the run's ``outputs/`` subfolder
+     * @type {string}
+     * @memberof WorkflowRunResponse
+     */
+    outputsPathPartId: string;
+    /**
+     * FOLDER path_part of the run's ``discussions/`` subfolder
+     * @type {string}
+     * @memberof WorkflowRunResponse
+     */
+    discussionsPathPartId: string;
+    /**
+     * Flat list of currently-pinned KB-reference path_part ids (DOCUMENT + FOLDER). On a NOT_STARTED run this is the only surface for KB refs (run_snapshot is NULL).
+     * @type {Array<string>}
+     * @memberof WorkflowRunResponse
+     */
+    inputPathPartIds?: Array<string>;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof WorkflowRunResponse
+     */
+    outputsPathPartIds: Array<string>;
+    /**
+     * The run's primary chat thread (1:1). NULL while NOT_STARTED; set by Start. The FE opens the run by opening this thread.
+     * @type {string}
+     * @memberof WorkflowRunResponse
+     */
+    runThreadId?: string | null;
     /**
      * 
      * @type {Date}
@@ -109,6 +198,14 @@ export interface WorkflowRunResponse {
     updatedAt: Date;
 }
 
+
+/**
+ * @export
+ */
+export const WorkflowRunResponsePartTypeEnum = {
+    WorkflowRun: 'WORKFLOW_RUN'
+} as const;
+export type WorkflowRunResponsePartTypeEnum = typeof WorkflowRunResponsePartTypeEnum[keyof typeof WorkflowRunResponsePartTypeEnum];
 
 export const WorkflowRunResponsePropertyValidationAttributesMap: {
     [property: string]: {
@@ -133,14 +230,23 @@ export const WorkflowRunResponsePropertyValidationAttributesMap: {
  */
 export function instanceOfWorkflowRunResponse(value: object): value is WorkflowRunResponse {
     if (!('id' in value) || value['id'] === undefined) return false;
+    if (!('pathPartId' in value) || value['pathPartId'] === undefined) return false;
+    if (!('parentPathPartId' in value) || value['parentPathPartId'] === undefined) return false;
+    if (!('materializedPath' in value) || value['materializedPath'] === undefined) return false;
+    if (!('tenantId' in value) || value['tenantId'] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
     if (!('workflowDefinitionId' in value) || value['workflowDefinitionId'] === undefined) return false;
-    if (!('userId' in value) || value['userId'] === undefined) return false;
-    if (!('runnerType' in value) || value['runnerType'] === undefined) return false;
-    if (!('status' in value) || value['status'] === undefined) return false;
+    if (!('triggeredBy' in value) || value['triggeredBy'] === undefined) return false;
+    if (!('executionState' in value) || value['executionState'] === undefined) return false;
+    if (!('approvalState' in value) || value['approvalState'] === undefined) return false;
     if (!('startedAt' in value) || value['startedAt'] === undefined) return false;
     if (!('completedAt' in value) || value['completedAt'] === undefined) return false;
     if (!('runSnapshot' in value) || value['runSnapshot'] === undefined) return false;
     if (!('error' in value) || value['error'] === undefined) return false;
+    if (!('inputsPathPartId' in value) || value['inputsPathPartId'] === undefined) return false;
+    if (!('outputsPathPartId' in value) || value['outputsPathPartId'] === undefined) return false;
+    if (!('discussionsPathPartId' in value) || value['discussionsPathPartId'] === undefined) return false;
+    if (!('outputsPathPartIds' in value) || value['outputsPathPartIds'] === undefined) return false;
     if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
     if (!('updatedAt' in value) || value['updatedAt'] === undefined) return false;
     return true;
@@ -156,15 +262,27 @@ export function WorkflowRunResponseFromJSONTyped(json: any, ignoreDiscriminator:
     }
     return {
         
+        'partType': json['part_type'] == null ? undefined : json['part_type'],
         'id': json['id'],
+        'pathPartId': json['path_part_id'],
+        'parentPathPartId': json['parent_path_part_id'],
+        'materializedPath': json['materialized_path'],
+        'tenantId': json['tenant_id'],
+        'name': json['name'],
         'workflowDefinitionId': json['workflow_definition_id'],
-        'userId': json['user_id'],
-        'runnerType': WorkflowRunnerTypeFromJSON(json['runner_type']),
-        'status': WorkflowRunStatusFromJSON(json['status']),
-        'startedAt': (new Date(json['started_at'])),
+        'triggeredBy': UserInfoFromJSON(json['triggered_by']),
+        'executionState': WorkflowExecutionStateFromJSON(json['execution_state']),
+        'approvalState': PathPartApprovalStateFromJSON(json['approval_state']),
+        'startedAt': (json['started_at'] == null ? null : new Date(json['started_at'])),
         'completedAt': (json['completed_at'] == null ? null : new Date(json['completed_at'])),
         'runSnapshot': WorkflowRunSnapshotFromJSON(json['run_snapshot']),
         'error': json['error'],
+        'inputsPathPartId': json['inputs_path_part_id'],
+        'outputsPathPartId': json['outputs_path_part_id'],
+        'discussionsPathPartId': json['discussions_path_part_id'],
+        'inputPathPartIds': json['input_path_part_ids'] == null ? undefined : json['input_path_part_ids'],
+        'outputsPathPartIds': json['outputs_path_part_ids'],
+        'runThreadId': json['run_thread_id'] == null ? undefined : json['run_thread_id'],
         'createdAt': (new Date(json['created_at'])),
         'updatedAt': (new Date(json['updated_at'])),
     };
@@ -181,15 +299,27 @@ export function WorkflowRunResponseToJSONTyped(value?: WorkflowRunResponse | nul
 
     return {
         
+        'part_type': value['partType'],
         'id': value['id'],
+        'path_part_id': value['pathPartId'],
+        'parent_path_part_id': value['parentPathPartId'],
+        'materialized_path': value['materializedPath'],
+        'tenant_id': value['tenantId'],
+        'name': value['name'],
         'workflow_definition_id': value['workflowDefinitionId'],
-        'user_id': value['userId'],
-        'runner_type': WorkflowRunnerTypeToJSON(value['runnerType']),
-        'status': WorkflowRunStatusToJSON(value['status']),
-        'started_at': value['startedAt'].toISOString(),
+        'triggered_by': UserInfoToJSON(value['triggeredBy']),
+        'execution_state': WorkflowExecutionStateToJSON(value['executionState']),
+        'approval_state': PathPartApprovalStateToJSON(value['approvalState']),
+        'started_at': value['startedAt'] == null ? value['startedAt'] : value['startedAt'].toISOString(),
         'completed_at': value['completedAt'] == null ? value['completedAt'] : value['completedAt'].toISOString(),
         'run_snapshot': WorkflowRunSnapshotToJSON(value['runSnapshot']),
         'error': value['error'],
+        'inputs_path_part_id': value['inputsPathPartId'],
+        'outputs_path_part_id': value['outputsPathPartId'],
+        'discussions_path_part_id': value['discussionsPathPartId'],
+        'input_path_part_ids': value['inputPathPartIds'],
+        'outputs_path_part_ids': value['outputsPathPartIds'],
+        'run_thread_id': value['runThreadId'],
         'created_at': value['createdAt'].toISOString(),
         'updated_at': value['updatedAt'].toISOString(),
     };

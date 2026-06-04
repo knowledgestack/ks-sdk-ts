@@ -1,7 +1,7 @@
 
 # UpdateDocumentRequest
 
-Request to update a document (rename, move, and/or change active version).
+Request to update a document (rename, move, active version, qdrant exclusion).
 
 ## Properties
 
@@ -10,6 +10,8 @@ Name | Type
 `name` | string
 `parentPathPartId` | string
 `activeVersionId` | string
+`excludeFromQdrant` | boolean
+`ownerTenantUserId` | string
 
 ## Example
 
@@ -21,6 +23,8 @@ const example = {
   "name": null,
   "parentPathPartId": null,
   "activeVersionId": null,
+  "excludeFromQdrant": null,
+  "ownerTenantUserId": null,
 } satisfies UpdateDocumentRequest
 
 console.log(example)

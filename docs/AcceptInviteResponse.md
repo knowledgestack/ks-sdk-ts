@@ -9,6 +9,7 @@ Name | Type
 ------------ | -------------
 `tenantId` | string
 `role` | [TenantUserRole](TenantUserRole.md)
+`skippedGroups` | Array&lt;string&gt;
 
 ## Example
 
@@ -19,6 +20,7 @@ import type { AcceptInviteResponse } from '@knowledge-stack/ksapi'
 const example = {
   "tenantId": null,
   "role": null,
+  "skippedGroups": null,
 } satisfies AcceptInviteResponse
 
 console.log(example)

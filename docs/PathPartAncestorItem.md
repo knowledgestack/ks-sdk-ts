@@ -14,6 +14,7 @@ Name | Type
 `metadataObjId` | string
 `materializedPath` | string
 `systemManaged` | boolean
+`excludeFromQdrant` | boolean
 `createdAt` | Date
 `updatedAt` | Date
 
@@ -31,6 +32,7 @@ const example = {
   "metadataObjId": null,
   "materializedPath": null,
   "systemManaged": null,
+  "excludeFromQdrant": null,
   "createdAt": null,
   "updatedAt": null,
 } satisfies PathPartAncestorItem

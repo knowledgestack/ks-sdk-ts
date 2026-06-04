@@ -9,6 +9,7 @@ Name | Type
 `tenantId` | string
 `email` | string
 `role` | [TenantUserRole](TenantUserRole.md)
+`groups` | Array&lt;string&gt;
 
 ## Example
 
@@ -20,6 +21,7 @@ const example = {
   "tenantId": null,
   "email": null,
   "role": null,
+  "groups": null,
 } satisfies InviteUserRequest
 
 console.log(example)

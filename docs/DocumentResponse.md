@@ -18,10 +18,15 @@ Name | Type
 `activeVersion` | [DocumentVersionResponse](DocumentVersionResponse.md)
 `materializedPath` | string
 `systemManaged` | boolean
+`approvalState` | [PathPartApprovalState](PathPartApprovalState.md)
+`excludeFromQdrant` | boolean
 `tenantId` | string
+`owner` | [UserInfo](UserInfo.md)
 `createdAt` | Date
 `updatedAt` | Date
 `tags` | [Array&lt;TagResponse&gt;](TagResponse.md)
+`canWrite` | boolean
+`checkout` | [DocumentCheckoutResponse](DocumentCheckoutResponse.md)
 
 ## Example
 
@@ -41,10 +46,15 @@ const example = {
   "activeVersion": null,
   "materializedPath": null,
   "systemManaged": null,
+  "approvalState": null,
+  "excludeFromQdrant": null,
   "tenantId": null,
+  "owner": null,
   "createdAt": null,
   "updatedAt": null,
   "tags": null,
+  "canWrite": null,
+  "checkout": null,
 } satisfies DocumentResponse
 
 console.log(example)

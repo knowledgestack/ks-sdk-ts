@@ -13,6 +13,13 @@
  */
 
 import { mapValues } from '../runtime';
+import type { UserInfo } from './UserInfo';
+import {
+    UserInfoFromJSON,
+    UserInfoFromJSONTyped,
+    UserInfoToJSON,
+    UserInfoToJSONTyped,
+} from './UserInfo';
 import type { DocumentVersionMetadata } from './DocumentVersionMetadata';
 import {
     DocumentVersionMetadataFromJSON,
@@ -79,6 +86,12 @@ export interface DocumentVersionResponse {
      */
     tenantId: string;
     /**
+     * 
+     * @type {UserInfo}
+     * @memberof DocumentVersionResponse
+     */
+    uploader: UserInfo;
+    /**
      * Creation timestamp
      * @type {Date}
      * @memberof DocumentVersionResponse
@@ -102,6 +115,12 @@ export interface DocumentVersionResponse {
      * @memberof DocumentVersionResponse
      */
     fastPlaintextUrl?: string | null;
+    /**
+     * Presigned URLs (6-hour validity) to per-page WEBP screenshots in page order: index 0 is page 1, index N-1 is page N. Populated only when the request includes include_page_screenshots=true; null otherwise.
+     * @type {Array<string>}
+     * @memberof DocumentVersionResponse
+     */
+    pageScreenshotUrls?: Array<string> | null;
     /**
      * 
      * @type {DocumentVersionMetadata}
@@ -139,6 +158,7 @@ export function instanceOfDocumentVersionResponse(value: object): value is Docum
     if (!('materializedPath' in value) || value['materializedPath'] === undefined) return false;
     if (!('systemManaged' in value) || value['systemManaged'] === undefined) return false;
     if (!('tenantId' in value) || value['tenantId'] === undefined) return false;
+    if (!('uploader' in value) || value['uploader'] === undefined) return false;
     if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
     if (!('updatedAt' in value) || value['updatedAt'] === undefined) return false;
     return true;
@@ -162,10 +182,12 @@ export function DocumentVersionResponseFromJSONTyped(json: any, ignoreDiscrimina
         'materializedPath': json['materialized_path'],
         'systemManaged': json['system_managed'],
         'tenantId': json['tenant_id'],
+        'uploader': UserInfoFromJSON(json['uploader']),
         'createdAt': (new Date(json['created_at'])),
         'updatedAt': (new Date(json['updated_at'])),
         'assetS3Url': json['asset_s3_url'] == null ? undefined : json['asset_s3_url'],
         'fastPlaintextUrl': json['fast_plaintext_url'] == null ? undefined : json['fast_plaintext_url'],
+        'pageScreenshotUrls': json['page_screenshot_urls'] == null ? undefined : json['page_screenshot_urls'],
         'systemMetadata': json['system_metadata'] == null ? undefined : DocumentVersionMetadataFromJSON(json['system_metadata']),
     };
 }
@@ -189,10 +211,12 @@ export function DocumentVersionResponseToJSONTyped(value?: DocumentVersionRespon
         'materialized_path': value['materializedPath'],
         'system_managed': value['systemManaged'],
         'tenant_id': value['tenantId'],
+        'uploader': UserInfoToJSON(value['uploader']),
         'created_at': value['createdAt'].toISOString(),
         'updated_at': value['updatedAt'].toISOString(),
         'asset_s3_url': value['assetS3Url'],
         'fast_plaintext_url': value['fastPlaintextUrl'],
+        'page_screenshot_urls': value['pageScreenshotUrls'],
         'system_metadata': DocumentVersionMetadataToJSON(value['systemMetadata']),
     };
 }

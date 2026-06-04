@@ -6,7 +6,7 @@
 
 Name | Type
 ------------ | -------------
-`emailToken` | string
+`passwordResetToken` | string
 `newPassword` | string
 
 ## Example
@@ -16,7 +16,7 @@ import type { PasswordResetWithTokenRequest } from '@knowledge-stack/ksapi'
 
 // TODO: Update the object below with actual values
 const example = {
-  "emailToken": null,
+  "passwordResetToken": null,
   "newPassword": null,
 } satisfies PasswordResetWithTokenRequest
 

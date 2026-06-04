@@ -20,6 +20,8 @@
 export const IdpType = {
     Password: 'PASSWORD',
     Google: 'GOOGLE',
+    Microsoft: 'MICROSOFT',
+    Github: 'GITHUB',
     Tenant: 'TENANT'
 } as const;
 export type IdpType = typeof IdpType[keyof typeof IdpType];

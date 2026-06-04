@@ -8,12 +8,15 @@ Name | Type
 ------------ | -------------
 `id` | string
 `email` | string
+`phoneNumber` | string
 `firstName` | string
 `lastName` | string
 `idpType` | [IdpType](IdpType.md)
 `currentTenantId` | string
 `currentTenantRole` | [TenantUserRole](TenantUserRole.md)
 `defaultTenantId` | string
+`jobTitle` | string
+`onboardingCompletedAt` | Date
 
 ## Example
 
@@ -24,12 +27,15 @@ import type { UserResponse } from '@knowledge-stack/ksapi'
 const example = {
   "id": null,
   "email": null,
+  "phoneNumber": null,
   "firstName": null,
   "lastName": null,
   "idpType": null,
   "currentTenantId": null,
   "currentTenantRole": null,
   "defaultTenantId": null,
+  "jobTitle": null,
+  "onboardingCompletedAt": null,
 } satisfies UserResponse
 
 console.log(example)

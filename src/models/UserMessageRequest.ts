@@ -14,7 +14,7 @@
 
 import { mapValues } from '../runtime';
 /**
- * Request to send a user message and trigger agent generation.
+ * 
  * @export
  * @interface UserMessageRequest
  */

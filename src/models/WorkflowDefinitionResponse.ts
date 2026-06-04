@@ -13,33 +13,62 @@
  */
 
 import { mapValues } from '../runtime';
-import type { WorkflowRunnerType } from './WorkflowRunnerType';
+import type { PathPartApprovalState } from './PathPartApprovalState';
 import {
-    WorkflowRunnerTypeFromJSON,
-    WorkflowRunnerTypeFromJSONTyped,
-    WorkflowRunnerTypeToJSON,
-    WorkflowRunnerTypeToJSONTyped,
-} from './WorkflowRunnerType';
-import type { SelfHostedRunnerConfigResponse } from './SelfHostedRunnerConfigResponse';
-import {
-    SelfHostedRunnerConfigResponseFromJSON,
-    SelfHostedRunnerConfigResponseFromJSONTyped,
-    SelfHostedRunnerConfigResponseToJSON,
-    SelfHostedRunnerConfigResponseToJSONTyped,
-} from './SelfHostedRunnerConfigResponse';
+    PathPartApprovalStateFromJSON,
+    PathPartApprovalStateFromJSONTyped,
+    PathPartApprovalStateToJSON,
+    PathPartApprovalStateToJSONTyped,
+} from './PathPartApprovalState';
 
 /**
  * Workflow definition response.
+ * 
+ * Doubles as a discriminated-union variant for folder-listing
+ * responses. The ``part_type`` literal is the discriminator: when the
+ * FE walks a folder tree it sees this shape mixed in with
+ * ``FolderResponse`` / ``DocumentResponse`` and can route to the
+ * dedicated workflow page based on ``part_type``.
  * @export
  * @interface WorkflowDefinitionResponse
  */
 export interface WorkflowDefinitionResponse {
+    /**
+     * Path part type
+     * @type {WorkflowDefinitionResponsePartTypeEnum}
+     * @memberof WorkflowDefinitionResponse
+     */
+    partType?: WorkflowDefinitionResponsePartTypeEnum;
     /**
      * 
      * @type {string}
      * @memberof WorkflowDefinitionResponse
      */
     id: string;
+    /**
+     * WORKFLOW_DEFINITION path_part of this definition
+     * @type {string}
+     * @memberof WorkflowDefinitionResponse
+     */
+    pathPartId: string;
+    /**
+     * FOLDER path_part of the containing folder
+     * @type {string}
+     * @memberof WorkflowDefinitionResponse
+     */
+    parentPathPartId: string | null;
+    /**
+     * Full materialized path from root
+     * @type {string}
+     * @memberof WorkflowDefinitionResponse
+     */
+    materializedPath: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof WorkflowDefinitionResponse
+     */
+    tenantId: string;
     /**
      * 
      * @type {string}
@@ -54,52 +83,34 @@ export interface WorkflowDefinitionResponse {
     description: string | null;
     /**
      * 
-     * @type {WorkflowRunnerType}
-     * @memberof WorkflowDefinitionResponse
-     */
-    runnerType: WorkflowRunnerType;
-    /**
-     * 
-     * @type {SelfHostedRunnerConfigResponse}
-     * @memberof WorkflowDefinitionResponse
-     */
-    runnerConfig: SelfHostedRunnerConfigResponse;
-    /**
-     * 
      * @type {number}
      * @memberof WorkflowDefinitionResponse
      */
     maxRunDurationSeconds: number;
     /**
-     * 
-     * @type {Array<string>}
-     * @memberof WorkflowDefinitionResponse
-     */
-    sourcePathPartIds: Array<string>;
-    /**
-     * 
-     * @type {Array<string>}
-     * @memberof WorkflowDefinitionResponse
-     */
-    instructionPathPartIds: Array<string>;
-    /**
-     * 
-     * @type {Array<string>}
-     * @memberof WorkflowDefinitionResponse
-     */
-    outputPathPartIds: Array<string>;
-    /**
-     * 
+     * DOCUMENT path_part of the instruction document
      * @type {string}
      * @memberof WorkflowDefinitionResponse
      */
-    templatePathPartId: string | null;
+    instructionPathPartId: string;
     /**
      * 
      * @type {boolean}
      * @memberof WorkflowDefinitionResponse
      */
     isActive: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof WorkflowDefinitionResponse
+     */
+    approvalRequired: boolean;
+    /**
+     * 
+     * @type {PathPartApprovalState}
+     * @memberof WorkflowDefinitionResponse
+     */
+    approvalState: PathPartApprovalState;
     /**
      * 
      * @type {Date}
@@ -114,6 +125,14 @@ export interface WorkflowDefinitionResponse {
     updatedAt: Date;
 }
 
+
+/**
+ * @export
+ */
+export const WorkflowDefinitionResponsePartTypeEnum = {
+    WorkflowDefinition: 'WORKFLOW_DEFINITION'
+} as const;
+export type WorkflowDefinitionResponsePartTypeEnum = typeof WorkflowDefinitionResponsePartTypeEnum[keyof typeof WorkflowDefinitionResponsePartTypeEnum];
 
 export const WorkflowDefinitionResponsePropertyValidationAttributesMap: {
     [property: string]: {
@@ -138,16 +157,17 @@ export const WorkflowDefinitionResponsePropertyValidationAttributesMap: {
  */
 export function instanceOfWorkflowDefinitionResponse(value: object): value is WorkflowDefinitionResponse {
     if (!('id' in value) || value['id'] === undefined) return false;
+    if (!('pathPartId' in value) || value['pathPartId'] === undefined) return false;
+    if (!('parentPathPartId' in value) || value['parentPathPartId'] === undefined) return false;
+    if (!('materializedPath' in value) || value['materializedPath'] === undefined) return false;
+    if (!('tenantId' in value) || value['tenantId'] === undefined) return false;
     if (!('name' in value) || value['name'] === undefined) return false;
     if (!('description' in value) || value['description'] === undefined) return false;
-    if (!('runnerType' in value) || value['runnerType'] === undefined) return false;
-    if (!('runnerConfig' in value) || value['runnerConfig'] === undefined) return false;
     if (!('maxRunDurationSeconds' in value) || value['maxRunDurationSeconds'] === undefined) return false;
-    if (!('sourcePathPartIds' in value) || value['sourcePathPartIds'] === undefined) return false;
-    if (!('instructionPathPartIds' in value) || value['instructionPathPartIds'] === undefined) return false;
-    if (!('outputPathPartIds' in value) || value['outputPathPartIds'] === undefined) return false;
-    if (!('templatePathPartId' in value) || value['templatePathPartId'] === undefined) return false;
+    if (!('instructionPathPartId' in value) || value['instructionPathPartId'] === undefined) return false;
     if (!('isActive' in value) || value['isActive'] === undefined) return false;
+    if (!('approvalRequired' in value) || value['approvalRequired'] === undefined) return false;
+    if (!('approvalState' in value) || value['approvalState'] === undefined) return false;
     if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
     if (!('updatedAt' in value) || value['updatedAt'] === undefined) return false;
     return true;
@@ -163,17 +183,19 @@ export function WorkflowDefinitionResponseFromJSONTyped(json: any, ignoreDiscrim
     }
     return {
         
+        'partType': json['part_type'] == null ? undefined : json['part_type'],
         'id': json['id'],
+        'pathPartId': json['path_part_id'],
+        'parentPathPartId': json['parent_path_part_id'],
+        'materializedPath': json['materialized_path'],
+        'tenantId': json['tenant_id'],
         'name': json['name'],
         'description': json['description'],
-        'runnerType': WorkflowRunnerTypeFromJSON(json['runner_type']),
-        'runnerConfig': SelfHostedRunnerConfigResponseFromJSON(json['runner_config']),
         'maxRunDurationSeconds': json['max_run_duration_seconds'],
-        'sourcePathPartIds': json['source_path_part_ids'],
-        'instructionPathPartIds': json['instruction_path_part_ids'],
-        'outputPathPartIds': json['output_path_part_ids'],
-        'templatePathPartId': json['template_path_part_id'],
+        'instructionPathPartId': json['instruction_path_part_id'],
         'isActive': json['is_active'],
+        'approvalRequired': json['approval_required'],
+        'approvalState': PathPartApprovalStateFromJSON(json['approval_state']),
         'createdAt': (new Date(json['created_at'])),
         'updatedAt': (new Date(json['updated_at'])),
     };
@@ -190,17 +212,19 @@ export function WorkflowDefinitionResponseToJSONTyped(value?: WorkflowDefinition
 
     return {
         
+        'part_type': value['partType'],
         'id': value['id'],
+        'path_part_id': value['pathPartId'],
+        'parent_path_part_id': value['parentPathPartId'],
+        'materialized_path': value['materializedPath'],
+        'tenant_id': value['tenantId'],
         'name': value['name'],
         'description': value['description'],
-        'runner_type': WorkflowRunnerTypeToJSON(value['runnerType']),
-        'runner_config': SelfHostedRunnerConfigResponseToJSON(value['runnerConfig']),
         'max_run_duration_seconds': value['maxRunDurationSeconds'],
-        'source_path_part_ids': value['sourcePathPartIds'],
-        'instruction_path_part_ids': value['instructionPathPartIds'],
-        'output_path_part_ids': value['outputPathPartIds'],
-        'template_path_part_id': value['templatePathPartId'],
+        'instruction_path_part_id': value['instructionPathPartId'],
         'is_active': value['isActive'],
+        'approval_required': value['approvalRequired'],
+        'approval_state': PathPartApprovalStateToJSON(value['approvalState']),
         'created_at': value['createdAt'].toISOString(),
         'updated_at': value['updatedAt'].toISOString(),
     };

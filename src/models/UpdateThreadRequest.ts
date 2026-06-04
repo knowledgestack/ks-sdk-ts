@@ -14,7 +14,7 @@
 
 import { mapValues } from '../runtime';
 /**
- * Request to update a thread.
+ * 
  * @export
  * @interface UpdateThreadRequest
  */

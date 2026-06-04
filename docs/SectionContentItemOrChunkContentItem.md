@@ -15,11 +15,12 @@ Name | Type
 `pageNumber` | number
 `materializedPath` | string
 `systemManaged` | boolean
+`approvalState` | [PathPartApprovalState](PathPartApprovalState.md)
 `createdAt` | Date
 `updatedAt` | Date
 `content` | string
 `chunkType` | [ChunkType](ChunkType.md)
-`chunkMetadata` | [ChunkMetadataOutput](ChunkMetadataOutput.md)
+`chunkMetadata` | [ChunkMetadata](ChunkMetadata.md)
 
 ## Example
 
@@ -37,6 +38,7 @@ const example = {
   "pageNumber": null,
   "materializedPath": null,
   "systemManaged": null,
+  "approvalState": null,
   "createdAt": null,
   "updatedAt": null,
   "content": null,

@@ -322,7 +322,7 @@ No authorization required
 
 Send User Message Handler
 
-Send a user message and trigger agent generation. Returns immediately with a workflow_id.  Connect to GET /{thread_id}/stream (SSE) before or after calling this endpoint to receive the streamed output.
+Send a user message and trigger agent generation. Returns immediately with a workflow_id.  Connect to GET /{thread_id}/stream (SSE) before or after calling this endpoint to receive the streamed output.  Quota: consumes one MESSAGE inside the same transaction that creates the user-message row and starts the workflow. Any failure on the consume, the workflow start, or anywhere in between rolls back the whole transaction via the session context manager — message insert, quota consume, and downstream side effects are all-or-nothing. No explicit refund path is needed because nothing commits until the workflow has been durably enqueued. Workflow failures observed asynchronously (after enqueue) do **not** refund — the consume stands, matching agent-ask\&#39;s v1 simplification.
 
 ### Example
 

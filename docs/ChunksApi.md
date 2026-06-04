@@ -243,11 +243,11 @@ No authorization required
 
 ## getChunkNeighbors
 
-> ChunkNeighborsResponse getChunkNeighbors(chunkId, prev, next, chunksOnly, authorization, ksUat)
+> ChunkNeighborsResponse getChunkNeighbors(chunkId, prev, next, contentType, withinSection, authorization, ksUat)
 
 Get Chunk Neighbors Handler
 
-Get neighboring siblings by traversing the sibling linked list.  Walks the sibling chain backward (prev) and forward (next) from the anchor chunk. Returns sections and chunks in sibling order within the same parent.  When &#x60;&#x60;chunks_only&#x3D;true&#x60;&#x60;, the traversal stops at the first non-CHUNK sibling in each direction, returning only chunk neighbors.
+Return a window of items around an anchor chunk.  Two traversal modes:  - &#x60;&#x60;within_section&#x3D;true&#x60;&#x60; (default): walks the sibling linked-list under   the anchor\&#39;s parent. Stops at items outside &#x60;&#x60;content_type&#x60;&#x60; when set.   Authorized by the anchor\&#39;s path read permission alone.  - &#x60;&#x60;within_section&#x3D;false&#x60;&#x60;: walks the full document version in   depth-first order and slices a window around the anchor. Crosses   section boundaries. Additionally requires read permission on the   enclosing document version\&#39;s path (matching the   &#x60;&#x60;/v1/document_versions/{id}/contents&#x60;&#x60; endpoint). USERs whose path   permissions are scoped to a sub-section of the version will get   &#x60;&#x60;403&#x60;&#x60; and should use &#x60;&#x60;within_section&#x3D;true&#x60;&#x60;.  &#x60;&#x60;content_type&#x3D;SECTION&#x60;&#x60; is rejected with &#x60;&#x60;400&#x60;&#x60;: the anchor is always a chunk, so a SECTION-only filter would exclude it.
 
 ### Example
 
@@ -265,12 +265,14 @@ async function example() {
   const body = {
     // string
     chunkId: 38400000-8cf0-11bd-b23e-10b96e4ef00d,
-    // number | Number of preceding siblings to include (optional)
+    // number | Number of preceding items to include (max 50). (optional)
     prev: 56,
-    // number | Number of succeeding siblings to include (optional)
+    // number | Number of succeeding items to include (max 50). (optional)
     next: 56,
-    // boolean | When true, stop traversal at non-CHUNK siblings (default: false) (optional)
-    chunksOnly: true,
+    // PartType | Filter by content type: SECTION or CHUNK. Omit to return both. SECTION is rejected when the anchor is a chunk (always). (optional)
+    contentType: ...,
+    // boolean | When true (default), traverse only the anchor\'s sibling chain under the same parent. When false, traverse the entire document version in DFS order, crossing section boundaries. (optional)
+    withinSection: true,
     // string (optional)
     authorization: authorization_example,
     // string (optional)
@@ -295,9 +297,10 @@ example().catch(console.error);
 | Name | Type | Description  | Notes |
 |------------- | ------------- | ------------- | -------------|
 | **chunkId** | `string` |  | [Defaults to `undefined`] |
-| **prev** | `number` | Number of preceding siblings to include | [Optional] [Defaults to `1`] |
-| **next** | `number` | Number of succeeding siblings to include | [Optional] [Defaults to `1`] |
-| **chunksOnly** | `boolean` | When true, stop traversal at non-CHUNK siblings (default: false) | [Optional] [Defaults to `false`] |
+| **prev** | `number` | Number of preceding items to include (max 50). | [Optional] [Defaults to `1`] |
+| **next** | `number` | Number of succeeding items to include (max 50). | [Optional] [Defaults to `1`] |
+| **contentType** | `PartType` | Filter by content type: SECTION or CHUNK. Omit to return both. SECTION is rejected when the anchor is a chunk (always). | [Optional] [Defaults to `undefined`] [Enum: FOLDER, DOCUMENT, DOCUMENT_VERSION, SECTION, CHUNK, THREAD, THREAD_MESSAGE, WORKFLOW_DEFINITION, WORKFLOW_RUN] |
+| **withinSection** | `boolean` | When true (default), traverse only the anchor\&#39;s sibling chain under the same parent. When false, traverse the entire document version in DFS order, crossing section boundaries. | [Optional] [Defaults to `true`] |
 | **authorization** | `string` |  | [Optional] [Defaults to `undefined`] |
 | **ksUat** | `string` |  | [Optional] [Defaults to `undefined`] |
 
@@ -478,7 +481,7 @@ No authorization required
 
 Search Chunks Handler
 
-Search over chunks using dense vector similarity or BM25 full-text.  Combines vector/keyword search with path-based authorization and optional metadata filters. Uses Qdrant for search and hydrates results from Postgres.
+Search over chunks using dense vector, BM25 full-text, or hybrid retrieval.  Combines search with path-based authorization and optional metadata filters. Uses Qdrant for retrieval and hydrates the matched chunks from Postgres.  **Billing note.** SEARCH consume runs *before* path-permission resolution. A request that resolves to an empty permission set (caller has read access to nothing in the requested scope) returns &#x60;&#x60;[]&#x60;&#x60; cleanly — without raising — so it is **not** refunded. This is intentional: differential billing for a no-results case would leak access shape to the caller. Callers concerned about charged no-op searches should validate path access client-side first.
 
 ### Example
 

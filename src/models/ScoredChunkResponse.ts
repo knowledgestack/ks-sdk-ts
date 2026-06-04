@@ -13,6 +13,13 @@
  */
 
 import { mapValues } from '../runtime';
+import type { ChunkMetadata } from './ChunkMetadata';
+import {
+    ChunkMetadataFromJSON,
+    ChunkMetadataFromJSONTyped,
+    ChunkMetadataToJSON,
+    ChunkMetadataToJSONTyped,
+} from './ChunkMetadata';
 import type { ChunkDocumentResponse } from './ChunkDocumentResponse';
 import {
     ChunkDocumentResponseFromJSON,
@@ -20,13 +27,6 @@ import {
     ChunkDocumentResponseToJSON,
     ChunkDocumentResponseToJSONTyped,
 } from './ChunkDocumentResponse';
-import type { ChunkMetadataOutput } from './ChunkMetadataOutput';
-import {
-    ChunkMetadataOutputFromJSON,
-    ChunkMetadataOutputFromJSONTyped,
-    ChunkMetadataOutputToJSON,
-    ChunkMetadataOutputToJSONTyped,
-} from './ChunkMetadataOutput';
 import type { ChunkType } from './ChunkType';
 import {
     ChunkTypeFromJSON,
@@ -43,7 +43,7 @@ import {
 } from './ChunkDocumentVersionResponse';
 
 /**
- * Chunk response with similarity score.
+ * Chunk response with search ranking score.
  * @export
  * @interface ScoredChunkResponse
  */
@@ -80,10 +80,10 @@ export interface ScoredChunkResponse {
     chunkType: ChunkType;
     /**
      * 
-     * @type {ChunkMetadataOutput}
+     * @type {ChunkMetadata}
      * @memberof ScoredChunkResponse
      */
-    chunkMetadata: ChunkMetadataOutput;
+    chunkMetadata: ChunkMetadata;
     /**
      * Number of tokens in chunk content
      * @type {number}
@@ -145,19 +145,19 @@ export interface ScoredChunkResponse {
      */
     assetS3Urls?: Array<string>;
     /**
-     * 
+     * Ancestor document info (populated when with_document=true)
      * @type {ChunkDocumentResponse}
      * @memberof ScoredChunkResponse
      */
-    document?: ChunkDocumentResponse;
+    document?: ChunkDocumentResponse | null;
     /**
-     * 
+     * Ancestor document version info (populated when with_document=true)
      * @type {ChunkDocumentVersionResponse}
      * @memberof ScoredChunkResponse
      */
-    documentVersion?: ChunkDocumentVersionResponse;
+    documentVersion?: ChunkDocumentVersionResponse | null;
     /**
-     * Cosine similarity score (1 - cosine_distance)
+     * Search ranking score returned by Qdrant
      * @type {number}
      * @memberof ScoredChunkResponse
      */
@@ -218,7 +218,7 @@ export function ScoredChunkResponseFromJSONTyped(json: any, ignoreDiscriminator:
         'contentId': json['content_id'],
         'content': json['content'],
         'chunkType': ChunkTypeFromJSON(json['chunk_type']),
-        'chunkMetadata': ChunkMetadataOutputFromJSON(json['chunk_metadata']),
+        'chunkMetadata': ChunkMetadataFromJSON(json['chunk_metadata']),
         'numTokens': json['num_tokens'] == null ? undefined : json['num_tokens'],
         'parentPathId': json['parent_path_id'],
         'prevSiblingPathId': json['prev_sibling_path_id'] == null ? undefined : json['prev_sibling_path_id'],
@@ -251,7 +251,7 @@ export function ScoredChunkResponseToJSONTyped(value?: ScoredChunkResponse | nul
         'content_id': value['contentId'],
         'content': value['content'],
         'chunk_type': ChunkTypeToJSON(value['chunkType']),
-        'chunk_metadata': ChunkMetadataOutputToJSON(value['chunkMetadata']),
+        'chunk_metadata': ChunkMetadataToJSON(value['chunkMetadata']),
         'num_tokens': value['numTokens'],
         'parent_path_id': value['parentPathId'],
         'prev_sibling_path_id': value['prevSiblingPathId'],

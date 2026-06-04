@@ -1,7 +1,6 @@
 
 # CreateThreadMessageRequest
 
-Request to create a new thread message.
 
 ## Properties
 

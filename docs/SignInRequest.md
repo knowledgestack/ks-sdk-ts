@@ -1,12 +1,13 @@
 
 # SignInRequest
 
+Unified signin — ``username`` matches either email or phone.
 
 ## Properties
 
 Name | Type
 ------------ | -------------
-`email` | string
+`username` | string
 `password` | string
 `tenantId` | string
 
@@ -17,7 +18,7 @@ import type { SignInRequest } from '@knowledge-stack/ksapi'
 
 // TODO: Update the object below with actual values
 const example = {
-  "email": null,
+  "username": null,
   "password": null,
   "tenantId": null,
 } satisfies SignInRequest

@@ -15,9 +15,10 @@ Name | Type
 `depth` | number
 `content` | string
 `chunkType` | [ChunkType](ChunkType.md)
-`chunkMetadata` | [ChunkMetadataOutput](ChunkMetadataOutput.md)
+`chunkMetadata` | [ChunkMetadata](ChunkMetadata.md)
 `materializedPath` | string
 `systemManaged` | boolean
+`approvalState` | [PathPartApprovalState](PathPartApprovalState.md)
 `createdAt` | Date
 `updatedAt` | Date
 
@@ -39,6 +40,7 @@ const example = {
   "chunkMetadata": null,
   "materializedPath": null,
   "systemManaged": null,
+  "approvalState": null,
   "createdAt": null,
   "updatedAt": null,
 } satisfies ChunkContentItem

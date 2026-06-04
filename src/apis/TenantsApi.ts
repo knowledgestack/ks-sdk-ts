@@ -19,6 +19,7 @@ import type {
   HTTPValidationError,
   PaginatedResponseTenantResponse,
   PaginatedResponseTenantUserResponse,
+  TenantQuotaStateResponse,
   TenantResponse,
   TenantUserEditRequest,
   TenantUserResponse,
@@ -33,6 +34,8 @@ import {
     PaginatedResponseTenantResponseToJSON,
     PaginatedResponseTenantUserResponseFromJSON,
     PaginatedResponseTenantUserResponseToJSON,
+    TenantQuotaStateResponseFromJSON,
+    TenantQuotaStateResponseToJSON,
     TenantResponseFromJSON,
     TenantResponseToJSON,
     TenantUserEditRequestFromJSON,
@@ -78,6 +81,12 @@ export interface DeleteTenantUserRequest {
 }
 
 export interface GetTenantRequest {
+    tenantId: string;
+    authorization?: string | null;
+    ksUat?: string | null;
+}
+
+export interface GetTenantQuotaStateRequest {
     tenantId: string;
     authorization?: string | null;
     ksUat?: string | null;
@@ -303,6 +312,34 @@ export interface TenantsApiInterface {
      * Get Tenant
      */
     getTenant(requestParameters: GetTenantRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TenantResponse>;
+
+    /**
+     * Creates request options for getTenantQuotaState without sending the request
+     * @param {string} tenantId 
+     * @param {string} [authorization] 
+     * @param {string} [ksUat] 
+     * @throws {RequiredError}
+     * @memberof TenantsApiInterface
+     */
+    getTenantQuotaStateRequestOpts(requestParameters: GetTenantQuotaStateRequest): Promise<runtime.RequestOpts>;
+
+    /**
+     * Read the tenant\'s current quota state across all metered caps + seats.  Any active member of the tenant can read. Read-only — does not mutate quota state.
+     * @summary Get Tenant Quota State Handler
+     * @param {string} tenantId 
+     * @param {string} [authorization] 
+     * @param {string} [ksUat] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof TenantsApiInterface
+     */
+    getTenantQuotaStateRaw(requestParameters: GetTenantQuotaStateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TenantQuotaStateResponse>>;
+
+    /**
+     * Read the tenant\'s current quota state across all metered caps + seats.  Any active member of the tenant can read. Read-only — does not mutate quota state.
+     * Get Tenant Quota State Handler
+     */
+    getTenantQuotaState(requestParameters: GetTenantQuotaStateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TenantQuotaStateResponse>;
 
     /**
      * Creates request options for listTenantUsers without sending the request
@@ -796,6 +833,57 @@ export class TenantsApi extends runtime.BaseAPI implements TenantsApiInterface {
      */
     async getTenant(requestParameters: GetTenantRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TenantResponse> {
         const response = await this.getTenantRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for getTenantQuotaState without sending the request
+     */
+    async getTenantQuotaStateRequestOpts(requestParameters: GetTenantQuotaStateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['tenantId'] == null) {
+            throw new runtime.RequiredError(
+                'tenantId',
+                'Required parameter "tenantId" was null or undefined when calling getTenantQuotaState().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (requestParameters['authorization'] != null) {
+            headerParameters['authorization'] = String(requestParameters['authorization']);
+        }
+
+
+        let urlPath = `/v1/tenants/{tenant_id}/quota`;
+        urlPath = urlPath.replace(`{${"tenant_id"}}`, encodeURIComponent(String(requestParameters['tenantId'])));
+
+        return {
+            path: urlPath,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Read the tenant\'s current quota state across all metered caps + seats.  Any active member of the tenant can read. Read-only — does not mutate quota state.
+     * Get Tenant Quota State Handler
+     */
+    async getTenantQuotaStateRaw(requestParameters: GetTenantQuotaStateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TenantQuotaStateResponse>> {
+        const requestOptions = await this.getTenantQuotaStateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => TenantQuotaStateResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * Read the tenant\'s current quota state across all metered caps + seats.  Any active member of the tenant can read. Read-only — does not mutate quota state.
+     * Get Tenant Quota State Handler
+     */
+    async getTenantQuotaState(requestParameters: GetTenantQuotaStateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TenantQuotaStateResponse> {
+        const response = await this.getTenantQuotaStateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

@@ -20,6 +20,13 @@ import {
     PipelineStateToJSON,
     PipelineStateToJSONTyped,
 } from './PipelineState';
+import type { XlsxCellAnchorOutputOrDocxParagraphAnchorOutput } from './XlsxCellAnchorOutputOrDocxParagraphAnchorOutput';
+import {
+    XlsxCellAnchorOutputOrDocxParagraphAnchorOutputFromJSON,
+    XlsxCellAnchorOutputOrDocxParagraphAnchorOutputFromJSONTyped,
+    XlsxCellAnchorOutputOrDocxParagraphAnchorOutputToJSON,
+    XlsxCellAnchorOutputOrDocxParagraphAnchorOutputToJSONTyped,
+} from './XlsxCellAnchorOutputOrDocxParagraphAnchorOutput';
 import type { InformationStatistics } from './InformationStatistics';
 import {
     InformationStatisticsFromJSON,
@@ -68,11 +75,11 @@ export interface DocumentVersionMetadata {
      */
     hash?: string | null;
     /**
-     * 
+     * Current state of the ingestion pipeline workflow
      * @type {PipelineState}
      * @memberof DocumentVersionMetadata
      */
-    pipelineState?: PipelineState;
+    pipelineState?: PipelineState | null;
     /**
      * Total number of pages in the document
      * @type {number}
@@ -116,11 +123,41 @@ export interface DocumentVersionMetadata {
      */
     xlsxKpiCatalog?: Array<{ [key: string]: any; }> | null;
     /**
-     * 
+     * In-file citation anchors for agent-generated .xlsx/.docx deliverables. Each anchor binds an in-file location (cell or paragraph) to the chunk IDs cited there. Populated by save_document during upload; ``null`` for versions ingested before this field shipped or for files re-uploaded outside the agent flow. FE enriches chunks via /v1/chunks/bulk.
+     * @type {Array<XlsxCellAnchorOutputOrDocxParagraphAnchorOutput>}
+     * @memberof DocumentVersionMetadata
+     */
+    citationAnchors?: Array<XlsxCellAnchorOutputOrDocxParagraphAnchorOutput> | null;
+    /**
+     * Aggregate statistics for the document version (tokens, chunk counts, depth)
      * @type {InformationStatistics}
      * @memberof DocumentVersionMetadata
      */
-    informationStatistics?: InformationStatistics;
+    informationStatistics?: InformationStatistics | null;
+    /**
+     * True once the conversion activity successfully consumed PAGE quota
+     * @type {boolean}
+     * @memberof DocumentVersionMetadata
+     */
+    quotaCharged?: boolean;
+    /**
+     * Page quantity charged at conversion start; 0 if not yet charged
+     * @type {number}
+     * @memberof DocumentVersionMetadata
+     */
+    quotaPageCount?: number;
+    /**
+     * Stable consume key (matches workflow_id); 'UNSET' for pre-Phase-2 docs so refund logic short-circuits
+     * @type {string}
+     * @memberof DocumentVersionMetadata
+     */
+    quotaIdempotencyKey?: string;
+    /**
+     * MD5 of source bytes; 'UNSET' for pre-Phase-2 docs, real hex digest after first prep run
+     * @type {string}
+     * @memberof DocumentVersionMetadata
+     */
+    fileMd5?: string;
 }
 export const DocumentVersionMetadataPropertyValidationAttributesMap: {
     [property: string]: {
@@ -169,7 +206,12 @@ export function DocumentVersionMetadataFromJSONTyped(json: any, ignoreDiscrimina
         'xlsxParseResultS3': json['xlsx_parse_result_s3'] == null ? undefined : json['xlsx_parse_result_s3'],
         'xlsxNamedRanges': json['xlsx_named_ranges'] == null ? undefined : json['xlsx_named_ranges'],
         'xlsxKpiCatalog': json['xlsx_kpi_catalog'] == null ? undefined : json['xlsx_kpi_catalog'],
+        'citationAnchors': json['citation_anchors'] == null ? undefined : ((json['citation_anchors'] as Array<any>).map(XlsxCellAnchorOutputOrDocxParagraphAnchorOutputFromJSON)),
         'informationStatistics': json['information_statistics'] == null ? undefined : InformationStatisticsFromJSON(json['information_statistics']),
+        'quotaCharged': json['quota_charged'] == null ? undefined : json['quota_charged'],
+        'quotaPageCount': json['quota_page_count'] == null ? undefined : json['quota_page_count'],
+        'quotaIdempotencyKey': json['quota_idempotency_key'] == null ? undefined : json['quota_idempotency_key'],
+        'fileMd5': json['file_md5'] == null ? undefined : json['file_md5'],
     };
 }
 
@@ -196,7 +238,12 @@ export function DocumentVersionMetadataToJSONTyped(value?: DocumentVersionMetada
         'xlsx_parse_result_s3': value['xlsxParseResultS3'],
         'xlsx_named_ranges': value['xlsxNamedRanges'],
         'xlsx_kpi_catalog': value['xlsxKpiCatalog'],
+        'citation_anchors': value['citationAnchors'] == null ? undefined : ((value['citationAnchors'] as Array<any>).map(XlsxCellAnchorOutputOrDocxParagraphAnchorOutputToJSON)),
         'information_statistics': InformationStatisticsToJSON(value['informationStatistics']),
+        'quota_charged': value['quotaCharged'],
+        'quota_page_count': value['quotaPageCount'],
+        'quota_idempotency_key': value['quotaIdempotencyKey'],
+        'file_md5': value['fileMd5'],
     };
 }
 

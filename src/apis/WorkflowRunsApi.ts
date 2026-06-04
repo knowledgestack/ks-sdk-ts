@@ -15,14 +15,23 @@
 
 import * as runtime from '../runtime';
 import type {
+  CloneWorkflowRunRequest,
   HTTPValidationError,
+  SetWorkflowRunApprovalRequest,
+  UpdateWorkflowRunRequest,
   WorkflowCallbackResponse,
   WorkflowRunCallbackRequest,
   WorkflowRunResponse,
 } from '../models/index';
 import {
+    CloneWorkflowRunRequestFromJSON,
+    CloneWorkflowRunRequestToJSON,
     HTTPValidationErrorFromJSON,
     HTTPValidationErrorToJSON,
+    SetWorkflowRunApprovalRequestFromJSON,
+    SetWorkflowRunApprovalRequestToJSON,
+    UpdateWorkflowRunRequestFromJSON,
+    UpdateWorkflowRunRequestToJSON,
     WorkflowCallbackResponseFromJSON,
     WorkflowCallbackResponseToJSON,
     WorkflowRunCallbackRequestFromJSON,
@@ -30,6 +39,13 @@ import {
     WorkflowRunResponseFromJSON,
     WorkflowRunResponseToJSON,
 } from '../models/index';
+
+export interface CloneWorkflowRunOperationRequest {
+    runId: string;
+    cloneWorkflowRunRequest: CloneWorkflowRunRequest;
+    authorization?: string | null;
+    ksUat?: string | null;
+}
 
 export interface DeleteWorkflowRunRequest {
     runId: string;
@@ -43,9 +59,43 @@ export interface GetWorkflowRunRequest {
     ksUat?: string | null;
 }
 
+export interface RetryWorkflowRunRequest {
+    runId: string;
+    authorization?: string | null;
+    ksUat?: string | null;
+}
+
+export interface SetWorkflowRunApprovalOperationRequest {
+    runId: string;
+    setWorkflowRunApprovalRequest: SetWorkflowRunApprovalRequest;
+    authorization?: string | null;
+    ksUat?: string | null;
+}
+
+export interface StartWorkflowRunRequest {
+    runId: string;
+    authorization?: string | null;
+    ksUat?: string | null;
+}
+
+export interface StopWorkflowRunRequest {
+    runId: string;
+    authorization?: string | null;
+    ksUat?: string | null;
+}
+
+export interface UpdateWorkflowRunOperationRequest {
+    runId: string;
+    updateWorkflowRunRequest: UpdateWorkflowRunRequest;
+    authorization?: string | null;
+    ksUat?: string | null;
+}
+
 export interface WorkflowRunCallbackOperationRequest {
     runId: string;
     workflowRunCallbackRequest: WorkflowRunCallbackRequest;
+    authorization?: string | null;
+    ksUat?: string | null;
 }
 
 /**
@@ -55,6 +105,36 @@ export interface WorkflowRunCallbackOperationRequest {
  * @interface WorkflowRunsApiInterface
  */
 export interface WorkflowRunsApiInterface {
+    /**
+     * Creates request options for cloneWorkflowRun without sending the request
+     * @param {string} runId 
+     * @param {CloneWorkflowRunRequest} cloneWorkflowRunRequest 
+     * @param {string} [authorization] 
+     * @param {string} [ksUat] 
+     * @throws {RequiredError}
+     * @memberof WorkflowRunsApiInterface
+     */
+    cloneWorkflowRunRequestOpts(requestParameters: CloneWorkflowRunOperationRequest): Promise<runtime.RequestOpts>;
+
+    /**
+     * Clone a started run into a new NOT_STARTED draft.  ``include_inputs=True`` pins the source\'s snapshotted inputs onto the new run; uploads stay in the source\'s ``inputs/`` and are referenced by path_part_id. No S3 copy. A NOT_STARTED source has no snapshot to pin → 409. The clone is born NOT_STARTED so the user can edit it (PATCH) before pressing Start.
+     * @summary Clone Workflow Run Handler
+     * @param {string} runId 
+     * @param {CloneWorkflowRunRequest} cloneWorkflowRunRequest 
+     * @param {string} [authorization] 
+     * @param {string} [ksUat] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof WorkflowRunsApiInterface
+     */
+    cloneWorkflowRunRaw(requestParameters: CloneWorkflowRunOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<WorkflowRunResponse>>;
+
+    /**
+     * Clone a started run into a new NOT_STARTED draft.  ``include_inputs=True`` pins the source\'s snapshotted inputs onto the new run; uploads stay in the source\'s ``inputs/`` and are referenced by path_part_id. No S3 copy. A NOT_STARTED source has no snapshot to pin → 409. The clone is born NOT_STARTED so the user can edit it (PATCH) before pressing Start.
+     * Clone Workflow Run Handler
+     */
+    cloneWorkflowRun(requestParameters: CloneWorkflowRunOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<WorkflowRunResponse>;
+
     /**
      * Creates request options for deleteWorkflowRun without sending the request
      * @param {string} runId 
@@ -110,19 +190,167 @@ export interface WorkflowRunsApiInterface {
     getWorkflowRun(requestParameters: GetWorkflowRunRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<WorkflowRunResponse>;
 
     /**
+     * Creates request options for retryWorkflowRun without sending the request
+     * @param {string} runId 
+     * @param {string} [authorization] 
+     * @param {string} [ksUat] 
+     * @throws {RequiredError}
+     * @memberof WorkflowRunsApiInterface
+     */
+    retryWorkflowRunRequestOpts(requestParameters: RetryWorkflowRunRequest): Promise<runtime.RequestOpts>;
+
+    /**
+     * Re-run a FAILED run (including a user-stopped one) in place.  Flips ``FAILED -> IN_PROGRESS`` against the run\'s existing snapshot and re-dispatches the agent. 409 if the run is not FAILED (NOT_STARTED/PENDING use Start; COMPLETED is cloned) or was never started. Triggerer or OWNER/ADMIN only.
+     * @summary Retry Workflow Run Handler
+     * @param {string} runId 
+     * @param {string} [authorization] 
+     * @param {string} [ksUat] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof WorkflowRunsApiInterface
+     */
+    retryWorkflowRunRaw(requestParameters: RetryWorkflowRunRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<WorkflowRunResponse>>;
+
+    /**
+     * Re-run a FAILED run (including a user-stopped one) in place.  Flips ``FAILED -> IN_PROGRESS`` against the run\'s existing snapshot and re-dispatches the agent. 409 if the run is not FAILED (NOT_STARTED/PENDING use Start; COMPLETED is cloned) or was never started. Triggerer or OWNER/ADMIN only.
+     * Retry Workflow Run Handler
+     */
+    retryWorkflowRun(requestParameters: RetryWorkflowRunRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<WorkflowRunResponse>;
+
+    /**
+     * Creates request options for setWorkflowRunApproval without sending the request
+     * @param {string} runId 
+     * @param {SetWorkflowRunApprovalRequest} setWorkflowRunApprovalRequest 
+     * @param {string} [authorization] 
+     * @param {string} [ksUat] 
+     * @throws {RequiredError}
+     * @memberof WorkflowRunsApiInterface
+     */
+    setWorkflowRunApprovalRequestOpts(requestParameters: SetWorkflowRunApprovalOperationRequest): Promise<runtime.RequestOpts>;
+
+    /**
+     * Approve an entire completed run in one call.  Approves every output document under ``outputs/`` then the run folder. The run must be ``COMPLETED`` and its definition must have required approval. Requires write access to the run folder. ``run_id`` is the WorkflowRun id.
+     * @summary Set Workflow Run Approval Handler
+     * @param {string} runId 
+     * @param {SetWorkflowRunApprovalRequest} setWorkflowRunApprovalRequest 
+     * @param {string} [authorization] 
+     * @param {string} [ksUat] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof WorkflowRunsApiInterface
+     */
+    setWorkflowRunApprovalRaw(requestParameters: SetWorkflowRunApprovalOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<WorkflowRunResponse>>;
+
+    /**
+     * Approve an entire completed run in one call.  Approves every output document under ``outputs/`` then the run folder. The run must be ``COMPLETED`` and its definition must have required approval. Requires write access to the run folder. ``run_id`` is the WorkflowRun id.
+     * Set Workflow Run Approval Handler
+     */
+    setWorkflowRunApproval(requestParameters: SetWorkflowRunApprovalOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<WorkflowRunResponse>;
+
+    /**
+     * Creates request options for startWorkflowRun without sending the request
+     * @param {string} runId 
+     * @param {string} [authorization] 
+     * @param {string} [ksUat] 
+     * @throws {RequiredError}
+     * @memberof WorkflowRunsApiInterface
+     */
+    startWorkflowRunRequestOpts(requestParameters: StartWorkflowRunRequest): Promise<runtime.RequestOpts>;
+
+    /**
+     * Flip a NOT_STARTED run to IN_PROGRESS and dispatch its agent run.  Idempotent on IN_PROGRESS (returns the row). Terminal states → 409. Inputs still ingesting or in a failed terminal state → 409. The snapshot is built at this point (KB DOCUMENTs resolve to active versions, uploaded DVs are walked from inputs/, KB FOLDERs stay live).
+     * @summary Start Workflow Run Handler
+     * @param {string} runId 
+     * @param {string} [authorization] 
+     * @param {string} [ksUat] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof WorkflowRunsApiInterface
+     */
+    startWorkflowRunRaw(requestParameters: StartWorkflowRunRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<WorkflowRunResponse>>;
+
+    /**
+     * Flip a NOT_STARTED run to IN_PROGRESS and dispatch its agent run.  Idempotent on IN_PROGRESS (returns the row). Terminal states → 409. Inputs still ingesting or in a failed terminal state → 409. The snapshot is built at this point (KB DOCUMENTs resolve to active versions, uploaded DVs are walked from inputs/, KB FOLDERs stay live).
+     * Start Workflow Run Handler
+     */
+    startWorkflowRun(requestParameters: StartWorkflowRunRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<WorkflowRunResponse>;
+
+    /**
+     * Creates request options for stopWorkflowRun without sending the request
+     * @param {string} runId 
+     * @param {string} [authorization] 
+     * @param {string} [ksUat] 
+     * @throws {RequiredError}
+     * @memberof WorkflowRunsApiInterface
+     */
+    stopWorkflowRunRequestOpts(requestParameters: StopWorkflowRunRequest): Promise<runtime.RequestOpts>;
+
+    /**
+     * Stop a running workflow run, terminalizing it so its thread un-bricks.  While a run sits ``IN_PROGRESS`` its run thread is read-only: every new USER message 409s (``run_in_progress``). A user \"stop\" must therefore move the run out of ``IN_PROGRESS``. We mark it ``FAILED`` (\"Stopped by user\") with a pure DB write that does **not** depend on Temporal — so this same call also recovers a run already stranded ``IN_PROGRESS`` by a cancel whose terminal callback never landed (the permanent-brick case) — then best-effort cancel its Temporal workflow.  Idempotent: a run already in a terminal state (or not yet started) is returned unchanged. The terminal-state guard in ``mark_run_failed`` plus the callback handler\'s ``already_terminal`` no-op make a real completion landing concurrently safe (last writer is ignored, never an error).
+     * @summary Stop Workflow Run Handler
+     * @param {string} runId 
+     * @param {string} [authorization] 
+     * @param {string} [ksUat] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof WorkflowRunsApiInterface
+     */
+    stopWorkflowRunRaw(requestParameters: StopWorkflowRunRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<WorkflowRunResponse>>;
+
+    /**
+     * Stop a running workflow run, terminalizing it so its thread un-bricks.  While a run sits ``IN_PROGRESS`` its run thread is read-only: every new USER message 409s (``run_in_progress``). A user \"stop\" must therefore move the run out of ``IN_PROGRESS``. We mark it ``FAILED`` (\"Stopped by user\") with a pure DB write that does **not** depend on Temporal — so this same call also recovers a run already stranded ``IN_PROGRESS`` by a cancel whose terminal callback never landed (the permanent-brick case) — then best-effort cancel its Temporal workflow.  Idempotent: a run already in a terminal state (or not yet started) is returned unchanged. The terminal-state guard in ``mark_run_failed`` plus the callback handler\'s ``already_terminal`` no-op make a real completion landing concurrently safe (last writer is ignored, never an error).
+     * Stop Workflow Run Handler
+     */
+    stopWorkflowRun(requestParameters: StopWorkflowRunRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<WorkflowRunResponse>;
+
+    /**
+     * Creates request options for updateWorkflowRun without sending the request
+     * @param {string} runId 
+     * @param {UpdateWorkflowRunRequest} updateWorkflowRunRequest 
+     * @param {string} [authorization] 
+     * @param {string} [ksUat] 
+     * @throws {RequiredError}
+     * @memberof WorkflowRunsApiInterface
+     */
+    updateWorkflowRunRequestOpts(requestParameters: UpdateWorkflowRunOperationRequest): Promise<runtime.RequestOpts>;
+
+    /**
+     * Edit a NOT_STARTED run\'s KB scope and / or display name.  Both body fields are optional but at least one must be present. The run must be ``NOT_STARTED`` (409 otherwise). Caller must be the triggerer or OWNER/ADMIN (403 otherwise). A name collision with a sibling run under the same definition\'s ``runs/`` folder maps to a 409 via ``IntegrityError`` translation.
+     * @summary Update Workflow Run Handler
+     * @param {string} runId 
+     * @param {UpdateWorkflowRunRequest} updateWorkflowRunRequest 
+     * @param {string} [authorization] 
+     * @param {string} [ksUat] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof WorkflowRunsApiInterface
+     */
+    updateWorkflowRunRaw(requestParameters: UpdateWorkflowRunOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<WorkflowRunResponse>>;
+
+    /**
+     * Edit a NOT_STARTED run\'s KB scope and / or display name.  Both body fields are optional but at least one must be present. The run must be ``NOT_STARTED`` (409 otherwise). Caller must be the triggerer or OWNER/ADMIN (403 otherwise). A name collision with a sibling run under the same definition\'s ``runs/`` folder maps to a 409 via ``IntegrityError`` translation.
+     * Update Workflow Run Handler
+     */
+    updateWorkflowRun(requestParameters: UpdateWorkflowRunOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<WorkflowRunResponse>;
+
+    /**
      * Creates request options for workflowRunCallback without sending the request
      * @param {string} runId 
      * @param {WorkflowRunCallbackRequest} workflowRunCallbackRequest 
+     * @param {string} [authorization] 
+     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof WorkflowRunsApiInterface
      */
     workflowRunCallbackRequestOpts(requestParameters: WorkflowRunCallbackOperationRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * 
+     * Terminal-state write seam for the in-process agent runner.  The gating Temporal activities ``mark_run_completed_activity`` and ``mark_run_failed_activity`` authenticate as the triggering user (via ``assume_user``) and POST here. Only the user who triggered the run (or OWNER/ADMIN) may write its terminal state. The handler is idempotent: a callback against an already-terminal row returns ``already_terminal`` and the activity-level retry treats it as a no-op.
      * @summary Workflow Run Callback Handler
      * @param {string} runId 
      * @param {WorkflowRunCallbackRequest} workflowRunCallbackRequest 
+     * @param {string} [authorization] 
+     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof WorkflowRunsApiInterface
@@ -130,6 +358,7 @@ export interface WorkflowRunsApiInterface {
     workflowRunCallbackRaw(requestParameters: WorkflowRunCallbackOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<WorkflowCallbackResponse>>;
 
     /**
+     * Terminal-state write seam for the in-process agent runner.  The gating Temporal activities ``mark_run_completed_activity`` and ``mark_run_failed_activity`` authenticate as the triggering user (via ``assume_user``) and POST here. Only the user who triggered the run (or OWNER/ADMIN) may write its terminal state. The handler is idempotent: a callback against an already-terminal row returns ``already_terminal`` and the activity-level retry treats it as a no-op.
      * Workflow Run Callback Handler
      */
     workflowRunCallback(requestParameters: WorkflowRunCallbackOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<WorkflowCallbackResponse>;
@@ -140,6 +369,67 @@ export interface WorkflowRunsApiInterface {
  * 
  */
 export class WorkflowRunsApi extends runtime.BaseAPI implements WorkflowRunsApiInterface {
+
+    /**
+     * Creates request options for cloneWorkflowRun without sending the request
+     */
+    async cloneWorkflowRunRequestOpts(requestParameters: CloneWorkflowRunOperationRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['runId'] == null) {
+            throw new runtime.RequiredError(
+                'runId',
+                'Required parameter "runId" was null or undefined when calling cloneWorkflowRun().'
+            );
+        }
+
+        if (requestParameters['cloneWorkflowRunRequest'] == null) {
+            throw new runtime.RequiredError(
+                'cloneWorkflowRunRequest',
+                'Required parameter "cloneWorkflowRunRequest" was null or undefined when calling cloneWorkflowRun().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (requestParameters['authorization'] != null) {
+            headerParameters['authorization'] = String(requestParameters['authorization']);
+        }
+
+
+        let urlPath = `/v1/workflow-runs/{run_id}/clone`;
+        urlPath = urlPath.replace(`{${"run_id"}}`, encodeURIComponent(String(requestParameters['runId'])));
+
+        return {
+            path: urlPath,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: CloneWorkflowRunRequestToJSON(requestParameters['cloneWorkflowRunRequest']),
+        };
+    }
+
+    /**
+     * Clone a started run into a new NOT_STARTED draft.  ``include_inputs=True`` pins the source\'s snapshotted inputs onto the new run; uploads stay in the source\'s ``inputs/`` and are referenced by path_part_id. No S3 copy. A NOT_STARTED source has no snapshot to pin → 409. The clone is born NOT_STARTED so the user can edit it (PATCH) before pressing Start.
+     * Clone Workflow Run Handler
+     */
+    async cloneWorkflowRunRaw(requestParameters: CloneWorkflowRunOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<WorkflowRunResponse>> {
+        const requestOptions = await this.cloneWorkflowRunRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => WorkflowRunResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * Clone a started run into a new NOT_STARTED draft.  ``include_inputs=True`` pins the source\'s snapshotted inputs onto the new run; uploads stay in the source\'s ``inputs/`` and are referenced by path_part_id. No S3 copy. A NOT_STARTED source has no snapshot to pin → 409. The clone is born NOT_STARTED so the user can edit it (PATCH) before pressing Start.
+     * Clone Workflow Run Handler
+     */
+    async cloneWorkflowRun(requestParameters: CloneWorkflowRunOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<WorkflowRunResponse> {
+        const response = await this.cloneWorkflowRunRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
 
     /**
      * Creates request options for deleteWorkflowRun without sending the request
@@ -239,6 +529,281 @@ export class WorkflowRunsApi extends runtime.BaseAPI implements WorkflowRunsApiI
     }
 
     /**
+     * Creates request options for retryWorkflowRun without sending the request
+     */
+    async retryWorkflowRunRequestOpts(requestParameters: RetryWorkflowRunRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['runId'] == null) {
+            throw new runtime.RequiredError(
+                'runId',
+                'Required parameter "runId" was null or undefined when calling retryWorkflowRun().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (requestParameters['authorization'] != null) {
+            headerParameters['authorization'] = String(requestParameters['authorization']);
+        }
+
+
+        let urlPath = `/v1/workflow-runs/{run_id}/retry`;
+        urlPath = urlPath.replace(`{${"run_id"}}`, encodeURIComponent(String(requestParameters['runId'])));
+
+        return {
+            path: urlPath,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Re-run a FAILED run (including a user-stopped one) in place.  Flips ``FAILED -> IN_PROGRESS`` against the run\'s existing snapshot and re-dispatches the agent. 409 if the run is not FAILED (NOT_STARTED/PENDING use Start; COMPLETED is cloned) or was never started. Triggerer or OWNER/ADMIN only.
+     * Retry Workflow Run Handler
+     */
+    async retryWorkflowRunRaw(requestParameters: RetryWorkflowRunRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<WorkflowRunResponse>> {
+        const requestOptions = await this.retryWorkflowRunRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => WorkflowRunResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * Re-run a FAILED run (including a user-stopped one) in place.  Flips ``FAILED -> IN_PROGRESS`` against the run\'s existing snapshot and re-dispatches the agent. 409 if the run is not FAILED (NOT_STARTED/PENDING use Start; COMPLETED is cloned) or was never started. Triggerer or OWNER/ADMIN only.
+     * Retry Workflow Run Handler
+     */
+    async retryWorkflowRun(requestParameters: RetryWorkflowRunRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<WorkflowRunResponse> {
+        const response = await this.retryWorkflowRunRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for setWorkflowRunApproval without sending the request
+     */
+    async setWorkflowRunApprovalRequestOpts(requestParameters: SetWorkflowRunApprovalOperationRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['runId'] == null) {
+            throw new runtime.RequiredError(
+                'runId',
+                'Required parameter "runId" was null or undefined when calling setWorkflowRunApproval().'
+            );
+        }
+
+        if (requestParameters['setWorkflowRunApprovalRequest'] == null) {
+            throw new runtime.RequiredError(
+                'setWorkflowRunApprovalRequest',
+                'Required parameter "setWorkflowRunApprovalRequest" was null or undefined when calling setWorkflowRunApproval().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (requestParameters['authorization'] != null) {
+            headerParameters['authorization'] = String(requestParameters['authorization']);
+        }
+
+
+        let urlPath = `/v1/workflow-runs/{run_id}/approval`;
+        urlPath = urlPath.replace(`{${"run_id"}}`, encodeURIComponent(String(requestParameters['runId'])));
+
+        return {
+            path: urlPath,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: SetWorkflowRunApprovalRequestToJSON(requestParameters['setWorkflowRunApprovalRequest']),
+        };
+    }
+
+    /**
+     * Approve an entire completed run in one call.  Approves every output document under ``outputs/`` then the run folder. The run must be ``COMPLETED`` and its definition must have required approval. Requires write access to the run folder. ``run_id`` is the WorkflowRun id.
+     * Set Workflow Run Approval Handler
+     */
+    async setWorkflowRunApprovalRaw(requestParameters: SetWorkflowRunApprovalOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<WorkflowRunResponse>> {
+        const requestOptions = await this.setWorkflowRunApprovalRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => WorkflowRunResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * Approve an entire completed run in one call.  Approves every output document under ``outputs/`` then the run folder. The run must be ``COMPLETED`` and its definition must have required approval. Requires write access to the run folder. ``run_id`` is the WorkflowRun id.
+     * Set Workflow Run Approval Handler
+     */
+    async setWorkflowRunApproval(requestParameters: SetWorkflowRunApprovalOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<WorkflowRunResponse> {
+        const response = await this.setWorkflowRunApprovalRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for startWorkflowRun without sending the request
+     */
+    async startWorkflowRunRequestOpts(requestParameters: StartWorkflowRunRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['runId'] == null) {
+            throw new runtime.RequiredError(
+                'runId',
+                'Required parameter "runId" was null or undefined when calling startWorkflowRun().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (requestParameters['authorization'] != null) {
+            headerParameters['authorization'] = String(requestParameters['authorization']);
+        }
+
+
+        let urlPath = `/v1/workflow-runs/{run_id}/start`;
+        urlPath = urlPath.replace(`{${"run_id"}}`, encodeURIComponent(String(requestParameters['runId'])));
+
+        return {
+            path: urlPath,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Flip a NOT_STARTED run to IN_PROGRESS and dispatch its agent run.  Idempotent on IN_PROGRESS (returns the row). Terminal states → 409. Inputs still ingesting or in a failed terminal state → 409. The snapshot is built at this point (KB DOCUMENTs resolve to active versions, uploaded DVs are walked from inputs/, KB FOLDERs stay live).
+     * Start Workflow Run Handler
+     */
+    async startWorkflowRunRaw(requestParameters: StartWorkflowRunRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<WorkflowRunResponse>> {
+        const requestOptions = await this.startWorkflowRunRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => WorkflowRunResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * Flip a NOT_STARTED run to IN_PROGRESS and dispatch its agent run.  Idempotent on IN_PROGRESS (returns the row). Terminal states → 409. Inputs still ingesting or in a failed terminal state → 409. The snapshot is built at this point (KB DOCUMENTs resolve to active versions, uploaded DVs are walked from inputs/, KB FOLDERs stay live).
+     * Start Workflow Run Handler
+     */
+    async startWorkflowRun(requestParameters: StartWorkflowRunRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<WorkflowRunResponse> {
+        const response = await this.startWorkflowRunRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for stopWorkflowRun without sending the request
+     */
+    async stopWorkflowRunRequestOpts(requestParameters: StopWorkflowRunRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['runId'] == null) {
+            throw new runtime.RequiredError(
+                'runId',
+                'Required parameter "runId" was null or undefined when calling stopWorkflowRun().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (requestParameters['authorization'] != null) {
+            headerParameters['authorization'] = String(requestParameters['authorization']);
+        }
+
+
+        let urlPath = `/v1/workflow-runs/{run_id}/stop`;
+        urlPath = urlPath.replace(`{${"run_id"}}`, encodeURIComponent(String(requestParameters['runId'])));
+
+        return {
+            path: urlPath,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Stop a running workflow run, terminalizing it so its thread un-bricks.  While a run sits ``IN_PROGRESS`` its run thread is read-only: every new USER message 409s (``run_in_progress``). A user \"stop\" must therefore move the run out of ``IN_PROGRESS``. We mark it ``FAILED`` (\"Stopped by user\") with a pure DB write that does **not** depend on Temporal — so this same call also recovers a run already stranded ``IN_PROGRESS`` by a cancel whose terminal callback never landed (the permanent-brick case) — then best-effort cancel its Temporal workflow.  Idempotent: a run already in a terminal state (or not yet started) is returned unchanged. The terminal-state guard in ``mark_run_failed`` plus the callback handler\'s ``already_terminal`` no-op make a real completion landing concurrently safe (last writer is ignored, never an error).
+     * Stop Workflow Run Handler
+     */
+    async stopWorkflowRunRaw(requestParameters: StopWorkflowRunRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<WorkflowRunResponse>> {
+        const requestOptions = await this.stopWorkflowRunRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => WorkflowRunResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * Stop a running workflow run, terminalizing it so its thread un-bricks.  While a run sits ``IN_PROGRESS`` its run thread is read-only: every new USER message 409s (``run_in_progress``). A user \"stop\" must therefore move the run out of ``IN_PROGRESS``. We mark it ``FAILED`` (\"Stopped by user\") with a pure DB write that does **not** depend on Temporal — so this same call also recovers a run already stranded ``IN_PROGRESS`` by a cancel whose terminal callback never landed (the permanent-brick case) — then best-effort cancel its Temporal workflow.  Idempotent: a run already in a terminal state (or not yet started) is returned unchanged. The terminal-state guard in ``mark_run_failed`` plus the callback handler\'s ``already_terminal`` no-op make a real completion landing concurrently safe (last writer is ignored, never an error).
+     * Stop Workflow Run Handler
+     */
+    async stopWorkflowRun(requestParameters: StopWorkflowRunRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<WorkflowRunResponse> {
+        const response = await this.stopWorkflowRunRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for updateWorkflowRun without sending the request
+     */
+    async updateWorkflowRunRequestOpts(requestParameters: UpdateWorkflowRunOperationRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['runId'] == null) {
+            throw new runtime.RequiredError(
+                'runId',
+                'Required parameter "runId" was null or undefined when calling updateWorkflowRun().'
+            );
+        }
+
+        if (requestParameters['updateWorkflowRunRequest'] == null) {
+            throw new runtime.RequiredError(
+                'updateWorkflowRunRequest',
+                'Required parameter "updateWorkflowRunRequest" was null or undefined when calling updateWorkflowRun().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (requestParameters['authorization'] != null) {
+            headerParameters['authorization'] = String(requestParameters['authorization']);
+        }
+
+
+        let urlPath = `/v1/workflow-runs/{run_id}`;
+        urlPath = urlPath.replace(`{${"run_id"}}`, encodeURIComponent(String(requestParameters['runId'])));
+
+        return {
+            path: urlPath,
+            method: 'PATCH',
+            headers: headerParameters,
+            query: queryParameters,
+            body: UpdateWorkflowRunRequestToJSON(requestParameters['updateWorkflowRunRequest']),
+        };
+    }
+
+    /**
+     * Edit a NOT_STARTED run\'s KB scope and / or display name.  Both body fields are optional but at least one must be present. The run must be ``NOT_STARTED`` (409 otherwise). Caller must be the triggerer or OWNER/ADMIN (403 otherwise). A name collision with a sibling run under the same definition\'s ``runs/`` folder maps to a 409 via ``IntegrityError`` translation.
+     * Update Workflow Run Handler
+     */
+    async updateWorkflowRunRaw(requestParameters: UpdateWorkflowRunOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<WorkflowRunResponse>> {
+        const requestOptions = await this.updateWorkflowRunRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => WorkflowRunResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * Edit a NOT_STARTED run\'s KB scope and / or display name.  Both body fields are optional but at least one must be present. The run must be ``NOT_STARTED`` (409 otherwise). Caller must be the triggerer or OWNER/ADMIN (403 otherwise). A name collision with a sibling run under the same definition\'s ``runs/`` folder maps to a 409 via ``IntegrityError`` translation.
+     * Update Workflow Run Handler
+     */
+    async updateWorkflowRun(requestParameters: UpdateWorkflowRunOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<WorkflowRunResponse> {
+        const response = await this.updateWorkflowRunRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
      * Creates request options for workflowRunCallback without sending the request
      */
     async workflowRunCallbackRequestOpts(requestParameters: WorkflowRunCallbackOperationRequest): Promise<runtime.RequestOpts> {
@@ -262,6 +827,10 @@ export class WorkflowRunsApi extends runtime.BaseAPI implements WorkflowRunsApiI
 
         headerParameters['Content-Type'] = 'application/json';
 
+        if (requestParameters['authorization'] != null) {
+            headerParameters['authorization'] = String(requestParameters['authorization']);
+        }
+
 
         let urlPath = `/v1/workflow-runs/{run_id}/callback`;
         urlPath = urlPath.replace(`{${"run_id"}}`, encodeURIComponent(String(requestParameters['runId'])));
@@ -276,6 +845,7 @@ export class WorkflowRunsApi extends runtime.BaseAPI implements WorkflowRunsApiI
     }
 
     /**
+     * Terminal-state write seam for the in-process agent runner.  The gating Temporal activities ``mark_run_completed_activity`` and ``mark_run_failed_activity`` authenticate as the triggering user (via ``assume_user``) and POST here. Only the user who triggered the run (or OWNER/ADMIN) may write its terminal state. The handler is idempotent: a callback against an already-terminal row returns ``already_terminal`` and the activity-level retry treats it as a no-op.
      * Workflow Run Callback Handler
      */
     async workflowRunCallbackRaw(requestParameters: WorkflowRunCallbackOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<WorkflowCallbackResponse>> {
@@ -286,6 +856,7 @@ export class WorkflowRunsApi extends runtime.BaseAPI implements WorkflowRunsApiI
     }
 
     /**
+     * Terminal-state write seam for the in-process agent runner.  The gating Temporal activities ``mark_run_completed_activity`` and ``mark_run_failed_activity`` authenticate as the triggering user (via ``assume_user``) and POST here. Only the user who triggered the run (or OWNER/ADMIN) may write its terminal state. The handler is idempotent: a callback against an already-terminal row returns ``already_terminal`` and the activity-level retry treats it as a no-op.
      * Workflow Run Callback Handler
      */
     async workflowRunCallback(requestParameters: WorkflowRunCallbackOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<WorkflowCallbackResponse> {

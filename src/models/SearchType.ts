@@ -19,7 +19,8 @@
  */
 export const SearchType = {
     DenseOnly: 'dense_only',
-    FullText: 'full_text'
+    FullText: 'full_text',
+    Hybrid: 'hybrid'
 } as const;
 export type SearchType = typeof SearchType[keyof typeof SearchType];
 

@@ -183,7 +183,7 @@ export interface DocumentsApiInterface {
     getDocumentRequestOpts(requestParameters: GetDocumentRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * Get a document by its document ID.
+     * 
      * @summary Get Document Handler
      * @param {string} documentId 
      * @param {boolean} [withTags] Include tags in the response (default: false)
@@ -196,7 +196,6 @@ export interface DocumentsApiInterface {
     getDocumentRaw(requestParameters: GetDocumentRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<DocumentResponse>>;
 
     /**
-     * Get a document by its document ID.
      * Get Document Handler
      */
     getDocument(requestParameters: GetDocumentRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DocumentResponse>;
@@ -327,7 +326,7 @@ export interface DocumentsApiInterface {
     updateDocumentRequestOpts(requestParameters: UpdateDocumentOperationRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * Update a document (rename, move, and/or change active version).  To rename: provide `name` field. To move: provide `parent_path_part_id` field. To change active version: provide `active_version_id` field. All can be done in a single request.
+     * Update a document (rename, move, change active version, Qdrant exclusion).  To rename: provide `name` field. To move: provide `parent_path_part_id` field. To change active version: provide `active_version_id` field. To toggle Qdrant exclusion: provide `exclude_from_qdrant` field. Any combination can be sent in a single request.
      * @summary Update Document Handler
      * @param {string} documentId 
      * @param {UpdateDocumentRequest} updateDocumentRequest 
@@ -340,7 +339,7 @@ export interface DocumentsApiInterface {
     updateDocumentRaw(requestParameters: UpdateDocumentOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<DocumentResponse>>;
 
     /**
-     * Update a document (rename, move, and/or change active version).  To rename: provide `name` field. To move: provide `parent_path_part_id` field. To change active version: provide `active_version_id` field. All can be done in a single request.
+     * Update a document (rename, move, change active version, Qdrant exclusion).  To rename: provide `name` field. To move: provide `parent_path_part_id` field. To change active version: provide `active_version_id` field. To toggle Qdrant exclusion: provide `exclude_from_qdrant` field. Any combination can be sent in a single request.
      * Update Document Handler
      */
     updateDocument(requestParameters: UpdateDocumentOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DocumentResponse>;
@@ -491,7 +490,6 @@ export class DocumentsApi extends runtime.BaseAPI implements DocumentsApiInterfa
     }
 
     /**
-     * Get a document by its document ID.
      * Get Document Handler
      */
     async getDocumentRaw(requestParameters: GetDocumentRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<DocumentResponse>> {
@@ -502,7 +500,6 @@ export class DocumentsApi extends runtime.BaseAPI implements DocumentsApiInterfa
     }
 
     /**
-     * Get a document by its document ID.
      * Get Document Handler
      */
     async getDocument(requestParameters: GetDocumentRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DocumentResponse> {
@@ -812,7 +809,7 @@ export class DocumentsApi extends runtime.BaseAPI implements DocumentsApiInterfa
     }
 
     /**
-     * Update a document (rename, move, and/or change active version).  To rename: provide `name` field. To move: provide `parent_path_part_id` field. To change active version: provide `active_version_id` field. All can be done in a single request.
+     * Update a document (rename, move, change active version, Qdrant exclusion).  To rename: provide `name` field. To move: provide `parent_path_part_id` field. To change active version: provide `active_version_id` field. To toggle Qdrant exclusion: provide `exclude_from_qdrant` field. Any combination can be sent in a single request.
      * Update Document Handler
      */
     async updateDocumentRaw(requestParameters: UpdateDocumentOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<DocumentResponse>> {
@@ -823,7 +820,7 @@ export class DocumentsApi extends runtime.BaseAPI implements DocumentsApiInterfa
     }
 
     /**
-     * Update a document (rename, move, and/or change active version).  To rename: provide `name` field. To move: provide `parent_path_part_id` field. To change active version: provide `active_version_id` field. All can be done in a single request.
+     * Update a document (rename, move, change active version, Qdrant exclusion).  To rename: provide `name` field. To move: provide `parent_path_part_id` field. To change active version: provide `active_version_id` field. To toggle Qdrant exclusion: provide `exclude_from_qdrant` field. Any combination can be sent in a single request.
      * Update Document Handler
      */
     async updateDocument(requestParameters: UpdateDocumentOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DocumentResponse> {

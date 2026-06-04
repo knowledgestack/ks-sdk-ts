@@ -32,7 +32,7 @@ export interface SectionSystemMetadata {
      * @type {InformationStatistics}
      * @memberof SectionSystemMetadata
      */
-    informationStatistics?: InformationStatistics;
+    informationStatistics?: InformationStatistics | null;
 }
 export const SectionSystemMetadataPropertyValidationAttributesMap: {
     [property: string]: {

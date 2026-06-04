@@ -13,13 +13,13 @@
  */
 
 import { mapValues } from '../runtime';
-import type { ChunkMetadataInput } from './ChunkMetadataInput';
+import type { ChunkMetadata } from './ChunkMetadata';
 import {
-    ChunkMetadataInputFromJSON,
-    ChunkMetadataInputFromJSONTyped,
-    ChunkMetadataInputToJSON,
-    ChunkMetadataInputToJSONTyped,
-} from './ChunkMetadataInput';
+    ChunkMetadataFromJSON,
+    ChunkMetadataFromJSONTyped,
+    ChunkMetadataToJSON,
+    ChunkMetadataToJSONTyped,
+} from './ChunkMetadata';
 import type { ChunkType } from './ChunkType';
 import {
     ChunkTypeFromJSON,
@@ -54,10 +54,10 @@ export interface CreateChunkRequest {
     chunkType: ChunkType;
     /**
      * 
-     * @type {ChunkMetadataInput}
+     * @type {ChunkMetadata}
      * @memberof CreateChunkRequest
      */
-    chunkMetadata: ChunkMetadataInput;
+    chunkMetadata: ChunkMetadata;
     /**
      * PathPart ID to insert after (null = append to tail)
      * @type {string}
@@ -112,7 +112,7 @@ export function CreateChunkRequestFromJSONTyped(json: any, ignoreDiscriminator: 
         'parentPathId': json['parent_path_id'],
         'content': json['content'],
         'chunkType': ChunkTypeFromJSON(json['chunk_type']),
-        'chunkMetadata': ChunkMetadataInputFromJSON(json['chunk_metadata']),
+        'chunkMetadata': ChunkMetadataFromJSON(json['chunk_metadata']),
         'prevSiblingPathId': json['prev_sibling_path_id'] == null ? undefined : json['prev_sibling_path_id'],
     };
 }
@@ -131,7 +131,7 @@ export function CreateChunkRequestToJSONTyped(value?: CreateChunkRequest | null,
         'parent_path_id': value['parentPathId'],
         'content': value['content'],
         'chunk_type': ChunkTypeToJSON(value['chunkType']),
-        'chunk_metadata': ChunkMetadataInputToJSON(value['chunkMetadata']),
+        'chunk_metadata': ChunkMetadataToJSON(value['chunkMetadata']),
         'prev_sibling_path_id': value['prevSiblingPathId'],
     };
 }

@@ -10,7 +10,7 @@ Name | Type
 `id` | string
 `content` | string
 `chunkType` | [ChunkType](ChunkType.md)
-`chunkMetadata` | [ChunkMetadataOutput](ChunkMetadataOutput.md)
+`chunkMetadata` | [ChunkMetadata](ChunkMetadata.md)
 `tenantId` | string
 `createdAt` | Date
 `updatedAt` | Date

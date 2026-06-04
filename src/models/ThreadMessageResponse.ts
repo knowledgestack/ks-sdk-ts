@@ -36,7 +36,7 @@ import {
 } from './ThreadMessageDetailsOutput';
 
 /**
- * Thread message response model.
+ * 
  * @export
  * @interface ThreadMessageResponse
  */
@@ -72,11 +72,11 @@ export interface ThreadMessageResponse {
      */
     content: EnrichedThreadMessageContent;
     /**
-     * 
+     * Message details (None when not requested via with_details)
      * @type {ThreadMessageDetailsOutput}
      * @memberof ThreadMessageResponse
      */
-    details?: ThreadMessageDetailsOutput;
+    details?: ThreadMessageDetailsOutput | null;
     /**
      * Thread's PathPart ID
      * @type {string}
@@ -95,6 +95,12 @@ export interface ThreadMessageResponse {
      * @memberof ThreadMessageResponse
      */
     tenantId: string;
+    /**
+     * tenant_user.user_id of the sender for USER messages. NULL for ASSISTANT / SYSTEM rows and for legacy USER rows written before multi-user thread support landed.
+     * @type {string}
+     * @memberof ThreadMessageResponse
+     */
+    authorTenantUserId?: string | null;
     /**
      * Creation timestamp
      * @type {Date}
@@ -164,6 +170,7 @@ export function ThreadMessageResponseFromJSONTyped(json: any, ignoreDiscriminato
         'parentPathId': json['parent_path_id'],
         'materializedPath': json['materialized_path'],
         'tenantId': json['tenant_id'],
+        'authorTenantUserId': json['author_tenant_user_id'] == null ? undefined : json['author_tenant_user_id'],
         'createdAt': (new Date(json['created_at'])),
         'updatedAt': (new Date(json['updated_at'])),
     };
@@ -189,6 +196,7 @@ export function ThreadMessageResponseToJSONTyped(value?: ThreadMessageResponse |
         'parent_path_id': value['parentPathId'],
         'materialized_path': value['materializedPath'],
         'tenant_id': value['tenantId'],
+        'author_tenant_user_id': value['authorTenantUserId'],
         'created_at': value['createdAt'].toISOString(),
         'updated_at': value['updatedAt'].toISOString(),
     };

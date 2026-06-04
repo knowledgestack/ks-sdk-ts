@@ -13,6 +13,13 @@
  */
 
 import { mapValues } from '../runtime';
+import type { HybridSearchProfile } from './HybridSearchProfile';
+import {
+    HybridSearchProfileFromJSON,
+    HybridSearchProfileFromJSONTyped,
+    HybridSearchProfileToJSON,
+    HybridSearchProfileToJSONTyped,
+} from './HybridSearchProfile';
 import type { ChunkType } from './ChunkType';
 import {
     ChunkTypeFromJSON,
@@ -29,7 +36,7 @@ import {
 } from './SearchType';
 
 /**
- * Request body for chunk search (dense vector or full-text BM25).
+ * Request body for chunk search (dense vector, full-text BM25, or hybrid).
  * @export
  * @interface ChunkSearchRequest
  */
@@ -46,6 +53,24 @@ export interface ChunkSearchRequest {
      * @memberof ChunkSearchRequest
      */
     searchType?: SearchType;
+    /**
+     * 
+     * @type {HybridSearchProfile}
+     * @memberof ChunkSearchRequest
+     */
+    hybridProfile?: HybridSearchProfile;
+    /**
+     * Optional explicit weight for the dense branch. Must be provided together with sparse_weight and overrides hybrid_profile.
+     * @type {number}
+     * @memberof ChunkSearchRequest
+     */
+    denseWeight?: number | null;
+    /**
+     * Optional explicit weight for the sparse branch. Must be provided together with dense_weight and overrides hybrid_profile.
+     * @type {number}
+     * @memberof ChunkSearchRequest
+     */
+    sparseWeight?: number | null;
     /**
      * Path part IDs to search within (non-CHUNK types). Defaults to tenant's /shared.
      * @type {Array<string>}
@@ -148,6 +173,9 @@ export function ChunkSearchRequestFromJSONTyped(json: any, ignoreDiscriminator: 
         
         'query': json['query'],
         'searchType': json['search_type'] == null ? undefined : SearchTypeFromJSON(json['search_type']),
+        'hybridProfile': json['hybrid_profile'] == null ? undefined : HybridSearchProfileFromJSON(json['hybrid_profile']),
+        'denseWeight': json['dense_weight'] == null ? undefined : json['dense_weight'],
+        'sparseWeight': json['sparse_weight'] == null ? undefined : json['sparse_weight'],
         'parentPathIds': json['parent_path_ids'] == null ? undefined : json['parent_path_ids'],
         'tagIds': json['tag_ids'] == null ? undefined : json['tag_ids'],
         'chunkTypes': json['chunk_types'] == null ? undefined : ((json['chunk_types'] as Array<any>).map(ChunkTypeFromJSON)),
@@ -172,6 +200,9 @@ export function ChunkSearchRequestToJSONTyped(value?: ChunkSearchRequest | null,
         
         'query': value['query'],
         'search_type': SearchTypeToJSON(value['searchType']),
+        'hybrid_profile': HybridSearchProfileToJSON(value['hybridProfile']),
+        'dense_weight': value['denseWeight'],
+        'sparse_weight': value['sparseWeight'],
         'parent_path_ids': value['parentPathIds'],
         'tag_ids': value['tagIds'],
         'chunk_types': value['chunkTypes'] == null ? undefined : ((value['chunkTypes'] as Array<any>).map(ChunkTypeToJSON)),

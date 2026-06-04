@@ -13,23 +13,12 @@
  */
 
 import { mapValues } from '../runtime';
-import type { SelfHostedRunnerConfig } from './SelfHostedRunnerConfig';
-import {
-    SelfHostedRunnerConfigFromJSON,
-    SelfHostedRunnerConfigFromJSONTyped,
-    SelfHostedRunnerConfigToJSON,
-    SelfHostedRunnerConfigToJSONTyped,
-} from './SelfHostedRunnerConfig';
-import type { WorkflowRunnerType } from './WorkflowRunnerType';
-import {
-    WorkflowRunnerTypeFromJSON,
-    WorkflowRunnerTypeFromJSONTyped,
-    WorkflowRunnerTypeToJSON,
-    WorkflowRunnerTypeToJSONTyped,
-} from './WorkflowRunnerType';
-
 /**
  * Create a new workflow definition.
+ * 
+ * Inputs are per-run (see ``POST /workflow-definitions/{id}/runs``) so
+ * only the instruction lives on the definition.
+ * ``instruction_path_part_id`` is a ``DOCUMENT`` path_part.
  * @export
  * @interface CreateWorkflowDefinitionRequest
  */
@@ -48,49 +37,23 @@ export interface CreateWorkflowDefinitionRequest {
     description?: string | null;
     /**
      * 
-     * @type {WorkflowRunnerType}
-     * @memberof CreateWorkflowDefinitionRequest
-     */
-    runnerType: WorkflowRunnerType;
-    /**
-     * 
-     * @type {SelfHostedRunnerConfig}
-     * @memberof CreateWorkflowDefinitionRequest
-     */
-    runnerConfig?: SelfHostedRunnerConfig;
-    /**
-     * 
      * @type {number}
      * @memberof CreateWorkflowDefinitionRequest
      */
     maxRunDurationSeconds?: number;
     /**
-     * 
-     * @type {Array<string>}
-     * @memberof CreateWorkflowDefinitionRequest
-     */
-    sourcePathPartIds: Array<string>;
-    /**
-     * 
-     * @type {Array<string>}
-     * @memberof CreateWorkflowDefinitionRequest
-     */
-    instructionPathPartIds: Array<string>;
-    /**
-     * 
-     * @type {Array<string>}
-     * @memberof CreateWorkflowDefinitionRequest
-     */
-    outputPathPartIds: Array<string>;
-    /**
-     * 
+     * DOCUMENT path_part of the instruction document. Omit (or pass null) to have the server auto-create an empty instruction.md.
      * @type {string}
      * @memberof CreateWorkflowDefinitionRequest
      */
-    templatePathPartId?: string | null;
+    instructionPathPartId?: string | null;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof CreateWorkflowDefinitionRequest
+     */
+    approvalRequired: boolean;
 }
-
-
 export const CreateWorkflowDefinitionRequestPropertyValidationAttributesMap: {
     [property: string]: {
         maxLength?: number,
@@ -110,25 +73,10 @@ export const CreateWorkflowDefinitionRequestPropertyValidationAttributesMap: {
         maxLength: 255,
     },
     maxRunDurationSeconds: {
-        maximum: 86400,
+        maximum: 7200,
         exclusiveMaximum: false,
         minimum: 60,
         exclusiveMinimum: false,
-    },
-    sourcePathPartIds: {
-        maxItems: 20,
-        minItems: 1,
-        uniqueItems: false,
-    },
-    instructionPathPartIds: {
-        maxItems: 20,
-        minItems: 1,
-        uniqueItems: false,
-    },
-    outputPathPartIds: {
-        maxItems: 20,
-        minItems: 1,
-        uniqueItems: false,
     },
 }
 
@@ -138,10 +86,7 @@ export const CreateWorkflowDefinitionRequestPropertyValidationAttributesMap: {
  */
 export function instanceOfCreateWorkflowDefinitionRequest(value: object): value is CreateWorkflowDefinitionRequest {
     if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('runnerType' in value) || value['runnerType'] === undefined) return false;
-    if (!('sourcePathPartIds' in value) || value['sourcePathPartIds'] === undefined) return false;
-    if (!('instructionPathPartIds' in value) || value['instructionPathPartIds'] === undefined) return false;
-    if (!('outputPathPartIds' in value) || value['outputPathPartIds'] === undefined) return false;
+    if (!('approvalRequired' in value) || value['approvalRequired'] === undefined) return false;
     return true;
 }
 
@@ -157,13 +102,9 @@ export function CreateWorkflowDefinitionRequestFromJSONTyped(json: any, ignoreDi
         
         'name': json['name'],
         'description': json['description'] == null ? undefined : json['description'],
-        'runnerType': WorkflowRunnerTypeFromJSON(json['runner_type']),
-        'runnerConfig': json['runner_config'] == null ? undefined : SelfHostedRunnerConfigFromJSON(json['runner_config']),
         'maxRunDurationSeconds': json['max_run_duration_seconds'] == null ? undefined : json['max_run_duration_seconds'],
-        'sourcePathPartIds': json['source_path_part_ids'],
-        'instructionPathPartIds': json['instruction_path_part_ids'],
-        'outputPathPartIds': json['output_path_part_ids'],
-        'templatePathPartId': json['template_path_part_id'] == null ? undefined : json['template_path_part_id'],
+        'instructionPathPartId': json['instruction_path_part_id'] == null ? undefined : json['instruction_path_part_id'],
+        'approvalRequired': json['approval_required'],
     };
 }
 
@@ -180,13 +121,9 @@ export function CreateWorkflowDefinitionRequestToJSONTyped(value?: CreateWorkflo
         
         'name': value['name'],
         'description': value['description'],
-        'runner_type': WorkflowRunnerTypeToJSON(value['runnerType']),
-        'runner_config': SelfHostedRunnerConfigToJSON(value['runnerConfig']),
         'max_run_duration_seconds': value['maxRunDurationSeconds'],
-        'source_path_part_ids': value['sourcePathPartIds'],
-        'instruction_path_part_ids': value['instructionPathPartIds'],
-        'output_path_part_ids': value['outputPathPartIds'],
-        'template_path_part_id': value['templatePathPartId'],
+        'instruction_path_part_id': value['instructionPathPartId'],
+        'approval_required': value['approvalRequired'],
     };
 }
 

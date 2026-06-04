@@ -20,7 +20,7 @@ import type {
   FolderActionResponse,
   FolderResponse,
   HTTPValidationError,
-  PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseDiscriminator,
+  PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseWorkflowDefinitionResponseWorkflowRunResponseDiscriminator,
   PaginatedResponseFolderResponse,
   PathOrder,
   SearchSortOrder,
@@ -38,8 +38,8 @@ import {
     FolderResponseToJSON,
     HTTPValidationErrorFromJSON,
     HTTPValidationErrorToJSON,
-    PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseDiscriminatorFromJSON,
-    PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseDiscriminatorToJSON,
+    PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseWorkflowDefinitionResponseWorkflowRunResponseDiscriminatorFromJSON,
+    PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseWorkflowDefinitionResponseWorkflowRunResponseDiscriminatorToJSON,
     PaginatedResponseFolderResponseFromJSON,
     PaginatedResponseFolderResponseToJSON,
     PathOrderFromJSON,
@@ -223,7 +223,7 @@ export interface FoldersApiInterface {
     getFolderRequestOpts(requestParameters: GetFolderRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * Get a folder by its folder ID.
+     * 
      * @summary Get Folder Handler
      * @param {string} folderId 
      * @param {boolean} [withTags] Include tags in the response (default: false)
@@ -236,7 +236,6 @@ export interface FoldersApiInterface {
     getFolderRaw(requestParameters: GetFolderRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<FolderResponse>>;
 
     /**
-     * Get a folder by its folder ID.
      * Get Folder Handler
      */
     getFolder(requestParameters: GetFolderRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<FolderResponse>;
@@ -271,13 +270,13 @@ export interface FoldersApiInterface {
      * @throws {RequiredError}
      * @memberof FoldersApiInterface
      */
-    listFolderContentsRaw(requestParameters: ListFolderContentsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseDiscriminator>>;
+    listFolderContentsRaw(requestParameters: ListFolderContentsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseWorkflowDefinitionResponseWorkflowRunResponseDiscriminator>>;
 
     /**
      * List all contents (folders and documents) under a folder.  Returns a discriminated union of FolderResponse and DocumentResponse items, distinguished by the `part_type` field (\"FOLDER\" or \"DOCUMENT\").  When with_tags=true, each item includes a tags field with the full tag objects.  This is the preferred way to list folder contents when you need document metadata. For generic path traversal of folders only, use GET /path-parts.
      * List Folder Contents Handler
      */
-    listFolderContents(requestParameters: ListFolderContentsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseDiscriminator>;
+    listFolderContents(requestParameters: ListFolderContentsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseWorkflowDefinitionResponseWorkflowRunResponseDiscriminator>;
 
     /**
      * Creates request options for listFolders without sending the request
@@ -347,13 +346,13 @@ export interface FoldersApiInterface {
      * @throws {RequiredError}
      * @memberof FoldersApiInterface
      */
-    searchItemsRaw(requestParameters: SearchItemsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseDiscriminator>>;
+    searchItemsRaw(requestParameters: SearchItemsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseWorkflowDefinitionResponseWorkflowRunResponseDiscriminator>>;
 
     /**
      * Search for folders and documents by name.  Performs a case-insensitive partial name match using trigram indexing. Results are filtered by the current user\'s path permissions.  When parent_path_part_id is provided, only items under that folder are searched. Otherwise, all accessible items across the tenant are searched.
      * Search Items Handler
      */
-    searchItems(requestParameters: SearchItemsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseDiscriminator>;
+    searchItems(requestParameters: SearchItemsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseWorkflowDefinitionResponseWorkflowRunResponseDiscriminator>;
 
     /**
      * Creates request options for updateFolder without sending the request
@@ -367,7 +366,7 @@ export interface FoldersApiInterface {
     updateFolderRequestOpts(requestParameters: UpdateFolderOperationRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * Update a folder (rename and/or move).  To rename: provide `name` field. To move: provide `parent_path_part_id` field. Both can be done in a single request.
+     * Update a folder (rename, move, and/or toggle Qdrant exclusion).  To rename: provide `name` field. To move: provide `parent_path_part_id` field. To toggle Qdrant exclusion for this folder and its descendants: provide `exclude_from_qdrant` field. Any combination can be sent in a single request.
      * @summary Update Folder Handler
      * @param {string} folderId 
      * @param {UpdateFolderRequest} updateFolderRequest 
@@ -380,7 +379,7 @@ export interface FoldersApiInterface {
     updateFolderRaw(requestParameters: UpdateFolderOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<FolderResponse>>;
 
     /**
-     * Update a folder (rename and/or move).  To rename: provide `name` field. To move: provide `parent_path_part_id` field. Both can be done in a single request.
+     * Update a folder (rename, move, and/or toggle Qdrant exclusion).  To rename: provide `name` field. To move: provide `parent_path_part_id` field. To toggle Qdrant exclusion for this folder and its descendants: provide `exclude_from_qdrant` field. Any combination can be sent in a single request.
      * Update Folder Handler
      */
     updateFolder(requestParameters: UpdateFolderOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<FolderResponse>;
@@ -593,7 +592,6 @@ export class FoldersApi extends runtime.BaseAPI implements FoldersApiInterface {
     }
 
     /**
-     * Get a folder by its folder ID.
      * Get Folder Handler
      */
     async getFolderRaw(requestParameters: GetFolderRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<FolderResponse>> {
@@ -604,7 +602,6 @@ export class FoldersApi extends runtime.BaseAPI implements FoldersApiInterface {
     }
 
     /**
-     * Get a folder by its folder ID.
      * Get Folder Handler
      */
     async getFolder(requestParameters: GetFolderRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<FolderResponse> {
@@ -667,18 +664,18 @@ export class FoldersApi extends runtime.BaseAPI implements FoldersApiInterface {
      * List all contents (folders and documents) under a folder.  Returns a discriminated union of FolderResponse and DocumentResponse items, distinguished by the `part_type` field (\"FOLDER\" or \"DOCUMENT\").  When with_tags=true, each item includes a tags field with the full tag objects.  This is the preferred way to list folder contents when you need document metadata. For generic path traversal of folders only, use GET /path-parts.
      * List Folder Contents Handler
      */
-    async listFolderContentsRaw(requestParameters: ListFolderContentsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseDiscriminator>> {
+    async listFolderContentsRaw(requestParameters: ListFolderContentsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseWorkflowDefinitionResponseWorkflowRunResponseDiscriminator>> {
         const requestOptions = await this.listFolderContentsRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseDiscriminatorFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseWorkflowDefinitionResponseWorkflowRunResponseDiscriminatorFromJSON(jsonValue));
     }
 
     /**
      * List all contents (folders and documents) under a folder.  Returns a discriminated union of FolderResponse and DocumentResponse items, distinguished by the `part_type` field (\"FOLDER\" or \"DOCUMENT\").  When with_tags=true, each item includes a tags field with the full tag objects.  This is the preferred way to list folder contents when you need document metadata. For generic path traversal of folders only, use GET /path-parts.
      * List Folder Contents Handler
      */
-    async listFolderContents(requestParameters: ListFolderContentsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseDiscriminator> {
+    async listFolderContents(requestParameters: ListFolderContentsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseWorkflowDefinitionResponseWorkflowRunResponseDiscriminator> {
         const response = await this.listFolderContentsRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -808,18 +805,18 @@ export class FoldersApi extends runtime.BaseAPI implements FoldersApiInterface {
      * Search for folders and documents by name.  Performs a case-insensitive partial name match using trigram indexing. Results are filtered by the current user\'s path permissions.  When parent_path_part_id is provided, only items under that folder are searched. Otherwise, all accessible items across the tenant are searched.
      * Search Items Handler
      */
-    async searchItemsRaw(requestParameters: SearchItemsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseDiscriminator>> {
+    async searchItemsRaw(requestParameters: SearchItemsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseWorkflowDefinitionResponseWorkflowRunResponseDiscriminator>> {
         const requestOptions = await this.searchItemsRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseDiscriminatorFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseWorkflowDefinitionResponseWorkflowRunResponseDiscriminatorFromJSON(jsonValue));
     }
 
     /**
      * Search for folders and documents by name.  Performs a case-insensitive partial name match using trigram indexing. Results are filtered by the current user\'s path permissions.  When parent_path_part_id is provided, only items under that folder are searched. Otherwise, all accessible items across the tenant are searched.
      * Search Items Handler
      */
-    async searchItems(requestParameters: SearchItemsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseDiscriminator> {
+    async searchItems(requestParameters: SearchItemsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseWorkflowDefinitionResponseWorkflowRunResponseDiscriminator> {
         const response = await this.searchItemsRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -866,7 +863,7 @@ export class FoldersApi extends runtime.BaseAPI implements FoldersApiInterface {
     }
 
     /**
-     * Update a folder (rename and/or move).  To rename: provide `name` field. To move: provide `parent_path_part_id` field. Both can be done in a single request.
+     * Update a folder (rename, move, and/or toggle Qdrant exclusion).  To rename: provide `name` field. To move: provide `parent_path_part_id` field. To toggle Qdrant exclusion for this folder and its descendants: provide `exclude_from_qdrant` field. Any combination can be sent in a single request.
      * Update Folder Handler
      */
     async updateFolderRaw(requestParameters: UpdateFolderOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<FolderResponse>> {
@@ -877,7 +874,7 @@ export class FoldersApi extends runtime.BaseAPI implements FoldersApiInterface {
     }
 
     /**
-     * Update a folder (rename and/or move).  To rename: provide `name` field. To move: provide `parent_path_part_id` field. Both can be done in a single request.
+     * Update a folder (rename, move, and/or toggle Qdrant exclusion).  To rename: provide `name` field. To move: provide `parent_path_part_id` field. To toggle Qdrant exclusion for this folder and its descendants: provide `exclude_from_qdrant` field. Any combination can be sent in a single request.
      * Update Folder Handler
      */
     async updateFolder(requestParameters: UpdateFolderOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<FolderResponse> {

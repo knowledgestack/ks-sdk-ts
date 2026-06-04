@@ -20,11 +20,11 @@ import { mapValues } from '../runtime';
  */
 export interface PasswordResetWithTokenRequest {
     /**
-     * Email verification token
+     * Password reset JWT
      * @type {string}
      * @memberof PasswordResetWithTokenRequest
      */
-    emailToken: string;
+    passwordResetToken: string;
     /**
      * New password
      * @type {string}
@@ -57,7 +57,7 @@ export const PasswordResetWithTokenRequestPropertyValidationAttributesMap: {
  * Check if a given object implements the PasswordResetWithTokenRequest interface.
  */
 export function instanceOfPasswordResetWithTokenRequest(value: object): value is PasswordResetWithTokenRequest {
-    if (!('emailToken' in value) || value['emailToken'] === undefined) return false;
+    if (!('passwordResetToken' in value) || value['passwordResetToken'] === undefined) return false;
     if (!('newPassword' in value) || value['newPassword'] === undefined) return false;
     return true;
 }
@@ -72,7 +72,7 @@ export function PasswordResetWithTokenRequestFromJSONTyped(json: any, ignoreDisc
     }
     return {
         
-        'emailToken': json['email_token'],
+        'passwordResetToken': json['password_reset_token'],
         'newPassword': json['new_password'],
     };
 }
@@ -88,7 +88,7 @@ export function PasswordResetWithTokenRequestToJSONTyped(value?: PasswordResetWi
 
     return {
         
-        'email_token': value['emailToken'],
+        'password_reset_token': value['passwordResetToken'],
         'new_password': value['newPassword'],
     };
 }

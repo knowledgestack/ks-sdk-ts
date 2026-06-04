@@ -15,10 +15,12 @@ Name | Type
 `materializedPath` | string
 `systemManaged` | boolean
 `tenantId` | string
+`uploader` | [UserInfo](UserInfo.md)
 `createdAt` | Date
 `updatedAt` | Date
 `assetS3Url` | string
 `fastPlaintextUrl` | string
+`pageScreenshotUrls` | Array&lt;string&gt;
 `systemMetadata` | [DocumentVersionMetadata](DocumentVersionMetadata.md)
 
 ## Example
@@ -36,10 +38,12 @@ const example = {
   "materializedPath": null,
   "systemManaged": null,
   "tenantId": null,
+  "uploader": null,
   "createdAt": null,
   "updatedAt": null,
   "assetS3Url": null,
   "fastPlaintextUrl": null,
+  "pageScreenshotUrls": null,
   "systemMetadata": null,
 } satisfies DocumentVersionResponse
 

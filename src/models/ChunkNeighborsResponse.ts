@@ -42,6 +42,24 @@ export interface ChunkNeighborsResponse {
      * @memberof ChunkNeighborsResponse
      */
     anchorIndex: number;
+    /**
+     * 0-based position of the anchor in the traversal scope under the active content_type filter. With within_section=true the scope is the parent's filtered sibling chain; with within_section=false it is the entire document version in DFS order.
+     * @type {number}
+     * @memberof ChunkNeighborsResponse
+     */
+    anchorOffset: number;
+    /**
+     * Total items in the traversal scope under the active filter. Within-section: filtered direct children of the anchor's parent. Cross-section: filtered DFS items in the document version.
+     * @type {number}
+     * @memberof ChunkNeighborsResponse
+     */
+    total: number;
+    /**
+     * ID of the enclosing document version. Populated only when within_section=false (where it is required to scope the DFS traversal); null when within_section=true.
+     * @type {string}
+     * @memberof ChunkNeighborsResponse
+     */
+    documentVersionId?: string | null;
 }
 export const ChunkNeighborsResponsePropertyValidationAttributesMap: {
     [property: string]: {
@@ -67,6 +85,8 @@ export const ChunkNeighborsResponsePropertyValidationAttributesMap: {
 export function instanceOfChunkNeighborsResponse(value: object): value is ChunkNeighborsResponse {
     if (!('items' in value) || value['items'] === undefined) return false;
     if (!('anchorIndex' in value) || value['anchorIndex'] === undefined) return false;
+    if (!('anchorOffset' in value) || value['anchorOffset'] === undefined) return false;
+    if (!('total' in value) || value['total'] === undefined) return false;
     return true;
 }
 
@@ -82,6 +102,9 @@ export function ChunkNeighborsResponseFromJSONTyped(json: any, ignoreDiscriminat
         
         'items': ((json['items'] as Array<any>).map(SectionContentItemOrChunkContentItemFromJSON)),
         'anchorIndex': json['anchor_index'],
+        'anchorOffset': json['anchor_offset'],
+        'total': json['total'],
+        'documentVersionId': json['document_version_id'] == null ? undefined : json['document_version_id'],
     };
 }
 
@@ -98,6 +121,9 @@ export function ChunkNeighborsResponseToJSONTyped(value?: ChunkNeighborsResponse
         
         'items': ((value['items'] as Array<any>).map(SectionContentItemOrChunkContentItemToJSON)),
         'anchor_index': value['anchorIndex'],
+        'anchor_offset': value['anchorOffset'],
+        'total': value['total'],
+        'document_version_id': value['documentVersionId'],
     };
 }
 

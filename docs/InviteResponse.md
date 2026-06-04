@@ -11,6 +11,7 @@ Name | Type
 `tenantId` | string
 `email` | string
 `role` | [TenantUserRole](TenantUserRole.md)
+`groups` | Array&lt;string&gt;
 `expiresAt` | Date
 `acceptedAt` | Date
 `createdAt` | Date
@@ -29,6 +30,7 @@ const example = {
   "tenantId": null,
   "email": null,
   "role": null,
+  "groups": null,
   "expiresAt": null,
   "acceptedAt": null,
   "createdAt": null,

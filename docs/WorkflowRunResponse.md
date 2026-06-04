@@ -1,21 +1,33 @@
 
 # WorkflowRunResponse
 
-Workflow run response.
+Workflow run response.  Doubles as a discriminated-union variant for folder-listing responses so the FE can mix WD/Run entries with regular folders + documents and route based on ``part_type``.  Two-step flow note: a NOT_STARTED run has ``started_at=None`` and ``run_snapshot=None``; both are populated when Start dispatches the run. The flat ``input_path_part_ids`` list carries the currently-pinned KB references so the FE can render them on a NOT_STARTED run (the snapshot\'s typed list is not available yet).
 
 ## Properties
 
 Name | Type
 ------------ | -------------
+`partType` | string
 `id` | string
+`pathPartId` | string
+`parentPathPartId` | string
+`materializedPath` | string
+`tenantId` | string
+`name` | string
 `workflowDefinitionId` | string
-`userId` | string
-`runnerType` | [WorkflowRunnerType](WorkflowRunnerType.md)
-`status` | [WorkflowRunStatus](WorkflowRunStatus.md)
+`triggeredBy` | [UserInfo](UserInfo.md)
+`executionState` | [WorkflowExecutionState](WorkflowExecutionState.md)
+`approvalState` | [PathPartApprovalState](PathPartApprovalState.md)
 `startedAt` | Date
 `completedAt` | Date
 `runSnapshot` | [WorkflowRunSnapshot](WorkflowRunSnapshot.md)
 `error` | string
+`inputsPathPartId` | string
+`outputsPathPartId` | string
+`discussionsPathPartId` | string
+`inputPathPartIds` | Array&lt;string&gt;
+`outputsPathPartIds` | Array&lt;string&gt;
+`runThreadId` | string
 `createdAt` | Date
 `updatedAt` | Date
 
@@ -26,15 +38,27 @@ import type { WorkflowRunResponse } from '@knowledge-stack/ksapi'
 
 // TODO: Update the object below with actual values
 const example = {
+  "partType": null,
   "id": null,
+  "pathPartId": null,
+  "parentPathPartId": null,
+  "materializedPath": null,
+  "tenantId": null,
+  "name": null,
   "workflowDefinitionId": null,
-  "userId": null,
-  "runnerType": null,
-  "status": null,
+  "triggeredBy": null,
+  "executionState": null,
+  "approvalState": null,
   "startedAt": null,
   "completedAt": null,
   "runSnapshot": null,
   "error": null,
+  "inputsPathPartId": null,
+  "outputsPathPartId": null,
+  "discussionsPathPartId": null,
+  "inputPathPartIds": null,
+  "outputsPathPartIds": null,
+  "runThreadId": null,
   "createdAt": null,
   "updatedAt": null,
 } satisfies WorkflowRunResponse

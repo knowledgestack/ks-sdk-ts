@@ -12,6 +12,8 @@ Name | Type
 `firstName` | string
 `lastName` | string
 `role` | [TenantUserRole](TenantUserRole.md)
+`department` | string
+`jobTitle` | string
 `deactivatedOn` | Date
 `isTenantIdpManaged` | boolean
 `createdAt` | Date
@@ -29,6 +31,8 @@ const example = {
   "firstName": null,
   "lastName": null,
   "role": null,
+  "department": null,
+  "jobTitle": null,
   "deactivatedOn": null,
   "isTenantIdpManaged": null,
   "createdAt": null,

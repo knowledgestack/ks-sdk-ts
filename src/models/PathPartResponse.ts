@@ -77,6 +77,12 @@ export interface PathPartResponse {
      */
     systemManaged: boolean;
     /**
+     * Direct exclusion flag on this path part only. The effective exclusion also applies when any ancestor has the flag set — walk the ancestry to determine effective state.
+     * @type {boolean}
+     * @memberof PathPartResponse
+     */
+    excludeFromQdrant: boolean;
+    /**
      * Tags attached to this path part
      * @type {Array<TagResponse>}
      * @memberof PathPartResponse
@@ -138,6 +144,7 @@ export function instanceOfPathPartResponse(value: object): value is PathPartResp
     if (!('metadataObjId' in value) || value['metadataObjId'] === undefined) return false;
     if (!('materializedPath' in value) || value['materializedPath'] === undefined) return false;
     if (!('systemManaged' in value) || value['systemManaged'] === undefined) return false;
+    if (!('excludeFromQdrant' in value) || value['excludeFromQdrant'] === undefined) return false;
     if (!('canRead' in value) || value['canRead'] === undefined) return false;
     if (!('canWrite' in value) || value['canWrite'] === undefined) return false;
     if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
@@ -162,6 +169,7 @@ export function PathPartResponseFromJSONTyped(json: any, ignoreDiscriminator: bo
         'metadataObjId': json['metadata_obj_id'],
         'materializedPath': json['materialized_path'],
         'systemManaged': json['system_managed'],
+        'excludeFromQdrant': json['exclude_from_qdrant'],
         'tags': json['tags'] == null ? undefined : ((json['tags'] as Array<any>).map(TagResponseFromJSON)),
         'canRead': json['can_read'],
         'canWrite': json['can_write'],
@@ -188,6 +196,7 @@ export function PathPartResponseToJSONTyped(value?: PathPartResponse | null, ign
         'metadata_obj_id': value['metadataObjId'],
         'materialized_path': value['materializedPath'],
         'system_managed': value['systemManaged'],
+        'exclude_from_qdrant': value['excludeFromQdrant'],
         'tags': value['tags'] == null ? undefined : ((value['tags'] as Array<any>).map(TagResponseToJSON)),
         'can_read': value['canRead'],
         'can_write': value['canWrite'],

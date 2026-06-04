@@ -7,6 +7,9 @@
 Name | Type
 ------------ | -------------
 `googleLoginEnabled` | boolean
+`microsoftLoginEnabled` | boolean
+`githubLoginEnabled` | boolean
+`smsLoginEnabled` | boolean
 `defaultFrontendLanguage` | [SupportedLanguage](SupportedLanguage.md)
 
 ## Example
@@ -17,6 +20,9 @@ import type { FeaturesResponse } from '@knowledge-stack/ksapi'
 // TODO: Update the object below with actual values
 const example = {
   "googleLoginEnabled": null,
+  "microsoftLoginEnabled": null,
+  "githubLoginEnabled": null,
+  "smsLoginEnabled": null,
   "defaultFrontendLanguage": null,
 } satisfies FeaturesResponse
 

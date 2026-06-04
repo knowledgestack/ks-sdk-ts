@@ -14,10 +14,13 @@ Name | Type
 `parentPathPartId` | string
 `materializedPath` | string
 `systemManaged` | boolean
+`approvalState` | [PathPartApprovalState](PathPartApprovalState.md)
+`excludeFromQdrant` | boolean
 `tenantId` | string
 `createdAt` | Date
 `updatedAt` | Date
 `tags` | [Array&lt;TagResponse&gt;](TagResponse.md)
+`canWrite` | boolean
 
 ## Example
 
@@ -33,10 +36,13 @@ const example = {
   "parentPathPartId": null,
   "materializedPath": null,
   "systemManaged": null,
+  "approvalState": null,
+  "excludeFromQdrant": null,
   "tenantId": null,
   "createdAt": null,
   "updatedAt": null,
   "tags": null,
+  "canWrite": null,
 } satisfies FolderResponse
 
 console.log(example)

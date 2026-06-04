@@ -9,6 +9,9 @@ Name | Type
 ------------ | -------------
 `items` | [Array&lt;SectionContentItemOrChunkContentItem&gt;](SectionContentItemOrChunkContentItem.md)
 `anchorIndex` | number
+`anchorOffset` | number
+`total` | number
+`documentVersionId` | string
 
 ## Example
 
@@ -19,6 +22,9 @@ import type { ChunkNeighborsResponse } from '@knowledge-stack/ksapi'
 const example = {
   "items": null,
   "anchorIndex": null,
+  "anchorOffset": null,
+  "total": null,
+  "documentVersionId": null,
 } satisfies ChunkNeighborsResponse
 
 console.log(example)

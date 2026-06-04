@@ -10,7 +10,7 @@ Name | Type
 `parentPathId` | string
 `content` | string
 `chunkType` | [ChunkType](ChunkType.md)
-`chunkMetadata` | [ChunkMetadataInput](ChunkMetadataInput.md)
+`chunkMetadata` | [ChunkMetadata](ChunkMetadata.md)
 `prevSiblingPathId` | string
 
 ## Example

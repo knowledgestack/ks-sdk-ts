@@ -1,7 +1,6 @@
 
 # CreateThreadRequest
 
-Request to create a new thread.
 
 ## Properties
 
@@ -10,6 +9,8 @@ Name | Type
 `parentPathPartId` | string
 `title` | string
 `messageForTitle` | string
+`pathPartName` | string
+`systemManaged` | boolean
 
 ## Example
 
@@ -21,6 +22,8 @@ const example = {
   "parentPathPartId": null,
   "title": null,
   "messageForTitle": null,
+  "pathPartName": null,
+  "systemManaged": null,
 } satisfies CreateThreadRequest
 
 console.log(example)

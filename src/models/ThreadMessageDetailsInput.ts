@@ -13,6 +13,13 @@
  */
 
 import { mapValues } from '../runtime';
+import type { CheckpointDetails } from './CheckpointDetails';
+import {
+    CheckpointDetailsFromJSON,
+    CheckpointDetailsFromJSONTyped,
+    CheckpointDetailsToJSON,
+    CheckpointDetailsToJSONTyped,
+} from './CheckpointDetails';
 import type { StepInput } from './StepInput';
 import {
     StepInputFromJSON,
@@ -33,6 +40,18 @@ export interface ThreadMessageDetailsInput {
      * @memberof ThreadMessageDetailsInput
      */
     steps?: Array<StepInput>;
+    /**
+     * Agent history checkpoint. Present only on role=SYSTEM messages written by the agent's archival path.
+     * @type {CheckpointDetails}
+     * @memberof ThreadMessageDetailsInput
+     */
+    checkpoint?: CheckpointDetails | null;
+    /**
+     * Model registry id (FE-stable, e.g. ``qwen-flash``) that produced this assistant message. ``None`` for legacy rows that pre-date model selection.
+     * @type {string}
+     * @memberof ThreadMessageDetailsInput
+     */
+    modelId?: string | null;
 }
 export const ThreadMessageDetailsInputPropertyValidationAttributesMap: {
     [property: string]: {
@@ -49,6 +68,9 @@ export const ThreadMessageDetailsInputPropertyValidationAttributesMap: {
         uniqueItems?: boolean
     }
 } = {
+    modelId: {
+        maxLength: 64,
+    },
 }
 
 
@@ -70,6 +92,8 @@ export function ThreadMessageDetailsInputFromJSONTyped(json: any, ignoreDiscrimi
     return {
         
         'steps': json['steps'] == null ? undefined : ((json['steps'] as Array<any>).map(StepInputFromJSON)),
+        'checkpoint': json['checkpoint'] == null ? undefined : CheckpointDetailsFromJSON(json['checkpoint']),
+        'modelId': json['model_id'] == null ? undefined : json['model_id'],
     };
 }
 
@@ -85,6 +109,8 @@ export function ThreadMessageDetailsInputToJSONTyped(value?: ThreadMessageDetail
     return {
         
         'steps': value['steps'] == null ? undefined : ((value['steps'] as Array<any>).map(StepInputToJSON)),
+        'checkpoint': CheckpointDetailsToJSON(value['checkpoint']),
+        'model_id': value['modelId'],
     };
 }
 

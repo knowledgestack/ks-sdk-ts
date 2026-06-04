@@ -1,7 +1,7 @@
 
 # CreateWorkflowDefinitionRequest
 
-Create a new workflow definition.
+Create a new workflow definition.  Inputs are per-run (see ``POST /workflow-definitions/{id}/runs``) so only the instruction lives on the definition. ``instruction_path_part_id`` is a ``DOCUMENT`` path_part.
 
 ## Properties
 
@@ -9,13 +9,9 @@ Name | Type
 ------------ | -------------
 `name` | string
 `description` | string
-`runnerType` | [WorkflowRunnerType](WorkflowRunnerType.md)
-`runnerConfig` | [SelfHostedRunnerConfig](SelfHostedRunnerConfig.md)
 `maxRunDurationSeconds` | number
-`sourcePathPartIds` | Array&lt;string&gt;
-`instructionPathPartIds` | Array&lt;string&gt;
-`outputPathPartIds` | Array&lt;string&gt;
-`templatePathPartId` | string
+`instructionPathPartId` | string
+`approvalRequired` | boolean
 
 ## Example
 
@@ -26,13 +22,9 @@ import type { CreateWorkflowDefinitionRequest } from '@knowledge-stack/ksapi'
 const example = {
   "name": null,
   "description": null,
-  "runnerType": null,
-  "runnerConfig": null,
   "maxRunDurationSeconds": null,
-  "sourcePathPartIds": null,
-  "instructionPathPartIds": null,
-  "outputPathPartIds": null,
-  "templatePathPartId": null,
+  "instructionPathPartId": null,
+  "approvalRequired": null,
 } satisfies CreateWorkflowDefinitionRequest
 
 console.log(example)

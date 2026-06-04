@@ -20,6 +20,13 @@ import {
     PipelineStateToJSON,
     PipelineStateToJSONTyped,
 } from './PipelineState';
+import type { XlsxCellAnchorInputOrDocxParagraphAnchorInput } from './XlsxCellAnchorInputOrDocxParagraphAnchorInput';
+import {
+    XlsxCellAnchorInputOrDocxParagraphAnchorInputFromJSON,
+    XlsxCellAnchorInputOrDocxParagraphAnchorInputFromJSONTyped,
+    XlsxCellAnchorInputOrDocxParagraphAnchorInputToJSON,
+    XlsxCellAnchorInputOrDocxParagraphAnchorInputToJSONTyped,
+} from './XlsxCellAnchorInputOrDocxParagraphAnchorInput';
 import type { InformationStatistics } from './InformationStatistics';
 import {
     InformationStatisticsFromJSON,
@@ -84,7 +91,7 @@ export interface DocumentVersionMetadataUpdate {
      * @type {PipelineState}
      * @memberof DocumentVersionMetadataUpdate
      */
-    pipelineState?: PipelineState;
+    pipelineState?: PipelineState | null;
     /**
      * 
      * @type {number}
@@ -129,10 +136,40 @@ export interface DocumentVersionMetadataUpdate {
     xlsxKpiCatalog?: Array<{ [key: string]: any; }> | null;
     /**
      * 
+     * @type {Array<XlsxCellAnchorInputOrDocxParagraphAnchorInput>}
+     * @memberof DocumentVersionMetadataUpdate
+     */
+    citationAnchors?: Array<XlsxCellAnchorInputOrDocxParagraphAnchorInput> | null;
+    /**
+     * 
      * @type {InformationStatistics}
      * @memberof DocumentVersionMetadataUpdate
      */
-    informationStatistics?: InformationStatistics;
+    informationStatistics?: InformationStatistics | null;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof DocumentVersionMetadataUpdate
+     */
+    quotaCharged?: boolean | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof DocumentVersionMetadataUpdate
+     */
+    quotaPageCount?: number | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof DocumentVersionMetadataUpdate
+     */
+    quotaIdempotencyKey?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof DocumentVersionMetadataUpdate
+     */
+    fileMd5?: string | null;
 }
 export const DocumentVersionMetadataUpdatePropertyValidationAttributesMap: {
     [property: string]: {
@@ -184,7 +221,12 @@ export function DocumentVersionMetadataUpdateFromJSONTyped(json: any, ignoreDisc
         'xlsxParseResultS3': json['xlsx_parse_result_s3'] == null ? undefined : json['xlsx_parse_result_s3'],
         'xlsxNamedRanges': json['xlsx_named_ranges'] == null ? undefined : json['xlsx_named_ranges'],
         'xlsxKpiCatalog': json['xlsx_kpi_catalog'] == null ? undefined : json['xlsx_kpi_catalog'],
+        'citationAnchors': json['citation_anchors'] == null ? undefined : ((json['citation_anchors'] as Array<any>).map(XlsxCellAnchorInputOrDocxParagraphAnchorInputFromJSON)),
         'informationStatistics': json['information_statistics'] == null ? undefined : InformationStatisticsFromJSON(json['information_statistics']),
+        'quotaCharged': json['quota_charged'] == null ? undefined : json['quota_charged'],
+        'quotaPageCount': json['quota_page_count'] == null ? undefined : json['quota_page_count'],
+        'quotaIdempotencyKey': json['quota_idempotency_key'] == null ? undefined : json['quota_idempotency_key'],
+        'fileMd5': json['file_md5'] == null ? undefined : json['file_md5'],
     };
 }
 
@@ -214,7 +256,12 @@ export function DocumentVersionMetadataUpdateToJSONTyped(value?: DocumentVersion
         'xlsx_parse_result_s3': value['xlsxParseResultS3'],
         'xlsx_named_ranges': value['xlsxNamedRanges'],
         'xlsx_kpi_catalog': value['xlsxKpiCatalog'],
+        'citation_anchors': value['citationAnchors'] == null ? undefined : ((value['citationAnchors'] as Array<any>).map(XlsxCellAnchorInputOrDocxParagraphAnchorInputToJSON)),
         'information_statistics': InformationStatisticsToJSON(value['informationStatistics']),
+        'quota_charged': value['quotaCharged'],
+        'quota_page_count': value['quotaPageCount'],
+        'quota_idempotency_key': value['quotaIdempotencyKey'],
+        'file_md5': value['fileMd5'],
     };
 }
 

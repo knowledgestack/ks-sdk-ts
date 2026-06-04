@@ -53,6 +53,12 @@ export interface InviteResponse {
     role: TenantUserRole;
     /**
      * 
+     * @type {Array<string>}
+     * @memberof InviteResponse
+     */
+    groups?: Array<string>;
+    /**
+     * 
      * @type {Date}
      * @memberof InviteResponse
      */
@@ -137,6 +143,7 @@ export function InviteResponseFromJSONTyped(json: any, ignoreDiscriminator: bool
         'tenantId': json['tenant_id'],
         'email': json['email'],
         'role': TenantUserRoleFromJSON(json['role']),
+        'groups': json['groups'] == null ? undefined : json['groups'],
         'expiresAt': (new Date(json['expires_at'])),
         'acceptedAt': json['accepted_at'] == null ? undefined : (new Date(json['accepted_at'])),
         'createdAt': (new Date(json['created_at'])),
@@ -161,6 +168,7 @@ export function InviteResponseToJSONTyped(value?: InviteResponse | null, ignoreD
         'tenant_id': value['tenantId'],
         'email': value['email'],
         'role': TenantUserRoleToJSON(value['role']),
+        'groups': value['groups'],
         'expires_at': value['expiresAt'].toISOString(),
         'accepted_at': value['acceptedAt'] == null ? value['acceptedAt'] : value['acceptedAt'].toISOString(),
         'created_at': value['createdAt'].toISOString(),

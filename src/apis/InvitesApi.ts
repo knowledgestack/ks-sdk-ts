@@ -21,6 +21,7 @@ import type {
   InviteStatus,
   InviteUserRequest,
   PaginatedResponseInviteResponse,
+  UpdateInviteRequest,
 } from '../models/index';
 import {
     AcceptInviteResponseFromJSON,
@@ -35,6 +36,8 @@ import {
     InviteUserRequestToJSON,
     PaginatedResponseInviteResponseFromJSON,
     PaginatedResponseInviteResponseToJSON,
+    UpdateInviteRequestFromJSON,
+    UpdateInviteRequestToJSON,
 } from '../models/index';
 
 export interface AcceptInviteRequest {
@@ -64,6 +67,13 @@ export interface ListInvitesRequest {
     ksUat?: string | null;
 }
 
+export interface UpdateInviteOperationRequest {
+    inviteId: string;
+    updateInviteRequest: UpdateInviteRequest;
+    authorization?: string | null;
+    ksUat?: string | null;
+}
+
 /**
  * InvitesApi - interface
  * 
@@ -73,7 +83,7 @@ export interface ListInvitesRequest {
 export interface InvitesApiInterface {
     /**
      * Creates request options for acceptInvite without sending the request
-     * @param {string} inviteId 
+     * @param {string} inviteId Either an Invite ID (traditional per-email invite) OR a Tenant ID (when the tenant has &#x60;&#x60;invite_link.enabled&#x60;&#x60;). Tenant lookup is tried first.
      * @param {string} [authorization] 
      * @param {string} [ksUat] 
      * @throws {RequiredError}
@@ -82,9 +92,9 @@ export interface InvitesApiInterface {
     acceptInviteRequestOpts(requestParameters: AcceptInviteRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * Update an invite to accepted status and create tenant user.
+     * Accept an invite OR a tenant invite-link.  The path parameter ``invite_id`` may be either:   * a Tenant ID (when an admin has enabled ``invite_link`` on the tenant), OR   * an Invite ID (the traditional per-email invite flow).  Tenant lookup is tried first. If the row is found, the request is treated as an invite-link request — both 400 paths below have *distinct* messages so the frontend can branch on copy:   * \"does not have invite link enabled\" → admin hasn\'t turned it on   * \"does not support inviting users\"   → tenant kill-switch ``system_metadata.can_invite`` is honored on this path too — it\'s a hard kill switch for self-serve onboarding. Only when no tenant matches do we look up an Invite row.
      * @summary Accept Invite
-     * @param {string} inviteId 
+     * @param {string} inviteId Either an Invite ID (traditional per-email invite) OR a Tenant ID (when the tenant has &#x60;&#x60;invite_link.enabled&#x60;&#x60;). Tenant lookup is tried first.
      * @param {string} [authorization] 
      * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
@@ -94,7 +104,7 @@ export interface InvitesApiInterface {
     acceptInviteRaw(requestParameters: AcceptInviteRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AcceptInviteResponse>>;
 
     /**
-     * Update an invite to accepted status and create tenant user.
+     * Accept an invite OR a tenant invite-link.  The path parameter ``invite_id`` may be either:   * a Tenant ID (when an admin has enabled ``invite_link`` on the tenant), OR   * an Invite ID (the traditional per-email invite flow).  Tenant lookup is tried first. If the row is found, the request is treated as an invite-link request — both 400 paths below have *distinct* messages so the frontend can branch on copy:   * \"does not have invite link enabled\" → admin hasn\'t turned it on   * \"does not support inviting users\"   → tenant kill-switch ``system_metadata.can_invite`` is honored on this path too — it\'s a hard kill switch for self-serve onboarding. Only when no tenant matches do we look up an Invite row.
      * Accept Invite
      */
     acceptInvite(requestParameters: AcceptInviteRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<AcceptInviteResponse>;
@@ -189,6 +199,36 @@ export interface InvitesApiInterface {
      */
     listInvites(requestParameters: ListInvitesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedResponseInviteResponse>;
 
+    /**
+     * Creates request options for updateInvite without sending the request
+     * @param {string} inviteId 
+     * @param {UpdateInviteRequest} updateInviteRequest 
+     * @param {string} [authorization] 
+     * @param {string} [ksUat] 
+     * @throws {RequiredError}
+     * @memberof InvitesApiInterface
+     */
+    updateInviteRequestOpts(requestParameters: UpdateInviteOperationRequest): Promise<runtime.RequestOpts>;
+
+    /**
+     * Update an invite\'s expiry or groups (admin/owner only).  The invite must belong to the caller\'s current tenant. Any provided groups are validated to belong to the same tenant.
+     * @summary Update Invite Handler
+     * @param {string} inviteId 
+     * @param {UpdateInviteRequest} updateInviteRequest 
+     * @param {string} [authorization] 
+     * @param {string} [ksUat] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof InvitesApiInterface
+     */
+    updateInviteRaw(requestParameters: UpdateInviteOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<InviteResponse>>;
+
+    /**
+     * Update an invite\'s expiry or groups (admin/owner only).  The invite must belong to the caller\'s current tenant. Any provided groups are validated to belong to the same tenant.
+     * Update Invite Handler
+     */
+    updateInvite(requestParameters: UpdateInviteOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<InviteResponse>;
+
 }
 
 /**
@@ -228,7 +268,7 @@ export class InvitesApi extends runtime.BaseAPI implements InvitesApiInterface {
     }
 
     /**
-     * Update an invite to accepted status and create tenant user.
+     * Accept an invite OR a tenant invite-link.  The path parameter ``invite_id`` may be either:   * a Tenant ID (when an admin has enabled ``invite_link`` on the tenant), OR   * an Invite ID (the traditional per-email invite flow).  Tenant lookup is tried first. If the row is found, the request is treated as an invite-link request — both 400 paths below have *distinct* messages so the frontend can branch on copy:   * \"does not have invite link enabled\" → admin hasn\'t turned it on   * \"does not support inviting users\"   → tenant kill-switch ``system_metadata.can_invite`` is honored on this path too — it\'s a hard kill switch for self-serve onboarding. Only when no tenant matches do we look up an Invite row.
      * Accept Invite
      */
     async acceptInviteRaw(requestParameters: AcceptInviteRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AcceptInviteResponse>> {
@@ -239,7 +279,7 @@ export class InvitesApi extends runtime.BaseAPI implements InvitesApiInterface {
     }
 
     /**
-     * Update an invite to accepted status and create tenant user.
+     * Accept an invite OR a tenant invite-link.  The path parameter ``invite_id`` may be either:   * a Tenant ID (when an admin has enabled ``invite_link`` on the tenant), OR   * an Invite ID (the traditional per-email invite flow).  Tenant lookup is tried first. If the row is found, the request is treated as an invite-link request — both 400 paths below have *distinct* messages so the frontend can branch on copy:   * \"does not have invite link enabled\" → admin hasn\'t turned it on   * \"does not support inviting users\"   → tenant kill-switch ``system_metadata.can_invite`` is honored on this path too — it\'s a hard kill switch for self-serve onboarding. Only when no tenant matches do we look up an Invite row.
      * Accept Invite
      */
     async acceptInvite(requestParameters: AcceptInviteRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<AcceptInviteResponse> {
@@ -406,6 +446,67 @@ export class InvitesApi extends runtime.BaseAPI implements InvitesApiInterface {
      */
     async listInvites(requestParameters: ListInvitesRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedResponseInviteResponse> {
         const response = await this.listInvitesRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for updateInvite without sending the request
+     */
+    async updateInviteRequestOpts(requestParameters: UpdateInviteOperationRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['inviteId'] == null) {
+            throw new runtime.RequiredError(
+                'inviteId',
+                'Required parameter "inviteId" was null or undefined when calling updateInvite().'
+            );
+        }
+
+        if (requestParameters['updateInviteRequest'] == null) {
+            throw new runtime.RequiredError(
+                'updateInviteRequest',
+                'Required parameter "updateInviteRequest" was null or undefined when calling updateInvite().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (requestParameters['authorization'] != null) {
+            headerParameters['authorization'] = String(requestParameters['authorization']);
+        }
+
+
+        let urlPath = `/v1/invites/{invite_id}`;
+        urlPath = urlPath.replace(`{${"invite_id"}}`, encodeURIComponent(String(requestParameters['inviteId'])));
+
+        return {
+            path: urlPath,
+            method: 'PATCH',
+            headers: headerParameters,
+            query: queryParameters,
+            body: UpdateInviteRequestToJSON(requestParameters['updateInviteRequest']),
+        };
+    }
+
+    /**
+     * Update an invite\'s expiry or groups (admin/owner only).  The invite must belong to the caller\'s current tenant. Any provided groups are validated to belong to the same tenant.
+     * Update Invite Handler
+     */
+    async updateInviteRaw(requestParameters: UpdateInviteOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<InviteResponse>> {
+        const requestOptions = await this.updateInviteRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => InviteResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * Update an invite\'s expiry or groups (admin/owner only).  The invite must belong to the caller\'s current tenant. Any provided groups are validated to belong to the same tenant.
+     * Update Invite Handler
+     */
+    async updateInvite(requestParameters: UpdateInviteOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<InviteResponse> {
+        const response = await this.updateInviteRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

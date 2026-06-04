@@ -13,23 +13,8 @@
  */
 
 import { mapValues } from '../runtime';
-import type { SelfHostedRunnerConfig } from './SelfHostedRunnerConfig';
-import {
-    SelfHostedRunnerConfigFromJSON,
-    SelfHostedRunnerConfigFromJSONTyped,
-    SelfHostedRunnerConfigToJSON,
-    SelfHostedRunnerConfigToJSONTyped,
-} from './SelfHostedRunnerConfig';
-import type { WorkflowRunnerType } from './WorkflowRunnerType';
-import {
-    WorkflowRunnerTypeFromJSON,
-    WorkflowRunnerTypeFromJSONTyped,
-    WorkflowRunnerTypeToJSON,
-    WorkflowRunnerTypeToJSONTyped,
-} from './WorkflowRunnerType';
-
 /**
- * Full replacement (PUT semantics). All fields are required.
+ * Full replacement (PUT semantics).
  * @export
  * @interface UpdateWorkflowDefinitionRequest
  */
@@ -48,55 +33,29 @@ export interface UpdateWorkflowDefinitionRequest {
     description?: string | null;
     /**
      * 
-     * @type {WorkflowRunnerType}
-     * @memberof UpdateWorkflowDefinitionRequest
-     */
-    runnerType: WorkflowRunnerType;
-    /**
-     * 
-     * @type {SelfHostedRunnerConfig}
-     * @memberof UpdateWorkflowDefinitionRequest
-     */
-    runnerConfig?: SelfHostedRunnerConfig;
-    /**
-     * 
      * @type {number}
      * @memberof UpdateWorkflowDefinitionRequest
      */
     maxRunDurationSeconds?: number;
     /**
-     * 
-     * @type {Array<string>}
-     * @memberof UpdateWorkflowDefinitionRequest
-     */
-    sourcePathPartIds: Array<string>;
-    /**
-     * 
-     * @type {Array<string>}
-     * @memberof UpdateWorkflowDefinitionRequest
-     */
-    instructionPathPartIds: Array<string>;
-    /**
-     * 
-     * @type {Array<string>}
-     * @memberof UpdateWorkflowDefinitionRequest
-     */
-    outputPathPartIds: Array<string>;
-    /**
-     * 
+     * DOCUMENT path_part of the instruction document. Pass null (or omit) to retain the existing pinned instruction; pass a UUID to replace it. Never nulled out — the column is NOT NULL.
      * @type {string}
      * @memberof UpdateWorkflowDefinitionRequest
      */
-    templatePathPartId?: string | null;
+    instructionPathPartId?: string | null;
     /**
      * 
      * @type {boolean}
      * @memberof UpdateWorkflowDefinitionRequest
      */
-    isActive?: boolean;
+    isActive: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof UpdateWorkflowDefinitionRequest
+     */
+    approvalRequired: boolean;
 }
-
-
 export const UpdateWorkflowDefinitionRequestPropertyValidationAttributesMap: {
     [property: string]: {
         maxLength?: number,
@@ -116,25 +75,10 @@ export const UpdateWorkflowDefinitionRequestPropertyValidationAttributesMap: {
         maxLength: 255,
     },
     maxRunDurationSeconds: {
-        maximum: 86400,
+        maximum: 7200,
         exclusiveMaximum: false,
         minimum: 60,
         exclusiveMinimum: false,
-    },
-    sourcePathPartIds: {
-        maxItems: 20,
-        minItems: 1,
-        uniqueItems: false,
-    },
-    instructionPathPartIds: {
-        maxItems: 20,
-        minItems: 1,
-        uniqueItems: false,
-    },
-    outputPathPartIds: {
-        maxItems: 20,
-        minItems: 1,
-        uniqueItems: false,
     },
 }
 
@@ -144,10 +88,8 @@ export const UpdateWorkflowDefinitionRequestPropertyValidationAttributesMap: {
  */
 export function instanceOfUpdateWorkflowDefinitionRequest(value: object): value is UpdateWorkflowDefinitionRequest {
     if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('runnerType' in value) || value['runnerType'] === undefined) return false;
-    if (!('sourcePathPartIds' in value) || value['sourcePathPartIds'] === undefined) return false;
-    if (!('instructionPathPartIds' in value) || value['instructionPathPartIds'] === undefined) return false;
-    if (!('outputPathPartIds' in value) || value['outputPathPartIds'] === undefined) return false;
+    if (!('isActive' in value) || value['isActive'] === undefined) return false;
+    if (!('approvalRequired' in value) || value['approvalRequired'] === undefined) return false;
     return true;
 }
 
@@ -163,14 +105,10 @@ export function UpdateWorkflowDefinitionRequestFromJSONTyped(json: any, ignoreDi
         
         'name': json['name'],
         'description': json['description'] == null ? undefined : json['description'],
-        'runnerType': WorkflowRunnerTypeFromJSON(json['runner_type']),
-        'runnerConfig': json['runner_config'] == null ? undefined : SelfHostedRunnerConfigFromJSON(json['runner_config']),
         'maxRunDurationSeconds': json['max_run_duration_seconds'] == null ? undefined : json['max_run_duration_seconds'],
-        'sourcePathPartIds': json['source_path_part_ids'],
-        'instructionPathPartIds': json['instruction_path_part_ids'],
-        'outputPathPartIds': json['output_path_part_ids'],
-        'templatePathPartId': json['template_path_part_id'] == null ? undefined : json['template_path_part_id'],
-        'isActive': json['is_active'] == null ? undefined : json['is_active'],
+        'instructionPathPartId': json['instruction_path_part_id'] == null ? undefined : json['instruction_path_part_id'],
+        'isActive': json['is_active'],
+        'approvalRequired': json['approval_required'],
     };
 }
 
@@ -187,14 +125,10 @@ export function UpdateWorkflowDefinitionRequestToJSONTyped(value?: UpdateWorkflo
         
         'name': value['name'],
         'description': value['description'],
-        'runner_type': WorkflowRunnerTypeToJSON(value['runnerType']),
-        'runner_config': SelfHostedRunnerConfigToJSON(value['runnerConfig']),
         'max_run_duration_seconds': value['maxRunDurationSeconds'],
-        'source_path_part_ids': value['sourcePathPartIds'],
-        'instruction_path_part_ids': value['instructionPathPartIds'],
-        'output_path_part_ids': value['outputPathPartIds'],
-        'template_path_part_id': value['templatePathPartId'],
+        'instruction_path_part_id': value['instructionPathPartId'],
         'is_active': value['isActive'],
+        'approval_required': value['approvalRequired'],
     };
 }
 

@@ -13,23 +13,31 @@
  */
 
 import { mapValues } from '../runtime';
-import type { ABCDPathSnapshot } from './ABCDPathSnapshot';
+import type { InputSnapshot } from './InputSnapshot';
 import {
-    ABCDPathSnapshotFromJSON,
-    ABCDPathSnapshotFromJSONTyped,
-    ABCDPathSnapshotToJSON,
-    ABCDPathSnapshotToJSONTyped,
-} from './ABCDPathSnapshot';
-import type { WorkflowRunnerType } from './WorkflowRunnerType';
+    InputSnapshotFromJSON,
+    InputSnapshotFromJSONTyped,
+    InputSnapshotToJSON,
+    InputSnapshotToJSONTyped,
+} from './InputSnapshot';
+import type { InstructionSnapshot } from './InstructionSnapshot';
 import {
-    WorkflowRunnerTypeFromJSON,
-    WorkflowRunnerTypeFromJSONTyped,
-    WorkflowRunnerTypeToJSON,
-    WorkflowRunnerTypeToJSONTyped,
-} from './WorkflowRunnerType';
+    InstructionSnapshotFromJSON,
+    InstructionSnapshotFromJSONTyped,
+    InstructionSnapshotToJSON,
+    InstructionSnapshotToJSONTyped,
+} from './InstructionSnapshot';
 
 /**
- * Frozen ABCD configuration captured at workflow trigger time.
+ * Frozen workflow configuration captured at trigger time.
+ * 
+ * ``workflow_definition_id`` and ``user_id`` are NOT stored here — they
+ * live directly on the ``WorkflowRun`` row and are surfaced via
+ * ``WorkflowRunResponse`` top-level fields.
+ * 
+ * Inputs are per-run; outputs land in the run's ``outputs/`` folder. The
+ * agent resolves the run's inputs/outputs/discussions folders by listing
+ * the run-folder children at activity startup.
  * @export
  * @interface WorkflowRunSnapshot
  */
@@ -39,25 +47,7 @@ export interface WorkflowRunSnapshot {
      * @type {string}
      * @memberof WorkflowRunSnapshot
      */
-    workflowDefinitionId: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof WorkflowRunSnapshot
-     */
     workflowName: string;
-    /**
-     * 
-     * @type {WorkflowRunnerType}
-     * @memberof WorkflowRunSnapshot
-     */
-    runnerType: WorkflowRunnerType;
-    /**
-     * 
-     * @type {string}
-     * @memberof WorkflowRunSnapshot
-     */
-    userId: string;
     /**
      * 
      * @type {number}
@@ -66,31 +56,17 @@ export interface WorkflowRunSnapshot {
     maxRunDurationSeconds: number;
     /**
      * 
-     * @type {Array<ABCDPathSnapshot>}
+     * @type {InstructionSnapshot}
      * @memberof WorkflowRunSnapshot
      */
-    sources: Array<ABCDPathSnapshot>;
+    instruction: InstructionSnapshot;
     /**
      * 
-     * @type {Array<ABCDPathSnapshot>}
+     * @type {Array<InputSnapshot>}
      * @memberof WorkflowRunSnapshot
      */
-    instructions: Array<ABCDPathSnapshot>;
-    /**
-     * 
-     * @type {Array<ABCDPathSnapshot>}
-     * @memberof WorkflowRunSnapshot
-     */
-    outputs: Array<ABCDPathSnapshot>;
-    /**
-     * 
-     * @type {ABCDPathSnapshot}
-     * @memberof WorkflowRunSnapshot
-     */
-    template: ABCDPathSnapshot;
+    inputs: Array<InputSnapshot>;
 }
-
-
 export const WorkflowRunSnapshotPropertyValidationAttributesMap: {
     [property: string]: {
         maxLength?: number,
@@ -113,15 +89,10 @@ export const WorkflowRunSnapshotPropertyValidationAttributesMap: {
  * Check if a given object implements the WorkflowRunSnapshot interface.
  */
 export function instanceOfWorkflowRunSnapshot(value: object): value is WorkflowRunSnapshot {
-    if (!('workflowDefinitionId' in value) || value['workflowDefinitionId'] === undefined) return false;
     if (!('workflowName' in value) || value['workflowName'] === undefined) return false;
-    if (!('runnerType' in value) || value['runnerType'] === undefined) return false;
-    if (!('userId' in value) || value['userId'] === undefined) return false;
     if (!('maxRunDurationSeconds' in value) || value['maxRunDurationSeconds'] === undefined) return false;
-    if (!('sources' in value) || value['sources'] === undefined) return false;
-    if (!('instructions' in value) || value['instructions'] === undefined) return false;
-    if (!('outputs' in value) || value['outputs'] === undefined) return false;
-    if (!('template' in value) || value['template'] === undefined) return false;
+    if (!('instruction' in value) || value['instruction'] === undefined) return false;
+    if (!('inputs' in value) || value['inputs'] === undefined) return false;
     return true;
 }
 
@@ -135,15 +106,10 @@ export function WorkflowRunSnapshotFromJSONTyped(json: any, ignoreDiscriminator:
     }
     return {
         
-        'workflowDefinitionId': json['workflow_definition_id'],
         'workflowName': json['workflow_name'],
-        'runnerType': WorkflowRunnerTypeFromJSON(json['runner_type']),
-        'userId': json['user_id'],
         'maxRunDurationSeconds': json['max_run_duration_seconds'],
-        'sources': ((json['sources'] as Array<any>).map(ABCDPathSnapshotFromJSON)),
-        'instructions': ((json['instructions'] as Array<any>).map(ABCDPathSnapshotFromJSON)),
-        'outputs': ((json['outputs'] as Array<any>).map(ABCDPathSnapshotFromJSON)),
-        'template': ABCDPathSnapshotFromJSON(json['template']),
+        'instruction': InstructionSnapshotFromJSON(json['instruction']),
+        'inputs': ((json['inputs'] as Array<any>).map(InputSnapshotFromJSON)),
     };
 }
 
@@ -158,15 +124,10 @@ export function WorkflowRunSnapshotToJSONTyped(value?: WorkflowRunSnapshot | nul
 
     return {
         
-        'workflow_definition_id': value['workflowDefinitionId'],
         'workflow_name': value['workflowName'],
-        'runner_type': WorkflowRunnerTypeToJSON(value['runnerType']),
-        'user_id': value['userId'],
         'max_run_duration_seconds': value['maxRunDurationSeconds'],
-        'sources': ((value['sources'] as Array<any>).map(ABCDPathSnapshotToJSON)),
-        'instructions': ((value['instructions'] as Array<any>).map(ABCDPathSnapshotToJSON)),
-        'outputs': ((value['outputs'] as Array<any>).map(ABCDPathSnapshotToJSON)),
-        'template': ABCDPathSnapshotToJSON(value['template']),
+        'instruction': InstructionSnapshotToJSON(value['instruction']),
+        'inputs': ((value['inputs'] as Array<any>).map(InputSnapshotToJSON)),
     };
 }
 

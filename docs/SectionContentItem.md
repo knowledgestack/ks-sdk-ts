@@ -16,6 +16,7 @@ Name | Type
 `pageNumber` | number
 `materializedPath` | string
 `systemManaged` | boolean
+`approvalState` | [PathPartApprovalState](PathPartApprovalState.md)
 `createdAt` | Date
 `updatedAt` | Date
 
@@ -35,6 +36,7 @@ const example = {
   "pageNumber": null,
   "materializedPath": null,
   "systemManaged": null,
+  "approvalState": null,
   "createdAt": null,
   "updatedAt": null,
 } satisfies SectionContentItem

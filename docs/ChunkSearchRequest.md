@@ -1,7 +1,7 @@
 
 # ChunkSearchRequest
 
-Request body for chunk search (dense vector or full-text BM25).
+Request body for chunk search (dense vector, full-text BM25, or hybrid).
 
 ## Properties
 
@@ -9,6 +9,9 @@ Name | Type
 ------------ | -------------
 `query` | string
 `searchType` | [SearchType](SearchType.md)
+`hybridProfile` | [HybridSearchProfile](HybridSearchProfile.md)
+`denseWeight` | number
+`sparseWeight` | number
 `parentPathIds` | Array&lt;string&gt;
 `tagIds` | Array&lt;string&gt;
 `chunkTypes` | [Array&lt;ChunkType&gt;](ChunkType.md)
@@ -27,6 +30,9 @@ import type { ChunkSearchRequest } from '@knowledge-stack/ksapi'
 const example = {
   "query": null,
   "searchType": null,
+  "hybridProfile": null,
+  "denseWeight": null,
+  "sparseWeight": null,
   "parentPathIds": null,
   "tagIds": null,
   "chunkTypes": null,

@@ -12,6 +12,8 @@ Name | Type
 `idpConfig` | { [key: string]: any; }
 `settings` | [TenantSettingsResponse](TenantSettingsResponse.md)
 `branding` | [TenantBrandingResponse](TenantBrandingResponse.md)
+`seats` | number
+`subscriptionId` | string
 
 ## Example
 
@@ -25,6 +27,8 @@ const example = {
   "idpConfig": null,
   "settings": null,
   "branding": null,
+  "seats": null,
+  "subscriptionId": null,
 } satisfies TenantResponse
 
 console.log(example)

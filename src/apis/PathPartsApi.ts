@@ -16,8 +16,11 @@
 import * as runtime from '../runtime';
 import type {
   AncestryResponse,
+  AppendEventRequest,
   BulkTagRequest,
+  EventResponse,
   HTTPValidationError,
+  PaginatedResponseEventResponse,
   PaginatedResponsePathPartResponse,
   PathOrder,
   PathPartResponse,
@@ -27,10 +30,16 @@ import type {
 import {
     AncestryResponseFromJSON,
     AncestryResponseToJSON,
+    AppendEventRequestFromJSON,
+    AppendEventRequestToJSON,
     BulkTagRequestFromJSON,
     BulkTagRequestToJSON,
+    EventResponseFromJSON,
+    EventResponseToJSON,
     HTTPValidationErrorFromJSON,
     HTTPValidationErrorToJSON,
+    PaginatedResponseEventResponseFromJSON,
+    PaginatedResponseEventResponseToJSON,
     PaginatedResponsePathPartResponseFromJSON,
     PaginatedResponsePathPartResponseToJSON,
     PathOrderFromJSON,
@@ -43,9 +52,9 @@ import {
     SubtreeChunksResponseToJSON,
 } from '../models/index';
 
-export interface BulkAddPathPartTagsRequest {
+export interface AppendPathPartEventRequest {
     pathPartId: string;
-    bulkTagRequest: BulkTagRequest;
+    appendEventRequest: AppendEventRequest;
     authorization?: string | null;
     ksUat?: string | null;
 }
@@ -82,12 +91,31 @@ export interface GetPathPartTagsRequest {
     ksUat?: string | null;
 }
 
+export interface ListPathPartEventsRequest {
+    pathPartId: string;
+    kind?: string | null;
+    since?: Date | null;
+    until?: Date | null;
+    recursive?: boolean;
+    limit?: number;
+    offset?: number;
+    authorization?: string | null;
+    ksUat?: string | null;
+}
+
 export interface ListPathPartsRequest {
     parentPathId?: string | null;
     maxDepth?: number;
     sortOrder?: PathOrder;
     limit?: number;
     offset?: number;
+    authorization?: string | null;
+    ksUat?: string | null;
+}
+
+export interface SetPathPartTagsRequest {
+    pathPartId: string;
+    bulkTagRequest: BulkTagRequest;
     authorization?: string | null;
     ksUat?: string | null;
 }
@@ -100,34 +128,34 @@ export interface ListPathPartsRequest {
  */
 export interface PathPartsApiInterface {
     /**
-     * Creates request options for bulkAddPathPartTags without sending the request
+     * Creates request options for appendPathPartEvent without sending the request
      * @param {string} pathPartId 
-     * @param {BulkTagRequest} bulkTagRequest 
+     * @param {AppendEventRequest} appendEventRequest 
      * @param {string} [authorization] 
      * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof PathPartsApiInterface
      */
-    bulkAddPathPartTagsRequestOpts(requestParameters: BulkAddPathPartTagsRequest): Promise<runtime.RequestOpts>;
+    appendPathPartEventRequestOpts(requestParameters: AppendPathPartEventRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * Bulk add tags to a path part.  Idempotent — already-attached tags are skipped. Returns 400 if any tag_id doesn\'t exist (FK violation). Requires write permission on the target path part.
-     * @summary Bulk Add Path Part Tags Handler
+     * Record an event for a subject path_part from the frontend.  Auth: caller must hold ``can_write`` on the subject\'s materialized_path (OWNER/ADMIN bypass). Server stamps ``actor_user_id`` from the caller\'s identity — callers cannot impersonate other users on the audit trail.  ``kind`` is free-form text but reserved server namespaces (``workflow.``, ``document.``, ``folder.``, ``permission.``, ``connector.``, ``query.``, ``auth.``, ``tenant.``) are rejected at 422 so clients cannot forge server-emitted audit events. Clients should namespace under ``client.*``. ``payload`` is capped at 64KB encoded JSON.
+     * @summary Append Path Part Event Handler
      * @param {string} pathPartId 
-     * @param {BulkTagRequest} bulkTagRequest 
+     * @param {AppendEventRequest} appendEventRequest 
      * @param {string} [authorization] 
      * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof PathPartsApiInterface
      */
-    bulkAddPathPartTagsRaw(requestParameters: BulkAddPathPartTagsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PathPartTagsResponse>>;
+    appendPathPartEventRaw(requestParameters: AppendPathPartEventRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<EventResponse>>;
 
     /**
-     * Bulk add tags to a path part.  Idempotent — already-attached tags are skipped. Returns 400 if any tag_id doesn\'t exist (FK violation). Requires write permission on the target path part.
-     * Bulk Add Path Part Tags Handler
+     * Record an event for a subject path_part from the frontend.  Auth: caller must hold ``can_write`` on the subject\'s materialized_path (OWNER/ADMIN bypass). Server stamps ``actor_user_id`` from the caller\'s identity — callers cannot impersonate other users on the audit trail.  ``kind`` is free-form text but reserved server namespaces (``workflow.``, ``document.``, ``folder.``, ``permission.``, ``connector.``, ``query.``, ``auth.``, ``tenant.``) are rejected at 422 so clients cannot forge server-emitted audit events. Clients should namespace under ``client.*``. ``payload`` is capped at 64KB encoded JSON.
+     * Append Path Part Event Handler
      */
-    bulkAddPathPartTags(requestParameters: BulkAddPathPartTagsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PathPartTagsResponse>;
+    appendPathPartEvent(requestParameters: AppendPathPartEventRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<EventResponse>;
 
     /**
      * Creates request options for bulkRemovePathPartTags without sending the request
@@ -274,6 +302,46 @@ export interface PathPartsApiInterface {
     getPathPartTags(requestParameters: GetPathPartTagsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PathPartTagsResponse>;
 
     /**
+     * Creates request options for listPathPartEvents without sending the request
+     * @param {string} pathPartId 
+     * @param {string} [kind] Filter to a single event kind
+     * @param {Date} [since] Only events at or after this timestamp
+     * @param {Date} [until] Only events strictly before this timestamp
+     * @param {boolean} [recursive] Include events from descendant path_parts as well as the subject itself
+     * @param {number} [limit] Number of items per page
+     * @param {number} [offset] Number of items to skip
+     * @param {string} [authorization] 
+     * @param {string} [ksUat] 
+     * @throws {RequiredError}
+     * @memberof PathPartsApiInterface
+     */
+    listPathPartEventsRequestOpts(requestParameters: ListPathPartEventsRequest): Promise<runtime.RequestOpts>;
+
+    /**
+     * List events anchored to a specific path_part subject.  Subject permission is enforced via the existing ``PathPermissionService`` — caller must have ``can_read`` on the subject\'s materialized_path (OWNER/ADMIN bypass). Events are ordered newest-first by ``ts`` and paginated.  When ``recursive=True``, events on any descendant of the subject are included — useful for \"all events under this folder\" or \"all events under this workflow definition\".
+     * @summary List Path Part Events Handler
+     * @param {string} pathPartId 
+     * @param {string} [kind] Filter to a single event kind
+     * @param {Date} [since] Only events at or after this timestamp
+     * @param {Date} [until] Only events strictly before this timestamp
+     * @param {boolean} [recursive] Include events from descendant path_parts as well as the subject itself
+     * @param {number} [limit] Number of items per page
+     * @param {number} [offset] Number of items to skip
+     * @param {string} [authorization] 
+     * @param {string} [ksUat] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof PathPartsApiInterface
+     */
+    listPathPartEventsRaw(requestParameters: ListPathPartEventsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedResponseEventResponse>>;
+
+    /**
+     * List events anchored to a specific path_part subject.  Subject permission is enforced via the existing ``PathPermissionService`` — caller must have ``can_read`` on the subject\'s materialized_path (OWNER/ADMIN bypass). Events are ordered newest-first by ``ts`` and paginated.  When ``recursive=True``, events on any descendant of the subject are included — useful for \"all events under this folder\" or \"all events under this workflow definition\".
+     * List Path Part Events Handler
+     */
+    listPathPartEvents(requestParameters: ListPathPartEventsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedResponseEventResponse>;
+
+    /**
      * Creates request options for listPathParts without sending the request
      * @param {string} [parentPathId] Parent PathPart ID (defaults to root)
      * @param {number} [maxDepth] Maximum depth to traverse (1 &#x3D; direct children, default: 1)
@@ -288,7 +356,7 @@ export interface PathPartsApiInterface {
     listPathPartsRequestOpts(requestParameters: ListPathPartsRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * List path parts (folders) under a parent with traversal.  This is a generic endpoint for traversing the folder hierarchy. It returns only FOLDER type path parts.  - If parent_path_id is not provided, lists contents of the root folder. - max_depth controls how deep to traverse (1 = direct children only). - sort_order controls the ordering: LOGICAL (linked-list), NAME, UPDATED_AT, CREATED_AT.  For listing folder contents that includes documents with enriched metadata, use GET /folders/{folder_id}/contents instead.
+     * List path parts under a parent with traversal.  This is a generic endpoint for traversing the path hierarchy. It returns the navigable, container-like nodes of the tree: FOLDER, WORKFLOW_DEFINITION, and WORKFLOW_RUN path parts.  - If parent_path_id is not provided, lists contents of the root folder. - max_depth controls how deep to traverse (1 = direct children only). - sort_order controls the ordering: LOGICAL (linked-list), NAME, UPDATED_AT, CREATED_AT.  For listing folder contents that includes documents with enriched metadata, use GET /folders/{folder_id}/contents instead.
      * @summary List Path Parts Handler
      * @param {string} [parentPathId] Parent PathPart ID (defaults to root)
      * @param {number} [maxDepth] Maximum depth to traverse (1 &#x3D; direct children, default: 1)
@@ -304,10 +372,40 @@ export interface PathPartsApiInterface {
     listPathPartsRaw(requestParameters: ListPathPartsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedResponsePathPartResponse>>;
 
     /**
-     * List path parts (folders) under a parent with traversal.  This is a generic endpoint for traversing the folder hierarchy. It returns only FOLDER type path parts.  - If parent_path_id is not provided, lists contents of the root folder. - max_depth controls how deep to traverse (1 = direct children only). - sort_order controls the ordering: LOGICAL (linked-list), NAME, UPDATED_AT, CREATED_AT.  For listing folder contents that includes documents with enriched metadata, use GET /folders/{folder_id}/contents instead.
+     * List path parts under a parent with traversal.  This is a generic endpoint for traversing the path hierarchy. It returns the navigable, container-like nodes of the tree: FOLDER, WORKFLOW_DEFINITION, and WORKFLOW_RUN path parts.  - If parent_path_id is not provided, lists contents of the root folder. - max_depth controls how deep to traverse (1 = direct children only). - sort_order controls the ordering: LOGICAL (linked-list), NAME, UPDATED_AT, CREATED_AT.  For listing folder contents that includes documents with enriched metadata, use GET /folders/{folder_id}/contents instead.
      * List Path Parts Handler
      */
     listPathParts(requestParameters: ListPathPartsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedResponsePathPartResponse>;
+
+    /**
+     * Creates request options for setPathPartTags without sending the request
+     * @param {string} pathPartId 
+     * @param {BulkTagRequest} bulkTagRequest 
+     * @param {string} [authorization] 
+     * @param {string} [ksUat] 
+     * @throws {RequiredError}
+     * @memberof PathPartsApiInterface
+     */
+    setPathPartTagsRequestOpts(requestParameters: SetPathPartTagsRequest): Promise<runtime.RequestOpts>;
+
+    /**
+     * Set tags on a path part, replacing any existing tags.  The provided tag_ids become the complete tag set for the path part. Tags not in the list are removed; missing tags are added. An empty list clears all tags. Returns 400 if any tag_id doesn\'t exist (FK violation). Requires write permission on the target path part.
+     * @summary Set Path Part Tags Handler
+     * @param {string} pathPartId 
+     * @param {BulkTagRequest} bulkTagRequest 
+     * @param {string} [authorization] 
+     * @param {string} [ksUat] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof PathPartsApiInterface
+     */
+    setPathPartTagsRaw(requestParameters: SetPathPartTagsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PathPartTagsResponse>>;
+
+    /**
+     * Set tags on a path part, replacing any existing tags.  The provided tag_ids become the complete tag set for the path part. Tags not in the list are removed; missing tags are added. An empty list clears all tags. Returns 400 if any tag_id doesn\'t exist (FK violation). Requires write permission on the target path part.
+     * Set Path Part Tags Handler
+     */
+    setPathPartTags(requestParameters: SetPathPartTagsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PathPartTagsResponse>;
 
 }
 
@@ -317,20 +415,20 @@ export interface PathPartsApiInterface {
 export class PathPartsApi extends runtime.BaseAPI implements PathPartsApiInterface {
 
     /**
-     * Creates request options for bulkAddPathPartTags without sending the request
+     * Creates request options for appendPathPartEvent without sending the request
      */
-    async bulkAddPathPartTagsRequestOpts(requestParameters: BulkAddPathPartTagsRequest): Promise<runtime.RequestOpts> {
+    async appendPathPartEventRequestOpts(requestParameters: AppendPathPartEventRequest): Promise<runtime.RequestOpts> {
         if (requestParameters['pathPartId'] == null) {
             throw new runtime.RequiredError(
                 'pathPartId',
-                'Required parameter "pathPartId" was null or undefined when calling bulkAddPathPartTags().'
+                'Required parameter "pathPartId" was null or undefined when calling appendPathPartEvent().'
             );
         }
 
-        if (requestParameters['bulkTagRequest'] == null) {
+        if (requestParameters['appendEventRequest'] == null) {
             throw new runtime.RequiredError(
-                'bulkTagRequest',
-                'Required parameter "bulkTagRequest" was null or undefined when calling bulkAddPathPartTags().'
+                'appendEventRequest',
+                'Required parameter "appendEventRequest" was null or undefined when calling appendPathPartEvent().'
             );
         }
 
@@ -345,7 +443,7 @@ export class PathPartsApi extends runtime.BaseAPI implements PathPartsApiInterfa
         }
 
 
-        let urlPath = `/v1/path-parts/{path_part_id}/tags`;
+        let urlPath = `/v1/path-parts/{path_part_id}/events`;
         urlPath = urlPath.replace(`{${"path_part_id"}}`, encodeURIComponent(String(requestParameters['pathPartId'])));
 
         return {
@@ -353,27 +451,27 @@ export class PathPartsApi extends runtime.BaseAPI implements PathPartsApiInterfa
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: BulkTagRequestToJSON(requestParameters['bulkTagRequest']),
+            body: AppendEventRequestToJSON(requestParameters['appendEventRequest']),
         };
     }
 
     /**
-     * Bulk add tags to a path part.  Idempotent — already-attached tags are skipped. Returns 400 if any tag_id doesn\'t exist (FK violation). Requires write permission on the target path part.
-     * Bulk Add Path Part Tags Handler
+     * Record an event for a subject path_part from the frontend.  Auth: caller must hold ``can_write`` on the subject\'s materialized_path (OWNER/ADMIN bypass). Server stamps ``actor_user_id`` from the caller\'s identity — callers cannot impersonate other users on the audit trail.  ``kind`` is free-form text but reserved server namespaces (``workflow.``, ``document.``, ``folder.``, ``permission.``, ``connector.``, ``query.``, ``auth.``, ``tenant.``) are rejected at 422 so clients cannot forge server-emitted audit events. Clients should namespace under ``client.*``. ``payload`` is capped at 64KB encoded JSON.
+     * Append Path Part Event Handler
      */
-    async bulkAddPathPartTagsRaw(requestParameters: BulkAddPathPartTagsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PathPartTagsResponse>> {
-        const requestOptions = await this.bulkAddPathPartTagsRequestOpts(requestParameters);
+    async appendPathPartEventRaw(requestParameters: AppendPathPartEventRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<EventResponse>> {
+        const requestOptions = await this.appendPathPartEventRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PathPartTagsResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => EventResponseFromJSON(jsonValue));
     }
 
     /**
-     * Bulk add tags to a path part.  Idempotent — already-attached tags are skipped. Returns 400 if any tag_id doesn\'t exist (FK violation). Requires write permission on the target path part.
-     * Bulk Add Path Part Tags Handler
+     * Record an event for a subject path_part from the frontend.  Auth: caller must hold ``can_write`` on the subject\'s materialized_path (OWNER/ADMIN bypass). Server stamps ``actor_user_id`` from the caller\'s identity — callers cannot impersonate other users on the audit trail.  ``kind`` is free-form text but reserved server namespaces (``workflow.``, ``document.``, ``folder.``, ``permission.``, ``connector.``, ``query.``, ``auth.``, ``tenant.``) are rejected at 422 so clients cannot forge server-emitted audit events. Clients should namespace under ``client.*``. ``payload`` is capped at 64KB encoded JSON.
+     * Append Path Part Event Handler
      */
-    async bulkAddPathPartTags(requestParameters: BulkAddPathPartTagsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PathPartTagsResponse> {
-        const response = await this.bulkAddPathPartTagsRaw(requestParameters, initOverrides);
+    async appendPathPartEvent(requestParameters: AppendPathPartEventRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<EventResponse> {
+        const response = await this.appendPathPartEventRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -647,6 +745,81 @@ export class PathPartsApi extends runtime.BaseAPI implements PathPartsApiInterfa
     }
 
     /**
+     * Creates request options for listPathPartEvents without sending the request
+     */
+    async listPathPartEventsRequestOpts(requestParameters: ListPathPartEventsRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['pathPartId'] == null) {
+            throw new runtime.RequiredError(
+                'pathPartId',
+                'Required parameter "pathPartId" was null or undefined when calling listPathPartEvents().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        if (requestParameters['kind'] != null) {
+            queryParameters['kind'] = requestParameters['kind'];
+        }
+
+        if (requestParameters['since'] != null) {
+            queryParameters['since'] = (requestParameters['since'] as any).toISOString();
+        }
+
+        if (requestParameters['until'] != null) {
+            queryParameters['until'] = (requestParameters['until'] as any).toISOString();
+        }
+
+        if (requestParameters['recursive'] != null) {
+            queryParameters['recursive'] = requestParameters['recursive'];
+        }
+
+        if (requestParameters['limit'] != null) {
+            queryParameters['limit'] = requestParameters['limit'];
+        }
+
+        if (requestParameters['offset'] != null) {
+            queryParameters['offset'] = requestParameters['offset'];
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (requestParameters['authorization'] != null) {
+            headerParameters['authorization'] = String(requestParameters['authorization']);
+        }
+
+
+        let urlPath = `/v1/path-parts/{path_part_id}/events`;
+        urlPath = urlPath.replace(`{${"path_part_id"}}`, encodeURIComponent(String(requestParameters['pathPartId'])));
+
+        return {
+            path: urlPath,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * List events anchored to a specific path_part subject.  Subject permission is enforced via the existing ``PathPermissionService`` — caller must have ``can_read`` on the subject\'s materialized_path (OWNER/ADMIN bypass). Events are ordered newest-first by ``ts`` and paginated.  When ``recursive=True``, events on any descendant of the subject are included — useful for \"all events under this folder\" or \"all events under this workflow definition\".
+     * List Path Part Events Handler
+     */
+    async listPathPartEventsRaw(requestParameters: ListPathPartEventsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedResponseEventResponse>> {
+        const requestOptions = await this.listPathPartEventsRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedResponseEventResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * List events anchored to a specific path_part subject.  Subject permission is enforced via the existing ``PathPermissionService`` — caller must have ``can_read`` on the subject\'s materialized_path (OWNER/ADMIN bypass). Events are ordered newest-first by ``ts`` and paginated.  When ``recursive=True``, events on any descendant of the subject are included — useful for \"all events under this folder\" or \"all events under this workflow definition\".
+     * List Path Part Events Handler
+     */
+    async listPathPartEvents(requestParameters: ListPathPartEventsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedResponseEventResponse> {
+        const response = await this.listPathPartEventsRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
      * Creates request options for listPathParts without sending the request
      */
     async listPathPartsRequestOpts(requestParameters: ListPathPartsRequest): Promise<runtime.RequestOpts> {
@@ -690,7 +863,7 @@ export class PathPartsApi extends runtime.BaseAPI implements PathPartsApiInterfa
     }
 
     /**
-     * List path parts (folders) under a parent with traversal.  This is a generic endpoint for traversing the folder hierarchy. It returns only FOLDER type path parts.  - If parent_path_id is not provided, lists contents of the root folder. - max_depth controls how deep to traverse (1 = direct children only). - sort_order controls the ordering: LOGICAL (linked-list), NAME, UPDATED_AT, CREATED_AT.  For listing folder contents that includes documents with enriched metadata, use GET /folders/{folder_id}/contents instead.
+     * List path parts under a parent with traversal.  This is a generic endpoint for traversing the path hierarchy. It returns the navigable, container-like nodes of the tree: FOLDER, WORKFLOW_DEFINITION, and WORKFLOW_RUN path parts.  - If parent_path_id is not provided, lists contents of the root folder. - max_depth controls how deep to traverse (1 = direct children only). - sort_order controls the ordering: LOGICAL (linked-list), NAME, UPDATED_AT, CREATED_AT.  For listing folder contents that includes documents with enriched metadata, use GET /folders/{folder_id}/contents instead.
      * List Path Parts Handler
      */
     async listPathPartsRaw(requestParameters: ListPathPartsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedResponsePathPartResponse>> {
@@ -701,11 +874,72 @@ export class PathPartsApi extends runtime.BaseAPI implements PathPartsApiInterfa
     }
 
     /**
-     * List path parts (folders) under a parent with traversal.  This is a generic endpoint for traversing the folder hierarchy. It returns only FOLDER type path parts.  - If parent_path_id is not provided, lists contents of the root folder. - max_depth controls how deep to traverse (1 = direct children only). - sort_order controls the ordering: LOGICAL (linked-list), NAME, UPDATED_AT, CREATED_AT.  For listing folder contents that includes documents with enriched metadata, use GET /folders/{folder_id}/contents instead.
+     * List path parts under a parent with traversal.  This is a generic endpoint for traversing the path hierarchy. It returns the navigable, container-like nodes of the tree: FOLDER, WORKFLOW_DEFINITION, and WORKFLOW_RUN path parts.  - If parent_path_id is not provided, lists contents of the root folder. - max_depth controls how deep to traverse (1 = direct children only). - sort_order controls the ordering: LOGICAL (linked-list), NAME, UPDATED_AT, CREATED_AT.  For listing folder contents that includes documents with enriched metadata, use GET /folders/{folder_id}/contents instead.
      * List Path Parts Handler
      */
     async listPathParts(requestParameters: ListPathPartsRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedResponsePathPartResponse> {
         const response = await this.listPathPartsRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for setPathPartTags without sending the request
+     */
+    async setPathPartTagsRequestOpts(requestParameters: SetPathPartTagsRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['pathPartId'] == null) {
+            throw new runtime.RequiredError(
+                'pathPartId',
+                'Required parameter "pathPartId" was null or undefined when calling setPathPartTags().'
+            );
+        }
+
+        if (requestParameters['bulkTagRequest'] == null) {
+            throw new runtime.RequiredError(
+                'bulkTagRequest',
+                'Required parameter "bulkTagRequest" was null or undefined when calling setPathPartTags().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (requestParameters['authorization'] != null) {
+            headerParameters['authorization'] = String(requestParameters['authorization']);
+        }
+
+
+        let urlPath = `/v1/path-parts/{path_part_id}/tags`;
+        urlPath = urlPath.replace(`{${"path_part_id"}}`, encodeURIComponent(String(requestParameters['pathPartId'])));
+
+        return {
+            path: urlPath,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: BulkTagRequestToJSON(requestParameters['bulkTagRequest']),
+        };
+    }
+
+    /**
+     * Set tags on a path part, replacing any existing tags.  The provided tag_ids become the complete tag set for the path part. Tags not in the list are removed; missing tags are added. An empty list clears all tags. Returns 400 if any tag_id doesn\'t exist (FK violation). Requires write permission on the target path part.
+     * Set Path Part Tags Handler
+     */
+    async setPathPartTagsRaw(requestParameters: SetPathPartTagsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PathPartTagsResponse>> {
+        const requestOptions = await this.setPathPartTagsRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => PathPartTagsResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * Set tags on a path part, replacing any existing tags.  The provided tag_ids become the complete tag set for the path part. Tags not in the list are removed; missing tags are added. An empty list clears all tags. Returns 400 if any tag_id doesn\'t exist (FK violation). Requires write permission on the target path part.
+     * Set Path Part Tags Handler
+     */
+    async setPathPartTags(requestParameters: SetPathPartTagsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PathPartTagsResponse> {
+        const response = await this.setPathPartTagsRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

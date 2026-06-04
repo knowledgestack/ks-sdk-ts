@@ -36,7 +36,7 @@ import {
 } from './ThreadMessageContent';
 
 /**
- * Request to create a new thread message.
+ * 
  * @export
  * @interface CreateThreadMessageRequest
  */
@@ -60,11 +60,11 @@ export interface CreateThreadMessageRequest {
      */
     content: ThreadMessageContent;
     /**
-     * 
+     * Message details (execution steps). Omit for user messages.
      * @type {ThreadMessageDetailsInput}
      * @memberof CreateThreadMessageRequest
      */
-    details?: ThreadMessageDetailsInput;
+    details?: ThreadMessageDetailsInput | null;
 }
 
 

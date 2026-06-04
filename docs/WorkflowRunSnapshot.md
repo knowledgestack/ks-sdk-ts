@@ -1,21 +1,16 @@
 
 # WorkflowRunSnapshot
 
-Frozen ABCD configuration captured at workflow trigger time.
+Frozen workflow configuration captured at trigger time.  ``workflow_definition_id`` and ``user_id`` are NOT stored here — they live directly on the ``WorkflowRun`` row and are surfaced via ``WorkflowRunResponse`` top-level fields.  Inputs are per-run; outputs land in the run\'s ``outputs/`` folder. The agent resolves the run\'s inputs/outputs/discussions folders by listing the run-folder children at activity startup.
 
 ## Properties
 
 Name | Type
 ------------ | -------------
-`workflowDefinitionId` | string
 `workflowName` | string
-`runnerType` | [WorkflowRunnerType](WorkflowRunnerType.md)
-`userId` | string
 `maxRunDurationSeconds` | number
-`sources` | [Array&lt;ABCDPathSnapshot&gt;](ABCDPathSnapshot.md)
-`instructions` | [Array&lt;ABCDPathSnapshot&gt;](ABCDPathSnapshot.md)
-`outputs` | [Array&lt;ABCDPathSnapshot&gt;](ABCDPathSnapshot.md)
-`template` | [ABCDPathSnapshot](ABCDPathSnapshot.md)
+`instruction` | [InstructionSnapshot](InstructionSnapshot.md)
+`inputs` | [Array&lt;InputSnapshot&gt;](InputSnapshot.md)
 
 ## Example
 
@@ -24,15 +19,10 @@ import type { WorkflowRunSnapshot } from '@knowledge-stack/ksapi'
 
 // TODO: Update the object below with actual values
 const example = {
-  "workflowDefinitionId": null,
   "workflowName": null,
-  "runnerType": null,
-  "userId": null,
   "maxRunDurationSeconds": null,
-  "sources": null,
-  "instructions": null,
-  "outputs": null,
-  "template": null,
+  "instruction": null,
+  "inputs": null,
 } satisfies WorkflowRunSnapshot
 
 console.log(example)

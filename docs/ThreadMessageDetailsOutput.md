@@ -7,6 +7,8 @@
 Name | Type
 ------------ | -------------
 `steps` | [Array&lt;StepOutput&gt;](StepOutput.md)
+`checkpoint` | [CheckpointDetails](CheckpointDetails.md)
+`modelId` | string
 
 ## Example
 
@@ -16,6 +18,8 @@ import type { ThreadMessageDetailsOutput } from '@knowledge-stack/ksapi'
 // TODO: Update the object below with actual values
 const example = {
   "steps": null,
+  "checkpoint": null,
+  "modelId": null,
 } satisfies ThreadMessageDetailsOutput
 
 console.log(example)

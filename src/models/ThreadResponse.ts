@@ -14,7 +14,7 @@
 
 import { mapValues } from '../runtime';
 /**
- * Thread response model.
+ * 
  * @export
  * @interface ThreadResponse
  */

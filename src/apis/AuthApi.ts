@@ -15,21 +15,34 @@
 
 import * as runtime from '../runtime';
 import type {
+  ChangePhoneNumberRequest,
   CreatePasswordUserRequest,
+  CreatePhonePasswordUserRequest,
   DirectorySyncResponse,
   EmailSentResponse,
   EmailVerificationRequest,
   HTTPValidationError,
   IdpType,
   PasswordResetRequest,
+  PasswordResetTokenResponse,
   PasswordResetWithTokenRequest,
+  PhoneValidationResponse,
+  PhoneVerificationRequest,
+  RequestPhoneChangeRequest,
+  ResponseSendPwResetEmail,
   SSOInitiateResponse,
+  SendPasswordResetRequest,
   SignInRequest,
   UserResponse,
+  ValidateResetCodeRequest,
 } from '../models/index';
 import {
+    ChangePhoneNumberRequestFromJSON,
+    ChangePhoneNumberRequestToJSON,
     CreatePasswordUserRequestFromJSON,
     CreatePasswordUserRequestToJSON,
+    CreatePhonePasswordUserRequestFromJSON,
+    CreatePhonePasswordUserRequestToJSON,
     DirectorySyncResponseFromJSON,
     DirectorySyncResponseToJSON,
     EmailSentResponseFromJSON,
@@ -42,18 +55,42 @@ import {
     IdpTypeToJSON,
     PasswordResetRequestFromJSON,
     PasswordResetRequestToJSON,
+    PasswordResetTokenResponseFromJSON,
+    PasswordResetTokenResponseToJSON,
     PasswordResetWithTokenRequestFromJSON,
     PasswordResetWithTokenRequestToJSON,
+    PhoneValidationResponseFromJSON,
+    PhoneValidationResponseToJSON,
+    PhoneVerificationRequestFromJSON,
+    PhoneVerificationRequestToJSON,
+    RequestPhoneChangeRequestFromJSON,
+    RequestPhoneChangeRequestToJSON,
+    ResponseSendPwResetEmailFromJSON,
+    ResponseSendPwResetEmailToJSON,
     SSOInitiateResponseFromJSON,
     SSOInitiateResponseToJSON,
+    SendPasswordResetRequestFromJSON,
+    SendPasswordResetRequestToJSON,
     SignInRequestFromJSON,
     SignInRequestToJSON,
     UserResponseFromJSON,
     UserResponseToJSON,
+    ValidateResetCodeRequestFromJSON,
+    ValidateResetCodeRequestToJSON,
 } from '../models/index';
+
+export interface ChangePhoneNumberOperationRequest {
+    changePhoneNumberRequest: ChangePhoneNumberRequest;
+    authorization?: string | null;
+    ksUat?: string | null;
+}
 
 export interface CreatePasswordUserOperationRequest {
     createPasswordUserRequest: CreatePasswordUserRequest;
+}
+
+export interface CreatePhonePasswordUserOperationRequest {
+    createPhonePasswordUserRequest: CreatePhonePasswordUserRequest;
 }
 
 export interface FanweiDirectorySyncRequest {
@@ -86,12 +123,22 @@ export interface PwEmailVerificationRequest {
     emailVerificationRequest: EmailVerificationRequest;
 }
 
+export interface PwPhoneVerificationRequest {
+    phoneVerificationRequest: PhoneVerificationRequest;
+}
+
 export interface PwSigninRequest {
     signInRequest: SignInRequest;
 }
 
 export interface RefreshUatRequest {
     tenantId?: string | null;
+    authorization?: string | null;
+    ksUat?: string | null;
+}
+
+export interface RequestPhoneChangeOperationRequest {
+    requestPhoneChangeRequest: RequestPhoneChangeRequest;
     authorization?: string | null;
     ksUat?: string | null;
 }
@@ -107,12 +154,16 @@ export interface ResetPasswordWithTokenRequest {
 }
 
 export interface SendPwResetEmailRequest {
-    emailVerificationRequest: EmailVerificationRequest;
+    sendPasswordResetRequest: SendPasswordResetRequest;
 }
 
 export interface SsoSigninRequest {
     tenantId: string;
     redirect?: string;
+}
+
+export interface ValidatePwResetCodeRequest {
+    validateResetCodeRequest: ValidateResetCodeRequest;
 }
 
 /**
@@ -122,6 +173,34 @@ export interface SsoSigninRequest {
  * @interface AuthApiInterface
  */
 export interface AuthApiInterface {
+    /**
+     * Creates request options for changePhoneNumber without sending the request
+     * @param {ChangePhoneNumberRequest} changePhoneNumberRequest 
+     * @param {string} [authorization] 
+     * @param {string} [ksUat] 
+     * @throws {RequiredError}
+     * @memberof AuthApiInterface
+     */
+    changePhoneNumberRequestOpts(requestParameters: ChangePhoneNumberOperationRequest): Promise<runtime.RequestOpts>;
+
+    /**
+     * Apply a verified phone-number change to the authenticated user.  The new phone is read from the Redis validation record pinned by ``/me/phone_number/verify``.
+     * @summary Change Phone Number Handler
+     * @param {ChangePhoneNumberRequest} changePhoneNumberRequest 
+     * @param {string} [authorization] 
+     * @param {string} [ksUat] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AuthApiInterface
+     */
+    changePhoneNumberRaw(requestParameters: ChangePhoneNumberOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserResponse>>;
+
+    /**
+     * Apply a verified phone-number change to the authenticated user.  The new phone is read from the Redis validation record pinned by ``/me/phone_number/verify``.
+     * Change Phone Number Handler
+     */
+    changePhoneNumber(requestParameters: ChangePhoneNumberOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserResponse>;
+
     /**
      * Creates request options for createPasswordUser without sending the request
      * @param {CreatePasswordUserRequest} createPasswordUserRequest 
@@ -144,6 +223,30 @@ export interface AuthApiInterface {
      * Create Password User Handler
      */
     createPasswordUser(requestParameters: CreatePasswordUserOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserResponse>;
+
+    /**
+     * Creates request options for createPhonePasswordUser without sending the request
+     * @param {CreatePhonePasswordUserRequest} createPhonePasswordUserRequest 
+     * @throws {RequiredError}
+     * @memberof AuthApiInterface
+     */
+    createPhonePasswordUserRequestOpts(requestParameters: CreatePhonePasswordUserOperationRequest): Promise<runtime.RequestOpts>;
+
+    /**
+     * Complete phone-based signup using a verified validation code.  The phone number is read from the Redis validation record — it was pinned there by ``/phone_verification`` — so the client cannot submit a different phone here than the one it just proved ownership of.
+     * @summary Create Phone Password User Handler
+     * @param {CreatePhonePasswordUserRequest} createPhonePasswordUserRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AuthApiInterface
+     */
+    createPhonePasswordUserRaw(requestParameters: CreatePhonePasswordUserOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserResponse>>;
+
+    /**
+     * Complete phone-based signup using a verified validation code.  The phone number is read from the Redis validation record — it was pinned there by ``/phone_verification`` — so the client cannot submit a different phone here than the one it just proved ownership of.
+     * Create Phone Password User Handler
+     */
+    createPhonePasswordUser(requestParameters: CreatePhonePasswordUserOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserResponse>;
 
     /**
      * Creates request options for fanweiDirectorySync without sending the request
@@ -286,6 +389,30 @@ export interface AuthApiInterface {
     pwEmailVerification(requestParameters: PwEmailVerificationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<EmailSentResponse>;
 
     /**
+     * Creates request options for pwPhoneVerification without sending the request
+     * @param {PhoneVerificationRequest} phoneVerificationRequest 
+     * @throws {RequiredError}
+     * @memberof AuthApiInterface
+     */
+    pwPhoneVerificationRequestOpts(requestParameters: PwPhoneVerificationRequest): Promise<runtime.RequestOpts>;
+
+    /**
+     * Send a 6-digit signup verification code to ``phone_number``.  Rejects (409) if a user already exists for this phone — this leaks enumeration but matches the duplicate-signup UX of the email flow.
+     * @summary Pw Phone Verification Handler
+     * @param {PhoneVerificationRequest} phoneVerificationRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AuthApiInterface
+     */
+    pwPhoneVerificationRaw(requestParameters: PwPhoneVerificationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PhoneValidationResponse>>;
+
+    /**
+     * Send a 6-digit signup verification code to ``phone_number``.  Rejects (409) if a user already exists for this phone — this leaks enumeration but matches the duplicate-signup UX of the email flow.
+     * Pw Phone Verification Handler
+     */
+    pwPhoneVerification(requestParameters: PwPhoneVerificationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PhoneValidationResponse>;
+
+    /**
      * Creates request options for pwSignin without sending the request
      * @param {SignInRequest} signInRequest 
      * @throws {RequiredError}
@@ -338,6 +465,34 @@ export interface AuthApiInterface {
     refreshUat(requestParameters: RefreshUatRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserResponse>;
 
     /**
+     * Creates request options for requestPhoneChange without sending the request
+     * @param {RequestPhoneChangeRequest} requestPhoneChangeRequest 
+     * @param {string} [authorization] 
+     * @param {string} [ksUat] 
+     * @throws {RequiredError}
+     * @memberof AuthApiInterface
+     */
+    requestPhoneChangeRequestOpts(requestParameters: RequestPhoneChangeOperationRequest): Promise<runtime.RequestOpts>;
+
+    /**
+     * Dispatch an SMS code to authorize a phone-number change.  Confirms the new phone isn\'t already taken by *another* user. The caller is identified by their UAT, so authentication is required.
+     * @summary Request Phone Change Handler
+     * @param {RequestPhoneChangeRequest} requestPhoneChangeRequest 
+     * @param {string} [authorization] 
+     * @param {string} [ksUat] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AuthApiInterface
+     */
+    requestPhoneChangeRaw(requestParameters: RequestPhoneChangeOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PhoneValidationResponse>>;
+
+    /**
+     * Dispatch an SMS code to authorize a phone-number change.  Confirms the new phone isn\'t already taken by *another* user. The caller is identified by their UAT, so authentication is required.
+     * Request Phone Change Handler
+     */
+    requestPhoneChange(requestParameters: RequestPhoneChangeOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PhoneValidationResponse>;
+
+    /**
      * Creates request options for resetPassword without sending the request
      * @param {PasswordResetRequest} passwordResetRequest 
      * @param {string} [authorization] 
@@ -374,7 +529,7 @@ export interface AuthApiInterface {
     resetPasswordWithTokenRequestOpts(requestParameters: ResetPasswordWithTokenRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * Reset password with email verification token
+     * Reset password with a single-use PasswordResetToken JWT
      * @summary Reset Password With Token Handler
      * @param {PasswordResetWithTokenRequest} passwordResetWithTokenRequest 
      * @param {*} [options] Override http request option.
@@ -384,33 +539,34 @@ export interface AuthApiInterface {
     resetPasswordWithTokenRaw(requestParameters: ResetPasswordWithTokenRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserResponse>>;
 
     /**
-     * Reset password with email verification token
+     * Reset password with a single-use PasswordResetToken JWT
      * Reset Password With Token Handler
      */
     resetPasswordWithToken(requestParameters: ResetPasswordWithTokenRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserResponse>;
 
     /**
      * Creates request options for sendPwResetEmail without sending the request
-     * @param {EmailVerificationRequest} emailVerificationRequest 
+     * @param {SendPasswordResetRequest} sendPasswordResetRequest 
      * @throws {RequiredError}
      * @memberof AuthApiInterface
      */
     sendPwResetEmailRequestOpts(requestParameters: SendPwResetEmailRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * 
+     * Initiate a password reset via the requested ``method``.  ``method=EMAIL`` (default) mints a ``PasswordResetToken`` and sends the existing reset email. ``method=SMS`` looks up the user by phone, dispatches an SMS verification code, and the caller must follow up with ``/validate_reset_code``.
      * @summary Send Pw Reset Email Handler
-     * @param {EmailVerificationRequest} emailVerificationRequest 
+     * @param {SendPasswordResetRequest} sendPasswordResetRequest 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof AuthApiInterface
      */
-    sendPwResetEmailRaw(requestParameters: SendPwResetEmailRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<EmailSentResponse>>;
+    sendPwResetEmailRaw(requestParameters: SendPwResetEmailRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ResponseSendPwResetEmail>>;
 
     /**
+     * Initiate a password reset via the requested ``method``.  ``method=EMAIL`` (default) mints a ``PasswordResetToken`` and sends the existing reset email. ``method=SMS`` looks up the user by phone, dispatches an SMS verification code, and the caller must follow up with ``/validate_reset_code``.
      * Send Pw Reset Email Handler
      */
-    sendPwResetEmail(requestParameters: SendPwResetEmailRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<EmailSentResponse>;
+    sendPwResetEmail(requestParameters: SendPwResetEmailRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ResponseSendPwResetEmail>;
 
     /**
      * Creates request options for signout without sending the request
@@ -459,12 +615,89 @@ export interface AuthApiInterface {
      */
     ssoSignin(requestParameters: SsoSigninRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void>;
 
+    /**
+     * Creates request options for validatePwResetCode without sending the request
+     * @param {ValidateResetCodeRequest} validateResetCodeRequest 
+     * @throws {RequiredError}
+     * @memberof AuthApiInterface
+     */
+    validatePwResetCodeRequestOpts(requestParameters: ValidatePwResetCodeRequest): Promise<runtime.RequestOpts>;
+
+    /**
+     * Validate an SMS reset code and return a single-use reset JWT.
+     * @summary Validate Reset Code Handler
+     * @param {ValidateResetCodeRequest} validateResetCodeRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AuthApiInterface
+     */
+    validatePwResetCodeRaw(requestParameters: ValidatePwResetCodeRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PasswordResetTokenResponse>>;
+
+    /**
+     * Validate an SMS reset code and return a single-use reset JWT.
+     * Validate Reset Code Handler
+     */
+    validatePwResetCode(requestParameters: ValidatePwResetCodeRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PasswordResetTokenResponse>;
+
 }
 
 /**
  * 
  */
 export class AuthApi extends runtime.BaseAPI implements AuthApiInterface {
+
+    /**
+     * Creates request options for changePhoneNumber without sending the request
+     */
+    async changePhoneNumberRequestOpts(requestParameters: ChangePhoneNumberOperationRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['changePhoneNumberRequest'] == null) {
+            throw new runtime.RequiredError(
+                'changePhoneNumberRequest',
+                'Required parameter "changePhoneNumberRequest" was null or undefined when calling changePhoneNumber().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (requestParameters['authorization'] != null) {
+            headerParameters['authorization'] = String(requestParameters['authorization']);
+        }
+
+
+        let urlPath = `/v1/auth/pw/me/phone_number`;
+
+        return {
+            path: urlPath,
+            method: 'PUT',
+            headers: headerParameters,
+            query: queryParameters,
+            body: ChangePhoneNumberRequestToJSON(requestParameters['changePhoneNumberRequest']),
+        };
+    }
+
+    /**
+     * Apply a verified phone-number change to the authenticated user.  The new phone is read from the Redis validation record pinned by ``/me/phone_number/verify``.
+     * Change Phone Number Handler
+     */
+    async changePhoneNumberRaw(requestParameters: ChangePhoneNumberOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserResponse>> {
+        const requestOptions = await this.changePhoneNumberRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => UserResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * Apply a verified phone-number change to the authenticated user.  The new phone is read from the Redis validation record pinned by ``/me/phone_number/verify``.
+     * Change Phone Number Handler
+     */
+    async changePhoneNumber(requestParameters: ChangePhoneNumberOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserResponse> {
+        const response = await this.changePhoneNumberRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
 
     /**
      * Creates request options for createPasswordUser without sending the request
@@ -510,6 +743,55 @@ export class AuthApi extends runtime.BaseAPI implements AuthApiInterface {
      */
     async createPasswordUser(requestParameters: CreatePasswordUserOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserResponse> {
         const response = await this.createPasswordUserRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for createPhonePasswordUser without sending the request
+     */
+    async createPhonePasswordUserRequestOpts(requestParameters: CreatePhonePasswordUserOperationRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['createPhonePasswordUserRequest'] == null) {
+            throw new runtime.RequiredError(
+                'createPhonePasswordUserRequest',
+                'Required parameter "createPhonePasswordUserRequest" was null or undefined when calling createPhonePasswordUser().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+
+        let urlPath = `/v1/auth/pw/phone_user`;
+
+        return {
+            path: urlPath,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: CreatePhonePasswordUserRequestToJSON(requestParameters['createPhonePasswordUserRequest']),
+        };
+    }
+
+    /**
+     * Complete phone-based signup using a verified validation code.  The phone number is read from the Redis validation record — it was pinned there by ``/phone_verification`` — so the client cannot submit a different phone here than the one it just proved ownership of.
+     * Create Phone Password User Handler
+     */
+    async createPhonePasswordUserRaw(requestParameters: CreatePhonePasswordUserOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserResponse>> {
+        const requestOptions = await this.createPhonePasswordUserRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => UserResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * Complete phone-based signup using a verified validation code.  The phone number is read from the Redis validation record — it was pinned there by ``/phone_verification`` — so the client cannot submit a different phone here than the one it just proved ownership of.
+     * Create Phone Password User Handler
+     */
+    async createPhonePasswordUser(requestParameters: CreatePhonePasswordUserOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserResponse> {
+        const response = await this.createPhonePasswordUserRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -789,6 +1071,55 @@ export class AuthApi extends runtime.BaseAPI implements AuthApiInterface {
     }
 
     /**
+     * Creates request options for pwPhoneVerification without sending the request
+     */
+    async pwPhoneVerificationRequestOpts(requestParameters: PwPhoneVerificationRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['phoneVerificationRequest'] == null) {
+            throw new runtime.RequiredError(
+                'phoneVerificationRequest',
+                'Required parameter "phoneVerificationRequest" was null or undefined when calling pwPhoneVerification().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+
+        let urlPath = `/v1/auth/pw/phone_verification`;
+
+        return {
+            path: urlPath,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: PhoneVerificationRequestToJSON(requestParameters['phoneVerificationRequest']),
+        };
+    }
+
+    /**
+     * Send a 6-digit signup verification code to ``phone_number``.  Rejects (409) if a user already exists for this phone — this leaks enumeration but matches the duplicate-signup UX of the email flow.
+     * Pw Phone Verification Handler
+     */
+    async pwPhoneVerificationRaw(requestParameters: PwPhoneVerificationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PhoneValidationResponse>> {
+        const requestOptions = await this.pwPhoneVerificationRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => PhoneValidationResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * Send a 6-digit signup verification code to ``phone_number``.  Rejects (409) if a user already exists for this phone — this leaks enumeration but matches the duplicate-signup UX of the email flow.
+     * Pw Phone Verification Handler
+     */
+    async pwPhoneVerification(requestParameters: PwPhoneVerificationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PhoneValidationResponse> {
+        const response = await this.pwPhoneVerificationRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
      * Creates request options for pwSignin without sending the request
      */
     async pwSigninRequestOpts(requestParameters: PwSigninRequest): Promise<runtime.RequestOpts> {
@@ -885,6 +1216,59 @@ export class AuthApi extends runtime.BaseAPI implements AuthApiInterface {
     }
 
     /**
+     * Creates request options for requestPhoneChange without sending the request
+     */
+    async requestPhoneChangeRequestOpts(requestParameters: RequestPhoneChangeOperationRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['requestPhoneChangeRequest'] == null) {
+            throw new runtime.RequiredError(
+                'requestPhoneChangeRequest',
+                'Required parameter "requestPhoneChangeRequest" was null or undefined when calling requestPhoneChange().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (requestParameters['authorization'] != null) {
+            headerParameters['authorization'] = String(requestParameters['authorization']);
+        }
+
+
+        let urlPath = `/v1/auth/pw/me/phone_number/verify`;
+
+        return {
+            path: urlPath,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: RequestPhoneChangeRequestToJSON(requestParameters['requestPhoneChangeRequest']),
+        };
+    }
+
+    /**
+     * Dispatch an SMS code to authorize a phone-number change.  Confirms the new phone isn\'t already taken by *another* user. The caller is identified by their UAT, so authentication is required.
+     * Request Phone Change Handler
+     */
+    async requestPhoneChangeRaw(requestParameters: RequestPhoneChangeOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PhoneValidationResponse>> {
+        const requestOptions = await this.requestPhoneChangeRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => PhoneValidationResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * Dispatch an SMS code to authorize a phone-number change.  Confirms the new phone isn\'t already taken by *another* user. The caller is identified by their UAT, so authentication is required.
+     * Request Phone Change Handler
+     */
+    async requestPhoneChange(requestParameters: RequestPhoneChangeOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PhoneValidationResponse> {
+        const response = await this.requestPhoneChangeRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
      * Creates request options for resetPassword without sending the request
      */
     async resetPasswordRequestOpts(requestParameters: ResetPasswordRequest): Promise<runtime.RequestOpts> {
@@ -967,7 +1351,7 @@ export class AuthApi extends runtime.BaseAPI implements AuthApiInterface {
     }
 
     /**
-     * Reset password with email verification token
+     * Reset password with a single-use PasswordResetToken JWT
      * Reset Password With Token Handler
      */
     async resetPasswordWithTokenRaw(requestParameters: ResetPasswordWithTokenRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserResponse>> {
@@ -978,7 +1362,7 @@ export class AuthApi extends runtime.BaseAPI implements AuthApiInterface {
     }
 
     /**
-     * Reset password with email verification token
+     * Reset password with a single-use PasswordResetToken JWT
      * Reset Password With Token Handler
      */
     async resetPasswordWithToken(requestParameters: ResetPasswordWithTokenRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserResponse> {
@@ -990,10 +1374,10 @@ export class AuthApi extends runtime.BaseAPI implements AuthApiInterface {
      * Creates request options for sendPwResetEmail without sending the request
      */
     async sendPwResetEmailRequestOpts(requestParameters: SendPwResetEmailRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['emailVerificationRequest'] == null) {
+        if (requestParameters['sendPasswordResetRequest'] == null) {
             throw new runtime.RequiredError(
-                'emailVerificationRequest',
-                'Required parameter "emailVerificationRequest" was null or undefined when calling sendPwResetEmail().'
+                'sendPasswordResetRequest',
+                'Required parameter "sendPasswordResetRequest" was null or undefined when calling sendPwResetEmail().'
             );
         }
 
@@ -1011,24 +1395,26 @@ export class AuthApi extends runtime.BaseAPI implements AuthApiInterface {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: EmailVerificationRequestToJSON(requestParameters['emailVerificationRequest']),
+            body: SendPasswordResetRequestToJSON(requestParameters['sendPasswordResetRequest']),
         };
     }
 
     /**
+     * Initiate a password reset via the requested ``method``.  ``method=EMAIL`` (default) mints a ``PasswordResetToken`` and sends the existing reset email. ``method=SMS`` looks up the user by phone, dispatches an SMS verification code, and the caller must follow up with ``/validate_reset_code``.
      * Send Pw Reset Email Handler
      */
-    async sendPwResetEmailRaw(requestParameters: SendPwResetEmailRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<EmailSentResponse>> {
+    async sendPwResetEmailRaw(requestParameters: SendPwResetEmailRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ResponseSendPwResetEmail>> {
         const requestOptions = await this.sendPwResetEmailRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => EmailSentResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => ResponseSendPwResetEmailFromJSON(jsonValue));
     }
 
     /**
+     * Initiate a password reset via the requested ``method``.  ``method=EMAIL`` (default) mints a ``PasswordResetToken`` and sends the existing reset email. ``method=SMS`` looks up the user by phone, dispatches an SMS verification code, and the caller must follow up with ``/validate_reset_code``.
      * Send Pw Reset Email Handler
      */
-    async sendPwResetEmail(requestParameters: SendPwResetEmailRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<EmailSentResponse> {
+    async sendPwResetEmail(requestParameters: SendPwResetEmailRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ResponseSendPwResetEmail> {
         const response = await this.sendPwResetEmailRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -1122,6 +1508,55 @@ export class AuthApi extends runtime.BaseAPI implements AuthApiInterface {
      */
     async ssoSignin(requestParameters: SsoSigninRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.ssoSigninRaw(requestParameters, initOverrides);
+    }
+
+    /**
+     * Creates request options for validatePwResetCode without sending the request
+     */
+    async validatePwResetCodeRequestOpts(requestParameters: ValidatePwResetCodeRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['validateResetCodeRequest'] == null) {
+            throw new runtime.RequiredError(
+                'validateResetCodeRequest',
+                'Required parameter "validateResetCodeRequest" was null or undefined when calling validatePwResetCode().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+
+        let urlPath = `/v1/auth/pw/validate_reset_code`;
+
+        return {
+            path: urlPath,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: ValidateResetCodeRequestToJSON(requestParameters['validateResetCodeRequest']),
+        };
+    }
+
+    /**
+     * Validate an SMS reset code and return a single-use reset JWT.
+     * Validate Reset Code Handler
+     */
+    async validatePwResetCodeRaw(requestParameters: ValidatePwResetCodeRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PasswordResetTokenResponse>> {
+        const requestOptions = await this.validatePwResetCodeRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => PasswordResetTokenResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * Validate an SMS reset code and return a single-use reset JWT.
+     * Validate Reset Code Handler
+     */
+    async validatePwResetCode(requestParameters: ValidatePwResetCodeRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PasswordResetTokenResponse> {
+        const response = await this.validatePwResetCodeRaw(requestParameters, initOverrides);
+        return await response.value();
     }
 
 }

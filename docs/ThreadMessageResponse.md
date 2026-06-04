@@ -1,7 +1,6 @@
 
 # ThreadMessageResponse
 
-Thread message response model.
 
 ## Properties
 
@@ -16,6 +15,7 @@ Name | Type
 `parentPathId` | string
 `materializedPath` | string
 `tenantId` | string
+`authorTenantUserId` | string
 `createdAt` | Date
 `updatedAt` | Date
 
@@ -35,6 +35,7 @@ const example = {
   "parentPathId": null,
   "materializedPath": null,
   "tenantId": null,
+  "authorTenantUserId": null,
   "createdAt": null,
   "updatedAt": null,
 } satisfies ThreadMessageResponse

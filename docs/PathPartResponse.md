@@ -14,6 +14,7 @@ Name | Type
 `metadataObjId` | string
 `materializedPath` | string
 `systemManaged` | boolean
+`excludeFromQdrant` | boolean
 `tags` | [Array&lt;TagResponse&gt;](TagResponse.md)
 `canRead` | boolean
 `canWrite` | boolean
@@ -34,6 +35,7 @@ const example = {
   "metadataObjId": null,
   "materializedPath": null,
   "systemManaged": null,
+  "excludeFromQdrant": null,
   "tags": null,
   "canRead": null,
   "canWrite": null,

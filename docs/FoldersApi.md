@@ -246,8 +246,6 @@ No authorization required
 
 Get Folder Handler
 
-Get a folder by its folder ID.
-
 ### Example
 
 ```ts
@@ -319,7 +317,7 @@ No authorization required
 
 ## listFolderContents
 
-> PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseDiscriminator listFolderContents(folderId, maxDepth, sortOrder, withTags, limit, offset, authorization, ksUat)
+> PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseWorkflowDefinitionResponseWorkflowRunResponseDiscriminator listFolderContents(folderId, maxDepth, sortOrder, withTags, limit, offset, authorization, ksUat)
 
 List Folder Contents Handler
 
@@ -385,7 +383,7 @@ example().catch(console.error);
 
 ### Return type
 
-[**PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseDiscriminator**](PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseDiscriminator.md)
+[**PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseWorkflowDefinitionResponseWorkflowRunResponseDiscriminator**](PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseWorkflowDefinitionResponseWorkflowRunResponseDiscriminator.md)
 
 ### Authorization
 
@@ -494,7 +492,7 @@ No authorization required
 
 ## searchItems
 
-> PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseDiscriminator searchItems(nameLike, sortOrder, partType, withTags, parentPathPartId, limit, offset, authorization, ksUat)
+> PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseWorkflowDefinitionResponseWorkflowRunResponseDiscriminator searchItems(nameLike, sortOrder, partType, withTags, parentPathPartId, limit, offset, authorization, ksUat)
 
 Search Items Handler
 
@@ -563,7 +561,7 @@ example().catch(console.error);
 
 ### Return type
 
-[**PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseDiscriminator**](PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseDiscriminator.md)
+[**PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseWorkflowDefinitionResponseWorkflowRunResponseDiscriminator**](PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseWorkflowDefinitionResponseWorkflowRunResponseDiscriminator.md)
 
 ### Authorization
 
@@ -590,7 +588,7 @@ No authorization required
 
 Update Folder Handler
 
-Update a folder (rename and/or move).  To rename: provide &#x60;name&#x60; field. To move: provide &#x60;parent_path_part_id&#x60; field. Both can be done in a single request.
+Update a folder (rename, move, and/or toggle Qdrant exclusion).  To rename: provide &#x60;name&#x60; field. To move: provide &#x60;parent_path_part_id&#x60; field. To toggle Qdrant exclusion for this folder and its descendants: provide &#x60;exclude_from_qdrant&#x60; field. Any combination can be sent in a single request.
 
 ### Example
 

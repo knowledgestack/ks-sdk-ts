@@ -34,6 +34,27 @@ import {
     DocumentTypeToJSON,
     DocumentTypeToJSONTyped,
 } from './DocumentType';
+import type { PathPartApprovalState } from './PathPartApprovalState';
+import {
+    PathPartApprovalStateFromJSON,
+    PathPartApprovalStateFromJSONTyped,
+    PathPartApprovalStateToJSON,
+    PathPartApprovalStateToJSONTyped,
+} from './PathPartApprovalState';
+import type { UserInfo } from './UserInfo';
+import {
+    UserInfoFromJSON,
+    UserInfoFromJSONTyped,
+    UserInfoToJSON,
+    UserInfoToJSONTyped,
+} from './UserInfo';
+import type { DocumentCheckoutResponse } from './DocumentCheckoutResponse';
+import {
+    DocumentCheckoutResponseFromJSON,
+    DocumentCheckoutResponseFromJSONTyped,
+    DocumentCheckoutResponseToJSON,
+    DocumentCheckoutResponseToJSONTyped,
+} from './DocumentCheckoutResponse';
 import type { DocumentVersionResponse } from './DocumentVersionResponse';
 import {
     DocumentVersionResponseFromJSON,
@@ -115,11 +136,29 @@ export interface DocumentResponse {
      */
     systemManaged: boolean;
     /**
+     * 
+     * @type {PathPartApprovalState}
+     * @memberof DocumentResponse
+     */
+    approvalState: PathPartApprovalState;
+    /**
+     * Direct exclusion flag on this document's path part only. The effective exclusion also applies when any ancestor folder has the flag set — fetch the ancestry to determine effective state.
+     * @type {boolean}
+     * @memberof DocumentResponse
+     */
+    excludeFromQdrant: boolean;
+    /**
      * Tenant ID
      * @type {string}
      * @memberof DocumentResponse
      */
     tenantId: string;
+    /**
+     * 
+     * @type {UserInfo}
+     * @memberof DocumentResponse
+     */
+    owner: UserInfo;
     /**
      * Creation timestamp
      * @type {Date}
@@ -138,6 +177,18 @@ export interface DocumentResponse {
      * @memberof DocumentResponse
      */
     tags?: Array<TagResponse> | null;
+    /**
+     * Whether the current caller has write access to this document. Only populated by endpoints that compute it (e.g. folder contents).
+     * @type {boolean}
+     * @memberof DocumentResponse
+     */
+    canWrite?: boolean | null;
+    /**
+     * Active write-lock state. Null when no checkout is held. Populated on detail endpoints (GET /v1/documents/{id}). Any tenant member with read access may observe this state.
+     * @type {DocumentCheckoutResponse}
+     * @memberof DocumentResponse
+     */
+    checkout?: DocumentCheckoutResponse | null;
 }
 
 
@@ -182,7 +233,10 @@ export function instanceOfDocumentResponse(value: object): value is DocumentResp
     if (!('activeVersion' in value) || value['activeVersion'] === undefined) return false;
     if (!('materializedPath' in value) || value['materializedPath'] === undefined) return false;
     if (!('systemManaged' in value) || value['systemManaged'] === undefined) return false;
+    if (!('approvalState' in value) || value['approvalState'] === undefined) return false;
+    if (!('excludeFromQdrant' in value) || value['excludeFromQdrant'] === undefined) return false;
     if (!('tenantId' in value) || value['tenantId'] === undefined) return false;
+    if (!('owner' in value) || value['owner'] === undefined) return false;
     if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
     if (!('updatedAt' in value) || value['updatedAt'] === undefined) return false;
     return true;
@@ -209,10 +263,15 @@ export function DocumentResponseFromJSONTyped(json: any, ignoreDiscriminator: bo
         'activeVersion': DocumentVersionResponseFromJSON(json['active_version']),
         'materializedPath': json['materialized_path'],
         'systemManaged': json['system_managed'],
+        'approvalState': PathPartApprovalStateFromJSON(json['approval_state']),
+        'excludeFromQdrant': json['exclude_from_qdrant'],
         'tenantId': json['tenant_id'],
+        'owner': UserInfoFromJSON(json['owner']),
         'createdAt': (new Date(json['created_at'])),
         'updatedAt': (new Date(json['updated_at'])),
         'tags': json['tags'] == null ? undefined : ((json['tags'] as Array<any>).map(TagResponseFromJSON)),
+        'canWrite': json['can_write'] == null ? undefined : json['can_write'],
+        'checkout': json['checkout'] == null ? undefined : DocumentCheckoutResponseFromJSON(json['checkout']),
     };
 }
 
@@ -238,10 +297,15 @@ export function DocumentResponseToJSONTyped(value?: DocumentResponse | null, ign
         'active_version': DocumentVersionResponseToJSON(value['activeVersion']),
         'materialized_path': value['materializedPath'],
         'system_managed': value['systemManaged'],
+        'approval_state': PathPartApprovalStateToJSON(value['approvalState']),
+        'exclude_from_qdrant': value['excludeFromQdrant'],
         'tenant_id': value['tenantId'],
+        'owner': UserInfoToJSON(value['owner']),
         'created_at': value['createdAt'].toISOString(),
         'updated_at': value['updatedAt'].toISOString(),
         'tags': value['tags'] == null ? undefined : ((value['tags'] as Array<any>).map(TagResponseToJSON)),
+        'can_write': value['canWrite'],
+        'checkout': DocumentCheckoutResponseToJSON(value['checkout']),
     };
 }
 

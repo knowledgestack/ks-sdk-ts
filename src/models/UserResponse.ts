@@ -47,6 +47,12 @@ export interface UserResponse {
      */
     email: string | null;
     /**
+     * Subscriber number as a string of digits (no country code). Returned as a string to avoid JS Number precision issues.
+     * @type {string}
+     * @memberof UserResponse
+     */
+    phoneNumber?: string | null;
+    /**
      * First name of the user
      * @type {string}
      * @memberof UserResponse
@@ -82,6 +88,18 @@ export interface UserResponse {
      * @memberof UserResponse
      */
     defaultTenantId: string;
+    /**
+     * User's job title at the current tenant (per-membership)
+     * @type {string}
+     * @memberof UserResponse
+     */
+    jobTitle?: string | null;
+    /**
+     * When the user finished onboarding for the current tenant. NULL = wizard should be shown.
+     * @type {Date}
+     * @memberof UserResponse
+     */
+    onboardingCompletedAt?: Date | null;
 }
 
 
@@ -130,12 +148,15 @@ export function UserResponseFromJSONTyped(json: any, ignoreDiscriminator: boolea
         
         'id': json['id'],
         'email': json['email'],
+        'phoneNumber': json['phone_number'] == null ? undefined : json['phone_number'],
         'firstName': json['first_name'],
         'lastName': json['last_name'],
         'idpType': IdpTypeFromJSON(json['idp_type']),
         'currentTenantId': json['current_tenant_id'],
         'currentTenantRole': TenantUserRoleFromJSON(json['current_tenant_role']),
         'defaultTenantId': json['default_tenant_id'],
+        'jobTitle': json['job_title'] == null ? undefined : json['job_title'],
+        'onboardingCompletedAt': json['onboarding_completed_at'] == null ? undefined : (new Date(json['onboarding_completed_at'])),
     };
 }
 
@@ -152,12 +173,15 @@ export function UserResponseToJSONTyped(value?: UserResponse | null, ignoreDiscr
         
         'id': value['id'],
         'email': value['email'],
+        'phone_number': value['phoneNumber'],
         'first_name': value['firstName'],
         'last_name': value['lastName'],
         'idp_type': IdpTypeToJSON(value['idpType']),
         'current_tenant_id': value['currentTenantId'],
         'current_tenant_role': TenantUserRoleToJSON(value['currentTenantRole']),
         'default_tenant_id': value['defaultTenantId'],
+        'job_title': value['jobTitle'],
+        'onboarding_completed_at': value['onboardingCompletedAt'] == null ? value['onboardingCompletedAt'] : value['onboardingCompletedAt'].toISOString(),
     };
 }
 

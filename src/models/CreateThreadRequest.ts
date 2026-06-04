@@ -14,7 +14,7 @@
 
 import { mapValues } from '../runtime';
 /**
- * Request to create a new thread.
+ * 
  * @export
  * @interface CreateThreadRequest
  */
@@ -37,6 +37,18 @@ export interface CreateThreadRequest {
      * @memberof CreateThreadRequest
      */
     messageForTitle?: string | null;
+    /**
+     * Override the thread path_part name. Defaults to the thread UUID. Used by the workflow runner to enforce one ``main`` thread per run via the structural sibling-name uniqueness index.
+     * @type {string}
+     * @memberof CreateThreadRequest
+     */
+    pathPartName?: string | null;
+    /**
+     * Mark the thread's path_part as system-managed (immutable from the public API). Used by the workflow runner.
+     * @type {boolean}
+     * @memberof CreateThreadRequest
+     */
+    systemManaged?: boolean;
 }
 export const CreateThreadRequestPropertyValidationAttributesMap: {
     [property: string]: {
@@ -59,6 +71,10 @@ export const CreateThreadRequestPropertyValidationAttributesMap: {
     },
     messageForTitle: {
         maxLength: 4096,
+        minLength: 1,
+    },
+    pathPartName: {
+        maxLength: 255,
         minLength: 1,
     },
 }
@@ -84,6 +100,8 @@ export function CreateThreadRequestFromJSONTyped(json: any, ignoreDiscriminator:
         'parentPathPartId': json['parent_path_part_id'] == null ? undefined : json['parent_path_part_id'],
         'title': json['title'] == null ? undefined : json['title'],
         'messageForTitle': json['message_for_title'] == null ? undefined : json['message_for_title'],
+        'pathPartName': json['path_part_name'] == null ? undefined : json['path_part_name'],
+        'systemManaged': json['system_managed'] == null ? undefined : json['system_managed'],
     };
 }
 
@@ -101,6 +119,8 @@ export function CreateThreadRequestToJSONTyped(value?: CreateThreadRequest | nul
         'parent_path_part_id': value['parentPathPartId'],
         'title': value['title'],
         'message_for_title': value['messageForTitle'],
+        'path_part_name': value['pathPartName'],
+        'system_managed': value['systemManaged'],
     };
 }
 

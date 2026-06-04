@@ -9,10 +9,13 @@ Name | Type
 ------------ | -------------
 `language` | [SupportedLanguage](SupportedLanguage.md)
 `description` | string
+`industry` | string
 `timezone` | string
+`displayName` | [DisplayNameFormat](DisplayNameFormat.md)
 `brandName` | string
 `brandColor` | string
 `themeOverrides` | { [key: string]: string; }
+`inviteLink` | [InviteLinkSettingsRequest](InviteLinkSettingsRequest.md)
 
 ## Example
 
@@ -23,10 +26,13 @@ import type { TenantSettingsUpdate } from '@knowledge-stack/ksapi'
 const example = {
   "language": null,
   "description": null,
+  "industry": null,
   "timezone": null,
+  "displayName": null,
   "brandName": null,
   "brandColor": null,
   "themeOverrides": null,
+  "inviteLink": null,
 } satisfies TenantSettingsUpdate
 
 console.log(example)

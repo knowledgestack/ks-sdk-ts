@@ -1,7 +1,6 @@
 
 # UserMessageRequest
 
-Request to send a user message and trigger agent generation.
 
 ## Properties
 

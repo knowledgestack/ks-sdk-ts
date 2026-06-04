@@ -9,7 +9,10 @@ Name | Type
 ------------ | -------------
 `language` | [SupportedLanguage](SupportedLanguage.md)
 `description` | string
+`industry` | string
 `timezone` | string
+`displayName` | [DisplayNameFormat](DisplayNameFormat.md)
+`inviteLink` | [InviteLinkSettingsResponse](InviteLinkSettingsResponse.md)
 
 ## Example
 
@@ -20,7 +23,10 @@ import type { TenantSettingsResponse } from '@knowledge-stack/ksapi'
 const example = {
   "language": null,
   "description": null,
+  "industry": null,
   "timezone": null,
+  "displayName": null,
+  "inviteLink": null,
 } satisfies TenantSettingsResponse
 
 console.log(example)

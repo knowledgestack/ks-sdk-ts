@@ -14,17 +14,17 @@
 
 import { mapValues } from '../runtime';
 /**
- * 
+ * Unified signin — ``username`` matches either email or phone.
  * @export
  * @interface SignInRequest
  */
 export interface SignInRequest {
     /**
-     * 
+     * Email address or phone number (digit string). The system looks the user up by either field.
      * @type {string}
      * @memberof SignInRequest
      */
-    email: string;
+    username: string;
     /**
      * 
      * @type {string}
@@ -60,7 +60,7 @@ export const SignInRequestPropertyValidationAttributesMap: {
  * Check if a given object implements the SignInRequest interface.
  */
 export function instanceOfSignInRequest(value: object): value is SignInRequest {
-    if (!('email' in value) || value['email'] === undefined) return false;
+    if (!('username' in value) || value['username'] === undefined) return false;
     if (!('password' in value) || value['password'] === undefined) return false;
     return true;
 }
@@ -75,7 +75,7 @@ export function SignInRequestFromJSONTyped(json: any, ignoreDiscriminator: boole
     }
     return {
         
-        'email': json['email'],
+        'username': json['username'],
         'password': json['password'],
         'tenantId': json['tenant_id'] == null ? undefined : json['tenant_id'],
     };
@@ -92,7 +92,7 @@ export function SignInRequestToJSONTyped(value?: SignInRequest | null, ignoreDis
 
     return {
         
-        'email': value['email'],
+        'username': value['username'],
         'password': value['password'],
         'tenant_id': value['tenantId'],
     };

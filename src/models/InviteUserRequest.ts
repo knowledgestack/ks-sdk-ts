@@ -45,6 +45,12 @@ export interface InviteUserRequest {
      * @memberof InviteUserRequest
      */
     role?: TenantUserRole;
+    /**
+     * Groups to add the user to on acceptance
+     * @type {Array<string>}
+     * @memberof InviteUserRequest
+     */
+    groups?: Array<string>;
 }
 
 
@@ -63,6 +69,10 @@ export const InviteUserRequestPropertyValidationAttributesMap: {
         uniqueItems?: boolean
     }
 } = {
+    groups: {
+        maxItems: 10,
+        uniqueItems: false,
+    },
 }
 
 
@@ -88,6 +98,7 @@ export function InviteUserRequestFromJSONTyped(json: any, ignoreDiscriminator: b
         'tenantId': json['tenant_id'],
         'email': json['email'],
         'role': json['role'] == null ? undefined : TenantUserRoleFromJSON(json['role']),
+        'groups': json['groups'] == null ? undefined : json['groups'],
     };
 }
 
@@ -105,6 +116,7 @@ export function InviteUserRequestToJSONTyped(value?: InviteUserRequest | null, i
         'tenant_id': value['tenantId'],
         'email': value['email'],
         'role': TenantUserRoleToJSON(value['role']),
+        'groups': value['groups'],
     };
 }
 

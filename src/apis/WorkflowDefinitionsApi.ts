@@ -17,7 +17,6 @@ import * as runtime from '../runtime';
 import type {
   CreateWorkflowDefinitionRequest,
   HTTPValidationError,
-  InvokeWorkflowRequest,
   PaginatedResponseWorkflowDefinitionResponse,
   PaginatedResponseWorkflowRunResponse,
   UpdateWorkflowDefinitionRequest,
@@ -29,8 +28,6 @@ import {
     CreateWorkflowDefinitionRequestToJSON,
     HTTPValidationErrorFromJSON,
     HTTPValidationErrorToJSON,
-    InvokeWorkflowRequestFromJSON,
-    InvokeWorkflowRequestToJSON,
     PaginatedResponseWorkflowDefinitionResponseFromJSON,
     PaginatedResponseWorkflowDefinitionResponseToJSON,
     PaginatedResponseWorkflowRunResponseFromJSON,
@@ -49,6 +46,15 @@ export interface CreateWorkflowDefinitionOperationRequest {
     ksUat?: string | null;
 }
 
+export interface CreateWorkflowRunRequest {
+    definitionId: string;
+    authorization?: string | null;
+    ksUat?: string | null;
+    files?: Array<Blob>;
+    inputScope?: string | null;
+    idempotencyKey?: string | null;
+}
+
 export interface DeleteWorkflowDefinitionRequest {
     definitionId: string;
     authorization?: string | null;
@@ -57,13 +63,6 @@ export interface DeleteWorkflowDefinitionRequest {
 
 export interface GetWorkflowDefinitionRequest {
     definitionId: string;
-    authorization?: string | null;
-    ksUat?: string | null;
-}
-
-export interface InvokeWorkflowOperationRequest {
-    definitionId: string;
-    invokeWorkflowRequest: InvokeWorkflowRequest;
     authorization?: string | null;
     ksUat?: string | null;
 }
@@ -125,6 +124,40 @@ export interface WorkflowDefinitionsApiInterface {
     createWorkflowDefinition(requestParameters: CreateWorkflowDefinitionOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<WorkflowDefinitionResponse>;
 
     /**
+     * Creates request options for createWorkflowRun without sending the request
+     * @param {string} definitionId 
+     * @param {string} [authorization] 
+     * @param {string} [ksUat] 
+     * @param {Array<Blob>} [files] DEPRECATED — do not send files here. Carrying file bytes on run creation makes the call block on synchronous S3 upload (the ~30s \\\&#39;Create run\\\&#39; wait). Instead create an empty draft (omit this field), then upload each file to the run\\\&#39;s &#x60;&#x60;inputs/&#x60;&#x60; folder via &#x60;&#x60;POST /v1/documents/ingest&#x60;&#x60; with &#x60;&#x60;path_part_id&#x60;&#x60; set to the run\\\&#39;s &#x60;&#x60;inputs_path_part_id&#x60;&#x60;; that path ingests asynchronously and auto-syncs the run\\\&#39;s state. This field will be removed once the FE has migrated.
+     * @param {string} [inputScope] JSON array of &#x60;&#x60;DOCUMENT&#x60;&#x60; or &#x60;&#x60;FOLDER&#x60;&#x60; path_part UUIDs referenced from the existing knowledge base, pinned onto the new draft\\\&#39;s input scope. Optional — omit for an empty draft and add references later via PATCH.
+     * @param {string} [idempotencyKey] Optional key to prevent duplicate runs from retries.
+     * @throws {RequiredError}
+     * @memberof WorkflowDefinitionsApiInterface
+     */
+    createWorkflowRunRequestOpts(requestParameters: CreateWorkflowRunRequest): Promise<runtime.RequestOpts>;
+
+    /**
+     * Create a NOT_STARTED run draft, optionally seeded with KB references.  All three fields are optional: an empty request creates an empty draft instantly (the two-step flow — the FE then uploads files into the run\'s ``inputs/`` folder and/or PATCHes ``input_scope`` before Start). Each ``input_scope`` entry is resolved per its part_type: a DOCUMENT is pinned to its active ``DOCUMENT_VERSION``; a FOLDER is pinned by reference only and read live by the runner.  ``files`` is DEPRECATED — see the field description. When supplied, uploads are still ingested under ``runs/<id>/inputs/`` so callers mid-migration keep working, but the call blocks on synchronous S3 upload.
+     * @summary Create Workflow Run Handler
+     * @param {string} definitionId 
+     * @param {string} [authorization] 
+     * @param {string} [ksUat] 
+     * @param {Array<Blob>} [files] DEPRECATED — do not send files here. Carrying file bytes on run creation makes the call block on synchronous S3 upload (the ~30s \\\&#39;Create run\\\&#39; wait). Instead create an empty draft (omit this field), then upload each file to the run\\\&#39;s &#x60;&#x60;inputs/&#x60;&#x60; folder via &#x60;&#x60;POST /v1/documents/ingest&#x60;&#x60; with &#x60;&#x60;path_part_id&#x60;&#x60; set to the run\\\&#39;s &#x60;&#x60;inputs_path_part_id&#x60;&#x60;; that path ingests asynchronously and auto-syncs the run\\\&#39;s state. This field will be removed once the FE has migrated.
+     * @param {string} [inputScope] JSON array of &#x60;&#x60;DOCUMENT&#x60;&#x60; or &#x60;&#x60;FOLDER&#x60;&#x60; path_part UUIDs referenced from the existing knowledge base, pinned onto the new draft\\\&#39;s input scope. Optional — omit for an empty draft and add references later via PATCH.
+     * @param {string} [idempotencyKey] Optional key to prevent duplicate runs from retries.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof WorkflowDefinitionsApiInterface
+     */
+    createWorkflowRunRaw(requestParameters: CreateWorkflowRunRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<WorkflowRunResponse>>;
+
+    /**
+     * Create a NOT_STARTED run draft, optionally seeded with KB references.  All three fields are optional: an empty request creates an empty draft instantly (the two-step flow — the FE then uploads files into the run\'s ``inputs/`` folder and/or PATCHes ``input_scope`` before Start). Each ``input_scope`` entry is resolved per its part_type: a DOCUMENT is pinned to its active ``DOCUMENT_VERSION``; a FOLDER is pinned by reference only and read live by the runner.  ``files`` is DEPRECATED — see the field description. When supplied, uploads are still ingested under ``runs/<id>/inputs/`` so callers mid-migration keep working, but the call blocks on synchronous S3 upload.
+     * Create Workflow Run Handler
+     */
+    createWorkflowRun(requestParameters: CreateWorkflowRunRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<WorkflowRunResponse>;
+
+    /**
      * Creates request options for deleteWorkflowDefinition without sending the request
      * @param {string} definitionId 
      * @param {string} [authorization] 
@@ -177,35 +210,6 @@ export interface WorkflowDefinitionsApiInterface {
      * Get Workflow Definition Handler
      */
     getWorkflowDefinition(requestParameters: GetWorkflowDefinitionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<WorkflowDefinitionResponse>;
-
-    /**
-     * Creates request options for invokeWorkflow without sending the request
-     * @param {string} definitionId 
-     * @param {InvokeWorkflowRequest} invokeWorkflowRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
-     * @throws {RequiredError}
-     * @memberof WorkflowDefinitionsApiInterface
-     */
-    invokeWorkflowRequestOpts(requestParameters: InvokeWorkflowOperationRequest): Promise<runtime.RequestOpts>;
-
-    /**
-     * 
-     * @summary Invoke Workflow Handler
-     * @param {string} definitionId 
-     * @param {InvokeWorkflowRequest} invokeWorkflowRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof WorkflowDefinitionsApiInterface
-     */
-    invokeWorkflowRaw(requestParameters: InvokeWorkflowOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<WorkflowRunResponse>>;
-
-    /**
-     * Invoke Workflow Handler
-     */
-    invokeWorkflow(requestParameters: InvokeWorkflowOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<WorkflowRunResponse>;
 
     /**
      * Creates request options for listWorkflowDefinitions without sending the request
@@ -355,6 +359,88 @@ export class WorkflowDefinitionsApi extends runtime.BaseAPI implements WorkflowD
     }
 
     /**
+     * Creates request options for createWorkflowRun without sending the request
+     */
+    async createWorkflowRunRequestOpts(requestParameters: CreateWorkflowRunRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['definitionId'] == null) {
+            throw new runtime.RequiredError(
+                'definitionId',
+                'Required parameter "definitionId" was null or undefined when calling createWorkflowRun().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (requestParameters['authorization'] != null) {
+            headerParameters['authorization'] = String(requestParameters['authorization']);
+        }
+
+        const consumes: runtime.Consume[] = [
+            { contentType: 'multipart/form-data' },
+        ];
+        // @ts-ignore: canConsumeForm may be unused
+        const canConsumeForm = runtime.canConsumeForm(consumes);
+
+        let formParams: { append(param: string, value: any): any };
+        let useForm = false;
+        // use FormData to transmit files using content-type "multipart/form-data"
+        useForm = canConsumeForm;
+        if (useForm) {
+            formParams = new FormData();
+        } else {
+            formParams = new URLSearchParams();
+        }
+
+        if (requestParameters['files'] != null) {
+            requestParameters['files'].forEach((element) => {
+                formParams.append('files', element as any);
+            })
+        }
+
+        if (requestParameters['inputScope'] != null) {
+            formParams.append('input_scope', requestParameters['inputScope'] as any);
+        }
+
+        if (requestParameters['idempotencyKey'] != null) {
+            formParams.append('idempotency_key', requestParameters['idempotencyKey'] as any);
+        }
+
+
+        let urlPath = `/v1/workflow-definitions/{definition_id}/runs`;
+        urlPath = urlPath.replace(`{${"definition_id"}}`, encodeURIComponent(String(requestParameters['definitionId'])));
+
+        return {
+            path: urlPath,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: formParams,
+        };
+    }
+
+    /**
+     * Create a NOT_STARTED run draft, optionally seeded with KB references.  All three fields are optional: an empty request creates an empty draft instantly (the two-step flow — the FE then uploads files into the run\'s ``inputs/`` folder and/or PATCHes ``input_scope`` before Start). Each ``input_scope`` entry is resolved per its part_type: a DOCUMENT is pinned to its active ``DOCUMENT_VERSION``; a FOLDER is pinned by reference only and read live by the runner.  ``files`` is DEPRECATED — see the field description. When supplied, uploads are still ingested under ``runs/<id>/inputs/`` so callers mid-migration keep working, but the call blocks on synchronous S3 upload.
+     * Create Workflow Run Handler
+     */
+    async createWorkflowRunRaw(requestParameters: CreateWorkflowRunRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<WorkflowRunResponse>> {
+        const requestOptions = await this.createWorkflowRunRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => WorkflowRunResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * Create a NOT_STARTED run draft, optionally seeded with KB references.  All three fields are optional: an empty request creates an empty draft instantly (the two-step flow — the FE then uploads files into the run\'s ``inputs/`` folder and/or PATCHes ``input_scope`` before Start). Each ``input_scope`` entry is resolved per its part_type: a DOCUMENT is pinned to its active ``DOCUMENT_VERSION``; a FOLDER is pinned by reference only and read live by the runner.  ``files`` is DEPRECATED — see the field description. When supplied, uploads are still ingested under ``runs/<id>/inputs/`` so callers mid-migration keep working, but the call blocks on synchronous S3 upload.
+     * Create Workflow Run Handler
+     */
+    async createWorkflowRun(requestParameters: CreateWorkflowRunRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<WorkflowRunResponse> {
+        const response = await this.createWorkflowRunRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
      * Creates request options for deleteWorkflowDefinition without sending the request
      */
     async deleteWorkflowDefinitionRequestOpts(requestParameters: DeleteWorkflowDefinitionRequest): Promise<runtime.RequestOpts> {
@@ -448,65 +534,6 @@ export class WorkflowDefinitionsApi extends runtime.BaseAPI implements WorkflowD
      */
     async getWorkflowDefinition(requestParameters: GetWorkflowDefinitionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<WorkflowDefinitionResponse> {
         const response = await this.getWorkflowDefinitionRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * Creates request options for invokeWorkflow without sending the request
-     */
-    async invokeWorkflowRequestOpts(requestParameters: InvokeWorkflowOperationRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['definitionId'] == null) {
-            throw new runtime.RequiredError(
-                'definitionId',
-                'Required parameter "definitionId" was null or undefined when calling invokeWorkflow().'
-            );
-        }
-
-        if (requestParameters['invokeWorkflowRequest'] == null) {
-            throw new runtime.RequiredError(
-                'invokeWorkflowRequest',
-                'Required parameter "invokeWorkflowRequest" was null or undefined when calling invokeWorkflow().'
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        headerParameters['Content-Type'] = 'application/json';
-
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
-
-
-        let urlPath = `/v1/workflow-definitions/{definition_id}/invoke`;
-        urlPath = urlPath.replace(`{${"definition_id"}}`, encodeURIComponent(String(requestParameters['definitionId'])));
-
-        return {
-            path: urlPath,
-            method: 'POST',
-            headers: headerParameters,
-            query: queryParameters,
-            body: InvokeWorkflowRequestToJSON(requestParameters['invokeWorkflowRequest']),
-        };
-    }
-
-    /**
-     * Invoke Workflow Handler
-     */
-    async invokeWorkflowRaw(requestParameters: InvokeWorkflowOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<WorkflowRunResponse>> {
-        const requestOptions = await this.invokeWorkflowRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => WorkflowRunResponseFromJSON(jsonValue));
-    }
-
-    /**
-     * Invoke Workflow Handler
-     */
-    async invokeWorkflow(requestParameters: InvokeWorkflowOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<WorkflowRunResponse> {
-        const response = await this.invokeWorkflowRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

@@ -58,6 +58,18 @@ export interface TenantUserResponse {
      */
     role: TenantUserRole;
     /**
+     * User's department
+     * @type {string}
+     * @memberof TenantUserResponse
+     */
+    department?: string | null;
+    /**
+     * User's job title
+     * @type {string}
+     * @memberof TenantUserResponse
+     */
+    jobTitle?: string | null;
+    /**
      * Soft-deletion timestamp. NULL = active.
      * @type {Date}
      * @memberof TenantUserResponse
@@ -129,6 +141,8 @@ export function TenantUserResponseFromJSONTyped(json: any, ignoreDiscriminator: 
         'firstName': json['first_name'] == null ? undefined : json['first_name'],
         'lastName': json['last_name'] == null ? undefined : json['last_name'],
         'role': TenantUserRoleFromJSON(json['role']),
+        'department': json['department'] == null ? undefined : json['department'],
+        'jobTitle': json['job_title'] == null ? undefined : json['job_title'],
         'deactivatedOn': json['deactivated_on'] == null ? undefined : (new Date(json['deactivated_on'])),
         'isTenantIdpManaged': json['is_tenant_idp_managed'],
         'createdAt': (new Date(json['created_at'])),
@@ -152,6 +166,8 @@ export function TenantUserResponseToJSONTyped(value?: TenantUserResponse | null,
         'first_name': value['firstName'],
         'last_name': value['lastName'],
         'role': TenantUserRoleToJSON(value['role']),
+        'department': value['department'],
+        'job_title': value['jobTitle'],
         'deactivated_on': value['deactivatedOn'] == null ? value['deactivatedOn'] : value['deactivatedOn'].toISOString(),
         'is_tenant_idp_managed': value['isTenantIdpManaged'],
         'created_at': value['createdAt'].toISOString(),

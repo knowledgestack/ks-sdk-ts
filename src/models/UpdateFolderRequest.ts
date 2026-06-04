@@ -14,7 +14,7 @@
 
 import { mapValues } from '../runtime';
 /**
- * Request to update a folder (rename and/or move).
+ * Request to update a folder (rename, move, and/or change qdrant exclusion).
  * @export
  * @interface UpdateFolderRequest
  */
@@ -31,6 +31,12 @@ export interface UpdateFolderRequest {
      * @memberof UpdateFolderRequest
      */
     parentPathPartId?: string | null;
+    /**
+     * If set, toggle whether this folder (and its descendants) are excluded from Qdrant vector indexing. True deletes existing points for the subtree; False re-embeds them. Not allowed on system-managed folders.
+     * @type {boolean}
+     * @memberof UpdateFolderRequest
+     */
+    excludeFromQdrant?: boolean | null;
 }
 export const UpdateFolderRequestPropertyValidationAttributesMap: {
     [property: string]: {
@@ -73,6 +79,7 @@ export function UpdateFolderRequestFromJSONTyped(json: any, ignoreDiscriminator:
         
         'name': json['name'] == null ? undefined : json['name'],
         'parentPathPartId': json['parent_path_part_id'] == null ? undefined : json['parent_path_part_id'],
+        'excludeFromQdrant': json['exclude_from_qdrant'] == null ? undefined : json['exclude_from_qdrant'],
     };
 }
 
@@ -89,6 +96,7 @@ export function UpdateFolderRequestToJSONTyped(value?: UpdateFolderRequest | nul
         
         'name': value['name'],
         'parent_path_part_id': value['parentPathPartId'],
+        'exclude_from_qdrant': value['excludeFromQdrant'],
     };
 }
 

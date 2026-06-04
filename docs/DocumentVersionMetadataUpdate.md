@@ -22,7 +22,12 @@ Name | Type
 `xlsxParseResultS3` | string
 `xlsxNamedRanges` | Array&lt;{ [key: string]: any; }&gt;
 `xlsxKpiCatalog` | Array&lt;{ [key: string]: any; }&gt;
+`citationAnchors` | [Array&lt;XlsxCellAnchorInputOrDocxParagraphAnchorInput&gt;](XlsxCellAnchorInputOrDocxParagraphAnchorInput.md)
 `informationStatistics` | [InformationStatistics](InformationStatistics.md)
+`quotaCharged` | boolean
+`quotaPageCount` | number
+`quotaIdempotencyKey` | string
+`fileMd5` | string
 
 ## Example
 
@@ -46,7 +51,12 @@ const example = {
   "xlsxParseResultS3": null,
   "xlsxNamedRanges": null,
   "xlsxKpiCatalog": null,
+  "citationAnchors": null,
   "informationStatistics": null,
+  "quotaCharged": null,
+  "quotaPageCount": null,
+  "quotaIdempotencyKey": null,
+  "fileMd5": null,
 } satisfies DocumentVersionMetadataUpdate
 
 console.log(example)

@@ -10,6 +10,7 @@ All URIs are relative to *http://localhost:8000*
 | [**deleteTenantLogo**](TenantsApi.md#deletetenantlogo) | **DELETE** /v1/tenants/{tenant_id}/branding/logo | Delete Tenant Logo |
 | [**deleteTenantUser**](TenantsApi.md#deletetenantuser) | **DELETE** /v1/tenants/{tenant_id}/users/{user_id} | Delete Tenant User Handler |
 | [**getTenant**](TenantsApi.md#gettenant) | **GET** /v1/tenants/{tenant_id} | Get Tenant |
+| [**getTenantQuotaState**](TenantsApi.md#gettenantquotastate) | **GET** /v1/tenants/{tenant_id}/quota | Get Tenant Quota State Handler |
 | [**listTenantUsers**](TenantsApi.md#listtenantusers) | **GET** /v1/tenants/{tenant_id}/users | List Tenant Users |
 | [**listTenants**](TenantsApi.md#listtenants) | **GET** /v1/tenants | List Tenants |
 | [**updateTenant**](TenantsApi.md#updatetenantoperation) | **PATCH** /v1/tenants/{tenant_id} | Update Tenant |
@@ -454,6 +455,80 @@ example().catch(console.error);
 ### Return type
 
 [**TenantResponse**](TenantResponse.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+- **Content-Type**: Not defined
+- **Accept**: `application/json`
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+| **200** | Successful Response |  -  |
+| **422** | Validation Error |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#api-endpoints) [[Back to Model list]](../README.md#models) [[Back to README]](../README.md)
+
+
+## getTenantQuotaState
+
+> TenantQuotaStateResponse getTenantQuotaState(tenantId, authorization, ksUat)
+
+Get Tenant Quota State Handler
+
+Read the tenant\&#39;s current quota state across all metered caps + seats.  Any active member of the tenant can read. Read-only — does not mutate quota state.
+
+### Example
+
+```ts
+import {
+  Configuration,
+  TenantsApi,
+} from '@knowledge-stack/ksapi';
+import type { GetTenantQuotaStateRequest } from '@knowledge-stack/ksapi';
+
+async function example() {
+  console.log("🚀 Testing @knowledge-stack/ksapi SDK...");
+  const api = new TenantsApi();
+
+  const body = {
+    // string
+    tenantId: 38400000-8cf0-11bd-b23e-10b96e4ef00d,
+    // string (optional)
+    authorization: authorization_example,
+    // string (optional)
+    ksUat: ksUat_example,
+  } satisfies GetTenantQuotaStateRequest;
+
+  try {
+    const data = await api.getTenantQuotaState(body);
+    console.log(data);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+// Run the test
+example().catch(console.error);
+```
+
+### Parameters
+
+
+| Name | Type | Description  | Notes |
+|------------- | ------------- | ------------- | -------------|
+| **tenantId** | `string` |  | [Defaults to `undefined`] |
+| **authorization** | `string` |  | [Optional] [Defaults to `undefined`] |
+| **ksUat** | `string` |  | [Optional] [Defaults to `undefined`] |
+
+### Return type
+
+[**TenantQuotaStateResponse**](TenantQuotaStateResponse.md)
 
 ### Authorization
 

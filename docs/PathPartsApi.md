@@ -4,23 +4,25 @@ All URIs are relative to *http://localhost:8000*
 
 | Method | HTTP request | Description |
 |------------- | ------------- | -------------|
-| [**bulkAddPathPartTags**](PathPartsApi.md#bulkaddpathparttags) | **POST** /v1/path-parts/{path_part_id}/tags | Bulk Add Path Part Tags Handler |
+| [**appendPathPartEvent**](PathPartsApi.md#appendpathpartevent) | **POST** /v1/path-parts/{path_part_id}/events | Append Path Part Event Handler |
 | [**bulkRemovePathPartTags**](PathPartsApi.md#bulkremovepathparttags) | **DELETE** /v1/path-parts/{path_part_id}/tags | Bulk Remove Path Part Tags Handler |
 | [**getPathPart**](PathPartsApi.md#getpathpart) | **GET** /v1/path-parts/{path_part_id} | Get Path Part Handler |
 | [**getPathPartAncestry**](PathPartsApi.md#getpathpartancestry) | **GET** /v1/path-parts/{path_part_id}/ancestry | Get Path Part Ancestry Handler |
 | [**getPathPartSubtreeChunks**](PathPartsApi.md#getpathpartsubtreechunks) | **GET** /v1/path-parts/{path_part_id}/subtree_chunks | Get Path Part Subtree Chunks Handler |
 | [**getPathPartTags**](PathPartsApi.md#getpathparttags) | **GET** /v1/path-parts/{path_part_id}/tags | Get Path Part Tags Handler |
+| [**listPathPartEvents**](PathPartsApi.md#listpathpartevents) | **GET** /v1/path-parts/{path_part_id}/events | List Path Part Events Handler |
 | [**listPathParts**](PathPartsApi.md#listpathparts) | **GET** /v1/path-parts | List Path Parts Handler |
+| [**setPathPartTags**](PathPartsApi.md#setpathparttags) | **POST** /v1/path-parts/{path_part_id}/tags | Set Path Part Tags Handler |
 
 
 
-## bulkAddPathPartTags
+## appendPathPartEvent
 
-> PathPartTagsResponse bulkAddPathPartTags(pathPartId, bulkTagRequest, authorization, ksUat)
+> EventResponse appendPathPartEvent(pathPartId, appendEventRequest, authorization, ksUat)
 
-Bulk Add Path Part Tags Handler
+Append Path Part Event Handler
 
-Bulk add tags to a path part.  Idempotent — already-attached tags are skipped. Returns 400 if any tag_id doesn\&#39;t exist (FK violation). Requires write permission on the target path part.
+Record an event for a subject path_part from the frontend.  Auth: caller must hold &#x60;&#x60;can_write&#x60;&#x60; on the subject\&#39;s materialized_path (OWNER/ADMIN bypass). Server stamps &#x60;&#x60;actor_user_id&#x60;&#x60; from the caller\&#39;s identity — callers cannot impersonate other users on the audit trail.  &#x60;&#x60;kind&#x60;&#x60; is free-form text but reserved server namespaces (&#x60;&#x60;workflow.&#x60;&#x60;, &#x60;&#x60;document.&#x60;&#x60;, &#x60;&#x60;folder.&#x60;&#x60;, &#x60;&#x60;permission.&#x60;&#x60;, &#x60;&#x60;connector.&#x60;&#x60;, &#x60;&#x60;query.&#x60;&#x60;, &#x60;&#x60;auth.&#x60;&#x60;, &#x60;&#x60;tenant.&#x60;&#x60;) are rejected at 422 so clients cannot forge server-emitted audit events. Clients should namespace under &#x60;&#x60;client.*&#x60;&#x60;. &#x60;&#x60;payload&#x60;&#x60; is capped at 64KB encoded JSON.
 
 ### Example
 
@@ -29,7 +31,7 @@ import {
   Configuration,
   PathPartsApi,
 } from '@knowledge-stack/ksapi';
-import type { BulkAddPathPartTagsRequest } from '@knowledge-stack/ksapi';
+import type { AppendPathPartEventRequest } from '@knowledge-stack/ksapi';
 
 async function example() {
   console.log("🚀 Testing @knowledge-stack/ksapi SDK...");
@@ -38,16 +40,16 @@ async function example() {
   const body = {
     // string
     pathPartId: 38400000-8cf0-11bd-b23e-10b96e4ef00d,
-    // BulkTagRequest
-    bulkTagRequest: ...,
+    // AppendEventRequest
+    appendEventRequest: ...,
     // string (optional)
     authorization: authorization_example,
     // string (optional)
     ksUat: ksUat_example,
-  } satisfies BulkAddPathPartTagsRequest;
+  } satisfies AppendPathPartEventRequest;
 
   try {
-    const data = await api.bulkAddPathPartTags(body);
+    const data = await api.appendPathPartEvent(body);
     console.log(data);
   } catch (error) {
     console.error(error);
@@ -64,13 +66,13 @@ example().catch(console.error);
 | Name | Type | Description  | Notes |
 |------------- | ------------- | ------------- | -------------|
 | **pathPartId** | `string` |  | [Defaults to `undefined`] |
-| **bulkTagRequest** | [BulkTagRequest](BulkTagRequest.md) |  | |
+| **appendEventRequest** | [AppendEventRequest](AppendEventRequest.md) |  | |
 | **authorization** | `string` |  | [Optional] [Defaults to `undefined`] |
 | **ksUat** | `string` |  | [Optional] [Defaults to `undefined`] |
 
 ### Return type
 
-[**PathPartTagsResponse**](PathPartTagsResponse.md)
+[**EventResponse**](EventResponse.md)
 
 ### Authorization
 
@@ -467,13 +469,105 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#api-endpoints) [[Back to Model list]](../README.md#models) [[Back to README]](../README.md)
 
 
+## listPathPartEvents
+
+> PaginatedResponseEventResponse listPathPartEvents(pathPartId, kind, since, until, recursive, limit, offset, authorization, ksUat)
+
+List Path Part Events Handler
+
+List events anchored to a specific path_part subject.  Subject permission is enforced via the existing &#x60;&#x60;PathPermissionService&#x60;&#x60; — caller must have &#x60;&#x60;can_read&#x60;&#x60; on the subject\&#39;s materialized_path (OWNER/ADMIN bypass). Events are ordered newest-first by &#x60;&#x60;ts&#x60;&#x60; and paginated.  When &#x60;&#x60;recursive&#x3D;True&#x60;&#x60;, events on any descendant of the subject are included — useful for \&quot;all events under this folder\&quot; or \&quot;all events under this workflow definition\&quot;.
+
+### Example
+
+```ts
+import {
+  Configuration,
+  PathPartsApi,
+} from '@knowledge-stack/ksapi';
+import type { ListPathPartEventsRequest } from '@knowledge-stack/ksapi';
+
+async function example() {
+  console.log("🚀 Testing @knowledge-stack/ksapi SDK...");
+  const api = new PathPartsApi();
+
+  const body = {
+    // string
+    pathPartId: 38400000-8cf0-11bd-b23e-10b96e4ef00d,
+    // string | Filter to a single event kind (optional)
+    kind: kind_example,
+    // Date | Only events at or after this timestamp (optional)
+    since: 2013-10-20T19:20:30+01:00,
+    // Date | Only events strictly before this timestamp (optional)
+    until: 2013-10-20T19:20:30+01:00,
+    // boolean | Include events from descendant path_parts as well as the subject itself (optional)
+    recursive: true,
+    // number | Number of items per page (optional)
+    limit: 56,
+    // number | Number of items to skip (optional)
+    offset: 56,
+    // string (optional)
+    authorization: authorization_example,
+    // string (optional)
+    ksUat: ksUat_example,
+  } satisfies ListPathPartEventsRequest;
+
+  try {
+    const data = await api.listPathPartEvents(body);
+    console.log(data);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+// Run the test
+example().catch(console.error);
+```
+
+### Parameters
+
+
+| Name | Type | Description  | Notes |
+|------------- | ------------- | ------------- | -------------|
+| **pathPartId** | `string` |  | [Defaults to `undefined`] |
+| **kind** | `string` | Filter to a single event kind | [Optional] [Defaults to `undefined`] |
+| **since** | `Date` | Only events at or after this timestamp | [Optional] [Defaults to `undefined`] |
+| **until** | `Date` | Only events strictly before this timestamp | [Optional] [Defaults to `undefined`] |
+| **recursive** | `boolean` | Include events from descendant path_parts as well as the subject itself | [Optional] [Defaults to `false`] |
+| **limit** | `number` | Number of items per page | [Optional] [Defaults to `20`] |
+| **offset** | `number` | Number of items to skip | [Optional] [Defaults to `0`] |
+| **authorization** | `string` |  | [Optional] [Defaults to `undefined`] |
+| **ksUat** | `string` |  | [Optional] [Defaults to `undefined`] |
+
+### Return type
+
+[**PaginatedResponseEventResponse**](PaginatedResponseEventResponse.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+- **Content-Type**: Not defined
+- **Accept**: `application/json`
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+| **200** | Successful Response |  -  |
+| **422** | Validation Error |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#api-endpoints) [[Back to Model list]](../README.md#models) [[Back to README]](../README.md)
+
+
 ## listPathParts
 
 > PaginatedResponsePathPartResponse listPathParts(parentPathId, maxDepth, sortOrder, limit, offset, authorization, ksUat)
 
 List Path Parts Handler
 
-List path parts (folders) under a parent with traversal.  This is a generic endpoint for traversing the folder hierarchy. It returns only FOLDER type path parts.  - If parent_path_id is not provided, lists contents of the root folder. - max_depth controls how deep to traverse (1 &#x3D; direct children only). - sort_order controls the ordering: LOGICAL (linked-list), NAME, UPDATED_AT, CREATED_AT.  For listing folder contents that includes documents with enriched metadata, use GET /folders/{folder_id}/contents instead.
+List path parts under a parent with traversal.  This is a generic endpoint for traversing the path hierarchy. It returns the navigable, container-like nodes of the tree: FOLDER, WORKFLOW_DEFINITION, and WORKFLOW_RUN path parts.  - If parent_path_id is not provided, lists contents of the root folder. - max_depth controls how deep to traverse (1 &#x3D; direct children only). - sort_order controls the ordering: LOGICAL (linked-list), NAME, UPDATED_AT, CREATED_AT.  For listing folder contents that includes documents with enriched metadata, use GET /folders/{folder_id}/contents instead.
 
 ### Example
 
@@ -541,6 +635,83 @@ No authorization required
 ### HTTP request headers
 
 - **Content-Type**: Not defined
+- **Accept**: `application/json`
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+| **200** | Successful Response |  -  |
+| **422** | Validation Error |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#api-endpoints) [[Back to Model list]](../README.md#models) [[Back to README]](../README.md)
+
+
+## setPathPartTags
+
+> PathPartTagsResponse setPathPartTags(pathPartId, bulkTagRequest, authorization, ksUat)
+
+Set Path Part Tags Handler
+
+Set tags on a path part, replacing any existing tags.  The provided tag_ids become the complete tag set for the path part. Tags not in the list are removed; missing tags are added. An empty list clears all tags. Returns 400 if any tag_id doesn\&#39;t exist (FK violation). Requires write permission on the target path part.
+
+### Example
+
+```ts
+import {
+  Configuration,
+  PathPartsApi,
+} from '@knowledge-stack/ksapi';
+import type { SetPathPartTagsRequest } from '@knowledge-stack/ksapi';
+
+async function example() {
+  console.log("🚀 Testing @knowledge-stack/ksapi SDK...");
+  const api = new PathPartsApi();
+
+  const body = {
+    // string
+    pathPartId: 38400000-8cf0-11bd-b23e-10b96e4ef00d,
+    // BulkTagRequest
+    bulkTagRequest: ...,
+    // string (optional)
+    authorization: authorization_example,
+    // string (optional)
+    ksUat: ksUat_example,
+  } satisfies SetPathPartTagsRequest;
+
+  try {
+    const data = await api.setPathPartTags(body);
+    console.log(data);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+// Run the test
+example().catch(console.error);
+```
+
+### Parameters
+
+
+| Name | Type | Description  | Notes |
+|------------- | ------------- | ------------- | -------------|
+| **pathPartId** | `string` |  | [Defaults to `undefined`] |
+| **bulkTagRequest** | [BulkTagRequest](BulkTagRequest.md) |  | |
+| **authorization** | `string` |  | [Optional] [Defaults to `undefined`] |
+| **ksUat** | `string` |  | [Optional] [Defaults to `undefined`] |
+
+### Return type
+
+[**PathPartTagsResponse**](PathPartTagsResponse.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+- **Content-Type**: `application/json`
 - **Accept**: `application/json`
 
 

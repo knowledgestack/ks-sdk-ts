@@ -1,7 +1,7 @@
 
 # UpdateFolderRequest
 
-Request to update a folder (rename and/or move).
+Request to update a folder (rename, move, and/or change qdrant exclusion).
 
 ## Properties
 
@@ -9,6 +9,7 @@ Name | Type
 ------------ | -------------
 `name` | string
 `parentPathPartId` | string
+`excludeFromQdrant` | boolean
 
 ## Example
 
@@ -19,6 +20,7 @@ import type { UpdateFolderRequest } from '@knowledge-stack/ksapi'
 const example = {
   "name": null,
   "parentPathPartId": null,
+  "excludeFromQdrant": null,
 } satisfies UpdateFolderRequest
 
 console.log(example)

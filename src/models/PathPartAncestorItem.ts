@@ -70,6 +70,12 @@ export interface PathPartAncestorItem {
      */
     systemManaged: boolean;
     /**
+     * Direct exclusion flag on this ancestor only (not inherited). The effective exclusion is the OR across the full chain.
+     * @type {boolean}
+     * @memberof PathPartAncestorItem
+     */
+    excludeFromQdrant: boolean;
+    /**
      * Creation timestamp
      * @type {Date}
      * @memberof PathPartAncestorItem
@@ -113,6 +119,7 @@ export function instanceOfPathPartAncestorItem(value: object): value is PathPart
     if (!('metadataObjId' in value) || value['metadataObjId'] === undefined) return false;
     if (!('materializedPath' in value) || value['materializedPath'] === undefined) return false;
     if (!('systemManaged' in value) || value['systemManaged'] === undefined) return false;
+    if (!('excludeFromQdrant' in value) || value['excludeFromQdrant'] === undefined) return false;
     if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
     if (!('updatedAt' in value) || value['updatedAt'] === undefined) return false;
     return true;
@@ -135,6 +142,7 @@ export function PathPartAncestorItemFromJSONTyped(json: any, ignoreDiscriminator
         'metadataObjId': json['metadata_obj_id'],
         'materializedPath': json['materialized_path'],
         'systemManaged': json['system_managed'],
+        'excludeFromQdrant': json['exclude_from_qdrant'],
         'createdAt': (new Date(json['created_at'])),
         'updatedAt': (new Date(json['updated_at'])),
     };
@@ -158,6 +166,7 @@ export function PathPartAncestorItemToJSONTyped(value?: PathPartAncestorItem | n
         'metadata_obj_id': value['metadataObjId'],
         'materialized_path': value['materializedPath'],
         'system_managed': value['systemManaged'],
+        'exclude_from_qdrant': value['excludeFromQdrant'],
         'created_at': value['createdAt'].toISOString(),
         'updated_at': value['updatedAt'].toISOString(),
     };

@@ -14,7 +14,7 @@
 
 import { mapValues } from '../runtime';
 /**
- * Request to update a document (rename, move, and/or change active version).
+ * Request to update a document (rename, move, active version, qdrant exclusion).
  * @export
  * @interface UpdateDocumentRequest
  */
@@ -37,6 +37,18 @@ export interface UpdateDocumentRequest {
      * @memberof UpdateDocumentRequest
      */
     activeVersionId?: string | null;
+    /**
+     * If set, toggle whether this document is excluded from Qdrant vector indexing. True deletes existing points; False re-embeds the active version. Not allowed on system-managed documents.
+     * @type {boolean}
+     * @memberof UpdateDocumentRequest
+     */
+    excludeFromQdrant?: boolean | null;
+    /**
+     * Transfer ownership to another active tenant_user. Allowed only when the caller is the current owner or has ADMIN/OWNER role.
+     * @type {string}
+     * @memberof UpdateDocumentRequest
+     */
+    ownerTenantUserId?: string | null;
 }
 export const UpdateDocumentRequestPropertyValidationAttributesMap: {
     [property: string]: {
@@ -80,6 +92,8 @@ export function UpdateDocumentRequestFromJSONTyped(json: any, ignoreDiscriminato
         'name': json['name'] == null ? undefined : json['name'],
         'parentPathPartId': json['parent_path_part_id'] == null ? undefined : json['parent_path_part_id'],
         'activeVersionId': json['active_version_id'] == null ? undefined : json['active_version_id'],
+        'excludeFromQdrant': json['exclude_from_qdrant'] == null ? undefined : json['exclude_from_qdrant'],
+        'ownerTenantUserId': json['owner_tenant_user_id'] == null ? undefined : json['owner_tenant_user_id'],
     };
 }
 
@@ -97,6 +111,8 @@ export function UpdateDocumentRequestToJSONTyped(value?: UpdateDocumentRequest |
         'name': value['name'],
         'parent_path_part_id': value['parentPathPartId'],
         'active_version_id': value['activeVersionId'],
+        'exclude_from_qdrant': value['excludeFromQdrant'],
+        'owner_tenant_user_id': value['ownerTenantUserId'],
     };
 }
 

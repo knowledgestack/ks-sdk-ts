@@ -1,7 +1,7 @@
 
 # UpdateWorkflowDefinitionRequest
 
-Full replacement (PUT semantics). All fields are required.
+Full replacement (PUT semantics).
 
 ## Properties
 
@@ -9,14 +9,10 @@ Name | Type
 ------------ | -------------
 `name` | string
 `description` | string
-`runnerType` | [WorkflowRunnerType](WorkflowRunnerType.md)
-`runnerConfig` | [SelfHostedRunnerConfig](SelfHostedRunnerConfig.md)
 `maxRunDurationSeconds` | number
-`sourcePathPartIds` | Array&lt;string&gt;
-`instructionPathPartIds` | Array&lt;string&gt;
-`outputPathPartIds` | Array&lt;string&gt;
-`templatePathPartId` | string
+`instructionPathPartId` | string
 `isActive` | boolean
+`approvalRequired` | boolean
 
 ## Example
 
@@ -27,14 +23,10 @@ import type { UpdateWorkflowDefinitionRequest } from '@knowledge-stack/ksapi'
 const example = {
   "name": null,
   "description": null,
-  "runnerType": null,
-  "runnerConfig": null,
   "maxRunDurationSeconds": null,
-  "sourcePathPartIds": null,
-  "instructionPathPartIds": null,
-  "outputPathPartIds": null,
-  "templatePathPartId": null,
+  "instructionPathPartId": null,
   "isActive": null,
+  "approvalRequired": null,
 } satisfies UpdateWorkflowDefinitionRequest
 
 console.log(example)

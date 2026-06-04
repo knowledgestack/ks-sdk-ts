@@ -64,6 +64,18 @@ export interface TenantResponse {
      * @memberof TenantResponse
      */
     branding?: TenantBrandingResponse;
+    /**
+     * Maximum active members allowed for this tenant.
+     * @type {number}
+     * @memberof TenantResponse
+     */
+    seats: number;
+    /**
+     * FK to the subscription plan governing the tenant's caps. Resolve ``GET /public/subscriptions`` to display plan name and limits.
+     * @type {string}
+     * @memberof TenantResponse
+     */
+    subscriptionId: string;
 }
 export const TenantResponsePropertyValidationAttributesMap: {
     [property: string]: {
@@ -80,6 +92,10 @@ export const TenantResponsePropertyValidationAttributesMap: {
         uniqueItems?: boolean
     }
 } = {
+    seats: {
+        minimum: 1,
+        exclusiveMinimum: false,
+    },
 }
 
 
@@ -90,6 +106,8 @@ export function instanceOfTenantResponse(value: object): value is TenantResponse
     if (!('id' in value) || value['id'] === undefined) return false;
     if (!('name' in value) || value['name'] === undefined) return false;
     if (!('settings' in value) || value['settings'] === undefined) return false;
+    if (!('seats' in value) || value['seats'] === undefined) return false;
+    if (!('subscriptionId' in value) || value['subscriptionId'] === undefined) return false;
     return true;
 }
 
@@ -108,6 +126,8 @@ export function TenantResponseFromJSONTyped(json: any, ignoreDiscriminator: bool
         'idpConfig': json['idp_config'] == null ? undefined : json['idp_config'],
         'settings': TenantSettingsResponseFromJSON(json['settings']),
         'branding': json['branding'] == null ? undefined : TenantBrandingResponseFromJSON(json['branding']),
+        'seats': json['seats'],
+        'subscriptionId': json['subscription_id'],
     };
 }
 
@@ -127,6 +147,8 @@ export function TenantResponseToJSONTyped(value?: TenantResponse | null, ignoreD
         'idp_config': value['idpConfig'],
         'settings': TenantSettingsResponseToJSON(value['settings']),
         'branding': TenantBrandingResponseToJSON(value['branding']),
+        'seats': value['seats'],
+        'subscription_id': value['subscriptionId'],
     };
 }
 

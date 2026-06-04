@@ -73,6 +73,7 @@ export interface DocumentVersionActionRequest {
 
 export interface GetDocumentVersionRequest {
     versionId: string;
+    includePageScreenshots?: boolean;
     authorization?: string | null;
     ksUat?: string | null;
 }
@@ -226,6 +227,7 @@ export interface DocumentVersionsApiInterface {
     /**
      * Creates request options for getDocumentVersion without sending the request
      * @param {string} versionId DocumentVersion ID
+     * @param {boolean} [includePageScreenshots] When true, populate page_screenshot_urls with presigned URLs for every per-page WEBP screenshot the ingestion pipeline produced. Off by default to keep typical responses small.
      * @param {string} [authorization] 
      * @param {string} [ksUat] 
      * @throws {RequiredError}
@@ -234,9 +236,10 @@ export interface DocumentVersionsApiInterface {
     getDocumentVersionRequestOpts(requestParameters: GetDocumentVersionRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * Get a document version by its ID.
+     * 
      * @summary Get Document Version Handler
      * @param {string} versionId DocumentVersion ID
+     * @param {boolean} [includePageScreenshots] When true, populate page_screenshot_urls with presigned URLs for every per-page WEBP screenshot the ingestion pipeline produced. Off by default to keep typical responses small.
      * @param {string} [authorization] 
      * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
@@ -246,7 +249,6 @@ export interface DocumentVersionsApiInterface {
     getDocumentVersionRaw(requestParameters: GetDocumentVersionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<DocumentVersionResponse>>;
 
     /**
-     * Get a document version by its ID.
      * Get Document Version Handler
      */
     getDocumentVersion(requestParameters: GetDocumentVersionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DocumentVersionResponse>;
@@ -583,6 +585,10 @@ export class DocumentVersionsApi extends runtime.BaseAPI implements DocumentVers
 
         const queryParameters: any = {};
 
+        if (requestParameters['includePageScreenshots'] != null) {
+            queryParameters['include_page_screenshots'] = requestParameters['includePageScreenshots'];
+        }
+
         const headerParameters: runtime.HTTPHeaders = {};
 
         if (requestParameters['authorization'] != null) {
@@ -602,7 +608,6 @@ export class DocumentVersionsApi extends runtime.BaseAPI implements DocumentVers
     }
 
     /**
-     * Get a document version by its ID.
      * Get Document Version Handler
      */
     async getDocumentVersionRaw(requestParameters: GetDocumentVersionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<DocumentVersionResponse>> {
@@ -613,7 +618,6 @@ export class DocumentVersionsApi extends runtime.BaseAPI implements DocumentVers
     }
 
     /**
-     * Get a document version by its ID.
      * Get Document Version Handler
      */
     async getDocumentVersion(requestParameters: GetDocumentVersionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DocumentVersionResponse> {

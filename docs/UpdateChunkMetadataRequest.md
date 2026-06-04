@@ -7,7 +7,7 @@ Request to update chunk metadata and/or move the chunk.
 
 Name | Type
 ------------ | -------------
-`chunkMetadata` | [ChunkMetadataInput](ChunkMetadataInput.md)
+`chunkMetadata` | [ChunkMetadata](ChunkMetadata.md)
 `parentPathPartId` | string
 `prevSiblingPathId` | string
 `moveToHead` | boolean

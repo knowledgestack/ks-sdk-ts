@@ -13,13 +13,13 @@
  */
 
 import { mapValues } from '../runtime';
-import type { ChunkMetadataInput } from './ChunkMetadataInput';
+import type { ChunkMetadata } from './ChunkMetadata';
 import {
-    ChunkMetadataInputFromJSON,
-    ChunkMetadataInputFromJSONTyped,
-    ChunkMetadataInputToJSON,
-    ChunkMetadataInputToJSONTyped,
-} from './ChunkMetadataInput';
+    ChunkMetadataFromJSON,
+    ChunkMetadataFromJSONTyped,
+    ChunkMetadataToJSON,
+    ChunkMetadataToJSONTyped,
+} from './ChunkMetadata';
 
 /**
  * Request to update chunk metadata and/or move the chunk.
@@ -28,11 +28,11 @@ import {
  */
 export interface UpdateChunkMetadataRequest {
     /**
-     * 
-     * @type {ChunkMetadataInput}
+     * Metadata to merge into existing chunk_metadata (optional)
+     * @type {ChunkMetadata}
      * @memberof UpdateChunkMetadataRequest
      */
-    chunkMetadata?: ChunkMetadataInput;
+    chunkMetadata?: ChunkMetadata | null;
     /**
      * Reparent to this PathPart ID (must be DOCUMENT_VERSION or SECTION in the same document version)
      * @type {string}
@@ -87,7 +87,7 @@ export function UpdateChunkMetadataRequestFromJSONTyped(json: any, ignoreDiscrim
     }
     return {
         
-        'chunkMetadata': json['chunk_metadata'] == null ? undefined : ChunkMetadataInputFromJSON(json['chunk_metadata']),
+        'chunkMetadata': json['chunk_metadata'] == null ? undefined : ChunkMetadataFromJSON(json['chunk_metadata']),
         'parentPathPartId': json['parent_path_part_id'] == null ? undefined : json['parent_path_part_id'],
         'prevSiblingPathId': json['prev_sibling_path_id'] == null ? undefined : json['prev_sibling_path_id'],
         'moveToHead': json['move_to_head'] == null ? undefined : json['move_to_head'],
@@ -105,7 +105,7 @@ export function UpdateChunkMetadataRequestToJSONTyped(value?: UpdateChunkMetadat
 
     return {
         
-        'chunk_metadata': ChunkMetadataInputToJSON(value['chunkMetadata']),
+        'chunk_metadata': ChunkMetadataToJSON(value['chunkMetadata']),
         'parent_path_part_id': value['parentPathPartId'],
         'prev_sibling_path_id': value['prevSiblingPathId'],
         'move_to_head': value['moveToHead'],

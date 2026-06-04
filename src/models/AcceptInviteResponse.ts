@@ -39,6 +39,12 @@ export interface AcceptInviteResponse {
      * @memberof AcceptInviteResponse
      */
     role: TenantUserRole;
+    /**
+     * Groups configured on the invite/tenant link that no longer exist and were therefore skipped.
+     * @type {Array<string>}
+     * @memberof AcceptInviteResponse
+     */
+    skippedGroups?: Array<string>;
 }
 
 
@@ -81,6 +87,7 @@ export function AcceptInviteResponseFromJSONTyped(json: any, ignoreDiscriminator
         
         'tenantId': json['tenant_id'],
         'role': TenantUserRoleFromJSON(json['role']),
+        'skippedGroups': json['skipped_groups'] == null ? undefined : json['skipped_groups'],
     };
 }
 
@@ -97,6 +104,7 @@ export function AcceptInviteResponseToJSONTyped(value?: AcceptInviteResponse | n
         
         'tenant_id': value['tenantId'],
         'role': TenantUserRoleToJSON(value['role']),
+        'skipped_groups': value['skippedGroups'],
     };
 }
 

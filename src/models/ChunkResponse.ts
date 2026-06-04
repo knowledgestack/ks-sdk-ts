@@ -13,6 +13,13 @@
  */
 
 import { mapValues } from '../runtime';
+import type { ChunkMetadata } from './ChunkMetadata';
+import {
+    ChunkMetadataFromJSON,
+    ChunkMetadataFromJSONTyped,
+    ChunkMetadataToJSON,
+    ChunkMetadataToJSONTyped,
+} from './ChunkMetadata';
 import type { ChunkDocumentResponse } from './ChunkDocumentResponse';
 import {
     ChunkDocumentResponseFromJSON,
@@ -20,13 +27,6 @@ import {
     ChunkDocumentResponseToJSON,
     ChunkDocumentResponseToJSONTyped,
 } from './ChunkDocumentResponse';
-import type { ChunkMetadataOutput } from './ChunkMetadataOutput';
-import {
-    ChunkMetadataOutputFromJSON,
-    ChunkMetadataOutputFromJSONTyped,
-    ChunkMetadataOutputToJSON,
-    ChunkMetadataOutputToJSONTyped,
-} from './ChunkMetadataOutput';
 import type { ChunkType } from './ChunkType';
 import {
     ChunkTypeFromJSON,
@@ -80,10 +80,10 @@ export interface ChunkResponse {
     chunkType: ChunkType;
     /**
      * 
-     * @type {ChunkMetadataOutput}
+     * @type {ChunkMetadata}
      * @memberof ChunkResponse
      */
-    chunkMetadata: ChunkMetadataOutput;
+    chunkMetadata: ChunkMetadata;
     /**
      * Number of tokens in chunk content
      * @type {number}
@@ -145,17 +145,17 @@ export interface ChunkResponse {
      */
     assetS3Urls?: Array<string>;
     /**
-     * 
+     * Ancestor document info (populated when with_document=true)
      * @type {ChunkDocumentResponse}
      * @memberof ChunkResponse
      */
-    document?: ChunkDocumentResponse;
+    document?: ChunkDocumentResponse | null;
     /**
-     * 
+     * Ancestor document version info (populated when with_document=true)
      * @type {ChunkDocumentVersionResponse}
      * @memberof ChunkResponse
      */
-    documentVersion?: ChunkDocumentVersionResponse;
+    documentVersion?: ChunkDocumentVersionResponse | null;
 }
 
 
@@ -211,7 +211,7 @@ export function ChunkResponseFromJSONTyped(json: any, ignoreDiscriminator: boole
         'contentId': json['content_id'],
         'content': json['content'],
         'chunkType': ChunkTypeFromJSON(json['chunk_type']),
-        'chunkMetadata': ChunkMetadataOutputFromJSON(json['chunk_metadata']),
+        'chunkMetadata': ChunkMetadataFromJSON(json['chunk_metadata']),
         'numTokens': json['num_tokens'] == null ? undefined : json['num_tokens'],
         'parentPathId': json['parent_path_id'],
         'prevSiblingPathId': json['prev_sibling_path_id'] == null ? undefined : json['prev_sibling_path_id'],
@@ -243,7 +243,7 @@ export function ChunkResponseToJSONTyped(value?: ChunkResponse | null, ignoreDis
         'content_id': value['contentId'],
         'content': value['content'],
         'chunk_type': ChunkTypeToJSON(value['chunkType']),
-        'chunk_metadata': ChunkMetadataOutputToJSON(value['chunkMetadata']),
+        'chunk_metadata': ChunkMetadataToJSON(value['chunkMetadata']),
         'num_tokens': value['numTokens'],
         'parent_path_id': value['parentPathId'],
         'prev_sibling_path_id': value['prevSiblingPathId'],

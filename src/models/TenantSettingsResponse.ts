@@ -20,6 +20,20 @@ import {
     SupportedLanguageToJSON,
     SupportedLanguageToJSONTyped,
 } from './SupportedLanguage';
+import type { DisplayNameFormat } from './DisplayNameFormat';
+import {
+    DisplayNameFormatFromJSON,
+    DisplayNameFormatFromJSONTyped,
+    DisplayNameFormatToJSON,
+    DisplayNameFormatToJSONTyped,
+} from './DisplayNameFormat';
+import type { InviteLinkSettingsResponse } from './InviteLinkSettingsResponse';
+import {
+    InviteLinkSettingsResponseFromJSON,
+    InviteLinkSettingsResponseFromJSONTyped,
+    InviteLinkSettingsResponseToJSON,
+    InviteLinkSettingsResponseToJSONTyped,
+} from './InviteLinkSettingsResponse';
 
 /**
  * Tenant settings as exposed via API (no internal S3 URIs).
@@ -40,11 +54,29 @@ export interface TenantSettingsResponse {
      */
     description: string;
     /**
+     * Industry / company type captured during onboarding
+     * @type {string}
+     * @memberof TenantSettingsResponse
+     */
+    industry?: string | null;
+    /**
      * IANA timezone (e.g. 'America/New_York')
      * @type {string}
      * @memberof TenantSettingsResponse
      */
     timezone: string;
+    /**
+     * 
+     * @type {DisplayNameFormat}
+     * @memberof TenantSettingsResponse
+     */
+    displayName: DisplayNameFormat;
+    /**
+     * 
+     * @type {InviteLinkSettingsResponse}
+     * @memberof TenantSettingsResponse
+     */
+    inviteLink: InviteLinkSettingsResponse;
 }
 
 
@@ -73,6 +105,8 @@ export function instanceOfTenantSettingsResponse(value: object): value is Tenant
     if (!('language' in value) || value['language'] === undefined) return false;
     if (!('description' in value) || value['description'] === undefined) return false;
     if (!('timezone' in value) || value['timezone'] === undefined) return false;
+    if (!('displayName' in value) || value['displayName'] === undefined) return false;
+    if (!('inviteLink' in value) || value['inviteLink'] === undefined) return false;
     return true;
 }
 
@@ -88,7 +122,10 @@ export function TenantSettingsResponseFromJSONTyped(json: any, ignoreDiscriminat
         
         'language': SupportedLanguageFromJSON(json['language']),
         'description': json['description'],
+        'industry': json['industry'] == null ? undefined : json['industry'],
         'timezone': json['timezone'],
+        'displayName': DisplayNameFormatFromJSON(json['display_name']),
+        'inviteLink': InviteLinkSettingsResponseFromJSON(json['invite_link']),
     };
 }
 
@@ -105,7 +142,10 @@ export function TenantSettingsResponseToJSONTyped(value?: TenantSettingsResponse
         
         'language': SupportedLanguageToJSON(value['language']),
         'description': value['description'],
+        'industry': value['industry'],
         'timezone': value['timezone'],
+        'display_name': DisplayNameFormatToJSON(value['displayName']),
+        'invite_link': InviteLinkSettingsResponseToJSON(value['inviteLink']),
     };
 }
 

@@ -20,6 +20,13 @@ import {
     StepOutputToJSON,
     StepOutputToJSONTyped,
 } from './StepOutput';
+import type { CheckpointDetails } from './CheckpointDetails';
+import {
+    CheckpointDetailsFromJSON,
+    CheckpointDetailsFromJSONTyped,
+    CheckpointDetailsToJSON,
+    CheckpointDetailsToJSONTyped,
+} from './CheckpointDetails';
 
 /**
  * 
@@ -33,6 +40,18 @@ export interface ThreadMessageDetailsOutput {
      * @memberof ThreadMessageDetailsOutput
      */
     steps?: Array<StepOutput>;
+    /**
+     * Agent history checkpoint. Present only on role=SYSTEM messages written by the agent's archival path.
+     * @type {CheckpointDetails}
+     * @memberof ThreadMessageDetailsOutput
+     */
+    checkpoint?: CheckpointDetails | null;
+    /**
+     * Model registry id (FE-stable, e.g. ``qwen-flash``) that produced this assistant message. ``None`` for legacy rows that pre-date model selection.
+     * @type {string}
+     * @memberof ThreadMessageDetailsOutput
+     */
+    modelId?: string | null;
 }
 export const ThreadMessageDetailsOutputPropertyValidationAttributesMap: {
     [property: string]: {
@@ -49,6 +68,9 @@ export const ThreadMessageDetailsOutputPropertyValidationAttributesMap: {
         uniqueItems?: boolean
     }
 } = {
+    modelId: {
+        maxLength: 64,
+    },
 }
 
 
@@ -70,6 +92,8 @@ export function ThreadMessageDetailsOutputFromJSONTyped(json: any, ignoreDiscrim
     return {
         
         'steps': json['steps'] == null ? undefined : ((json['steps'] as Array<any>).map(StepOutputFromJSON)),
+        'checkpoint': json['checkpoint'] == null ? undefined : CheckpointDetailsFromJSON(json['checkpoint']),
+        'modelId': json['model_id'] == null ? undefined : json['model_id'],
     };
 }
 
@@ -85,6 +109,8 @@ export function ThreadMessageDetailsOutputToJSONTyped(value?: ThreadMessageDetai
     return {
         
         'steps': value['steps'] == null ? undefined : ((value['steps'] as Array<any>).map(StepOutputToJSON)),
+        'checkpoint': CheckpointDetailsToJSON(value['checkpoint']),
+        'model_id': value['modelId'],
     };
 }
 

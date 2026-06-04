@@ -1,7 +1,7 @@
 
 # ScoredChunkResponse
 
-Chunk response with similarity score.
+Chunk response with search ranking score.
 
 ## Properties
 
@@ -12,7 +12,7 @@ Name | Type
 `contentId` | string
 `content` | string
 `chunkType` | [ChunkType](ChunkType.md)
-`chunkMetadata` | [ChunkMetadataOutput](ChunkMetadataOutput.md)
+`chunkMetadata` | [ChunkMetadata](ChunkMetadata.md)
 `numTokens` | number
 `parentPathId` | string
 `prevSiblingPathId` | string

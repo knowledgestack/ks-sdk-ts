@@ -14,13 +14,13 @@
 
 import { mapValues } from '../runtime';
 /**
- * Request to bulk add or remove tags from a path part.
+ * Request to set or remove tags on a path part.
  * @export
  * @interface BulkTagRequest
  */
 export interface BulkTagRequest {
     /**
-     * List of tag IDs to add/remove
+     * List of tag IDs to set/remove
      * @type {Array<string>}
      * @memberof BulkTagRequest
      */

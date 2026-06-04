@@ -1,7 +1,6 @@
 
 # UpdateThreadRequest
 
-Request to update a thread.
 
 ## Properties
 
