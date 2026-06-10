@@ -2,9 +2,11 @@
 /* eslint-disable */
 export * from './AgentApi';
 export * from './ApiKeysApi';
+export * from './AuditEventsApi';
 export * from './AuthApi';
 export * from './ChunkLineagesApi';
 export * from './ChunksApi';
+export * from './DataSourcesApi';
 export * from './DefaultApi';
 export * from './DocumentCheckoutApi';
 export * from './DocumentVersionsApi';
@@ -13,6 +15,7 @@ export * from './FeaturesApi';
 export * from './FeedbackApi';
 export * from './FoldersApi';
 export * from './InvitesApi';
+export * from './MemoryApi';
 export * from './PathPartApprovalsApi';
 export * from './PathPartsApi';
 export * from './PublicApi';
@@ -23,6 +26,7 @@ export * from './TenantGroupsApi';
 export * from './TenantsApi';
 export * from './ThreadMessagesApi';
 export * from './ThreadsApi';
+export * from './TrashApi';
 export * from './UserPermissionsApi';
 export * from './UsersApi';
 export * from './WorkflowDefinitionsApi';

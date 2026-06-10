@@ -17,7 +17,9 @@ import * as runtime from '../runtime';
 import type {
   ChunkType,
   CreateDocumentRequest,
+  DocumentDownloadResponse,
   DocumentResponse,
+  DownloadArtifact,
   HTTPValidationError,
   ImageTaxonomy,
   IngestDocumentResponse,
@@ -31,8 +33,12 @@ import {
     ChunkTypeToJSON,
     CreateDocumentRequestFromJSON,
     CreateDocumentRequestToJSON,
+    DocumentDownloadResponseFromJSON,
+    DocumentDownloadResponseToJSON,
     DocumentResponseFromJSON,
     DocumentResponseToJSON,
+    DownloadArtifactFromJSON,
+    DownloadArtifactToJSON,
     HTTPValidationErrorFromJSON,
     HTTPValidationErrorToJSON,
     ImageTaxonomyFromJSON,
@@ -51,44 +57,43 @@ import {
 
 export interface CreateDocumentOperationRequest {
     createDocumentRequest: CreateDocumentRequest;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface DeleteDocumentRequest {
     documentId: string;
-    authorization?: string | null;
-    ksUat?: string | null;
+}
+
+export interface DownloadDocumentRequest {
+    documentId: string;
+    artifact?: DownloadArtifact;
 }
 
 export interface GetDocumentRequest {
     documentId: string;
     withTags?: boolean;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface IngestDocumentRequest {
     file: Blob;
     pathPartId: string;
-    authorization?: string | null;
-    ksUat?: string | null;
     name?: string | null;
     ingestionMode?: IngestionMode;
     chunkType?: ChunkType;
     secondaryTaxonomy?: ImageTaxonomy;
     pageDpi?: number;
+    workflowRunId?: string | null;
+    workflowDefinitionId?: string | null;
 }
 
 export interface IngestDocumentVersionRequest {
     documentId: string;
     file: Blob;
-    authorization?: string | null;
-    ksUat?: string | null;
     ingestionMode?: IngestionMode;
     chunkType?: ChunkType;
     secondaryTaxonomy?: ImageTaxonomy;
     pageDpi?: number;
+    workflowRunId?: string | null;
+    workflowDefinitionId?: string | null;
 }
 
 export interface ListDocumentsRequest {
@@ -97,15 +102,11 @@ export interface ListDocumentsRequest {
     withTags?: boolean;
     limit?: number;
     offset?: number;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface UpdateDocumentOperationRequest {
     documentId: string;
     updateDocumentRequest: UpdateDocumentRequest;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 /**
@@ -118,8 +119,6 @@ export interface DocumentsApiInterface {
     /**
      * Creates request options for createDocument without sending the request
      * @param {CreateDocumentRequest} createDocumentRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof DocumentsApiInterface
      */
@@ -129,8 +128,6 @@ export interface DocumentsApiInterface {
      * Create a new document with initial v0 version.  The document is created as a child of the specified parent folder. An initial version (v0) is automatically created.
      * @summary Create Document Handler
      * @param {CreateDocumentRequest} createDocumentRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DocumentsApiInterface
@@ -146,19 +143,15 @@ export interface DocumentsApiInterface {
     /**
      * Creates request options for deleteDocument without sending the request
      * @param {string} documentId 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof DocumentsApiInterface
      */
     deleteDocumentRequestOpts(requestParameters: DeleteDocumentRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * Delete a document and all its contents.  WARNING: This cascades to all children (versions, sections, chunks, etc.) due to parent_id ON DELETE CASCADE.
+     * Move a document and all its contents to trash.
      * @summary Delete Document Handler
      * @param {string} documentId 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DocumentsApiInterface
@@ -166,17 +159,41 @@ export interface DocumentsApiInterface {
     deleteDocumentRaw(requestParameters: DeleteDocumentRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>>;
 
     /**
-     * Delete a document and all its contents.  WARNING: This cascades to all children (versions, sections, chunks, etc.) due to parent_id ON DELETE CASCADE.
+     * Move a document and all its contents to trash.
      * Delete Document Handler
      */
     deleteDocument(requestParameters: DeleteDocumentRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void>;
 
     /**
+     * Creates request options for downloadDocument without sending the request
+     * @param {string} documentId 
+     * @param {DownloadArtifact} [artifact] Artifact to download: source or fast_plaintext
+     * @throws {RequiredError}
+     * @memberof DocumentsApiInterface
+     */
+    downloadDocumentRequestOpts(requestParameters: DownloadDocumentRequest): Promise<runtime.RequestOpts>;
+
+    /**
+     * Issue a short-lived, audited download link for a document\'s active version.  Records a ``document.downloaded`` audit event so the customer audit log captures who downloaded which document/version and when.
+     * @summary Download Document Handler
+     * @param {string} documentId 
+     * @param {DownloadArtifact} [artifact] Artifact to download: source or fast_plaintext
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DocumentsApiInterface
+     */
+    downloadDocumentRaw(requestParameters: DownloadDocumentRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<DocumentDownloadResponse>>;
+
+    /**
+     * Issue a short-lived, audited download link for a document\'s active version.  Records a ``document.downloaded`` audit event so the customer audit log captures who downloaded which document/version and when.
+     * Download Document Handler
+     */
+    downloadDocument(requestParameters: DownloadDocumentRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DocumentDownloadResponse>;
+
+    /**
      * Creates request options for getDocument without sending the request
      * @param {string} documentId 
      * @param {boolean} [withTags] Include tags in the response (default: false)
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof DocumentsApiInterface
      */
@@ -187,8 +204,6 @@ export interface DocumentsApiInterface {
      * @summary Get Document Handler
      * @param {string} documentId 
      * @param {boolean} [withTags] Include tags in the response (default: false)
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DocumentsApiInterface
@@ -204,13 +219,13 @@ export interface DocumentsApiInterface {
      * Creates request options for ingestDocument without sending the request
      * @param {Blob} file 
      * @param {string} pathPartId Parent path part ID (must be a FOLDER type)
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {string} [name] Document name (defaults to filename)
      * @param {IngestionMode} [ingestionMode] 
      * @param {ChunkType} [chunkType] 
      * @param {ImageTaxonomy} [secondaryTaxonomy] 
      * @param {number} [pageDpi] DPI for PDF page screenshots (default 72, min 36, max 216).
+     * @param {string} [workflowRunId] Workflow run context for assumed agent uploads.
+     * @param {string} [workflowDefinitionId] Workflow definition context for assumed agent uploads.
      * @throws {RequiredError}
      * @memberof DocumentsApiInterface
      */
@@ -221,13 +236,13 @@ export interface DocumentsApiInterface {
      * @summary Ingest Document Handler
      * @param {Blob} file 
      * @param {string} pathPartId Parent path part ID (must be a FOLDER type)
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {string} [name] Document name (defaults to filename)
      * @param {IngestionMode} [ingestionMode] 
      * @param {ChunkType} [chunkType] 
      * @param {ImageTaxonomy} [secondaryTaxonomy] 
      * @param {number} [pageDpi] DPI for PDF page screenshots (default 72, min 36, max 216).
+     * @param {string} [workflowRunId] Workflow run context for assumed agent uploads.
+     * @param {string} [workflowDefinitionId] Workflow definition context for assumed agent uploads.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DocumentsApiInterface
@@ -244,12 +259,12 @@ export interface DocumentsApiInterface {
      * Creates request options for ingestDocumentVersion without sending the request
      * @param {string} documentId Document ID
      * @param {Blob} file 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {IngestionMode} [ingestionMode] 
      * @param {ChunkType} [chunkType] 
      * @param {ImageTaxonomy} [secondaryTaxonomy] 
      * @param {number} [pageDpi] DPI for PDF page screenshots (default 72, min 36, max 216).
+     * @param {string} [workflowRunId] Workflow run context for assumed agent uploads.
+     * @param {string} [workflowDefinitionId] Workflow definition context for assumed agent uploads.
      * @throws {RequiredError}
      * @memberof DocumentsApiInterface
      */
@@ -260,12 +275,12 @@ export interface DocumentsApiInterface {
      * @summary Ingest Document Version Handler
      * @param {string} documentId Document ID
      * @param {Blob} file 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {IngestionMode} [ingestionMode] 
      * @param {ChunkType} [chunkType] 
      * @param {ImageTaxonomy} [secondaryTaxonomy] 
      * @param {number} [pageDpi] DPI for PDF page screenshots (default 72, min 36, max 216).
+     * @param {string} [workflowRunId] Workflow run context for assumed agent uploads.
+     * @param {string} [workflowDefinitionId] Workflow definition context for assumed agent uploads.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DocumentsApiInterface
@@ -285,8 +300,6 @@ export interface DocumentsApiInterface {
      * @param {boolean} [withTags] Include tags in the response (default: false)
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof DocumentsApiInterface
      */
@@ -300,8 +313,6 @@ export interface DocumentsApiInterface {
      * @param {boolean} [withTags] Include tags in the response (default: false)
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DocumentsApiInterface
@@ -318,8 +329,6 @@ export interface DocumentsApiInterface {
      * Creates request options for updateDocument without sending the request
      * @param {string} documentId 
      * @param {UpdateDocumentRequest} updateDocumentRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof DocumentsApiInterface
      */
@@ -330,8 +339,6 @@ export interface DocumentsApiInterface {
      * @summary Update Document Handler
      * @param {string} documentId 
      * @param {UpdateDocumentRequest} updateDocumentRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DocumentsApiInterface
@@ -368,10 +375,14 @@ export class DocumentsApi extends runtime.BaseAPI implements DocumentsApiInterfa
 
         headerParameters['Content-Type'] = 'application/json';
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/documents`;
 
@@ -419,10 +430,14 @@ export class DocumentsApi extends runtime.BaseAPI implements DocumentsApiInterfa
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/documents/{document_id}`;
         urlPath = urlPath.replace(`{${"document_id"}}`, encodeURIComponent(String(requestParameters['documentId'])));
@@ -436,7 +451,7 @@ export class DocumentsApi extends runtime.BaseAPI implements DocumentsApiInterfa
     }
 
     /**
-     * Delete a document and all its contents.  WARNING: This cascades to all children (versions, sections, chunks, etc.) due to parent_id ON DELETE CASCADE.
+     * Move a document and all its contents to trash.
      * Delete Document Handler
      */
     async deleteDocumentRaw(requestParameters: DeleteDocumentRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
@@ -447,11 +462,70 @@ export class DocumentsApi extends runtime.BaseAPI implements DocumentsApiInterfa
     }
 
     /**
-     * Delete a document and all its contents.  WARNING: This cascades to all children (versions, sections, chunks, etc.) due to parent_id ON DELETE CASCADE.
+     * Move a document and all its contents to trash.
      * Delete Document Handler
      */
     async deleteDocument(requestParameters: DeleteDocumentRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.deleteDocumentRaw(requestParameters, initOverrides);
+    }
+
+    /**
+     * Creates request options for downloadDocument without sending the request
+     */
+    async downloadDocumentRequestOpts(requestParameters: DownloadDocumentRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['documentId'] == null) {
+            throw new runtime.RequiredError(
+                'documentId',
+                'Required parameter "documentId" was null or undefined when calling downloadDocument().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        if (requestParameters['artifact'] != null) {
+            queryParameters['artifact'] = requestParameters['artifact'];
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/v1/documents/{document_id}/download`;
+        urlPath = urlPath.replace(`{${"document_id"}}`, encodeURIComponent(String(requestParameters['documentId'])));
+
+        return {
+            path: urlPath,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Issue a short-lived, audited download link for a document\'s active version.  Records a ``document.downloaded`` audit event so the customer audit log captures who downloaded which document/version and when.
+     * Download Document Handler
+     */
+    async downloadDocumentRaw(requestParameters: DownloadDocumentRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<DocumentDownloadResponse>> {
+        const requestOptions = await this.downloadDocumentRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => DocumentDownloadResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * Issue a short-lived, audited download link for a document\'s active version.  Records a ``document.downloaded`` audit event so the customer audit log captures who downloaded which document/version and when.
+     * Download Document Handler
+     */
+    async downloadDocument(requestParameters: DownloadDocumentRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DocumentDownloadResponse> {
+        const response = await this.downloadDocumentRaw(requestParameters, initOverrides);
+        return await response.value();
     }
 
     /**
@@ -473,10 +547,14 @@ export class DocumentsApi extends runtime.BaseAPI implements DocumentsApiInterfa
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/documents/{document_id}`;
         urlPath = urlPath.replace(`{${"document_id"}}`, encodeURIComponent(String(requestParameters['documentId'])));
@@ -529,10 +607,14 @@ export class DocumentsApi extends runtime.BaseAPI implements DocumentsApiInterfa
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
         const consumes: runtime.Consume[] = [
             { contentType: 'multipart/form-data' },
         ];
@@ -575,6 +657,14 @@ export class DocumentsApi extends runtime.BaseAPI implements DocumentsApiInterfa
 
         if (requestParameters['pageDpi'] != null) {
             formParams.append('page_dpi', requestParameters['pageDpi'] as any);
+        }
+
+        if (requestParameters['workflowRunId'] != null) {
+            formParams.append('workflow_run_id', requestParameters['workflowRunId'] as any);
+        }
+
+        if (requestParameters['workflowDefinitionId'] != null) {
+            formParams.append('workflow_definition_id', requestParameters['workflowDefinitionId'] as any);
         }
 
 
@@ -631,10 +721,14 @@ export class DocumentsApi extends runtime.BaseAPI implements DocumentsApiInterfa
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
         const consumes: runtime.Consume[] = [
             { contentType: 'multipart/form-data' },
         ];
@@ -669,6 +763,14 @@ export class DocumentsApi extends runtime.BaseAPI implements DocumentsApiInterfa
 
         if (requestParameters['pageDpi'] != null) {
             formParams.append('page_dpi', requestParameters['pageDpi'] as any);
+        }
+
+        if (requestParameters['workflowRunId'] != null) {
+            formParams.append('workflow_run_id', requestParameters['workflowRunId'] as any);
+        }
+
+        if (requestParameters['workflowDefinitionId'] != null) {
+            formParams.append('workflow_definition_id', requestParameters['workflowDefinitionId'] as any);
         }
 
 
@@ -732,10 +834,14 @@ export class DocumentsApi extends runtime.BaseAPI implements DocumentsApiInterfa
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/documents`;
 
@@ -791,10 +897,14 @@ export class DocumentsApi extends runtime.BaseAPI implements DocumentsApiInterfa
 
         headerParameters['Content-Type'] = 'application/json';
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/documents/{document_id}`;
         urlPath = urlPath.replace(`{${"document_id"}}`, encodeURIComponent(String(requestParameters['documentId'])));

@@ -33,21 +33,14 @@ import {
 
 export interface CreateApiKeyOperationRequest {
     createApiKeyRequest: CreateApiKeyRequest;
-    ksUat?: string | null;
 }
 
 export interface DeleteApiKeyRequest {
     apiKeyId: string;
-    ksUat?: string | null;
 }
 
 export interface GetApiKeyRequest {
     apiKeyId: string;
-    ksUat?: string | null;
-}
-
-export interface ListApiKeysRequest {
-    ksUat?: string | null;
 }
 
 /**
@@ -60,7 +53,6 @@ export interface ApiKeysApiInterface {
     /**
      * Creates request options for createApiKey without sending the request
      * @param {CreateApiKeyRequest} createApiKeyRequest 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof ApiKeysApiInterface
      */
@@ -70,7 +62,6 @@ export interface ApiKeysApiInterface {
      * Create a new API key. The full key is returned only once.
      * @summary Create Api Key Handler
      * @param {CreateApiKeyRequest} createApiKeyRequest 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ApiKeysApiInterface
@@ -86,7 +77,6 @@ export interface ApiKeysApiInterface {
     /**
      * Creates request options for deleteApiKey without sending the request
      * @param {string} apiKeyId 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof ApiKeysApiInterface
      */
@@ -96,7 +86,6 @@ export interface ApiKeysApiInterface {
      * Delete an API key.
      * @summary Delete Api Key Handler
      * @param {string} apiKeyId 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ApiKeysApiInterface
@@ -112,7 +101,6 @@ export interface ApiKeysApiInterface {
     /**
      * Creates request options for getApiKey without sending the request
      * @param {string} apiKeyId 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof ApiKeysApiInterface
      */
@@ -122,7 +110,6 @@ export interface ApiKeysApiInterface {
      * Get a single API key by ID.
      * @summary Get Api Key Handler
      * @param {string} apiKeyId 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ApiKeysApiInterface
@@ -137,27 +124,25 @@ export interface ApiKeysApiInterface {
 
     /**
      * Creates request options for listApiKeys without sending the request
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof ApiKeysApiInterface
      */
-    listApiKeysRequestOpts(requestParameters: ListApiKeysRequest): Promise<runtime.RequestOpts>;
+    listApiKeysRequestOpts(): Promise<runtime.RequestOpts>;
 
     /**
      * List all API keys for the current user.
      * @summary List Api Keys Handler
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ApiKeysApiInterface
      */
-    listApiKeysRaw(requestParameters: ListApiKeysRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<ApiKeyResponse>>>;
+    listApiKeysRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<ApiKeyResponse>>>;
 
     /**
      * List all API keys for the current user.
      * List Api Keys Handler
      */
-    listApiKeys(requestParameters: ListApiKeysRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<ApiKeyResponse>>;
+    listApiKeys(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<ApiKeyResponse>>;
 
 }
 
@@ -311,7 +296,7 @@ export class ApiKeysApi extends runtime.BaseAPI implements ApiKeysApiInterface {
     /**
      * Creates request options for listApiKeys without sending the request
      */
-    async listApiKeysRequestOpts(requestParameters: ListApiKeysRequest): Promise<runtime.RequestOpts> {
+    async listApiKeysRequestOpts(): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -331,8 +316,8 @@ export class ApiKeysApi extends runtime.BaseAPI implements ApiKeysApiInterface {
      * List all API keys for the current user.
      * List Api Keys Handler
      */
-    async listApiKeysRaw(requestParameters: ListApiKeysRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<ApiKeyResponse>>> {
-        const requestOptions = await this.listApiKeysRequestOpts(requestParameters);
+    async listApiKeysRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<ApiKeyResponse>>> {
+        const requestOptions = await this.listApiKeysRequestOpts();
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(ApiKeyResponseFromJSON));
@@ -342,8 +327,8 @@ export class ApiKeysApi extends runtime.BaseAPI implements ApiKeysApiInterface {
      * List all API keys for the current user.
      * List Api Keys Handler
      */
-    async listApiKeys(requestParameters: ListApiKeysRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<ApiKeyResponse>> {
-        const response = await this.listApiKeysRaw(requestParameters, initOverrides);
+    async listApiKeys(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<ApiKeyResponse>> {
+        const response = await this.listApiKeysRaw(initOverrides);
         return await response.value();
     }
 

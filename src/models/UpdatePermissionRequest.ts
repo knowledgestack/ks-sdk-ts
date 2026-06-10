@@ -39,6 +39,12 @@ export interface UpdatePermissionRequest {
      * @memberof UpdatePermissionRequest
      */
     capability?: PermissionCapability;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof UpdatePermissionRequest
+     */
+    canApprove?: boolean | null;
 }
 
 
@@ -79,6 +85,7 @@ export function UpdatePermissionRequestFromJSONTyped(json: any, ignoreDiscrimina
         
         'pathPartId': json['path_part_id'] == null ? undefined : json['path_part_id'],
         'capability': json['capability'] == null ? undefined : PermissionCapabilityFromJSON(json['capability']),
+        'canApprove': json['can_approve'] == null ? undefined : json['can_approve'],
     };
 }
 
@@ -95,6 +102,7 @@ export function UpdatePermissionRequestToJSONTyped(value?: UpdatePermissionReque
         
         'path_part_id': value['pathPartId'],
         'capability': PermissionCapabilityToJSON(value['capability']),
+        'can_approve': value['canApprove'],
     };
 }
 

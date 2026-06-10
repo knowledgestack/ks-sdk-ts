@@ -20,6 +20,13 @@ import {
     DocumentOriginToJSON,
     DocumentOriginToJSONTyped,
 } from './DocumentOrigin';
+import type { ItemPermissions } from './ItemPermissions';
+import {
+    ItemPermissionsFromJSON,
+    ItemPermissionsFromJSONTyped,
+    ItemPermissionsToJSON,
+    ItemPermissionsToJSONTyped,
+} from './ItemPermissions';
 import type { TagResponse } from './TagResponse';
 import {
     TagResponseFromJSON,
@@ -178,11 +185,11 @@ export interface DocumentResponse {
      */
     tags?: Array<TagResponse> | null;
     /**
-     * Whether the current caller has write access to this document. Only populated by endpoints that compute it (e.g. folder contents).
-     * @type {boolean}
+     * Caller's effective rights; null on mutation responses.
+     * @type {ItemPermissions}
      * @memberof DocumentResponse
      */
-    canWrite?: boolean | null;
+    permissions?: ItemPermissions | null;
     /**
      * Active write-lock state. Null when no checkout is held. Populated on detail endpoints (GET /v1/documents/{id}). Any tenant member with read access may observe this state.
      * @type {DocumentCheckoutResponse}
@@ -270,7 +277,7 @@ export function DocumentResponseFromJSONTyped(json: any, ignoreDiscriminator: bo
         'createdAt': (new Date(json['created_at'])),
         'updatedAt': (new Date(json['updated_at'])),
         'tags': json['tags'] == null ? undefined : ((json['tags'] as Array<any>).map(TagResponseFromJSON)),
-        'canWrite': json['can_write'] == null ? undefined : json['can_write'],
+        'permissions': json['permissions'] == null ? undefined : ItemPermissionsFromJSON(json['permissions']),
         'checkout': json['checkout'] == null ? undefined : DocumentCheckoutResponseFromJSON(json['checkout']),
     };
 }
@@ -304,7 +311,7 @@ export function DocumentResponseToJSONTyped(value?: DocumentResponse | null, ign
         'created_at': value['createdAt'].toISOString(),
         'updated_at': value['updatedAt'].toISOString(),
         'tags': value['tags'] == null ? undefined : ((value['tags'] as Array<any>).map(TagResponseToJSON)),
-        'can_write': value['canWrite'],
+        'permissions': ItemPermissionsToJSON(value['permissions']),
         'checkout': DocumentCheckoutResponseToJSON(value['checkout']),
     };
 }

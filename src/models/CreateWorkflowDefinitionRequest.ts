@@ -42,6 +42,12 @@ export interface CreateWorkflowDefinitionRequest {
      */
     maxRunDurationSeconds?: number;
     /**
+     * The ``path_part_id`` of the folder the workflow is created under (the folder's PathPart id, not the Folder PDO id). The caller needs write access to it; the workflow may live anywhere in the path tree.
+     * @type {string}
+     * @memberof CreateWorkflowDefinitionRequest
+     */
+    parentPathPartId: string;
+    /**
      * DOCUMENT path_part of the instruction document. Omit (or pass null) to have the server auto-create an empty instruction.md.
      * @type {string}
      * @memberof CreateWorkflowDefinitionRequest
@@ -86,6 +92,7 @@ export const CreateWorkflowDefinitionRequestPropertyValidationAttributesMap: {
  */
 export function instanceOfCreateWorkflowDefinitionRequest(value: object): value is CreateWorkflowDefinitionRequest {
     if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('parentPathPartId' in value) || value['parentPathPartId'] === undefined) return false;
     if (!('approvalRequired' in value) || value['approvalRequired'] === undefined) return false;
     return true;
 }
@@ -103,6 +110,7 @@ export function CreateWorkflowDefinitionRequestFromJSONTyped(json: any, ignoreDi
         'name': json['name'],
         'description': json['description'] == null ? undefined : json['description'],
         'maxRunDurationSeconds': json['max_run_duration_seconds'] == null ? undefined : json['max_run_duration_seconds'],
+        'parentPathPartId': json['parent_path_part_id'],
         'instructionPathPartId': json['instruction_path_part_id'] == null ? undefined : json['instruction_path_part_id'],
         'approvalRequired': json['approval_required'],
     };
@@ -122,6 +130,7 @@ export function CreateWorkflowDefinitionRequestToJSONTyped(value?: CreateWorkflo
         'name': value['name'],
         'description': value['description'],
         'max_run_duration_seconds': value['maxRunDurationSeconds'],
+        'parent_path_part_id': value['parentPathPartId'],
         'instruction_path_part_id': value['instructionPathPartId'],
         'approval_required': value['approvalRequired'],
     };

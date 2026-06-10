@@ -13,6 +13,13 @@
  */
 
 import { mapValues } from '../runtime';
+import type { ItemPermissions } from './ItemPermissions';
+import {
+    ItemPermissionsFromJSON,
+    ItemPermissionsFromJSONTyped,
+    ItemPermissionsToJSON,
+    ItemPermissionsToJSONTyped,
+} from './ItemPermissions';
 import type { TagResponse } from './TagResponse';
 import {
     TagResponseFromJSON,
@@ -113,11 +120,11 @@ export interface FolderResponse {
      */
     tags?: Array<TagResponse> | null;
     /**
-     * Whether the current caller has write access to this folder. Only populated by endpoints that compute it (e.g. folder contents).
-     * @type {boolean}
+     * Caller's effective rights; null on mutation responses.
+     * @type {ItemPermissions}
      * @memberof FolderResponse
      */
-    canWrite?: boolean | null;
+    permissions?: ItemPermissions | null;
 }
 
 
@@ -189,7 +196,7 @@ export function FolderResponseFromJSONTyped(json: any, ignoreDiscriminator: bool
         'createdAt': (new Date(json['created_at'])),
         'updatedAt': (new Date(json['updated_at'])),
         'tags': json['tags'] == null ? undefined : ((json['tags'] as Array<any>).map(TagResponseFromJSON)),
-        'canWrite': json['can_write'] == null ? undefined : json['can_write'],
+        'permissions': json['permissions'] == null ? undefined : ItemPermissionsFromJSON(json['permissions']),
     };
 }
 
@@ -217,7 +224,7 @@ export function FolderResponseToJSONTyped(value?: FolderResponse | null, ignoreD
         'created_at': value['createdAt'].toISOString(),
         'updated_at': value['updatedAt'].toISOString(),
         'tags': value['tags'] == null ? undefined : ((value['tags'] as Array<any>).map(TagResponseToJSON)),
-        'can_write': value['canWrite'],
+        'permissions': ItemPermissionsToJSON(value['permissions']),
     };
 }
 

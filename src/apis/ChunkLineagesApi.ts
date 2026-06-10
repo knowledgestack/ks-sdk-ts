@@ -33,22 +33,16 @@ import {
 
 export interface CreateChunkLineageOperationRequest {
     createChunkLineageRequest: CreateChunkLineageRequest;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface DeleteChunkLineageRequest {
     parentChunkId: string;
     chunkId: string;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface GetChunkLineageRequest {
     chunkId: string;
     maxDepth?: number;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 /**
@@ -61,8 +55,6 @@ export interface ChunkLineagesApiInterface {
     /**
      * Creates request options for createChunkLineage without sending the request
      * @param {CreateChunkLineageRequest} createChunkLineageRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof ChunkLineagesApiInterface
      */
@@ -72,8 +64,6 @@ export interface ChunkLineagesApiInterface {
      * Batch-create lineage edges for a child chunk.  Creates edges from each parent chunk to the specified child chunk. All chunks must exist in the same tenant.
      * @summary Create Chunk Lineage Handler
      * @param {CreateChunkLineageRequest} createChunkLineageRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ChunkLineagesApiInterface
@@ -90,8 +80,6 @@ export interface ChunkLineagesApiInterface {
      * Creates request options for deleteChunkLineage without sending the request
      * @param {string} parentChunkId Parent chunk ID
      * @param {string} chunkId Child chunk ID
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof ChunkLineagesApiInterface
      */
@@ -102,8 +90,6 @@ export interface ChunkLineagesApiInterface {
      * @summary Delete Chunk Lineage Handler
      * @param {string} parentChunkId Parent chunk ID
      * @param {string} chunkId Child chunk ID
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ChunkLineagesApiInterface
@@ -120,8 +106,6 @@ export interface ChunkLineagesApiInterface {
      * Creates request options for getChunkLineage without sending the request
      * @param {string} chunkId 
      * @param {number} [maxDepth] 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof ChunkLineagesApiInterface
      */
@@ -132,8 +116,6 @@ export interface ChunkLineagesApiInterface {
      * @summary Get Chunk Lineage Handler
      * @param {string} chunkId 
      * @param {number} [maxDepth] 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ChunkLineagesApiInterface
@@ -170,10 +152,14 @@ export class ChunkLineagesApi extends runtime.BaseAPI implements ChunkLineagesAp
 
         headerParameters['Content-Type'] = 'application/json';
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/chunk-lineages`;
 
@@ -236,10 +222,14 @@ export class ChunkLineagesApi extends runtime.BaseAPI implements ChunkLineagesAp
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/chunk-lineages`;
 
@@ -289,10 +279,14 @@ export class ChunkLineagesApi extends runtime.BaseAPI implements ChunkLineagesAp
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/chunk-lineages/{chunk_id}`;
         urlPath = urlPath.replace(`{${"chunk_id"}}`, encodeURIComponent(String(requestParameters['chunkId'])));

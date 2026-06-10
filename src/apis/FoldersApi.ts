@@ -20,7 +20,7 @@ import type {
   FolderActionResponse,
   FolderResponse,
   HTTPValidationError,
-  PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseWorkflowDefinitionResponseWorkflowRunResponseDiscriminator,
+  PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseWorkflowDefinitionResponseWorkflowRunResponseDataSourceResponseDataSourceTableResponseDiscriminator,
   PaginatedResponseFolderResponse,
   PathOrder,
   SearchSortOrder,
@@ -38,8 +38,8 @@ import {
     FolderResponseToJSON,
     HTTPValidationErrorFromJSON,
     HTTPValidationErrorToJSON,
-    PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseWorkflowDefinitionResponseWorkflowRunResponseDiscriminatorFromJSON,
-    PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseWorkflowDefinitionResponseWorkflowRunResponseDiscriminatorToJSON,
+    PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseWorkflowDefinitionResponseWorkflowRunResponseDataSourceResponseDataSourceTableResponseDiscriminatorFromJSON,
+    PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseWorkflowDefinitionResponseWorkflowRunResponseDataSourceResponseDataSourceTableResponseDiscriminatorToJSON,
     PaginatedResponseFolderResponseFromJSON,
     PaginatedResponseFolderResponseToJSON,
     PathOrderFromJSON,
@@ -54,28 +54,20 @@ import {
 
 export interface CreateFolderOperationRequest {
     createFolderRequest: CreateFolderRequest;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface DeleteFolderRequest {
     folderId: string;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface FolderActionRequest {
     folderId: string;
     action: FolderAction;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface GetFolderRequest {
     folderId: string;
     withTags?: boolean;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface ListFolderContentsRequest {
@@ -85,8 +77,6 @@ export interface ListFolderContentsRequest {
     withTags?: boolean;
     limit?: number;
     offset?: number;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface ListFoldersRequest {
@@ -95,8 +85,6 @@ export interface ListFoldersRequest {
     withTags?: boolean;
     limit?: number;
     offset?: number;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface SearchItemsRequest {
@@ -107,15 +95,11 @@ export interface SearchItemsRequest {
     parentPathPartId?: string | null;
     limit?: number;
     offset?: number;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface UpdateFolderOperationRequest {
     folderId: string;
     updateFolderRequest: UpdateFolderRequest;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 /**
@@ -128,8 +112,6 @@ export interface FoldersApiInterface {
     /**
      * Creates request options for createFolder without sending the request
      * @param {CreateFolderRequest} createFolderRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof FoldersApiInterface
      */
@@ -139,8 +121,6 @@ export interface FoldersApiInterface {
      * Create a new folder.  The folder is created as a child of the specified parent folder. It is automatically added to the end of the parent\'s children list.
      * @summary Create Folder Handler
      * @param {CreateFolderRequest} createFolderRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof FoldersApiInterface
@@ -156,19 +136,15 @@ export interface FoldersApiInterface {
     /**
      * Creates request options for deleteFolder without sending the request
      * @param {string} folderId 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof FoldersApiInterface
      */
     deleteFolderRequestOpts(requestParameters: DeleteFolderRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * Delete a folder and all its contents.  WARNING: This cascades to all children due to parent_id ON DELETE CASCADE. The root folder cannot be deleted.
+     * Move a folder and all its contents to trash.
      * @summary Delete Folder Handler
      * @param {string} folderId 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof FoldersApiInterface
@@ -176,7 +152,7 @@ export interface FoldersApiInterface {
     deleteFolderRaw(requestParameters: DeleteFolderRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>>;
 
     /**
-     * Delete a folder and all its contents.  WARNING: This cascades to all children due to parent_id ON DELETE CASCADE. The root folder cannot be deleted.
+     * Move a folder and all its contents to trash.
      * Delete Folder Handler
      */
     deleteFolder(requestParameters: DeleteFolderRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void>;
@@ -185,8 +161,6 @@ export interface FoldersApiInterface {
      * Creates request options for folderAction without sending the request
      * @param {string} folderId 
      * @param {FolderAction} action Action to perform
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof FoldersApiInterface
      */
@@ -197,8 +171,6 @@ export interface FoldersApiInterface {
      * @summary Folder Action Handler
      * @param {string} folderId 
      * @param {FolderAction} action Action to perform
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof FoldersApiInterface
@@ -215,8 +187,6 @@ export interface FoldersApiInterface {
      * Creates request options for getFolder without sending the request
      * @param {string} folderId 
      * @param {boolean} [withTags] Include tags in the response (default: false)
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof FoldersApiInterface
      */
@@ -227,8 +197,6 @@ export interface FoldersApiInterface {
      * @summary Get Folder Handler
      * @param {string} folderId 
      * @param {boolean} [withTags] Include tags in the response (default: false)
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof FoldersApiInterface
@@ -248,8 +216,6 @@ export interface FoldersApiInterface {
      * @param {boolean} [withTags] Include tag IDs for each item (default: false)
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof FoldersApiInterface
      */
@@ -264,19 +230,17 @@ export interface FoldersApiInterface {
      * @param {boolean} [withTags] Include tag IDs for each item (default: false)
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof FoldersApiInterface
      */
-    listFolderContentsRaw(requestParameters: ListFolderContentsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseWorkflowDefinitionResponseWorkflowRunResponseDiscriminator>>;
+    listFolderContentsRaw(requestParameters: ListFolderContentsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseWorkflowDefinitionResponseWorkflowRunResponseDataSourceResponseDataSourceTableResponseDiscriminator>>;
 
     /**
      * List all contents (folders and documents) under a folder.  Returns a discriminated union of FolderResponse and DocumentResponse items, distinguished by the `part_type` field (\"FOLDER\" or \"DOCUMENT\").  When with_tags=true, each item includes a tags field with the full tag objects.  This is the preferred way to list folder contents when you need document metadata. For generic path traversal of folders only, use GET /path-parts.
      * List Folder Contents Handler
      */
-    listFolderContents(requestParameters: ListFolderContentsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseWorkflowDefinitionResponseWorkflowRunResponseDiscriminator>;
+    listFolderContents(requestParameters: ListFolderContentsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseWorkflowDefinitionResponseWorkflowRunResponseDataSourceResponseDataSourceTableResponseDiscriminator>;
 
     /**
      * Creates request options for listFolders without sending the request
@@ -285,8 +249,6 @@ export interface FoldersApiInterface {
      * @param {boolean} [withTags] Include tags in the response (default: false)
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof FoldersApiInterface
      */
@@ -300,8 +262,6 @@ export interface FoldersApiInterface {
      * @param {boolean} [withTags] Include tags in the response (default: false)
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof FoldersApiInterface
@@ -323,8 +283,6 @@ export interface FoldersApiInterface {
      * @param {string} [parentPathPartId] Scope search to descendants of this folder\&#39;s path part
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof FoldersApiInterface
      */
@@ -340,26 +298,22 @@ export interface FoldersApiInterface {
      * @param {string} [parentPathPartId] Scope search to descendants of this folder\&#39;s path part
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof FoldersApiInterface
      */
-    searchItemsRaw(requestParameters: SearchItemsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseWorkflowDefinitionResponseWorkflowRunResponseDiscriminator>>;
+    searchItemsRaw(requestParameters: SearchItemsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseWorkflowDefinitionResponseWorkflowRunResponseDataSourceResponseDataSourceTableResponseDiscriminator>>;
 
     /**
      * Search for folders and documents by name.  Performs a case-insensitive partial name match using trigram indexing. Results are filtered by the current user\'s path permissions.  When parent_path_part_id is provided, only items under that folder are searched. Otherwise, all accessible items across the tenant are searched.
      * Search Items Handler
      */
-    searchItems(requestParameters: SearchItemsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseWorkflowDefinitionResponseWorkflowRunResponseDiscriminator>;
+    searchItems(requestParameters: SearchItemsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseWorkflowDefinitionResponseWorkflowRunResponseDataSourceResponseDataSourceTableResponseDiscriminator>;
 
     /**
      * Creates request options for updateFolder without sending the request
      * @param {string} folderId 
      * @param {UpdateFolderRequest} updateFolderRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof FoldersApiInterface
      */
@@ -370,8 +324,6 @@ export interface FoldersApiInterface {
      * @summary Update Folder Handler
      * @param {string} folderId 
      * @param {UpdateFolderRequest} updateFolderRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof FoldersApiInterface
@@ -408,10 +360,14 @@ export class FoldersApi extends runtime.BaseAPI implements FoldersApiInterface {
 
         headerParameters['Content-Type'] = 'application/json';
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/folders`;
 
@@ -459,10 +415,14 @@ export class FoldersApi extends runtime.BaseAPI implements FoldersApiInterface {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/folders/{folder_id}`;
         urlPath = urlPath.replace(`{${"folder_id"}}`, encodeURIComponent(String(requestParameters['folderId'])));
@@ -476,7 +436,7 @@ export class FoldersApi extends runtime.BaseAPI implements FoldersApiInterface {
     }
 
     /**
-     * Delete a folder and all its contents.  WARNING: This cascades to all children due to parent_id ON DELETE CASCADE. The root folder cannot be deleted.
+     * Move a folder and all its contents to trash.
      * Delete Folder Handler
      */
     async deleteFolderRaw(requestParameters: DeleteFolderRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
@@ -487,7 +447,7 @@ export class FoldersApi extends runtime.BaseAPI implements FoldersApiInterface {
     }
 
     /**
-     * Delete a folder and all its contents.  WARNING: This cascades to all children due to parent_id ON DELETE CASCADE. The root folder cannot be deleted.
+     * Move a folder and all its contents to trash.
      * Delete Folder Handler
      */
     async deleteFolder(requestParameters: DeleteFolderRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
@@ -520,10 +480,14 @@ export class FoldersApi extends runtime.BaseAPI implements FoldersApiInterface {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/folders/{folder_id}`;
         urlPath = urlPath.replace(`{${"folder_id"}}`, encodeURIComponent(String(requestParameters['folderId'])));
@@ -575,10 +539,14 @@ export class FoldersApi extends runtime.BaseAPI implements FoldersApiInterface {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/folders/{folder_id}`;
         urlPath = urlPath.replace(`{${"folder_id"}}`, encodeURIComponent(String(requestParameters['folderId'])));
@@ -644,10 +612,14 @@ export class FoldersApi extends runtime.BaseAPI implements FoldersApiInterface {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/folders/{folder_id}/contents`;
         urlPath = urlPath.replace(`{${"folder_id"}}`, encodeURIComponent(String(requestParameters['folderId'])));
@@ -664,18 +636,18 @@ export class FoldersApi extends runtime.BaseAPI implements FoldersApiInterface {
      * List all contents (folders and documents) under a folder.  Returns a discriminated union of FolderResponse and DocumentResponse items, distinguished by the `part_type` field (\"FOLDER\" or \"DOCUMENT\").  When with_tags=true, each item includes a tags field with the full tag objects.  This is the preferred way to list folder contents when you need document metadata. For generic path traversal of folders only, use GET /path-parts.
      * List Folder Contents Handler
      */
-    async listFolderContentsRaw(requestParameters: ListFolderContentsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseWorkflowDefinitionResponseWorkflowRunResponseDiscriminator>> {
+    async listFolderContentsRaw(requestParameters: ListFolderContentsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseWorkflowDefinitionResponseWorkflowRunResponseDataSourceResponseDataSourceTableResponseDiscriminator>> {
         const requestOptions = await this.listFolderContentsRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseWorkflowDefinitionResponseWorkflowRunResponseDiscriminatorFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseWorkflowDefinitionResponseWorkflowRunResponseDataSourceResponseDataSourceTableResponseDiscriminatorFromJSON(jsonValue));
     }
 
     /**
      * List all contents (folders and documents) under a folder.  Returns a discriminated union of FolderResponse and DocumentResponse items, distinguished by the `part_type` field (\"FOLDER\" or \"DOCUMENT\").  When with_tags=true, each item includes a tags field with the full tag objects.  This is the preferred way to list folder contents when you need document metadata. For generic path traversal of folders only, use GET /path-parts.
      * List Folder Contents Handler
      */
-    async listFolderContents(requestParameters: ListFolderContentsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseWorkflowDefinitionResponseWorkflowRunResponseDiscriminator> {
+    async listFolderContents(requestParameters: ListFolderContentsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseWorkflowDefinitionResponseWorkflowRunResponseDataSourceResponseDataSourceTableResponseDiscriminator> {
         const response = await this.listFolderContentsRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -708,10 +680,14 @@ export class FoldersApi extends runtime.BaseAPI implements FoldersApiInterface {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/folders`;
 
@@ -786,10 +762,14 @@ export class FoldersApi extends runtime.BaseAPI implements FoldersApiInterface {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/folders/search`;
 
@@ -805,18 +785,18 @@ export class FoldersApi extends runtime.BaseAPI implements FoldersApiInterface {
      * Search for folders and documents by name.  Performs a case-insensitive partial name match using trigram indexing. Results are filtered by the current user\'s path permissions.  When parent_path_part_id is provided, only items under that folder are searched. Otherwise, all accessible items across the tenant are searched.
      * Search Items Handler
      */
-    async searchItemsRaw(requestParameters: SearchItemsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseWorkflowDefinitionResponseWorkflowRunResponseDiscriminator>> {
+    async searchItemsRaw(requestParameters: SearchItemsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseWorkflowDefinitionResponseWorkflowRunResponseDataSourceResponseDataSourceTableResponseDiscriminator>> {
         const requestOptions = await this.searchItemsRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseWorkflowDefinitionResponseWorkflowRunResponseDiscriminatorFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseWorkflowDefinitionResponseWorkflowRunResponseDataSourceResponseDataSourceTableResponseDiscriminatorFromJSON(jsonValue));
     }
 
     /**
      * Search for folders and documents by name.  Performs a case-insensitive partial name match using trigram indexing. Results are filtered by the current user\'s path permissions.  When parent_path_part_id is provided, only items under that folder are searched. Otherwise, all accessible items across the tenant are searched.
      * Search Items Handler
      */
-    async searchItems(requestParameters: SearchItemsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseWorkflowDefinitionResponseWorkflowRunResponseDiscriminator> {
+    async searchItems(requestParameters: SearchItemsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseWorkflowDefinitionResponseWorkflowRunResponseDataSourceResponseDataSourceTableResponseDiscriminator> {
         const response = await this.searchItemsRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -845,10 +825,14 @@ export class FoldersApi extends runtime.BaseAPI implements FoldersApiInterface {
 
         headerParameters['Content-Type'] = 'application/json';
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/folders/{folder_id}`;
         urlPath = urlPath.replace(`{${"folder_id"}}`, encodeURIComponent(String(requestParameters['folderId'])));

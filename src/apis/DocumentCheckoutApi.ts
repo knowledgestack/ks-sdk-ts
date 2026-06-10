@@ -28,20 +28,14 @@ import {
 export interface AcquireDocumentCheckoutRequest {
     documentId: string;
     force?: boolean;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface GetDocumentCheckoutRequest {
     documentId: string;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface ReleaseDocumentCheckoutRequest {
     documentId: string;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 /**
@@ -55,8 +49,6 @@ export interface DocumentCheckoutApiInterface {
      * Creates request options for acquireDocumentCheckout without sending the request
      * @param {string} documentId Document ID
      * @param {boolean} [force] OWNER/ADMIN only — atomically take the checkout regardless of the current holder. Sealed docs are still refused.
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof DocumentCheckoutApiInterface
      */
@@ -67,8 +59,6 @@ export interface DocumentCheckoutApiInterface {
      * @summary Acquire Document Checkout Handler
      * @param {string} documentId Document ID
      * @param {boolean} [force] OWNER/ADMIN only — atomically take the checkout regardless of the current holder. Sealed docs are still refused.
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DocumentCheckoutApiInterface
@@ -84,8 +74,6 @@ export interface DocumentCheckoutApiInterface {
     /**
      * Creates request options for getDocumentCheckout without sending the request
      * @param {string} documentId Document ID
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof DocumentCheckoutApiInterface
      */
@@ -95,8 +83,6 @@ export interface DocumentCheckoutApiInterface {
      * Get the active checkout for the document.  404 if no active checkout exists. The holder can always GET their own lock regardless of current path permissions (parallel to the release holder-bypass).
      * @summary Get Document Checkout Handler
      * @param {string} documentId Document ID
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DocumentCheckoutApiInterface
@@ -112,8 +98,6 @@ export interface DocumentCheckoutApiInterface {
     /**
      * Creates request options for releaseDocumentCheckout without sending the request
      * @param {string} documentId Document ID
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof DocumentCheckoutApiInterface
      */
@@ -123,8 +107,6 @@ export interface DocumentCheckoutApiInterface {
      * Release the write lock on the document.  Only the holder may release the lock; others receive 403. The holder can always release regardless of current path permissions (in case a folder move relocated the doc to a path the holder can no longer write to).
      * @summary Release Document Checkout Handler
      * @param {string} documentId Document ID
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DocumentCheckoutApiInterface
@@ -163,10 +145,14 @@ export class DocumentCheckoutApi extends runtime.BaseAPI implements DocumentChec
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/documents/{document_id}/checkout`;
         urlPath = urlPath.replace(`{${"document_id"}}`, encodeURIComponent(String(requestParameters['documentId'])));
@@ -214,10 +200,14 @@ export class DocumentCheckoutApi extends runtime.BaseAPI implements DocumentChec
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/documents/{document_id}/checkout`;
         urlPath = urlPath.replace(`{${"document_id"}}`, encodeURIComponent(String(requestParameters['documentId'])));
@@ -265,10 +255,14 @@ export class DocumentCheckoutApi extends runtime.BaseAPI implements DocumentChec
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/documents/{document_id}/checkout`;
         urlPath = urlPath.replace(`{${"document_id"}}`, encodeURIComponent(String(requestParameters['documentId'])));

@@ -30,15 +30,11 @@ import {
 
 export interface GetPathPartApprovalRequest {
     pathPartId: string;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface SetPathPartApprovalRequest {
     pathPartId: string;
     setApprovalStateRequest: SetApprovalStateRequest;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 /**
@@ -51,8 +47,6 @@ export interface PathPartApprovalsApiInterface {
     /**
      * Creates request options for getPathPartApproval without sending the request
      * @param {string} pathPartId 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof PathPartApprovalsApiInterface
      */
@@ -62,8 +56,6 @@ export interface PathPartApprovalsApiInterface {
      * Return the current approval audit row for a path_part.  Exposes ``reviewer_id`` / ``reason`` and the decision timestamps so a caller can re-read who decided what and why. 404 if the path_part never entered the approval flow (its ``approval_state`` is still ``not_required``).
      * @summary Get Path Part Approval Handler
      * @param {string} pathPartId 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof PathPartApprovalsApiInterface
@@ -80,8 +72,6 @@ export interface PathPartApprovalsApiInterface {
      * Creates request options for setPathPartApproval without sending the request
      * @param {string} pathPartId 
      * @param {SetApprovalStateRequest} setApprovalStateRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof PathPartApprovalsApiInterface
      */
@@ -92,8 +82,6 @@ export interface PathPartApprovalsApiInterface {
      * @summary Set Path Part Approval Handler
      * @param {string} pathPartId 
      * @param {SetApprovalStateRequest} setApprovalStateRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof PathPartApprovalsApiInterface
@@ -128,10 +116,14 @@ export class PathPartApprovalsApi extends runtime.BaseAPI implements PathPartApp
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/path-parts/{path_part_id}/approval`;
         urlPath = urlPath.replace(`{${"path_part_id"}}`, encodeURIComponent(String(requestParameters['pathPartId'])));
@@ -188,10 +180,14 @@ export class PathPartApprovalsApi extends runtime.BaseAPI implements PathPartApp
 
         headerParameters['Content-Type'] = 'application/json';
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/path-parts/{path_part_id}/approval`;
         urlPath = urlPath.replace(`{${"path_part_id"}}`, encodeURIComponent(String(requestParameters['pathPartId'])));

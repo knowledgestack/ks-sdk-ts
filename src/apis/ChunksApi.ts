@@ -54,21 +54,15 @@ import {
 
 export interface CreateChunkOperationRequest {
     createChunkRequest: CreateChunkRequest;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface DeleteChunkRequest {
     chunkId: string;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface GetChunkRequest {
     chunkId: string;
     withDocument?: boolean;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface GetChunkNeighborsRequest {
@@ -77,40 +71,28 @@ export interface GetChunkNeighborsRequest {
     next?: number;
     contentType?: PartType;
     withinSection?: boolean;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface GetChunksBulkRequest {
     chunkIds?: Array<string> | null;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface GetVersionChunkIdsRequest {
     documentVersionId: string;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface SearchChunksRequest {
     chunkSearchRequest: ChunkSearchRequest;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface UpdateChunkContentOperationRequest {
     chunkId: string;
     updateChunkContentRequest: UpdateChunkContentRequest;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface UpdateChunkMetadataOperationRequest {
     chunkId: string;
     updateChunkMetadataRequest: UpdateChunkMetadataRequest;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 /**
@@ -123,8 +105,6 @@ export interface ChunksApiInterface {
     /**
      * Creates request options for createChunk without sending the request
      * @param {CreateChunkRequest} createChunkRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof ChunksApiInterface
      */
@@ -134,8 +114,6 @@ export interface ChunksApiInterface {
      * Create a new chunk with content.  The chunk is created as a child of the specified parent (must be DOCUMENT_VERSION or SECTION). Content is deduplicated by SHA256 hash.
      * @summary Create Chunk Handler
      * @param {CreateChunkRequest} createChunkRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ChunksApiInterface
@@ -151,8 +129,6 @@ export interface ChunksApiInterface {
     /**
      * Creates request options for deleteChunk without sending the request
      * @param {string} chunkId 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof ChunksApiInterface
      */
@@ -162,8 +138,6 @@ export interface ChunksApiInterface {
      * Delete a chunk.  The chunk is deleted via its PathPart (cascading delete). The associated ChunkContent may remain if shared by other chunks.
      * @summary Delete Chunk Handler
      * @param {string} chunkId 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ChunksApiInterface
@@ -180,8 +154,6 @@ export interface ChunksApiInterface {
      * Creates request options for getChunk without sending the request
      * @param {string} chunkId 
      * @param {boolean} [withDocument] Include ancestor document_id and document_version_id (default: false)
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof ChunksApiInterface
      */
@@ -192,8 +164,6 @@ export interface ChunksApiInterface {
      * @summary Get Chunk Handler
      * @param {string} chunkId 
      * @param {boolean} [withDocument] Include ancestor document_id and document_version_id (default: false)
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ChunksApiInterface
@@ -213,8 +183,6 @@ export interface ChunksApiInterface {
      * @param {number} [next] Number of succeeding items to include (max 50).
      * @param {PartType} [contentType] Filter by content type: SECTION or CHUNK. Omit to return both. SECTION is rejected when the anchor is a chunk (always).
      * @param {boolean} [withinSection] When true (default), traverse only the anchor\&#39;s sibling chain under the same parent. When false, traverse the entire document version in DFS order, crossing section boundaries.
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof ChunksApiInterface
      */
@@ -228,8 +196,6 @@ export interface ChunksApiInterface {
      * @param {number} [next] Number of succeeding items to include (max 50).
      * @param {PartType} [contentType] Filter by content type: SECTION or CHUNK. Omit to return both. SECTION is rejected when the anchor is a chunk (always).
      * @param {boolean} [withinSection] When true (default), traverse only the anchor\&#39;s sibling chain under the same parent. When false, traverse the entire document version in DFS order, crossing section boundaries.
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ChunksApiInterface
@@ -245,8 +211,6 @@ export interface ChunksApiInterface {
     /**
      * Creates request options for getChunksBulk without sending the request
      * @param {Array<string>} [chunkIds] Chunk IDs to resolve (max 200)
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof ChunksApiInterface
      */
@@ -256,8 +220,6 @@ export interface ChunksApiInterface {
      * Batch-fetch chunks with their full ancestor path part IDs.  Returns standard chunk data plus path_part_id_segments (the ordered ancestor chain from root to chunk) for each requested chunk. Non-existent IDs are silently skipped. Limited to 200 IDs per call.
      * @summary Get Chunks Bulk Handler
      * @param {Array<string>} [chunkIds] Chunk IDs to resolve (max 200)
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ChunksApiInterface
@@ -273,8 +235,6 @@ export interface ChunksApiInterface {
     /**
      * Creates request options for getVersionChunkIds without sending the request
      * @param {string} documentVersionId Document version ID
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof ChunksApiInterface
      */
@@ -284,8 +244,6 @@ export interface ChunksApiInterface {
      * Get all chunk IDs belonging to a document version.  Used by the embedding pipeline to discover chunks for a version.
      * @summary Get Version Chunk Ids Handler
      * @param {string} documentVersionId Document version ID
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ChunksApiInterface
@@ -301,8 +259,6 @@ export interface ChunksApiInterface {
     /**
      * Creates request options for searchChunks without sending the request
      * @param {ChunkSearchRequest} chunkSearchRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof ChunksApiInterface
      */
@@ -312,8 +268,6 @@ export interface ChunksApiInterface {
      * Search over chunks using dense vector, BM25 full-text, or hybrid retrieval.  Combines search with path-based authorization and optional metadata filters. Uses Qdrant for retrieval and hydrates the matched chunks from Postgres.  **Billing note.** SEARCH consume runs *before* path-permission resolution. A request that resolves to an empty permission set (caller has read access to nothing in the requested scope) returns ``[]`` cleanly — without raising — so it is **not** refunded. This is intentional: differential billing for a no-results case would leak access shape to the caller. Callers concerned about charged no-op searches should validate path access client-side first.
      * @summary Search Chunks Handler
      * @param {ChunkSearchRequest} chunkSearchRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ChunksApiInterface
@@ -330,8 +284,6 @@ export interface ChunksApiInterface {
      * Creates request options for updateChunkContent without sending the request
      * @param {string} chunkId 
      * @param {UpdateChunkContentRequest} updateChunkContentRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof ChunksApiInterface
      */
@@ -342,8 +294,6 @@ export interface ChunksApiInterface {
      * @summary Update Chunk Content Handler
      * @param {string} chunkId 
      * @param {UpdateChunkContentRequest} updateChunkContentRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ChunksApiInterface
@@ -360,8 +310,6 @@ export interface ChunksApiInterface {
      * Creates request options for updateChunkMetadata without sending the request
      * @param {string} chunkId 
      * @param {UpdateChunkMetadataRequest} updateChunkMetadataRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof ChunksApiInterface
      */
@@ -372,8 +320,6 @@ export interface ChunksApiInterface {
      * @summary Update Chunk Metadata Handler
      * @param {string} chunkId 
      * @param {UpdateChunkMetadataRequest} updateChunkMetadataRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ChunksApiInterface
@@ -410,10 +356,14 @@ export class ChunksApi extends runtime.BaseAPI implements ChunksApiInterface {
 
         headerParameters['Content-Type'] = 'application/json';
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/chunks`;
 
@@ -461,10 +411,14 @@ export class ChunksApi extends runtime.BaseAPI implements ChunksApiInterface {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/chunks/{chunk_id}`;
         urlPath = urlPath.replace(`{${"chunk_id"}}`, encodeURIComponent(String(requestParameters['chunkId'])));
@@ -515,10 +469,14 @@ export class ChunksApi extends runtime.BaseAPI implements ChunksApiInterface {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/chunks/{chunk_id}`;
         urlPath = urlPath.replace(`{${"chunk_id"}}`, encodeURIComponent(String(requestParameters['chunkId'])));
@@ -582,10 +540,14 @@ export class ChunksApi extends runtime.BaseAPI implements ChunksApiInterface {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/chunks/{chunk_id}/neighbors`;
         urlPath = urlPath.replace(`{${"chunk_id"}}`, encodeURIComponent(String(requestParameters['chunkId'])));
@@ -630,10 +592,14 @@ export class ChunksApi extends runtime.BaseAPI implements ChunksApiInterface {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/chunks/bulk`;
 
@@ -684,10 +650,14 @@ export class ChunksApi extends runtime.BaseAPI implements ChunksApiInterface {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/chunks/version-chunk-ids`;
 
@@ -736,10 +706,14 @@ export class ChunksApi extends runtime.BaseAPI implements ChunksApiInterface {
 
         headerParameters['Content-Type'] = 'application/json';
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/chunks/search`;
 
@@ -796,10 +770,14 @@ export class ChunksApi extends runtime.BaseAPI implements ChunksApiInterface {
 
         headerParameters['Content-Type'] = 'application/json';
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/chunks/{chunk_id}/content`;
         urlPath = urlPath.replace(`{${"chunk_id"}}`, encodeURIComponent(String(requestParameters['chunkId'])));
@@ -857,10 +835,14 @@ export class ChunksApi extends runtime.BaseAPI implements ChunksApiInterface {
 
         headerParameters['Content-Type'] = 'application/json';
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/chunks/{chunk_id}`;
         urlPath = urlPath.replace(`{${"chunk_id"}}`, encodeURIComponent(String(requestParameters['chunkId'])));

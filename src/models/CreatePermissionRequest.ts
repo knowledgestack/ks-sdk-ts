@@ -51,6 +51,12 @@ export interface CreatePermissionRequest {
      * @memberof CreatePermissionRequest
      */
     capability: PermissionCapability;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof CreatePermissionRequest
+     */
+    canApprove?: boolean;
 }
 
 
@@ -97,6 +103,7 @@ export function CreatePermissionRequestFromJSONTyped(json: any, ignoreDiscrimina
         'userId': json['user_id'],
         'pathPartId': json['path_part_id'],
         'capability': PermissionCapabilityFromJSON(json['capability']),
+        'canApprove': json['can_approve'] == null ? undefined : json['can_approve'],
     };
 }
 
@@ -115,6 +122,7 @@ export function CreatePermissionRequestToJSONTyped(value?: CreatePermissionReque
         'user_id': value['userId'],
         'path_part_id': value['pathPartId'],
         'capability': PermissionCapabilityToJSON(value['capability']),
+        'can_approve': value['canApprove'],
     };
 }
 

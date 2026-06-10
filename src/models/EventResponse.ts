@@ -13,6 +13,14 @@
  */
 
 import { mapValues } from '../runtime';
+import type { UserInfo } from './UserInfo';
+import {
+    UserInfoFromJSON,
+    UserInfoFromJSONTyped,
+    UserInfoToJSON,
+    UserInfoToJSONTyped,
+} from './UserInfo';
+
 /**
  * One event row, anchored to a path_part subject.
  * 
@@ -59,6 +67,12 @@ export interface EventResponse {
      * @memberof EventResponse
      */
     payload: { [key: string]: any; };
+    /**
+     * 
+     * @type {UserInfo}
+     * @memberof EventResponse
+     */
+    actor?: UserInfo | null;
 }
 export const EventResponsePropertyValidationAttributesMap: {
     [property: string]: {
@@ -107,6 +121,7 @@ export function EventResponseFromJSONTyped(json: any, ignoreDiscriminator: boole
         'ts': (new Date(json['ts'])),
         'actorUserId': json['actor_user_id'],
         'payload': json['payload'],
+        'actor': json['actor'] == null ? undefined : UserInfoFromJSON(json['actor']),
     };
 }
 
@@ -127,6 +142,7 @@ export function EventResponseToJSONTyped(value?: EventResponse | null, ignoreDis
         'ts': value['ts'].toISOString(),
         'actor_user_id': value['actorUserId'],
         'payload': value['payload'],
+        'actor': UserInfoToJSON(value['actor']),
     };
 }
 

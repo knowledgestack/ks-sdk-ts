@@ -58,90 +58,61 @@ import {
 export interface AddGroupMemberRequest {
     groupId: string;
     addMemberRequest: AddMemberRequest;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface CreateGroupPermissionOperationRequest {
     groupId: string;
     createGroupPermissionRequest: CreateGroupPermissionRequest;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface CreateTenantGroupRequest {
     createGroupRequest: CreateGroupRequest;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface DeleteGroupPermissionRequest {
     groupId: string;
     permissionId: string;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface DeleteTenantGroupRequest {
     groupId: string;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface GetTenantGroupRequest {
     groupId: string;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface ListGroupMembersRequest {
     groupId: string;
     limit?: number;
     offset?: number;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface ListGroupPermissionsRequest {
     groupId: string;
     limit?: number;
     offset?: number;
-    authorization?: string | null;
-    ksUat?: string | null;
-}
-
-export interface ListMyGroupsRequest {
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface ListTenantGroupsRequest {
     limit?: number;
     offset?: number;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface RemoveGroupMemberRequest {
     groupId: string;
     userId: string;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface UpdateGroupPermissionOperationRequest {
     groupId: string;
     permissionId: string;
     updateGroupPermissionRequest: UpdateGroupPermissionRequest;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface UpdateTenantGroupRequest {
     groupId: string;
     updateGroupRequest: UpdateGroupRequest;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 /**
@@ -155,8 +126,6 @@ export interface TenantGroupsApiInterface {
      * Creates request options for addGroupMember without sending the request
      * @param {string} groupId 
      * @param {AddMemberRequest} addMemberRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof TenantGroupsApiInterface
      */
@@ -167,8 +136,6 @@ export interface TenantGroupsApiInterface {
      * @summary Add Group Member Handler
      * @param {string} groupId 
      * @param {AddMemberRequest} addMemberRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof TenantGroupsApiInterface
@@ -185,8 +152,6 @@ export interface TenantGroupsApiInterface {
      * Creates request options for createGroupPermission without sending the request
      * @param {string} groupId 
      * @param {CreateGroupPermissionRequest} createGroupPermissionRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof TenantGroupsApiInterface
      */
@@ -197,8 +162,6 @@ export interface TenantGroupsApiInterface {
      * @summary Create Group Permission Handler
      * @param {string} groupId 
      * @param {CreateGroupPermissionRequest} createGroupPermissionRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof TenantGroupsApiInterface
@@ -214,8 +177,6 @@ export interface TenantGroupsApiInterface {
     /**
      * Creates request options for createTenantGroup without sending the request
      * @param {CreateGroupRequest} createGroupRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof TenantGroupsApiInterface
      */
@@ -225,8 +186,6 @@ export interface TenantGroupsApiInterface {
      * Create a new tenant group (admin/owner only).
      * @summary Create Tenant Group Handler
      * @param {CreateGroupRequest} createGroupRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof TenantGroupsApiInterface
@@ -243,8 +202,6 @@ export interface TenantGroupsApiInterface {
      * Creates request options for deleteGroupPermission without sending the request
      * @param {string} groupId 
      * @param {string} permissionId 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof TenantGroupsApiInterface
      */
@@ -255,8 +212,6 @@ export interface TenantGroupsApiInterface {
      * @summary Delete Group Permission Handler
      * @param {string} groupId 
      * @param {string} permissionId 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof TenantGroupsApiInterface
@@ -272,8 +227,6 @@ export interface TenantGroupsApiInterface {
     /**
      * Creates request options for deleteTenantGroup without sending the request
      * @param {string} groupId 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof TenantGroupsApiInterface
      */
@@ -283,8 +236,6 @@ export interface TenantGroupsApiInterface {
      * Delete a tenant group (admin/owner only).
      * @summary Delete Tenant Group Handler
      * @param {string} groupId 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof TenantGroupsApiInterface
@@ -300,8 +251,6 @@ export interface TenantGroupsApiInterface {
     /**
      * Creates request options for getTenantGroup without sending the request
      * @param {string} groupId 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof TenantGroupsApiInterface
      */
@@ -311,8 +260,6 @@ export interface TenantGroupsApiInterface {
      * Get a tenant group by ID (group member or admin/owner).
      * @summary Get Tenant Group Handler
      * @param {string} groupId 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof TenantGroupsApiInterface
@@ -330,8 +277,6 @@ export interface TenantGroupsApiInterface {
      * @param {string} groupId 
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof TenantGroupsApiInterface
      */
@@ -343,8 +288,6 @@ export interface TenantGroupsApiInterface {
      * @param {string} groupId 
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof TenantGroupsApiInterface
@@ -362,8 +305,6 @@ export interface TenantGroupsApiInterface {
      * @param {string} groupId 
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof TenantGroupsApiInterface
      */
@@ -375,8 +316,6 @@ export interface TenantGroupsApiInterface {
      * @param {string} groupId 
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof TenantGroupsApiInterface
@@ -391,36 +330,30 @@ export interface TenantGroupsApiInterface {
 
     /**
      * Creates request options for listMyGroups without sending the request
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof TenantGroupsApiInterface
      */
-    listMyGroupsRequestOpts(requestParameters: ListMyGroupsRequest): Promise<runtime.RequestOpts>;
+    listMyGroupsRequestOpts(): Promise<runtime.RequestOpts>;
 
     /**
      * List groups the current user belongs to.
      * @summary List My Groups Handler
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof TenantGroupsApiInterface
      */
-    listMyGroupsRaw(requestParameters: ListMyGroupsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<GroupResponse>>>;
+    listMyGroupsRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<GroupResponse>>>;
 
     /**
      * List groups the current user belongs to.
      * List My Groups Handler
      */
-    listMyGroups(requestParameters: ListMyGroupsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<GroupResponse>>;
+    listMyGroups(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<GroupResponse>>;
 
     /**
      * Creates request options for listTenantGroups without sending the request
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof TenantGroupsApiInterface
      */
@@ -431,8 +364,6 @@ export interface TenantGroupsApiInterface {
      * @summary List Tenant Groups Handler
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof TenantGroupsApiInterface
@@ -449,8 +380,6 @@ export interface TenantGroupsApiInterface {
      * Creates request options for removeGroupMember without sending the request
      * @param {string} groupId 
      * @param {string} userId 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof TenantGroupsApiInterface
      */
@@ -461,8 +390,6 @@ export interface TenantGroupsApiInterface {
      * @summary Remove Group Member Handler
      * @param {string} groupId 
      * @param {string} userId 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof TenantGroupsApiInterface
@@ -480,8 +407,6 @@ export interface TenantGroupsApiInterface {
      * @param {string} groupId 
      * @param {string} permissionId 
      * @param {UpdateGroupPermissionRequest} updateGroupPermissionRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof TenantGroupsApiInterface
      */
@@ -493,8 +418,6 @@ export interface TenantGroupsApiInterface {
      * @param {string} groupId 
      * @param {string} permissionId 
      * @param {UpdateGroupPermissionRequest} updateGroupPermissionRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof TenantGroupsApiInterface
@@ -511,8 +434,6 @@ export interface TenantGroupsApiInterface {
      * Creates request options for updateTenantGroup without sending the request
      * @param {string} groupId 
      * @param {UpdateGroupRequest} updateGroupRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof TenantGroupsApiInterface
      */
@@ -523,8 +444,6 @@ export interface TenantGroupsApiInterface {
      * @summary Update Tenant Group Handler
      * @param {string} groupId 
      * @param {UpdateGroupRequest} updateGroupRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof TenantGroupsApiInterface
@@ -568,10 +487,14 @@ export class TenantGroupsApi extends runtime.BaseAPI implements TenantGroupsApiI
 
         headerParameters['Content-Type'] = 'application/json';
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/tenant-groups/{group_id}/members`;
         urlPath = urlPath.replace(`{${"group_id"}}`, encodeURIComponent(String(requestParameters['groupId'])));
@@ -629,10 +552,14 @@ export class TenantGroupsApi extends runtime.BaseAPI implements TenantGroupsApiI
 
         headerParameters['Content-Type'] = 'application/json';
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/tenant-groups/{group_id}/permissions`;
         urlPath = urlPath.replace(`{${"group_id"}}`, encodeURIComponent(String(requestParameters['groupId'])));
@@ -683,10 +610,14 @@ export class TenantGroupsApi extends runtime.BaseAPI implements TenantGroupsApiI
 
         headerParameters['Content-Type'] = 'application/json';
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/tenant-groups`;
 
@@ -741,10 +672,14 @@ export class TenantGroupsApi extends runtime.BaseAPI implements TenantGroupsApiI
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/tenant-groups/{group_id}/permissions/{permission_id}`;
         urlPath = urlPath.replace(`{${"group_id"}}`, encodeURIComponent(String(requestParameters['groupId'])));
@@ -792,10 +727,14 @@ export class TenantGroupsApi extends runtime.BaseAPI implements TenantGroupsApiI
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/tenant-groups/{group_id}`;
         urlPath = urlPath.replace(`{${"group_id"}}`, encodeURIComponent(String(requestParameters['groupId'])));
@@ -842,10 +781,14 @@ export class TenantGroupsApi extends runtime.BaseAPI implements TenantGroupsApiI
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/tenant-groups/{group_id}`;
         urlPath = urlPath.replace(`{${"group_id"}}`, encodeURIComponent(String(requestParameters['groupId'])));
@@ -901,10 +844,14 @@ export class TenantGroupsApi extends runtime.BaseAPI implements TenantGroupsApiI
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/tenant-groups/{group_id}/members`;
         urlPath = urlPath.replace(`{${"group_id"}}`, encodeURIComponent(String(requestParameters['groupId'])));
@@ -960,10 +907,14 @@ export class TenantGroupsApi extends runtime.BaseAPI implements TenantGroupsApiI
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/tenant-groups/{group_id}/permissions`;
         urlPath = urlPath.replace(`{${"group_id"}}`, encodeURIComponent(String(requestParameters['groupId'])));
@@ -999,15 +950,19 @@ export class TenantGroupsApi extends runtime.BaseAPI implements TenantGroupsApiI
     /**
      * Creates request options for listMyGroups without sending the request
      */
-    async listMyGroupsRequestOpts(requestParameters: ListMyGroupsRequest): Promise<runtime.RequestOpts> {
+    async listMyGroupsRequestOpts(): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/tenant-groups/my-group`;
 
@@ -1023,8 +978,8 @@ export class TenantGroupsApi extends runtime.BaseAPI implements TenantGroupsApiI
      * List groups the current user belongs to.
      * List My Groups Handler
      */
-    async listMyGroupsRaw(requestParameters: ListMyGroupsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<GroupResponse>>> {
-        const requestOptions = await this.listMyGroupsRequestOpts(requestParameters);
+    async listMyGroupsRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<GroupResponse>>> {
+        const requestOptions = await this.listMyGroupsRequestOpts();
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(GroupResponseFromJSON));
@@ -1034,8 +989,8 @@ export class TenantGroupsApi extends runtime.BaseAPI implements TenantGroupsApiI
      * List groups the current user belongs to.
      * List My Groups Handler
      */
-    async listMyGroups(requestParameters: ListMyGroupsRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<GroupResponse>> {
-        const response = await this.listMyGroupsRaw(requestParameters, initOverrides);
+    async listMyGroups(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<GroupResponse>> {
+        const response = await this.listMyGroupsRaw(initOverrides);
         return await response.value();
     }
 
@@ -1055,10 +1010,14 @@ export class TenantGroupsApi extends runtime.BaseAPI implements TenantGroupsApiI
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/tenant-groups`;
 
@@ -1112,10 +1071,14 @@ export class TenantGroupsApi extends runtime.BaseAPI implements TenantGroupsApiI
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/tenant-groups/{group_id}/members/{user_id}`;
         urlPath = urlPath.replace(`{${"group_id"}}`, encodeURIComponent(String(requestParameters['groupId'])));
@@ -1179,10 +1142,14 @@ export class TenantGroupsApi extends runtime.BaseAPI implements TenantGroupsApiI
 
         headerParameters['Content-Type'] = 'application/json';
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/tenant-groups/{group_id}/permissions/{permission_id}`;
         urlPath = urlPath.replace(`{${"group_id"}}`, encodeURIComponent(String(requestParameters['groupId'])));
@@ -1241,10 +1208,14 @@ export class TenantGroupsApi extends runtime.BaseAPI implements TenantGroupsApiI
 
         headerParameters['Content-Type'] = 'application/json';
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/tenant-groups/{group_id}`;
         urlPath = urlPath.replace(`{${"group_id"}}`, encodeURIComponent(String(requestParameters['groupId'])));

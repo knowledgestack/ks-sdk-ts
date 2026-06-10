@@ -27,6 +27,8 @@ export const ReferenceType = {
     ThreadMessage: 'THREAD_MESSAGE',
     WorkflowDefinition: 'WORKFLOW_DEFINITION',
     WorkflowRun: 'WORKFLOW_RUN',
+    DataSource: 'DATA_SOURCE',
+    DataSourceTable: 'DATA_SOURCE_TABLE',
     Image: 'image',
     Memory: 'memory',
     Tag: 'tag',

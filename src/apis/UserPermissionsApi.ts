@@ -36,15 +36,11 @@ import {
 
 export interface CreateUserPermissionRequest {
     createPermissionRequest: CreatePermissionRequest;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface DeleteUserPermissionRequest {
     permissionId: string;
     tenantId: string;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface ListUserPermissionsRequest {
@@ -52,16 +48,12 @@ export interface ListUserPermissionsRequest {
     userId: string;
     limit?: number;
     offset?: number;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface UpdateUserPermissionRequest {
     permissionId: string;
     tenantId: string;
     updatePermissionRequest: UpdatePermissionRequest;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 /**
@@ -74,8 +66,6 @@ export interface UserPermissionsApiInterface {
     /**
      * Creates request options for createUserPermission without sending the request
      * @param {CreatePermissionRequest} createPermissionRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof UserPermissionsApiInterface
      */
@@ -85,8 +75,6 @@ export interface UserPermissionsApiInterface {
      * Create a path permission for a user in a tenant (admin/owner only).
      * @summary Create User Permission Handler
      * @param {CreatePermissionRequest} createPermissionRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof UserPermissionsApiInterface
@@ -103,8 +91,6 @@ export interface UserPermissionsApiInterface {
      * Creates request options for deleteUserPermission without sending the request
      * @param {string} permissionId 
      * @param {string} tenantId Tenant ID the permission belongs to
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof UserPermissionsApiInterface
      */
@@ -115,8 +101,6 @@ export interface UserPermissionsApiInterface {
      * @summary Delete User Permission Handler
      * @param {string} permissionId 
      * @param {string} tenantId Tenant ID the permission belongs to
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof UserPermissionsApiInterface
@@ -135,8 +119,6 @@ export interface UserPermissionsApiInterface {
      * @param {string} userId User ID to list permissions for
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof UserPermissionsApiInterface
      */
@@ -149,8 +131,6 @@ export interface UserPermissionsApiInterface {
      * @param {string} userId User ID to list permissions for
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof UserPermissionsApiInterface
@@ -168,8 +148,6 @@ export interface UserPermissionsApiInterface {
      * @param {string} permissionId 
      * @param {string} tenantId Tenant ID the permission belongs to
      * @param {UpdatePermissionRequest} updatePermissionRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof UserPermissionsApiInterface
      */
@@ -181,8 +159,6 @@ export interface UserPermissionsApiInterface {
      * @param {string} permissionId 
      * @param {string} tenantId Tenant ID the permission belongs to
      * @param {UpdatePermissionRequest} updatePermissionRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof UserPermissionsApiInterface
@@ -219,10 +195,14 @@ export class UserPermissionsApi extends runtime.BaseAPI implements UserPermissio
 
         headerParameters['Content-Type'] = 'application/json';
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/user-permissions`;
 
@@ -281,10 +261,14 @@ export class UserPermissionsApi extends runtime.BaseAPI implements UserPermissio
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/user-permissions/{permission_id}`;
         urlPath = urlPath.replace(`{${"permission_id"}}`, encodeURIComponent(String(requestParameters['permissionId'])));
@@ -354,10 +338,14 @@ export class UserPermissionsApi extends runtime.BaseAPI implements UserPermissio
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/user-permissions`;
 
@@ -424,10 +412,14 @@ export class UserPermissionsApi extends runtime.BaseAPI implements UserPermissio
 
         headerParameters['Content-Type'] = 'application/json';
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/user-permissions/{permission_id}`;
         urlPath = urlPath.replace(`{${"permission_id"}}`, encodeURIComponent(String(requestParameters['permissionId'])));

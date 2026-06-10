@@ -14,12 +14,13 @@
 
 
 /**
- * Permission capability.
+ * Path access capability, a strict ladder: read < write < delete.
  * @export
  */
 export const PermissionCapability = {
     ReadOnly: 'READ_ONLY',
-    ReadWrite: 'READ_WRITE'
+    ReadWrite: 'READ_WRITE',
+    ReadWriteDelete: 'READ_WRITE_DELETE'
 } as const;
 export type PermissionCapability = typeof PermissionCapability[keyof typeof PermissionCapability];
 

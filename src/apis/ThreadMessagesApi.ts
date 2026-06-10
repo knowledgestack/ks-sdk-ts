@@ -34,16 +34,12 @@ import {
 export interface CreateThreadMessageOperationRequest {
     threadId: string;
     createThreadMessageRequest: CreateThreadMessageRequest;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface GetThreadMessageRequest {
     threadId: string;
     messageId: string;
     withDetails?: boolean;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface ListThreadMessagesRequest {
@@ -52,8 +48,6 @@ export interface ListThreadMessagesRequest {
     withDetails?: boolean;
     limit?: number;
     offset?: number;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 /**
@@ -67,8 +61,6 @@ export interface ThreadMessagesApiInterface {
      * Creates request options for createThreadMessage without sending the request
      * @param {string} threadId 
      * @param {CreateThreadMessageRequest} createThreadMessageRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof ThreadMessagesApiInterface
      */
@@ -79,8 +71,6 @@ export interface ThreadMessagesApiInterface {
      * @summary Create Thread Message Handler
      * @param {string} threadId 
      * @param {CreateThreadMessageRequest} createThreadMessageRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ThreadMessagesApiInterface
@@ -98,8 +88,6 @@ export interface ThreadMessagesApiInterface {
      * @param {string} threadId 
      * @param {string} messageId 
      * @param {boolean} [withDetails] Include execution steps in response (default true)
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof ThreadMessagesApiInterface
      */
@@ -111,8 +99,6 @@ export interface ThreadMessagesApiInterface {
      * @param {string} threadId 
      * @param {string} messageId 
      * @param {boolean} [withDetails] Include execution steps in response (default true)
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ThreadMessagesApiInterface
@@ -132,8 +118,6 @@ export interface ThreadMessagesApiInterface {
      * @param {boolean} [withDetails] Include execution steps in response (default true)
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof ThreadMessagesApiInterface
      */
@@ -147,8 +131,6 @@ export interface ThreadMessagesApiInterface {
      * @param {boolean} [withDetails] Include execution steps in response (default true)
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ThreadMessagesApiInterface
@@ -192,10 +174,14 @@ export class ThreadMessagesApi extends runtime.BaseAPI implements ThreadMessages
 
         headerParameters['Content-Type'] = 'application/json';
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/threads/{thread_id}/messages`;
         urlPath = urlPath.replace(`{${"thread_id"}}`, encodeURIComponent(String(requestParameters['threadId'])));
@@ -255,10 +241,14 @@ export class ThreadMessagesApi extends runtime.BaseAPI implements ThreadMessages
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/threads/{thread_id}/messages/{message_id}`;
         urlPath = urlPath.replace(`{${"thread_id"}}`, encodeURIComponent(String(requestParameters['threadId'])));
@@ -323,10 +313,14 @@ export class ThreadMessagesApi extends runtime.BaseAPI implements ThreadMessages
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/threads/{thread_id}/messages`;
         urlPath = urlPath.replace(`{${"thread_id"}}`, encodeURIComponent(String(requestParameters['threadId'])));

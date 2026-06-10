@@ -20,6 +20,13 @@ import {
     PartTypeToJSON,
     PartTypeToJSONTyped,
 } from './PartType';
+import type { ItemPermissions } from './ItemPermissions';
+import {
+    ItemPermissionsFromJSON,
+    ItemPermissionsFromJSONTyped,
+    ItemPermissionsToJSON,
+    ItemPermissionsToJSONTyped,
+} from './ItemPermissions';
 import type { TagResponse } from './TagResponse';
 import {
     TagResponseFromJSON,
@@ -89,17 +96,11 @@ export interface PathPartResponse {
      */
     tags?: Array<TagResponse> | null;
     /**
-     * Whether the current user can read
-     * @type {boolean}
+     * 
+     * @type {ItemPermissions}
      * @memberof PathPartResponse
      */
-    canRead: boolean;
-    /**
-     * Whether the current user can write
-     * @type {boolean}
-     * @memberof PathPartResponse
-     */
-    canWrite: boolean;
+    permissions: ItemPermissions;
     /**
      * Creation timestamp
      * @type {Date}
@@ -145,8 +146,7 @@ export function instanceOfPathPartResponse(value: object): value is PathPartResp
     if (!('materializedPath' in value) || value['materializedPath'] === undefined) return false;
     if (!('systemManaged' in value) || value['systemManaged'] === undefined) return false;
     if (!('excludeFromQdrant' in value) || value['excludeFromQdrant'] === undefined) return false;
-    if (!('canRead' in value) || value['canRead'] === undefined) return false;
-    if (!('canWrite' in value) || value['canWrite'] === undefined) return false;
+    if (!('permissions' in value) || value['permissions'] === undefined) return false;
     if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
     if (!('updatedAt' in value) || value['updatedAt'] === undefined) return false;
     return true;
@@ -171,8 +171,7 @@ export function PathPartResponseFromJSONTyped(json: any, ignoreDiscriminator: bo
         'systemManaged': json['system_managed'],
         'excludeFromQdrant': json['exclude_from_qdrant'],
         'tags': json['tags'] == null ? undefined : ((json['tags'] as Array<any>).map(TagResponseFromJSON)),
-        'canRead': json['can_read'],
-        'canWrite': json['can_write'],
+        'permissions': ItemPermissionsFromJSON(json['permissions']),
         'createdAt': (new Date(json['created_at'])),
         'updatedAt': (new Date(json['updated_at'])),
     };
@@ -198,8 +197,7 @@ export function PathPartResponseToJSONTyped(value?: PathPartResponse | null, ign
         'system_managed': value['systemManaged'],
         'exclude_from_qdrant': value['excludeFromQdrant'],
         'tags': value['tags'] == null ? undefined : ((value['tags'] as Array<any>).map(TagResponseToJSON)),
-        'can_read': value['canRead'],
-        'can_write': value['canWrite'],
+        'permissions': ItemPermissionsToJSON(value['permissions']),
         'created_at': value['createdAt'].toISOString(),
         'updated_at': value['updatedAt'].toISOString(),
     };

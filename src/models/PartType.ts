@@ -26,7 +26,9 @@ export const PartType = {
     Thread: 'THREAD',
     ThreadMessage: 'THREAD_MESSAGE',
     WorkflowDefinition: 'WORKFLOW_DEFINITION',
-    WorkflowRun: 'WORKFLOW_RUN'
+    WorkflowRun: 'WORKFLOW_RUN',
+    DataSource: 'DATA_SOURCE',
+    DataSourceTable: 'DATA_SOURCE_TABLE'
 } as const;
 export type PartType = typeof PartType[keyof typeof PartType];
 

@@ -39,33 +39,23 @@ import {
 
 export interface CancelTemporalWorkflowRequest {
     workflowId: string;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface DvWorkflowRerunRequest {
     workflowId: string;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface GetDvWorkflowRequest {
     workflowId: string;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface GetTemporalWorkflowStatusRequest {
     workflowId: string;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface ListDvWorkflowsRequest {
     limit?: number;
     offset?: number;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 /**
@@ -78,8 +68,6 @@ export interface WorkflowsApiInterface {
     /**
      * Creates request options for cancelTemporalWorkflow without sending the request
      * @param {string} workflowId 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof WorkflowsApiInterface
      */
@@ -89,8 +77,6 @@ export interface WorkflowsApiInterface {
      * Cancel any Temporal workflow owned by the caller\'s tenant.  No status guard — this is a thin Temporal wrapper. Cancelling an already-terminal workflow is a no-op on the Temporal side.
      * @summary Cancel Temporal Workflow Handler
      * @param {string} workflowId 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof WorkflowsApiInterface
@@ -106,8 +92,6 @@ export interface WorkflowsApiInterface {
     /**
      * Creates request options for dvWorkflowRerun without sending the request
      * @param {string} workflowId 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof WorkflowsApiInterface
      */
@@ -117,8 +101,6 @@ export interface WorkflowsApiInterface {
      * Rerun a workflow. USER role requires ``can_write`` on the document path.  ``s3_client`` is injected because ``DocumentIngestionService.__init__`` requires it, even though the re-ingestion path reuses the existing S3 source.
      * @summary Dv Workflow Rerun Handler
      * @param {string} workflowId 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof WorkflowsApiInterface
@@ -134,8 +116,6 @@ export interface WorkflowsApiInterface {
     /**
      * Creates request options for getDvWorkflow without sending the request
      * @param {string} workflowId 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof WorkflowsApiInterface
      */
@@ -145,8 +125,6 @@ export interface WorkflowsApiInterface {
      * Get single workflow detail with live Temporal status.
      * @summary Get Dv Workflow Handler
      * @param {string} workflowId 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof WorkflowsApiInterface
@@ -162,8 +140,6 @@ export interface WorkflowsApiInterface {
     /**
      * Creates request options for getTemporalWorkflowStatus without sending the request
      * @param {string} workflowId 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof WorkflowsApiInterface
      */
@@ -173,8 +149,6 @@ export interface WorkflowsApiInterface {
      * Get live Temporal status for any workflow owned by the caller\'s tenant.
      * @summary Get Temporal Workflow Status Handler
      * @param {string} workflowId 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof WorkflowsApiInterface
@@ -191,8 +165,6 @@ export interface WorkflowsApiInterface {
      * Creates request options for listDvWorkflows without sending the request
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof WorkflowsApiInterface
      */
@@ -203,8 +175,6 @@ export interface WorkflowsApiInterface {
      * @summary List Dv Workflows Handler
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof WorkflowsApiInterface
@@ -239,10 +209,14 @@ export class WorkflowsApi extends runtime.BaseAPI implements WorkflowsApiInterfa
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/workflows/{workflow_id}`;
         urlPath = urlPath.replace(`{${"workflow_id"}}`, encodeURIComponent(String(requestParameters['workflowId'])));
@@ -290,10 +264,14 @@ export class WorkflowsApi extends runtime.BaseAPI implements WorkflowsApiInterfa
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/workflows/document_versions/{workflow_id}`;
         urlPath = urlPath.replace(`{${"workflow_id"}}`, encodeURIComponent(String(requestParameters['workflowId'])));
@@ -341,10 +319,14 @@ export class WorkflowsApi extends runtime.BaseAPI implements WorkflowsApiInterfa
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/workflows/document_versions/{workflow_id}`;
         urlPath = urlPath.replace(`{${"workflow_id"}}`, encodeURIComponent(String(requestParameters['workflowId'])));
@@ -392,10 +374,14 @@ export class WorkflowsApi extends runtime.BaseAPI implements WorkflowsApiInterfa
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/workflows/{workflow_id}`;
         urlPath = urlPath.replace(`{${"workflow_id"}}`, encodeURIComponent(String(requestParameters['workflowId'])));
@@ -444,10 +430,14 @@ export class WorkflowsApi extends runtime.BaseAPI implements WorkflowsApiInterfa
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/workflows/document_versions`;
 

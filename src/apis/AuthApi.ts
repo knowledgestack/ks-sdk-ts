@@ -81,8 +81,6 @@ import {
 
 export interface ChangePhoneNumberOperationRequest {
     changePhoneNumberRequest: ChangePhoneNumberRequest;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface CreatePasswordUserOperationRequest {
@@ -133,20 +131,14 @@ export interface PwSigninRequest {
 
 export interface RefreshUatRequest {
     tenantId?: string | null;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface RequestPhoneChangeOperationRequest {
     requestPhoneChangeRequest: RequestPhoneChangeRequest;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface ResetPasswordRequest {
     passwordResetRequest: PasswordResetRequest;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface ResetPasswordWithTokenRequest {
@@ -176,8 +168,6 @@ export interface AuthApiInterface {
     /**
      * Creates request options for changePhoneNumber without sending the request
      * @param {ChangePhoneNumberRequest} changePhoneNumberRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof AuthApiInterface
      */
@@ -187,8 +177,6 @@ export interface AuthApiInterface {
      * Apply a verified phone-number change to the authenticated user.  The new phone is read from the Redis validation record pinned by ``/me/phone_number/verify``.
      * @summary Change Phone Number Handler
      * @param {ChangePhoneNumberRequest} changePhoneNumberRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof AuthApiInterface
@@ -439,8 +427,6 @@ export interface AuthApiInterface {
     /**
      * Creates request options for refreshUat without sending the request
      * @param {string} [tenantId] Target tenant ID to switch to. None&#x3D;refresh current tenant
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof AuthApiInterface
      */
@@ -450,8 +436,6 @@ export interface AuthApiInterface {
      * Refresh or switch the user\'s active tenant token.
      * @summary Refresh Uat Handler
      * @param {string} [tenantId] Target tenant ID to switch to. None&#x3D;refresh current tenant
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof AuthApiInterface
@@ -467,8 +451,6 @@ export interface AuthApiInterface {
     /**
      * Creates request options for requestPhoneChange without sending the request
      * @param {RequestPhoneChangeRequest} requestPhoneChangeRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof AuthApiInterface
      */
@@ -478,8 +460,6 @@ export interface AuthApiInterface {
      * Dispatch an SMS code to authorize a phone-number change.  Confirms the new phone isn\'t already taken by *another* user. The caller is identified by their UAT, so authentication is required.
      * @summary Request Phone Change Handler
      * @param {RequestPhoneChangeRequest} requestPhoneChangeRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof AuthApiInterface
@@ -495,8 +475,6 @@ export interface AuthApiInterface {
     /**
      * Creates request options for resetPassword without sending the request
      * @param {PasswordResetRequest} passwordResetRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof AuthApiInterface
      */
@@ -506,8 +484,6 @@ export interface AuthApiInterface {
      * Reset password for the authenticated user
      * @summary Reset Password Handler
      * @param {PasswordResetRequest} passwordResetRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof AuthApiInterface
@@ -663,10 +639,14 @@ export class AuthApi extends runtime.BaseAPI implements AuthApiInterface {
 
         headerParameters['Content-Type'] = 'application/json';
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/auth/pw/me/phone_number`;
 
@@ -1180,10 +1160,14 @@ export class AuthApi extends runtime.BaseAPI implements AuthApiInterface {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/auth/uat`;
 
@@ -1232,10 +1216,14 @@ export class AuthApi extends runtime.BaseAPI implements AuthApiInterface {
 
         headerParameters['Content-Type'] = 'application/json';
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/auth/pw/me/phone_number/verify`;
 
@@ -1285,10 +1273,14 @@ export class AuthApi extends runtime.BaseAPI implements AuthApiInterface {
 
         headerParameters['Content-Type'] = 'application/json';
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/auth/pw/reset`;
 

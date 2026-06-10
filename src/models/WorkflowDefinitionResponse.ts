@@ -13,6 +13,13 @@
  */
 
 import { mapValues } from '../runtime';
+import type { ItemPermissions } from './ItemPermissions';
+import {
+    ItemPermissionsFromJSON,
+    ItemPermissionsFromJSONTyped,
+    ItemPermissionsToJSON,
+    ItemPermissionsToJSONTyped,
+} from './ItemPermissions';
 import type { PathPartApprovalState } from './PathPartApprovalState';
 import {
     PathPartApprovalStateFromJSON,
@@ -123,6 +130,12 @@ export interface WorkflowDefinitionResponse {
      * @memberof WorkflowDefinitionResponse
      */
     updatedAt: Date;
+    /**
+     * Caller's effective rights; null on mutation responses.
+     * @type {ItemPermissions}
+     * @memberof WorkflowDefinitionResponse
+     */
+    permissions?: ItemPermissions | null;
 }
 
 
@@ -198,6 +211,7 @@ export function WorkflowDefinitionResponseFromJSONTyped(json: any, ignoreDiscrim
         'approvalState': PathPartApprovalStateFromJSON(json['approval_state']),
         'createdAt': (new Date(json['created_at'])),
         'updatedAt': (new Date(json['updated_at'])),
+        'permissions': json['permissions'] == null ? undefined : ItemPermissionsFromJSON(json['permissions']),
     };
 }
 
@@ -227,6 +241,7 @@ export function WorkflowDefinitionResponseToJSONTyped(value?: WorkflowDefinition
         'approval_state': PathPartApprovalStateToJSON(value['approvalState']),
         'created_at': value['createdAt'].toISOString(),
         'updated_at': value['updatedAt'].toISOString(),
+        'permissions': ItemPermissionsToJSON(value['permissions']),
     };
 }
 

@@ -15,6 +15,7 @@
 
 import * as runtime from '../runtime';
 import type {
+  AccessCheckResponse,
   AncestryResponse,
   AppendEventRequest,
   BulkTagRequest,
@@ -25,9 +26,12 @@ import type {
   PathOrder,
   PathPartResponse,
   PathPartTagsResponse,
+  PermissionCapability,
   SubtreeChunksResponse,
 } from '../models/index';
 import {
+    AccessCheckResponseFromJSON,
+    AccessCheckResponseToJSON,
     AncestryResponseFromJSON,
     AncestryResponseToJSON,
     AppendEventRequestFromJSON,
@@ -48,6 +52,8 @@ import {
     PathPartResponseToJSON,
     PathPartTagsResponseFromJSON,
     PathPartTagsResponseToJSON,
+    PermissionCapabilityFromJSON,
+    PermissionCapabilityToJSON,
     SubtreeChunksResponseFromJSON,
     SubtreeChunksResponseToJSON,
 } from '../models/index';
@@ -55,40 +61,34 @@ import {
 export interface AppendPathPartEventRequest {
     pathPartId: string;
     appendEventRequest: AppendEventRequest;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface BulkRemovePathPartTagsRequest {
     pathPartId: string;
     bulkTagRequest: BulkTagRequest;
-    authorization?: string | null;
-    ksUat?: string | null;
+}
+
+export interface CheckPathPartAccessRequest {
+    pathPartId: string;
+    userId: string;
+    capability?: PermissionCapability;
 }
 
 export interface GetPathPartRequest {
     pathPartId: string;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface GetPathPartAncestryRequest {
     pathPartId: string;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface GetPathPartSubtreeChunksRequest {
     pathPartId: string;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface GetPathPartTagsRequest {
     pathPartId: string;
     includeInherited?: boolean;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface ListPathPartEventsRequest {
@@ -99,8 +99,6 @@ export interface ListPathPartEventsRequest {
     recursive?: boolean;
     limit?: number;
     offset?: number;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface ListPathPartsRequest {
@@ -109,15 +107,11 @@ export interface ListPathPartsRequest {
     sortOrder?: PathOrder;
     limit?: number;
     offset?: number;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface SetPathPartTagsRequest {
     pathPartId: string;
     bulkTagRequest: BulkTagRequest;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 /**
@@ -131,8 +125,6 @@ export interface PathPartsApiInterface {
      * Creates request options for appendPathPartEvent without sending the request
      * @param {string} pathPartId 
      * @param {AppendEventRequest} appendEventRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof PathPartsApiInterface
      */
@@ -143,8 +135,6 @@ export interface PathPartsApiInterface {
      * @summary Append Path Part Event Handler
      * @param {string} pathPartId 
      * @param {AppendEventRequest} appendEventRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof PathPartsApiInterface
@@ -161,8 +151,6 @@ export interface PathPartsApiInterface {
      * Creates request options for bulkRemovePathPartTags without sending the request
      * @param {string} pathPartId 
      * @param {BulkTagRequest} bulkTagRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof PathPartsApiInterface
      */
@@ -173,8 +161,6 @@ export interface PathPartsApiInterface {
      * @summary Bulk Remove Path Part Tags Handler
      * @param {string} pathPartId 
      * @param {BulkTagRequest} bulkTagRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof PathPartsApiInterface
@@ -188,10 +174,36 @@ export interface PathPartsApiInterface {
     bulkRemovePathPartTags(requestParameters: BulkRemovePathPartTagsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PathPartTagsResponse>;
 
     /**
+     * Creates request options for checkPathPartAccess without sending the request
+     * @param {string} pathPartId 
+     * @param {string} userId The user whose access is being explained
+     * @param {PermissionCapability} [capability] Capability to check (READ_ONLY or READ_WRITE)
+     * @throws {RequiredError}
+     * @memberof PathPartsApiInterface
+     */
+    checkPathPartAccessRequestOpts(requestParameters: CheckPathPartAccessRequest): Promise<runtime.RequestOpts>;
+
+    /**
+     * Explain whether ``user_id`` has ``capability`` on a path part.  ADMIN/OWNER-only introspection: resolves the target user\'s effective permissions and reports the decision plus the reason (the matching grant path, or a role bypass). OWNER/ADMIN targets bypass path checks by role, so they are always allowed.  404 if the path part does not exist or the target user is not a member of this tenant.
+     * @summary Check Path Part Access Handler
+     * @param {string} pathPartId 
+     * @param {string} userId The user whose access is being explained
+     * @param {PermissionCapability} [capability] Capability to check (READ_ONLY or READ_WRITE)
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof PathPartsApiInterface
+     */
+    checkPathPartAccessRaw(requestParameters: CheckPathPartAccessRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AccessCheckResponse>>;
+
+    /**
+     * Explain whether ``user_id`` has ``capability`` on a path part.  ADMIN/OWNER-only introspection: resolves the target user\'s effective permissions and reports the decision plus the reason (the matching grant path, or a role bypass). OWNER/ADMIN targets bypass path checks by role, so they are always allowed.  404 if the path part does not exist or the target user is not a member of this tenant.
+     * Check Path Part Access Handler
+     */
+    checkPathPartAccess(requestParameters: CheckPathPartAccessRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<AccessCheckResponse>;
+
+    /**
      * Creates request options for getPathPart without sending the request
      * @param {string} pathPartId 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof PathPartsApiInterface
      */
@@ -201,8 +213,6 @@ export interface PathPartsApiInterface {
      * Get a path part by its ID.  Returns the path part with its attached tag IDs.
      * @summary Get Path Part Handler
      * @param {string} pathPartId 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof PathPartsApiInterface
@@ -218,8 +228,6 @@ export interface PathPartsApiInterface {
     /**
      * Creates request options for getPathPartAncestry without sending the request
      * @param {string} pathPartId 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof PathPartsApiInterface
      */
@@ -229,8 +237,6 @@ export interface PathPartsApiInterface {
      * Get the full ancestry chain for a path part (root to leaf, inclusive).  Returns all ancestors from the root down to and including the target path part. Authorization is checked on the leaf — if the user can read the leaf, they can navigate its ancestors.
      * @summary Get Path Part Ancestry Handler
      * @param {string} pathPartId 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof PathPartsApiInterface
@@ -246,8 +252,6 @@ export interface PathPartsApiInterface {
     /**
      * Creates request options for getPathPartSubtreeChunks without sending the request
      * @param {string} pathPartId 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof PathPartsApiInterface
      */
@@ -257,8 +261,6 @@ export interface PathPartsApiInterface {
      * Resolve all descendant chunks for a subtree root.  Returns chunks grouped by identical (path_part_ids, tag_ids) tuples.
      * @summary Get Path Part Subtree Chunks Handler
      * @param {string} pathPartId 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof PathPartsApiInterface
@@ -275,8 +277,6 @@ export interface PathPartsApiInterface {
      * Creates request options for getPathPartTags without sending the request
      * @param {string} pathPartId 
      * @param {boolean} [includeInherited] Include tags inherited from ancestor path parts
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof PathPartsApiInterface
      */
@@ -287,8 +287,6 @@ export interface PathPartsApiInterface {
      * @summary Get Path Part Tags Handler
      * @param {string} pathPartId 
      * @param {boolean} [includeInherited] Include tags inherited from ancestor path parts
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof PathPartsApiInterface
@@ -310,8 +308,6 @@ export interface PathPartsApiInterface {
      * @param {boolean} [recursive] Include events from descendant path_parts as well as the subject itself
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof PathPartsApiInterface
      */
@@ -327,8 +323,6 @@ export interface PathPartsApiInterface {
      * @param {boolean} [recursive] Include events from descendant path_parts as well as the subject itself
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof PathPartsApiInterface
@@ -348,8 +342,6 @@ export interface PathPartsApiInterface {
      * @param {PathOrder} [sortOrder] Sort order for results (default: LOGICAL)
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof PathPartsApiInterface
      */
@@ -363,8 +355,6 @@ export interface PathPartsApiInterface {
      * @param {PathOrder} [sortOrder] Sort order for results (default: LOGICAL)
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof PathPartsApiInterface
@@ -381,8 +371,6 @@ export interface PathPartsApiInterface {
      * Creates request options for setPathPartTags without sending the request
      * @param {string} pathPartId 
      * @param {BulkTagRequest} bulkTagRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof PathPartsApiInterface
      */
@@ -393,8 +381,6 @@ export interface PathPartsApiInterface {
      * @summary Set Path Part Tags Handler
      * @param {string} pathPartId 
      * @param {BulkTagRequest} bulkTagRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof PathPartsApiInterface
@@ -438,10 +424,14 @@ export class PathPartsApi extends runtime.BaseAPI implements PathPartsApiInterfa
 
         headerParameters['Content-Type'] = 'application/json';
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/path-parts/{path_part_id}/events`;
         urlPath = urlPath.replace(`{${"path_part_id"}}`, encodeURIComponent(String(requestParameters['pathPartId'])));
@@ -499,10 +489,14 @@ export class PathPartsApi extends runtime.BaseAPI implements PathPartsApiInterfa
 
         headerParameters['Content-Type'] = 'application/json';
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/path-parts/{path_part_id}/tags`;
         urlPath = urlPath.replace(`{${"path_part_id"}}`, encodeURIComponent(String(requestParameters['pathPartId'])));
@@ -537,6 +531,76 @@ export class PathPartsApi extends runtime.BaseAPI implements PathPartsApiInterfa
     }
 
     /**
+     * Creates request options for checkPathPartAccess without sending the request
+     */
+    async checkPathPartAccessRequestOpts(requestParameters: CheckPathPartAccessRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['pathPartId'] == null) {
+            throw new runtime.RequiredError(
+                'pathPartId',
+                'Required parameter "pathPartId" was null or undefined when calling checkPathPartAccess().'
+            );
+        }
+
+        if (requestParameters['userId'] == null) {
+            throw new runtime.RequiredError(
+                'userId',
+                'Required parameter "userId" was null or undefined when calling checkPathPartAccess().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        if (requestParameters['userId'] != null) {
+            queryParameters['user_id'] = requestParameters['userId'];
+        }
+
+        if (requestParameters['capability'] != null) {
+            queryParameters['capability'] = requestParameters['capability'];
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/v1/path-parts/{path_part_id}/access-check`;
+        urlPath = urlPath.replace(`{${"path_part_id"}}`, encodeURIComponent(String(requestParameters['pathPartId'])));
+
+        return {
+            path: urlPath,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Explain whether ``user_id`` has ``capability`` on a path part.  ADMIN/OWNER-only introspection: resolves the target user\'s effective permissions and reports the decision plus the reason (the matching grant path, or a role bypass). OWNER/ADMIN targets bypass path checks by role, so they are always allowed.  404 if the path part does not exist or the target user is not a member of this tenant.
+     * Check Path Part Access Handler
+     */
+    async checkPathPartAccessRaw(requestParameters: CheckPathPartAccessRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AccessCheckResponse>> {
+        const requestOptions = await this.checkPathPartAccessRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => AccessCheckResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * Explain whether ``user_id`` has ``capability`` on a path part.  ADMIN/OWNER-only introspection: resolves the target user\'s effective permissions and reports the decision plus the reason (the matching grant path, or a role bypass). OWNER/ADMIN targets bypass path checks by role, so they are always allowed.  404 if the path part does not exist or the target user is not a member of this tenant.
+     * Check Path Part Access Handler
+     */
+    async checkPathPartAccess(requestParameters: CheckPathPartAccessRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<AccessCheckResponse> {
+        const response = await this.checkPathPartAccessRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
      * Creates request options for getPathPart without sending the request
      */
     async getPathPartRequestOpts(requestParameters: GetPathPartRequest): Promise<runtime.RequestOpts> {
@@ -551,10 +615,14 @@ export class PathPartsApi extends runtime.BaseAPI implements PathPartsApiInterfa
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/path-parts/{path_part_id}`;
         urlPath = urlPath.replace(`{${"path_part_id"}}`, encodeURIComponent(String(requestParameters['pathPartId'])));
@@ -602,10 +670,14 @@ export class PathPartsApi extends runtime.BaseAPI implements PathPartsApiInterfa
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/path-parts/{path_part_id}/ancestry`;
         urlPath = urlPath.replace(`{${"path_part_id"}}`, encodeURIComponent(String(requestParameters['pathPartId'])));
@@ -653,10 +725,14 @@ export class PathPartsApi extends runtime.BaseAPI implements PathPartsApiInterfa
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/path-parts/{path_part_id}/subtree_chunks`;
         urlPath = urlPath.replace(`{${"path_part_id"}}`, encodeURIComponent(String(requestParameters['pathPartId'])));
@@ -708,10 +784,14 @@ export class PathPartsApi extends runtime.BaseAPI implements PathPartsApiInterfa
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/path-parts/{path_part_id}/tags`;
         urlPath = urlPath.replace(`{${"path_part_id"}}`, encodeURIComponent(String(requestParameters['pathPartId'])));
@@ -783,10 +863,14 @@ export class PathPartsApi extends runtime.BaseAPI implements PathPartsApiInterfa
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/path-parts/{path_part_id}/events`;
         urlPath = urlPath.replace(`{${"path_part_id"}}`, encodeURIComponent(String(requestParameters['pathPartId'])));
@@ -847,10 +931,14 @@ export class PathPartsApi extends runtime.BaseAPI implements PathPartsApiInterfa
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/path-parts`;
 
@@ -906,10 +994,14 @@ export class PathPartsApi extends runtime.BaseAPI implements PathPartsApiInterfa
 
         headerParameters['Content-Type'] = 'application/json';
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/path-parts/{path_part_id}/tags`;
         urlPath = urlPath.replace(`{${"path_part_id"}}`, encodeURIComponent(String(requestParameters['pathPartId'])));

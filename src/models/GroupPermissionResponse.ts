@@ -65,6 +65,12 @@ export interface GroupPermissionResponse {
     capability: PermissionCapability;
     /**
      * 
+     * @type {boolean}
+     * @memberof GroupPermissionResponse
+     */
+    canApprove: boolean;
+    /**
+     * 
      * @type {Date}
      * @memberof GroupPermissionResponse
      */
@@ -106,6 +112,7 @@ export function instanceOfGroupPermissionResponse(value: object): value is Group
     if (!('pathPartId' in value) || value['pathPartId'] === undefined) return false;
     if (!('materializedPath' in value) || value['materializedPath'] === undefined) return false;
     if (!('capability' in value) || value['capability'] === undefined) return false;
+    if (!('canApprove' in value) || value['canApprove'] === undefined) return false;
     if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
     if (!('updatedAt' in value) || value['updatedAt'] === undefined) return false;
     return true;
@@ -127,6 +134,7 @@ export function GroupPermissionResponseFromJSONTyped(json: any, ignoreDiscrimina
         'pathPartId': json['path_part_id'],
         'materializedPath': json['materialized_path'],
         'capability': PermissionCapabilityFromJSON(json['capability']),
+        'canApprove': json['can_approve'],
         'createdAt': (new Date(json['created_at'])),
         'updatedAt': (new Date(json['updated_at'])),
     };
@@ -149,6 +157,7 @@ export function GroupPermissionResponseToJSONTyped(value?: GroupPermissionRespon
         'path_part_id': value['pathPartId'],
         'materialized_path': value['materializedPath'],
         'capability': PermissionCapabilityToJSON(value['capability']),
+        'can_approve': value['canApprove'],
         'created_at': value['createdAt'].toISOString(),
         'updated_at': value['updatedAt'].toISOString(),
     };

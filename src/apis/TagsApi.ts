@@ -36,34 +36,24 @@ import {
 
 export interface CreateTagOperationRequest {
     createTagRequest: CreateTagRequest;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface DeleteTagRequest {
     tagId: string;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface GetTagRequest {
     tagId: string;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface ListTagsRequest {
     limit?: number;
     offset?: number;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface UpdateTagOperationRequest {
     tagId: string;
     updateTagRequest: UpdateTagRequest;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 /**
@@ -76,8 +66,6 @@ export interface TagsApiInterface {
     /**
      * Creates request options for createTag without sending the request
      * @param {CreateTagRequest} createTagRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof TagsApiInterface
      */
@@ -87,8 +75,6 @@ export interface TagsApiInterface {
      * Create a new tag for the current tenant. Requires ADMIN or OWNER role.
      * @summary Create Tag Handler
      * @param {CreateTagRequest} createTagRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof TagsApiInterface
@@ -104,8 +90,6 @@ export interface TagsApiInterface {
     /**
      * Creates request options for deleteTag without sending the request
      * @param {string} tagId 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof TagsApiInterface
      */
@@ -115,8 +99,6 @@ export interface TagsApiInterface {
      * Delete a tag and all its path_part associations. Requires ADMIN or OWNER role.
      * @summary Delete Tag Handler
      * @param {string} tagId 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof TagsApiInterface
@@ -132,8 +114,6 @@ export interface TagsApiInterface {
     /**
      * Creates request options for getTag without sending the request
      * @param {string} tagId 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof TagsApiInterface
      */
@@ -143,8 +123,6 @@ export interface TagsApiInterface {
      * Get a tag by its ID.
      * @summary Get Tag Handler
      * @param {string} tagId 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof TagsApiInterface
@@ -161,8 +139,6 @@ export interface TagsApiInterface {
      * Creates request options for listTags without sending the request
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof TagsApiInterface
      */
@@ -173,8 +149,6 @@ export interface TagsApiInterface {
      * @summary List Tags Handler
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof TagsApiInterface
@@ -191,8 +165,6 @@ export interface TagsApiInterface {
      * Creates request options for updateTag without sending the request
      * @param {string} tagId 
      * @param {UpdateTagRequest} updateTagRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof TagsApiInterface
      */
@@ -203,8 +175,6 @@ export interface TagsApiInterface {
      * @summary Update Tag Handler
      * @param {string} tagId 
      * @param {UpdateTagRequest} updateTagRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof TagsApiInterface
@@ -241,10 +211,14 @@ export class TagsApi extends runtime.BaseAPI implements TagsApiInterface {
 
         headerParameters['Content-Type'] = 'application/json';
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/tags`;
 
@@ -292,10 +266,14 @@ export class TagsApi extends runtime.BaseAPI implements TagsApiInterface {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/tags/{tag_id}`;
         urlPath = urlPath.replace(`{${"tag_id"}}`, encodeURIComponent(String(requestParameters['tagId'])));
@@ -342,10 +320,14 @@ export class TagsApi extends runtime.BaseAPI implements TagsApiInterface {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/tags/{tag_id}`;
         urlPath = urlPath.replace(`{${"tag_id"}}`, encodeURIComponent(String(requestParameters['tagId'])));
@@ -394,10 +376,14 @@ export class TagsApi extends runtime.BaseAPI implements TagsApiInterface {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/tags`;
 
@@ -453,10 +439,14 @@ export class TagsApi extends runtime.BaseAPI implements TagsApiInterface {
 
         headerParameters['Content-Type'] = 'application/json';
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/tags/{tag_id}`;
         urlPath = urlPath.replace(`{${"tag_id"}}`, encodeURIComponent(String(requestParameters['tagId'])));

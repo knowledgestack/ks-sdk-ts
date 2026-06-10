@@ -36,14 +36,10 @@ import {
 
 export interface AgentAskRequest {
     askRequest: AskRequest;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface AgentExtractRequest {
     extractRequest: ExtractRequest;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 /**
@@ -56,8 +52,6 @@ export interface AgentApiInterface {
     /**
      * Creates request options for agentAsk without sending the request
      * @param {AskRequest} askRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof AgentApiInterface
      */
@@ -67,8 +61,6 @@ export interface AgentApiInterface {
      * Run a one-shot text agent request to completion and return the payload.  The request blocks until the underlying Temporal workflow finishes. Clients should set a generous HTTP timeout to accommodate tool-heavy runs.  Quota: consumes one MESSAGE before ``start_workflow``. Refund semantics distinguish cause:  * **Cancellation** (client disconnect → ``asyncio.CancelledError``,   OR explicit ``DELETE /v1/workflows/{id}`` while we await   ``handle.result()`` → Temporal-wrapped ``CancelledError``)   → **NO REFUND.** The user walked away or actively cancelled;   that\'s their volition. We still best-effort cancel the   workflow so the agent stops burning LLM tokens, but the   consume stays charged. Detection uses   ``temporalio.exceptions.is_cancelled_exception`` which spans   both forms. * Any other exception (pre-enqueue ``start_workflow`` raise,   Temporal failure, workflow-internal error) → **REFUND.** Server   / our-problem failures don\'t bill the user.
      * @summary Agent Ask Handler
      * @param {AskRequest} askRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof AgentApiInterface
@@ -84,8 +76,6 @@ export interface AgentApiInterface {
     /**
      * Creates request options for agentExtract without sending the request
      * @param {ExtractRequest} extractRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof AgentApiInterface
      */
@@ -95,8 +85,6 @@ export interface AgentApiInterface {
      * Run a one-shot structured extraction request and return the payload.  Validates the schema input on the route side (DOCUMENT → active version → valid JSON object) BEFORE consuming quota or starting the workflow. Bad schema → 400 with no quota debit. The workflow activity trusts the input and does not re-validate.  Quota: consumes one MESSAGE before ``start_workflow``. Refunds on any failure between consume and ``handle.result()`` returning — pre-enqueue ``start_workflow`` raises and post-enqueue workflow failures both refund.
      * @summary Agent Extract Handler
      * @param {ExtractRequest} extractRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof AgentApiInterface
@@ -133,10 +121,14 @@ export class AgentApi extends runtime.BaseAPI implements AgentApiInterface {
 
         headerParameters['Content-Type'] = 'application/json';
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/agent/ask`;
 
@@ -186,10 +178,14 @@ export class AgentApi extends runtime.BaseAPI implements AgentApiInterface {
 
         headerParameters['Content-Type'] = 'application/json';
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/agent/extract`;
 

@@ -42,14 +42,10 @@ import {
 
 export interface CreateWorkflowDefinitionOperationRequest {
     createWorkflowDefinitionRequest: CreateWorkflowDefinitionRequest;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface CreateWorkflowRunRequest {
     definitionId: string;
-    authorization?: string | null;
-    ksUat?: string | null;
     files?: Array<Blob>;
     inputScope?: string | null;
     idempotencyKey?: string | null;
@@ -57,36 +53,26 @@ export interface CreateWorkflowRunRequest {
 
 export interface DeleteWorkflowDefinitionRequest {
     definitionId: string;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface GetWorkflowDefinitionRequest {
     definitionId: string;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface ListWorkflowDefinitionsRequest {
     limit?: number;
     offset?: number;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface ListWorkflowRunsRequest {
     definitionId: string;
     limit?: number;
     offset?: number;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface UpdateWorkflowDefinitionOperationRequest {
     definitionId: string;
     updateWorkflowDefinitionRequest: UpdateWorkflowDefinitionRequest;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 /**
@@ -99,8 +85,6 @@ export interface WorkflowDefinitionsApiInterface {
     /**
      * Creates request options for createWorkflowDefinition without sending the request
      * @param {CreateWorkflowDefinitionRequest} createWorkflowDefinitionRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof WorkflowDefinitionsApiInterface
      */
@@ -110,8 +94,6 @@ export interface WorkflowDefinitionsApiInterface {
      * 
      * @summary Create Workflow Definition Handler
      * @param {CreateWorkflowDefinitionRequest} createWorkflowDefinitionRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof WorkflowDefinitionsApiInterface
@@ -126,8 +108,6 @@ export interface WorkflowDefinitionsApiInterface {
     /**
      * Creates request options for createWorkflowRun without sending the request
      * @param {string} definitionId 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {Array<Blob>} [files] DEPRECATED — do not send files here. Carrying file bytes on run creation makes the call block on synchronous S3 upload (the ~30s \\\&#39;Create run\\\&#39; wait). Instead create an empty draft (omit this field), then upload each file to the run\\\&#39;s &#x60;&#x60;inputs/&#x60;&#x60; folder via &#x60;&#x60;POST /v1/documents/ingest&#x60;&#x60; with &#x60;&#x60;path_part_id&#x60;&#x60; set to the run\\\&#39;s &#x60;&#x60;inputs_path_part_id&#x60;&#x60;; that path ingests asynchronously and auto-syncs the run\\\&#39;s state. This field will be removed once the FE has migrated.
      * @param {string} [inputScope] JSON array of &#x60;&#x60;DOCUMENT&#x60;&#x60; or &#x60;&#x60;FOLDER&#x60;&#x60; path_part UUIDs referenced from the existing knowledge base, pinned onto the new draft\\\&#39;s input scope. Optional — omit for an empty draft and add references later via PATCH.
      * @param {string} [idempotencyKey] Optional key to prevent duplicate runs from retries.
@@ -140,8 +120,6 @@ export interface WorkflowDefinitionsApiInterface {
      * Create a NOT_STARTED run draft, optionally seeded with KB references.  All three fields are optional: an empty request creates an empty draft instantly (the two-step flow — the FE then uploads files into the run\'s ``inputs/`` folder and/or PATCHes ``input_scope`` before Start). Each ``input_scope`` entry is resolved per its part_type: a DOCUMENT is pinned to its active ``DOCUMENT_VERSION``; a FOLDER is pinned by reference only and read live by the runner.  ``files`` is DEPRECATED — see the field description. When supplied, uploads are still ingested under ``runs/<id>/inputs/`` so callers mid-migration keep working, but the call blocks on synchronous S3 upload.
      * @summary Create Workflow Run Handler
      * @param {string} definitionId 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {Array<Blob>} [files] DEPRECATED — do not send files here. Carrying file bytes on run creation makes the call block on synchronous S3 upload (the ~30s \\\&#39;Create run\\\&#39; wait). Instead create an empty draft (omit this field), then upload each file to the run\\\&#39;s &#x60;&#x60;inputs/&#x60;&#x60; folder via &#x60;&#x60;POST /v1/documents/ingest&#x60;&#x60; with &#x60;&#x60;path_part_id&#x60;&#x60; set to the run\\\&#39;s &#x60;&#x60;inputs_path_part_id&#x60;&#x60;; that path ingests asynchronously and auto-syncs the run\\\&#39;s state. This field will be removed once the FE has migrated.
      * @param {string} [inputScope] JSON array of &#x60;&#x60;DOCUMENT&#x60;&#x60; or &#x60;&#x60;FOLDER&#x60;&#x60; path_part UUIDs referenced from the existing knowledge base, pinned onto the new draft\\\&#39;s input scope. Optional — omit for an empty draft and add references later via PATCH.
      * @param {string} [idempotencyKey] Optional key to prevent duplicate runs from retries.
@@ -160,8 +138,6 @@ export interface WorkflowDefinitionsApiInterface {
     /**
      * Creates request options for deleteWorkflowDefinition without sending the request
      * @param {string} definitionId 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof WorkflowDefinitionsApiInterface
      */
@@ -171,8 +147,6 @@ export interface WorkflowDefinitionsApiInterface {
      * 
      * @summary Delete Workflow Definition Handler
      * @param {string} definitionId 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof WorkflowDefinitionsApiInterface
@@ -187,8 +161,6 @@ export interface WorkflowDefinitionsApiInterface {
     /**
      * Creates request options for getWorkflowDefinition without sending the request
      * @param {string} definitionId 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof WorkflowDefinitionsApiInterface
      */
@@ -198,8 +170,6 @@ export interface WorkflowDefinitionsApiInterface {
      * 
      * @summary Get Workflow Definition Handler
      * @param {string} definitionId 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof WorkflowDefinitionsApiInterface
@@ -215,8 +185,6 @@ export interface WorkflowDefinitionsApiInterface {
      * Creates request options for listWorkflowDefinitions without sending the request
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof WorkflowDefinitionsApiInterface
      */
@@ -227,8 +195,6 @@ export interface WorkflowDefinitionsApiInterface {
      * @summary List Workflow Definitions Handler
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof WorkflowDefinitionsApiInterface
@@ -245,8 +211,6 @@ export interface WorkflowDefinitionsApiInterface {
      * @param {string} definitionId 
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof WorkflowDefinitionsApiInterface
      */
@@ -258,8 +222,6 @@ export interface WorkflowDefinitionsApiInterface {
      * @param {string} definitionId 
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof WorkflowDefinitionsApiInterface
@@ -275,8 +237,6 @@ export interface WorkflowDefinitionsApiInterface {
      * Creates request options for updateWorkflowDefinition without sending the request
      * @param {string} definitionId 
      * @param {UpdateWorkflowDefinitionRequest} updateWorkflowDefinitionRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof WorkflowDefinitionsApiInterface
      */
@@ -287,8 +247,6 @@ export interface WorkflowDefinitionsApiInterface {
      * @summary Update Workflow Definition Handler
      * @param {string} definitionId 
      * @param {UpdateWorkflowDefinitionRequest} updateWorkflowDefinitionRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof WorkflowDefinitionsApiInterface
@@ -324,10 +282,14 @@ export class WorkflowDefinitionsApi extends runtime.BaseAPI implements WorkflowD
 
         headerParameters['Content-Type'] = 'application/json';
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/workflow-definitions`;
 
@@ -373,10 +335,14 @@ export class WorkflowDefinitionsApi extends runtime.BaseAPI implements WorkflowD
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
         const consumes: runtime.Consume[] = [
             { contentType: 'multipart/form-data' },
         ];
@@ -455,10 +421,14 @@ export class WorkflowDefinitionsApi extends runtime.BaseAPI implements WorkflowD
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/workflow-definitions/{definition_id}`;
         urlPath = urlPath.replace(`{${"definition_id"}}`, encodeURIComponent(String(requestParameters['definitionId'])));
@@ -503,10 +473,14 @@ export class WorkflowDefinitionsApi extends runtime.BaseAPI implements WorkflowD
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/workflow-definitions/{definition_id}`;
         urlPath = urlPath.replace(`{${"definition_id"}}`, encodeURIComponent(String(requestParameters['definitionId'])));
@@ -553,10 +527,14 @@ export class WorkflowDefinitionsApi extends runtime.BaseAPI implements WorkflowD
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/workflow-definitions`;
 
@@ -609,10 +587,14 @@ export class WorkflowDefinitionsApi extends runtime.BaseAPI implements WorkflowD
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/workflow-definitions/{definition_id}/runs`;
         urlPath = urlPath.replace(`{${"definition_id"}}`, encodeURIComponent(String(requestParameters['definitionId'])));
@@ -667,10 +649,14 @@ export class WorkflowDefinitionsApi extends runtime.BaseAPI implements WorkflowD
 
         headerParameters['Content-Type'] = 'application/json';
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/workflow-definitions/{definition_id}`;
         urlPath = urlPath.replace(`{${"definition_id"}}`, encodeURIComponent(String(requestParameters['definitionId'])));

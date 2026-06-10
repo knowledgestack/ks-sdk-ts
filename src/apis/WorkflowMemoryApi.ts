@@ -37,38 +37,28 @@ import {
 export interface AppendWorkflowMemoryChunkRequest {
     definitionId: string;
     appendMemoryChunkRequest: AppendMemoryChunkRequest;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface EditWorkflowMemoryChunkRequest {
     definitionId: string;
     chunkId: string;
     editMemoryChunkRequest: EditMemoryChunkRequest;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface ForgetWorkflowMemoryChunkRequest {
     definitionId: string;
     chunkId: string;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface GetWorkflowMemoryChunkRequest {
     definitionId: string;
     chunkId: string;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface ListWorkflowMemoryChunksRequest {
     definitionId: string;
     limit?: number;
     offset?: number;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 /**
@@ -82,8 +72,6 @@ export interface WorkflowMemoryApiInterface {
      * Creates request options for appendWorkflowMemoryChunk without sending the request
      * @param {string} definitionId 
      * @param {AppendMemoryChunkRequest} appendMemoryChunkRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof WorkflowMemoryApiInterface
      */
@@ -94,8 +82,6 @@ export interface WorkflowMemoryApiInterface {
      * @summary Append Workflow Memory Chunk Handler
      * @param {string} definitionId 
      * @param {AppendMemoryChunkRequest} appendMemoryChunkRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof WorkflowMemoryApiInterface
@@ -112,8 +98,6 @@ export interface WorkflowMemoryApiInterface {
      * @param {string} definitionId 
      * @param {string} chunkId 
      * @param {EditMemoryChunkRequest} editMemoryChunkRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof WorkflowMemoryApiInterface
      */
@@ -125,8 +109,6 @@ export interface WorkflowMemoryApiInterface {
      * @param {string} definitionId 
      * @param {string} chunkId 
      * @param {EditMemoryChunkRequest} editMemoryChunkRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof WorkflowMemoryApiInterface
@@ -142,8 +124,6 @@ export interface WorkflowMemoryApiInterface {
      * Creates request options for forgetWorkflowMemoryChunk without sending the request
      * @param {string} definitionId 
      * @param {string} chunkId 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof WorkflowMemoryApiInterface
      */
@@ -154,8 +134,6 @@ export interface WorkflowMemoryApiInterface {
      * @summary Forget Workflow Memory Chunk Handler
      * @param {string} definitionId 
      * @param {string} chunkId 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof WorkflowMemoryApiInterface
@@ -171,8 +149,6 @@ export interface WorkflowMemoryApiInterface {
      * Creates request options for getWorkflowMemoryChunk without sending the request
      * @param {string} definitionId 
      * @param {string} chunkId 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof WorkflowMemoryApiInterface
      */
@@ -183,8 +159,6 @@ export interface WorkflowMemoryApiInterface {
      * @summary Get Workflow Memory Chunk Handler
      * @param {string} definitionId 
      * @param {string} chunkId 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof WorkflowMemoryApiInterface
@@ -201,8 +175,6 @@ export interface WorkflowMemoryApiInterface {
      * @param {string} definitionId 
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof WorkflowMemoryApiInterface
      */
@@ -214,8 +186,6 @@ export interface WorkflowMemoryApiInterface {
      * @param {string} definitionId 
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof WorkflowMemoryApiInterface
@@ -258,10 +228,14 @@ export class WorkflowMemoryApi extends runtime.BaseAPI implements WorkflowMemory
 
         headerParameters['Content-Type'] = 'application/json';
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/workflow-definitions/{definition_id}/memory/chunks`;
         urlPath = urlPath.replace(`{${"definition_id"}}`, encodeURIComponent(String(requestParameters['definitionId'])));
@@ -324,10 +298,14 @@ export class WorkflowMemoryApi extends runtime.BaseAPI implements WorkflowMemory
 
         headerParameters['Content-Type'] = 'application/json';
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/workflow-definitions/{definition_id}/memory/chunks/{chunk_id}`;
         urlPath = urlPath.replace(`{${"definition_id"}}`, encodeURIComponent(String(requestParameters['definitionId'])));
@@ -382,10 +360,14 @@ export class WorkflowMemoryApi extends runtime.BaseAPI implements WorkflowMemory
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/workflow-definitions/{definition_id}/memory/chunks/{chunk_id}`;
         urlPath = urlPath.replace(`{${"definition_id"}}`, encodeURIComponent(String(requestParameters['definitionId'])));
@@ -438,10 +420,14 @@ export class WorkflowMemoryApi extends runtime.BaseAPI implements WorkflowMemory
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/workflow-definitions/{definition_id}/memory/chunks/{chunk_id}`;
         urlPath = urlPath.replace(`{${"definition_id"}}`, encodeURIComponent(String(requestParameters['definitionId'])));
@@ -496,10 +482,14 @@ export class WorkflowMemoryApi extends runtime.BaseAPI implements WorkflowMemory
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/workflow-definitions/{definition_id}/memory`;
         urlPath = urlPath.replace(`{${"definition_id"}}`, encodeURIComponent(String(requestParameters['definitionId'])));

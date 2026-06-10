@@ -36,39 +36,27 @@ import {
 
 export interface CreateSectionOperationRequest {
     createSectionRequest: CreateSectionRequest;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface DeleteSectionRequest {
     sectionId: string;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface DissolveSectionRequest {
     sectionId: string;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface GetSectionRequest {
     sectionId: string;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface GetSectionsBulkRequest {
     sectionIds?: Array<string> | null;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface UpdateSectionOperationRequest {
     sectionId: string;
     updateSectionRequest: UpdateSectionRequest;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 /**
@@ -81,8 +69,6 @@ export interface SectionsApiInterface {
     /**
      * Creates request options for createSection without sending the request
      * @param {CreateSectionRequest} createSectionRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof SectionsApiInterface
      */
@@ -92,8 +78,6 @@ export interface SectionsApiInterface {
      * Create a new section.  The section is created as a child of the specified parent (must be DOCUMENT_VERSION or SECTION). If prev_sibling_path_id is provided, the section is inserted after that sibling; otherwise it is appended to the end of the sibling list.
      * @summary Create Section Handler
      * @param {CreateSectionRequest} createSectionRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof SectionsApiInterface
@@ -109,8 +93,6 @@ export interface SectionsApiInterface {
     /**
      * Creates request options for deleteSection without sending the request
      * @param {string} sectionId 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof SectionsApiInterface
      */
@@ -120,8 +102,6 @@ export interface SectionsApiInterface {
      * Delete a section and all its children.  WARNING: This cascades to all child sections due to parent_id ON DELETE CASCADE.
      * @summary Delete Section Handler
      * @param {string} sectionId 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof SectionsApiInterface
@@ -137,8 +117,6 @@ export interface SectionsApiInterface {
     /**
      * Creates request options for dissolveSection without sending the request
      * @param {string} sectionId 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof SectionsApiInterface
      */
@@ -148,8 +126,6 @@ export interface SectionsApiInterface {
      * Dissolve a section: convert it to a text chunk, reparent children, delete the section.  The section\'s name becomes the content of a new TEXT chunk. Any children of the section are reparented to the section\'s parent, preserving order. The section itself is then deleted.
      * @summary Dissolve Section Handler
      * @param {string} sectionId 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof SectionsApiInterface
@@ -165,8 +141,6 @@ export interface SectionsApiInterface {
     /**
      * Creates request options for getSection without sending the request
      * @param {string} sectionId 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof SectionsApiInterface
      */
@@ -176,8 +150,6 @@ export interface SectionsApiInterface {
      * Get a section by its ID.
      * @summary Get Section Handler
      * @param {string} sectionId 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof SectionsApiInterface
@@ -193,8 +165,6 @@ export interface SectionsApiInterface {
     /**
      * Creates request options for getSectionsBulk without sending the request
      * @param {Array<string>} [sectionIds] Section IDs to fetch (max 200)
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof SectionsApiInterface
      */
@@ -204,8 +174,6 @@ export interface SectionsApiInterface {
      * Batch-fetch sections by ID.  Returns sections with system_metadata. Non-existent IDs are silently skipped. Limited to 200 IDs per call.
      * @summary Get Sections Bulk Handler
      * @param {Array<string>} [sectionIds] Section IDs to fetch (max 200)
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof SectionsApiInterface
@@ -222,8 +190,6 @@ export interface SectionsApiInterface {
      * Creates request options for updateSection without sending the request
      * @param {string} sectionId 
      * @param {UpdateSectionRequest} updateSectionRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof SectionsApiInterface
      */
@@ -234,8 +200,6 @@ export interface SectionsApiInterface {
      * @summary Update Section Handler
      * @param {string} sectionId 
      * @param {UpdateSectionRequest} updateSectionRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof SectionsApiInterface
@@ -272,10 +236,14 @@ export class SectionsApi extends runtime.BaseAPI implements SectionsApiInterface
 
         headerParameters['Content-Type'] = 'application/json';
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/sections`;
 
@@ -323,10 +291,14 @@ export class SectionsApi extends runtime.BaseAPI implements SectionsApiInterface
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/sections/{section_id}`;
         urlPath = urlPath.replace(`{${"section_id"}}`, encodeURIComponent(String(requestParameters['sectionId'])));
@@ -373,10 +345,14 @@ export class SectionsApi extends runtime.BaseAPI implements SectionsApiInterface
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/sections/{section_id}/dissolve`;
         urlPath = urlPath.replace(`{${"section_id"}}`, encodeURIComponent(String(requestParameters['sectionId'])));
@@ -424,10 +400,14 @@ export class SectionsApi extends runtime.BaseAPI implements SectionsApiInterface
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/sections/{section_id}`;
         urlPath = urlPath.replace(`{${"section_id"}}`, encodeURIComponent(String(requestParameters['sectionId'])));
@@ -472,10 +452,14 @@ export class SectionsApi extends runtime.BaseAPI implements SectionsApiInterface
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/sections/bulk`;
 
@@ -531,10 +515,14 @@ export class SectionsApi extends runtime.BaseAPI implements SectionsApiInterface
 
         headerParameters['Content-Type'] = 'application/json';
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/sections/{section_id}`;
         urlPath = urlPath.replace(`{${"section_id"}}`, encodeURIComponent(String(requestParameters['sectionId'])));

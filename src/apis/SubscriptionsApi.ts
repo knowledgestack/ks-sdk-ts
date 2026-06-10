@@ -35,14 +35,10 @@ export interface ChangeTenantSubscriptionRequest {
     tenantId: string;
     changeSubscriptionRequest: ChangeSubscriptionRequest;
     idempotencyKey?: string | null;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface GetTenantSubscriptionRequest {
     tenantId: string;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 /**
@@ -57,8 +53,6 @@ export interface SubscriptionsApiInterface {
      * @param {string} tenantId 
      * @param {ChangeSubscriptionRequest} changeSubscriptionRequest 
      * @param {string} [idempotencyKey] 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof SubscriptionsApiInterface
      */
@@ -70,8 +64,6 @@ export interface SubscriptionsApiInterface {
      * @param {string} tenantId 
      * @param {ChangeSubscriptionRequest} changeSubscriptionRequest 
      * @param {string} [idempotencyKey] 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof SubscriptionsApiInterface
@@ -87,8 +79,6 @@ export interface SubscriptionsApiInterface {
     /**
      * Creates request options for getTenantSubscription without sending the request
      * @param {string} tenantId 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof SubscriptionsApiInterface
      */
@@ -98,8 +88,6 @@ export interface SubscriptionsApiInterface {
      * Read the tenant\'s current subscription plan, including private tiers.  Any active member of the tenant can read. This is the only path that surfaces private (custom enterprise) plans to non-admin users — ``GET /public/subscriptions`` filters them out, but tenants on a private plan still need to see their own caps. Returns the full plan body (id, name, caps, max_seats, public flag, timestamps).  Returns 404 when the user is not a member of the tenant — same response shape as a non-existent tenant so we don\'t leak existence to outsiders.
      * @summary Get Tenant Subscription Handler
      * @param {string} tenantId 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof SubscriptionsApiInterface
@@ -147,10 +135,14 @@ export class SubscriptionsApi extends runtime.BaseAPI implements SubscriptionsAp
             headerParameters['Idempotency-Key'] = String(requestParameters['idempotencyKey']);
         }
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/tenants/{tenant_id}/subscriptions`;
         urlPath = urlPath.replace(`{${"tenant_id"}}`, encodeURIComponent(String(requestParameters['tenantId'])));
@@ -199,10 +191,14 @@ export class SubscriptionsApi extends runtime.BaseAPI implements SubscriptionsAp
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/tenants/{tenant_id}/subscriptions`;
         urlPath = urlPath.replace(`{${"tenant_id"}}`, encodeURIComponent(String(requestParameters['tenantId'])));

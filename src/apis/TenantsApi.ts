@@ -49,84 +49,60 @@ import {
 export interface ActivateTenantUserRequest {
     tenantId: string;
     userId: string;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface DeactivateTenantUserRequest {
     tenantId: string;
     userId: string;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface DeleteTenantRequest {
     tenantId: string;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface DeleteTenantLogoRequest {
     tenantId: string;
     logoType?: BrandingLogoType;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface DeleteTenantUserRequest {
     tenantId: string;
     userId: string;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface GetTenantRequest {
     tenantId: string;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface GetTenantQuotaStateRequest {
     tenantId: string;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface ListTenantUsersRequest {
     tenantId: string;
     limit?: number;
     offset?: number;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface ListTenantsRequest {
     limit?: number;
     offset?: number;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface UpdateTenantOperationRequest {
     tenantId: string;
     updateTenantRequest: UpdateTenantRequest;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface UpdateTenantUserRequest {
     tenantId: string;
     userId: string;
     tenantUserEditRequest: TenantUserEditRequest;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface UploadTenantLogoRequest {
     tenantId: string;
     file: Blob;
-    authorization?: string | null;
-    ksUat?: string | null;
     logoType?: BrandingLogoType;
 }
 
@@ -141,8 +117,6 @@ export interface TenantsApiInterface {
      * Creates request options for activateTenantUser without sending the request
      * @param {string} tenantId 
      * @param {string} userId 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof TenantsApiInterface
      */
@@ -153,8 +127,6 @@ export interface TenantsApiInterface {
      * @summary Activate Tenant User Handler
      * @param {string} tenantId 
      * @param {string} userId 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof TenantsApiInterface
@@ -171,8 +143,6 @@ export interface TenantsApiInterface {
      * Creates request options for deactivateTenantUser without sending the request
      * @param {string} tenantId 
      * @param {string} userId 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof TenantsApiInterface
      */
@@ -183,8 +153,6 @@ export interface TenantsApiInterface {
      * @summary Deactivate Tenant User Handler
      * @param {string} tenantId 
      * @param {string} userId 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof TenantsApiInterface
@@ -200,8 +168,6 @@ export interface TenantsApiInterface {
     /**
      * Creates request options for deleteTenant without sending the request
      * @param {string} tenantId 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof TenantsApiInterface
      */
@@ -211,8 +177,6 @@ export interface TenantsApiInterface {
      * Delete a tenant.  Requires OWNER role in the tenant. Deletes the tenant\'s LiteLLM team/keys and S3 bucket after the DB transaction commits.
      * @summary Delete Tenant
      * @param {string} tenantId 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof TenantsApiInterface
@@ -229,8 +193,6 @@ export interface TenantsApiInterface {
      * Creates request options for deleteTenantLogo without sending the request
      * @param {string} tenantId 
      * @param {BrandingLogoType} [logoType] 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof TenantsApiInterface
      */
@@ -241,8 +203,6 @@ export interface TenantsApiInterface {
      * @summary Delete Tenant Logo
      * @param {string} tenantId 
      * @param {BrandingLogoType} [logoType] 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof TenantsApiInterface
@@ -259,8 +219,6 @@ export interface TenantsApiInterface {
      * Creates request options for deleteTenantUser without sending the request
      * @param {string} tenantId 
      * @param {string} userId 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof TenantsApiInterface
      */
@@ -271,8 +229,6 @@ export interface TenantsApiInterface {
      * @summary Delete Tenant User Handler
      * @param {string} tenantId 
      * @param {string} userId 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof TenantsApiInterface
@@ -288,8 +244,6 @@ export interface TenantsApiInterface {
     /**
      * Creates request options for getTenant without sending the request
      * @param {string} tenantId 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof TenantsApiInterface
      */
@@ -299,8 +253,6 @@ export interface TenantsApiInterface {
      * Get tenant information by ID.  User must be a member of the tenant.
      * @summary Get Tenant
      * @param {string} tenantId 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof TenantsApiInterface
@@ -316,8 +268,6 @@ export interface TenantsApiInterface {
     /**
      * Creates request options for getTenantQuotaState without sending the request
      * @param {string} tenantId 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof TenantsApiInterface
      */
@@ -327,8 +277,6 @@ export interface TenantsApiInterface {
      * Read the tenant\'s current quota state across all metered caps + seats.  Any active member of the tenant can read. Read-only — does not mutate quota state.
      * @summary Get Tenant Quota State Handler
      * @param {string} tenantId 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof TenantsApiInterface
@@ -346,8 +294,6 @@ export interface TenantsApiInterface {
      * @param {string} tenantId 
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof TenantsApiInterface
      */
@@ -359,8 +305,6 @@ export interface TenantsApiInterface {
      * @param {string} tenantId 
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof TenantsApiInterface
@@ -377,8 +321,6 @@ export interface TenantsApiInterface {
      * Creates request options for listTenants without sending the request
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof TenantsApiInterface
      */
@@ -389,8 +331,6 @@ export interface TenantsApiInterface {
      * @summary List Tenants
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof TenantsApiInterface
@@ -407,8 +347,6 @@ export interface TenantsApiInterface {
      * Creates request options for updateTenant without sending the request
      * @param {string} tenantId 
      * @param {UpdateTenantRequest} updateTenantRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof TenantsApiInterface
      */
@@ -419,8 +357,6 @@ export interface TenantsApiInterface {
      * @summary Update Tenant
      * @param {string} tenantId 
      * @param {UpdateTenantRequest} updateTenantRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof TenantsApiInterface
@@ -438,8 +374,6 @@ export interface TenantsApiInterface {
      * @param {string} tenantId 
      * @param {string} userId 
      * @param {TenantUserEditRequest} tenantUserEditRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof TenantsApiInterface
      */
@@ -451,8 +385,6 @@ export interface TenantsApiInterface {
      * @param {string} tenantId 
      * @param {string} userId 
      * @param {TenantUserEditRequest} tenantUserEditRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof TenantsApiInterface
@@ -469,8 +401,6 @@ export interface TenantsApiInterface {
      * Creates request options for uploadTenantLogo without sending the request
      * @param {string} tenantId 
      * @param {Blob} file 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {BrandingLogoType} [logoType] 
      * @throws {RequiredError}
      * @memberof TenantsApiInterface
@@ -482,8 +412,6 @@ export interface TenantsApiInterface {
      * @summary Upload Tenant Logo
      * @param {string} tenantId 
      * @param {Blob} file 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {BrandingLogoType} [logoType] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -526,10 +454,14 @@ export class TenantsApi extends runtime.BaseAPI implements TenantsApiInterface {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/tenants/{tenant_id}/users/{user_id}/activate`;
         urlPath = urlPath.replace(`{${"tenant_id"}}`, encodeURIComponent(String(requestParameters['tenantId'])));
@@ -585,10 +517,14 @@ export class TenantsApi extends runtime.BaseAPI implements TenantsApiInterface {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/tenants/{tenant_id}/users/{user_id}/deactivate`;
         urlPath = urlPath.replace(`{${"tenant_id"}}`, encodeURIComponent(String(requestParameters['tenantId'])));
@@ -637,10 +573,14 @@ export class TenantsApi extends runtime.BaseAPI implements TenantsApiInterface {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/tenants/{tenant_id}`;
         urlPath = urlPath.replace(`{${"tenant_id"}}`, encodeURIComponent(String(requestParameters['tenantId'])));
@@ -691,10 +631,14 @@ export class TenantsApi extends runtime.BaseAPI implements TenantsApiInterface {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/tenants/{tenant_id}/branding/logo`;
         urlPath = urlPath.replace(`{${"tenant_id"}}`, encodeURIComponent(String(requestParameters['tenantId'])));
@@ -749,10 +693,14 @@ export class TenantsApi extends runtime.BaseAPI implements TenantsApiInterface {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/tenants/{tenant_id}/users/{user_id}`;
         urlPath = urlPath.replace(`{${"tenant_id"}}`, encodeURIComponent(String(requestParameters['tenantId'])));
@@ -800,10 +748,14 @@ export class TenantsApi extends runtime.BaseAPI implements TenantsApiInterface {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/tenants/{tenant_id}`;
         urlPath = urlPath.replace(`{${"tenant_id"}}`, encodeURIComponent(String(requestParameters['tenantId'])));
@@ -851,10 +803,14 @@ export class TenantsApi extends runtime.BaseAPI implements TenantsApiInterface {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/tenants/{tenant_id}/quota`;
         urlPath = urlPath.replace(`{${"tenant_id"}}`, encodeURIComponent(String(requestParameters['tenantId'])));
@@ -910,10 +866,14 @@ export class TenantsApi extends runtime.BaseAPI implements TenantsApiInterface {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/tenants/{tenant_id}/users`;
         urlPath = urlPath.replace(`{${"tenant_id"}}`, encodeURIComponent(String(requestParameters['tenantId'])));
@@ -962,10 +922,14 @@ export class TenantsApi extends runtime.BaseAPI implements TenantsApiInterface {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/tenants`;
 
@@ -1021,10 +985,14 @@ export class TenantsApi extends runtime.BaseAPI implements TenantsApiInterface {
 
         headerParameters['Content-Type'] = 'application/json';
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/tenants/{tenant_id}`;
         urlPath = urlPath.replace(`{${"tenant_id"}}`, encodeURIComponent(String(requestParameters['tenantId'])));
@@ -1089,10 +1057,14 @@ export class TenantsApi extends runtime.BaseAPI implements TenantsApiInterface {
 
         headerParameters['Content-Type'] = 'application/json';
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/tenants/{tenant_id}/users/{user_id}`;
         urlPath = urlPath.replace(`{${"tenant_id"}}`, encodeURIComponent(String(requestParameters['tenantId'])));
@@ -1149,10 +1121,14 @@ export class TenantsApi extends runtime.BaseAPI implements TenantsApiInterface {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
         const consumes: runtime.Consume[] = [
             { contentType: 'multipart/form-data' },
         ];

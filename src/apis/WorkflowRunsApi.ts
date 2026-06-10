@@ -43,59 +43,41 @@ import {
 export interface CloneWorkflowRunOperationRequest {
     runId: string;
     cloneWorkflowRunRequest: CloneWorkflowRunRequest;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface DeleteWorkflowRunRequest {
     runId: string;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface GetWorkflowRunRequest {
     runId: string;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface RetryWorkflowRunRequest {
     runId: string;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface SetWorkflowRunApprovalOperationRequest {
     runId: string;
     setWorkflowRunApprovalRequest: SetWorkflowRunApprovalRequest;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface StartWorkflowRunRequest {
     runId: string;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface StopWorkflowRunRequest {
     runId: string;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface UpdateWorkflowRunOperationRequest {
     runId: string;
     updateWorkflowRunRequest: UpdateWorkflowRunRequest;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface WorkflowRunCallbackOperationRequest {
     runId: string;
     workflowRunCallbackRequest: WorkflowRunCallbackRequest;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 /**
@@ -109,8 +91,6 @@ export interface WorkflowRunsApiInterface {
      * Creates request options for cloneWorkflowRun without sending the request
      * @param {string} runId 
      * @param {CloneWorkflowRunRequest} cloneWorkflowRunRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof WorkflowRunsApiInterface
      */
@@ -121,8 +101,6 @@ export interface WorkflowRunsApiInterface {
      * @summary Clone Workflow Run Handler
      * @param {string} runId 
      * @param {CloneWorkflowRunRequest} cloneWorkflowRunRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof WorkflowRunsApiInterface
@@ -138,8 +116,6 @@ export interface WorkflowRunsApiInterface {
     /**
      * Creates request options for deleteWorkflowRun without sending the request
      * @param {string} runId 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof WorkflowRunsApiInterface
      */
@@ -149,8 +125,6 @@ export interface WorkflowRunsApiInterface {
      * 
      * @summary Delete Workflow Run Handler
      * @param {string} runId 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof WorkflowRunsApiInterface
@@ -165,8 +139,6 @@ export interface WorkflowRunsApiInterface {
     /**
      * Creates request options for getWorkflowRun without sending the request
      * @param {string} runId 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof WorkflowRunsApiInterface
      */
@@ -176,8 +148,6 @@ export interface WorkflowRunsApiInterface {
      * 
      * @summary Get Workflow Run Handler
      * @param {string} runId 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof WorkflowRunsApiInterface
@@ -192,8 +162,6 @@ export interface WorkflowRunsApiInterface {
     /**
      * Creates request options for retryWorkflowRun without sending the request
      * @param {string} runId 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof WorkflowRunsApiInterface
      */
@@ -203,8 +171,6 @@ export interface WorkflowRunsApiInterface {
      * Re-run a FAILED run (including a user-stopped one) in place.  Flips ``FAILED -> IN_PROGRESS`` against the run\'s existing snapshot and re-dispatches the agent. 409 if the run is not FAILED (NOT_STARTED/PENDING use Start; COMPLETED is cloned) or was never started. Triggerer or OWNER/ADMIN only.
      * @summary Retry Workflow Run Handler
      * @param {string} runId 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof WorkflowRunsApiInterface
@@ -221,20 +187,16 @@ export interface WorkflowRunsApiInterface {
      * Creates request options for setWorkflowRunApproval without sending the request
      * @param {string} runId 
      * @param {SetWorkflowRunApprovalRequest} setWorkflowRunApprovalRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof WorkflowRunsApiInterface
      */
     setWorkflowRunApprovalRequestOpts(requestParameters: SetWorkflowRunApprovalOperationRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * Approve an entire completed run in one call.  Approves every output document under ``outputs/`` then the run folder. The run must be ``COMPLETED`` and its definition must have required approval. Requires write access to the run folder. ``run_id`` is the WorkflowRun id.
+     * Approve an entire completed run in one call.  Approves every output document under ``outputs/`` then the run folder. The run must be ``COMPLETED`` and its definition must have required approval. Requires approve access to the run folder and refuses agents (assumed identities) — approval is human-in-the-loop. ``run_id`` is the WorkflowRun id.
      * @summary Set Workflow Run Approval Handler
      * @param {string} runId 
      * @param {SetWorkflowRunApprovalRequest} setWorkflowRunApprovalRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof WorkflowRunsApiInterface
@@ -242,7 +204,7 @@ export interface WorkflowRunsApiInterface {
     setWorkflowRunApprovalRaw(requestParameters: SetWorkflowRunApprovalOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<WorkflowRunResponse>>;
 
     /**
-     * Approve an entire completed run in one call.  Approves every output document under ``outputs/`` then the run folder. The run must be ``COMPLETED`` and its definition must have required approval. Requires write access to the run folder. ``run_id`` is the WorkflowRun id.
+     * Approve an entire completed run in one call.  Approves every output document under ``outputs/`` then the run folder. The run must be ``COMPLETED`` and its definition must have required approval. Requires approve access to the run folder and refuses agents (assumed identities) — approval is human-in-the-loop. ``run_id`` is the WorkflowRun id.
      * Set Workflow Run Approval Handler
      */
     setWorkflowRunApproval(requestParameters: SetWorkflowRunApprovalOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<WorkflowRunResponse>;
@@ -250,8 +212,6 @@ export interface WorkflowRunsApiInterface {
     /**
      * Creates request options for startWorkflowRun without sending the request
      * @param {string} runId 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof WorkflowRunsApiInterface
      */
@@ -261,8 +221,6 @@ export interface WorkflowRunsApiInterface {
      * Flip a NOT_STARTED run to IN_PROGRESS and dispatch its agent run.  Idempotent on IN_PROGRESS (returns the row). Terminal states → 409. Inputs still ingesting or in a failed terminal state → 409. The snapshot is built at this point (KB DOCUMENTs resolve to active versions, uploaded DVs are walked from inputs/, KB FOLDERs stay live).
      * @summary Start Workflow Run Handler
      * @param {string} runId 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof WorkflowRunsApiInterface
@@ -278,8 +236,6 @@ export interface WorkflowRunsApiInterface {
     /**
      * Creates request options for stopWorkflowRun without sending the request
      * @param {string} runId 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof WorkflowRunsApiInterface
      */
@@ -289,8 +245,6 @@ export interface WorkflowRunsApiInterface {
      * Stop a running workflow run, terminalizing it so its thread un-bricks.  While a run sits ``IN_PROGRESS`` its run thread is read-only: every new USER message 409s (``run_in_progress``). A user \"stop\" must therefore move the run out of ``IN_PROGRESS``. We mark it ``FAILED`` (\"Stopped by user\") with a pure DB write that does **not** depend on Temporal — so this same call also recovers a run already stranded ``IN_PROGRESS`` by a cancel whose terminal callback never landed (the permanent-brick case) — then best-effort cancel its Temporal workflow.  Idempotent: a run already in a terminal state (or not yet started) is returned unchanged. The terminal-state guard in ``mark_run_failed`` plus the callback handler\'s ``already_terminal`` no-op make a real completion landing concurrently safe (last writer is ignored, never an error).
      * @summary Stop Workflow Run Handler
      * @param {string} runId 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof WorkflowRunsApiInterface
@@ -307,8 +261,6 @@ export interface WorkflowRunsApiInterface {
      * Creates request options for updateWorkflowRun without sending the request
      * @param {string} runId 
      * @param {UpdateWorkflowRunRequest} updateWorkflowRunRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof WorkflowRunsApiInterface
      */
@@ -319,8 +271,6 @@ export interface WorkflowRunsApiInterface {
      * @summary Update Workflow Run Handler
      * @param {string} runId 
      * @param {UpdateWorkflowRunRequest} updateWorkflowRunRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof WorkflowRunsApiInterface
@@ -337,8 +287,6 @@ export interface WorkflowRunsApiInterface {
      * Creates request options for workflowRunCallback without sending the request
      * @param {string} runId 
      * @param {WorkflowRunCallbackRequest} workflowRunCallbackRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof WorkflowRunsApiInterface
      */
@@ -349,8 +297,6 @@ export interface WorkflowRunsApiInterface {
      * @summary Workflow Run Callback Handler
      * @param {string} runId 
      * @param {WorkflowRunCallbackRequest} workflowRunCallbackRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof WorkflowRunsApiInterface
@@ -394,10 +340,14 @@ export class WorkflowRunsApi extends runtime.BaseAPI implements WorkflowRunsApiI
 
         headerParameters['Content-Type'] = 'application/json';
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/workflow-runs/{run_id}/clone`;
         urlPath = urlPath.replace(`{${"run_id"}}`, encodeURIComponent(String(requestParameters['runId'])));
@@ -446,10 +396,14 @@ export class WorkflowRunsApi extends runtime.BaseAPI implements WorkflowRunsApiI
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/workflow-runs/{run_id}`;
         urlPath = urlPath.replace(`{${"run_id"}}`, encodeURIComponent(String(requestParameters['runId'])));
@@ -494,10 +448,14 @@ export class WorkflowRunsApi extends runtime.BaseAPI implements WorkflowRunsApiI
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/workflow-runs/{run_id}`;
         urlPath = urlPath.replace(`{${"run_id"}}`, encodeURIComponent(String(requestParameters['runId'])));
@@ -543,10 +501,14 @@ export class WorkflowRunsApi extends runtime.BaseAPI implements WorkflowRunsApiI
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/workflow-runs/{run_id}/retry`;
         urlPath = urlPath.replace(`{${"run_id"}}`, encodeURIComponent(String(requestParameters['runId'])));
@@ -603,10 +565,14 @@ export class WorkflowRunsApi extends runtime.BaseAPI implements WorkflowRunsApiI
 
         headerParameters['Content-Type'] = 'application/json';
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/workflow-runs/{run_id}/approval`;
         urlPath = urlPath.replace(`{${"run_id"}}`, encodeURIComponent(String(requestParameters['runId'])));
@@ -621,7 +587,7 @@ export class WorkflowRunsApi extends runtime.BaseAPI implements WorkflowRunsApiI
     }
 
     /**
-     * Approve an entire completed run in one call.  Approves every output document under ``outputs/`` then the run folder. The run must be ``COMPLETED`` and its definition must have required approval. Requires write access to the run folder. ``run_id`` is the WorkflowRun id.
+     * Approve an entire completed run in one call.  Approves every output document under ``outputs/`` then the run folder. The run must be ``COMPLETED`` and its definition must have required approval. Requires approve access to the run folder and refuses agents (assumed identities) — approval is human-in-the-loop. ``run_id`` is the WorkflowRun id.
      * Set Workflow Run Approval Handler
      */
     async setWorkflowRunApprovalRaw(requestParameters: SetWorkflowRunApprovalOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<WorkflowRunResponse>> {
@@ -632,7 +598,7 @@ export class WorkflowRunsApi extends runtime.BaseAPI implements WorkflowRunsApiI
     }
 
     /**
-     * Approve an entire completed run in one call.  Approves every output document under ``outputs/`` then the run folder. The run must be ``COMPLETED`` and its definition must have required approval. Requires write access to the run folder. ``run_id`` is the WorkflowRun id.
+     * Approve an entire completed run in one call.  Approves every output document under ``outputs/`` then the run folder. The run must be ``COMPLETED`` and its definition must have required approval. Requires approve access to the run folder and refuses agents (assumed identities) — approval is human-in-the-loop. ``run_id`` is the WorkflowRun id.
      * Set Workflow Run Approval Handler
      */
     async setWorkflowRunApproval(requestParameters: SetWorkflowRunApprovalOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<WorkflowRunResponse> {
@@ -655,10 +621,14 @@ export class WorkflowRunsApi extends runtime.BaseAPI implements WorkflowRunsApiI
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/workflow-runs/{run_id}/start`;
         urlPath = urlPath.replace(`{${"run_id"}}`, encodeURIComponent(String(requestParameters['runId'])));
@@ -706,10 +676,14 @@ export class WorkflowRunsApi extends runtime.BaseAPI implements WorkflowRunsApiI
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/workflow-runs/{run_id}/stop`;
         urlPath = urlPath.replace(`{${"run_id"}}`, encodeURIComponent(String(requestParameters['runId'])));
@@ -766,10 +740,14 @@ export class WorkflowRunsApi extends runtime.BaseAPI implements WorkflowRunsApiI
 
         headerParameters['Content-Type'] = 'application/json';
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/workflow-runs/{run_id}`;
         urlPath = urlPath.replace(`{${"run_id"}}`, encodeURIComponent(String(requestParameters['runId'])));
@@ -827,10 +805,14 @@ export class WorkflowRunsApi extends runtime.BaseAPI implements WorkflowRunsApiI
 
         headerParameters['Content-Type'] = 'application/json';
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/workflow-runs/{run_id}/callback`;
         urlPath = urlPath.replace(`{${"run_id"}}`, encodeURIComponent(String(requestParameters['runId'])));

@@ -39,6 +39,12 @@ export interface CreateGroupPermissionRequest {
      * @memberof CreateGroupPermissionRequest
      */
     capability: PermissionCapability;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof CreateGroupPermissionRequest
+     */
+    canApprove?: boolean;
 }
 
 
@@ -81,6 +87,7 @@ export function CreateGroupPermissionRequestFromJSONTyped(json: any, ignoreDiscr
         
         'pathPartId': json['path_part_id'],
         'capability': PermissionCapabilityFromJSON(json['capability']),
+        'canApprove': json['can_approve'] == null ? undefined : json['can_approve'],
     };
 }
 
@@ -97,6 +104,7 @@ export function CreateGroupPermissionRequestToJSONTyped(value?: CreateGroupPermi
         
         'path_part_id': value['pathPartId'],
         'capability': PermissionCapabilityToJSON(value['capability']),
+        'can_approve': value['canApprove'],
     };
 }
 

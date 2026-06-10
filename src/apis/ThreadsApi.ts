@@ -42,50 +42,36 @@ import {
 
 export interface CreateThreadOperationRequest {
     createThreadRequest: CreateThreadRequest;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface DeleteThreadRequest {
     threadId: string;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface GetThreadRequest {
     threadId: string;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface ListThreadsRequest {
     parentPathPartId?: string | null;
     limit?: number;
     offset?: number;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface SendUserMessageRequest {
     threadId: string;
     userMessageRequest: UserMessageRequest;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface StreamThreadRequest {
     threadId: string;
     lastMessageId?: string | null;
     lastEntryId?: string | null;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface UpdateThreadOperationRequest {
     threadId: string;
     updateThreadRequest: UpdateThreadRequest;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 /**
@@ -98,8 +84,6 @@ export interface ThreadsApiInterface {
     /**
      * Creates request options for createThread without sending the request
      * @param {CreateThreadRequest} createThreadRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof ThreadsApiInterface
      */
@@ -109,8 +93,6 @@ export interface ThreadsApiInterface {
      * Create a new thread.  If parent_path_part_id is omitted, the thread is created under the user\'s /users/{user_id}/threads/ folder (auto-provisioned if needed).
      * @summary Create Thread Handler
      * @param {CreateThreadRequest} createThreadRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ThreadsApiInterface
@@ -126,8 +108,6 @@ export interface ThreadsApiInterface {
     /**
      * Creates request options for deleteThread without sending the request
      * @param {string} threadId 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof ThreadsApiInterface
      */
@@ -137,8 +117,6 @@ export interface ThreadsApiInterface {
      * Delete a thread.  Authorization: only conversation threads belonging to the current user (under /users/{user_id}/threads/) can be deleted. Asset threads (attached to documents/sections) are never deletable via this endpoint.
      * @summary Delete Thread Handler
      * @param {string} threadId 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ThreadsApiInterface
@@ -154,8 +132,6 @@ export interface ThreadsApiInterface {
     /**
      * Creates request options for getThread without sending the request
      * @param {string} threadId 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof ThreadsApiInterface
      */
@@ -165,8 +141,6 @@ export interface ThreadsApiInterface {
      * Get a thread by its thread ID.
      * @summary Get Thread Handler
      * @param {string} threadId 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ThreadsApiInterface
@@ -184,8 +158,6 @@ export interface ThreadsApiInterface {
      * @param {string} [parentPathPartId] Parent PathPart ID. Omit to list user\&#39;s conversation threads.
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof ThreadsApiInterface
      */
@@ -197,8 +169,6 @@ export interface ThreadsApiInterface {
      * @param {string} [parentPathPartId] Parent PathPart ID. Omit to list user\&#39;s conversation threads.
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ThreadsApiInterface
@@ -215,8 +185,6 @@ export interface ThreadsApiInterface {
      * Creates request options for sendUserMessage without sending the request
      * @param {string} threadId 
      * @param {UserMessageRequest} userMessageRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof ThreadsApiInterface
      */
@@ -227,8 +195,6 @@ export interface ThreadsApiInterface {
      * @summary Send User Message Handler
      * @param {string} threadId 
      * @param {UserMessageRequest} userMessageRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ThreadsApiInterface
@@ -246,8 +212,6 @@ export interface ThreadsApiInterface {
      * @param {string} threadId 
      * @param {string} [lastMessageId] 
      * @param {string} [lastEntryId] 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof ThreadsApiInterface
      */
@@ -259,8 +223,6 @@ export interface ThreadsApiInterface {
      * @param {string} threadId 
      * @param {string} [lastMessageId] 
      * @param {string} [lastEntryId] 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ThreadsApiInterface
@@ -277,8 +239,6 @@ export interface ThreadsApiInterface {
      * Creates request options for updateThread without sending the request
      * @param {string} threadId 
      * @param {UpdateThreadRequest} updateThreadRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof ThreadsApiInterface
      */
@@ -289,8 +249,6 @@ export interface ThreadsApiInterface {
      * @summary Update Thread Handler
      * @param {string} threadId 
      * @param {UpdateThreadRequest} updateThreadRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ThreadsApiInterface
@@ -327,10 +285,14 @@ export class ThreadsApi extends runtime.BaseAPI implements ThreadsApiInterface {
 
         headerParameters['Content-Type'] = 'application/json';
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/threads`;
 
@@ -378,10 +340,14 @@ export class ThreadsApi extends runtime.BaseAPI implements ThreadsApiInterface {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/threads/{thread_id}`;
         urlPath = urlPath.replace(`{${"thread_id"}}`, encodeURIComponent(String(requestParameters['threadId'])));
@@ -428,10 +394,14 @@ export class ThreadsApi extends runtime.BaseAPI implements ThreadsApiInterface {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/threads/{thread_id}`;
         urlPath = urlPath.replace(`{${"thread_id"}}`, encodeURIComponent(String(requestParameters['threadId'])));
@@ -484,10 +454,14 @@ export class ThreadsApi extends runtime.BaseAPI implements ThreadsApiInterface {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/threads`;
 
@@ -543,10 +517,14 @@ export class ThreadsApi extends runtime.BaseAPI implements ThreadsApiInterface {
 
         headerParameters['Content-Type'] = 'application/json';
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/threads/{thread_id}/user_message`;
         urlPath = urlPath.replace(`{${"thread_id"}}`, encodeURIComponent(String(requestParameters['threadId'])));
@@ -603,10 +581,14 @@ export class ThreadsApi extends runtime.BaseAPI implements ThreadsApiInterface {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/threads/{thread_id}/stream`;
         urlPath = urlPath.replace(`{${"thread_id"}}`, encodeURIComponent(String(requestParameters['threadId'])));
@@ -662,10 +644,14 @@ export class ThreadsApi extends runtime.BaseAPI implements ThreadsApiInterface {
 
         headerParameters['Content-Type'] = 'application/json';
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/threads/{thread_id}`;
         urlPath = urlPath.replace(`{${"thread_id"}}`, encodeURIComponent(String(requestParameters['threadId'])));

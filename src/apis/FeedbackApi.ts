@@ -39,8 +39,6 @@ import {
 
 export interface DeleteFeedbackRequest {
     feedbackId: string;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface ListFeedbackRequest {
@@ -49,14 +47,10 @@ export interface ListFeedbackRequest {
     rating?: FeedbackRating;
     limit?: number;
     offset?: number;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface SubmitFeedbackOperationRequest {
     submitFeedbackRequest: SubmitFeedbackRequest;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 /**
@@ -69,8 +63,6 @@ export interface FeedbackApiInterface {
     /**
      * Creates request options for deleteFeedback without sending the request
      * @param {string} feedbackId 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof FeedbackApiInterface
      */
@@ -80,8 +72,6 @@ export interface FeedbackApiInterface {
      * Delete a feedback entry.  USER role: can only delete their own feedback. OWNER/ADMIN role: can delete any feedback. Returns 404 if the feedback does not exist. Returns 403 if the user does not own the feedback and is not OWNER/ADMIN.
      * @summary Delete Feedback Handler
      * @param {string} feedbackId 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof FeedbackApiInterface
@@ -101,8 +91,6 @@ export interface FeedbackApiInterface {
      * @param {FeedbackRating} [rating] 
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof FeedbackApiInterface
      */
@@ -116,8 +104,6 @@ export interface FeedbackApiInterface {
      * @param {FeedbackRating} [rating] 
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof FeedbackApiInterface
@@ -133,8 +119,6 @@ export interface FeedbackApiInterface {
     /**
      * Creates request options for submitFeedback without sending the request
      * @param {SubmitFeedbackRequest} submitFeedbackRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof FeedbackApiInterface
      */
@@ -144,8 +128,6 @@ export interface FeedbackApiInterface {
      * Create or update feedback on a knowledge entity (upsert).  Returns 201 when feedback is newly created, 200 when updated. Validates that the target entity exists and the user can read it.
      * @summary Submit Feedback Handler
      * @param {SubmitFeedbackRequest} submitFeedbackRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof FeedbackApiInterface
@@ -180,10 +162,14 @@ export class FeedbackApi extends runtime.BaseAPI implements FeedbackApiInterface
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/feedback/{feedback_id}`;
         urlPath = urlPath.replace(`{${"feedback_id"}}`, encodeURIComponent(String(requestParameters['feedbackId'])));
@@ -243,10 +229,14 @@ export class FeedbackApi extends runtime.BaseAPI implements FeedbackApiInterface
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/feedback`;
 
@@ -295,10 +285,14 @@ export class FeedbackApi extends runtime.BaseAPI implements FeedbackApiInterface
 
         headerParameters['Content-Type'] = 'application/json';
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/feedback`;
 

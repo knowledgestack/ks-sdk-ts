@@ -16,18 +16,23 @@
 import * as runtime from '../runtime';
 import type {
   ClearVersionContentsResponse,
+  DocumentDownloadResponse,
   DocumentVersionAction,
   DocumentVersionActionResponse,
   DocumentVersionContentTypeFilter,
   DocumentVersionMetadataUpdate,
   DocumentVersionResponse,
+  DownloadArtifact,
   HTTPValidationError,
   PaginatedResponseAnnotatedUnionSectionContentItemChunkContentItemDiscriminator,
   PaginatedResponseDocumentVersionResponse,
+  VersionDiffResponse,
 } from '../models/index';
 import {
     ClearVersionContentsResponseFromJSON,
     ClearVersionContentsResponseToJSON,
+    DocumentDownloadResponseFromJSON,
+    DocumentDownloadResponseToJSON,
     DocumentVersionActionFromJSON,
     DocumentVersionActionToJSON,
     DocumentVersionActionResponseFromJSON,
@@ -38,44 +43,43 @@ import {
     DocumentVersionMetadataUpdateToJSON,
     DocumentVersionResponseFromJSON,
     DocumentVersionResponseToJSON,
+    DownloadArtifactFromJSON,
+    DownloadArtifactToJSON,
     HTTPValidationErrorFromJSON,
     HTTPValidationErrorToJSON,
     PaginatedResponseAnnotatedUnionSectionContentItemChunkContentItemDiscriminatorFromJSON,
     PaginatedResponseAnnotatedUnionSectionContentItemChunkContentItemDiscriminatorToJSON,
     PaginatedResponseDocumentVersionResponseFromJSON,
     PaginatedResponseDocumentVersionResponseToJSON,
+    VersionDiffResponseFromJSON,
+    VersionDiffResponseToJSON,
 } from '../models/index';
 
 export interface ClearDocumentVersionContentsRequest {
     versionId: string;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface CreateDocumentVersionRequest {
     documentId: string;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface DeleteDocumentVersionRequest {
     versionId: string;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface DocumentVersionActionRequest {
     versionId: string;
     action: DocumentVersionAction;
-    authorization?: string | null;
-    ksUat?: string | null;
+}
+
+export interface DownloadDocumentVersionRequest {
+    versionId: string;
+    artifact?: DownloadArtifact;
 }
 
 export interface GetDocumentVersionRequest {
     versionId: string;
     includePageScreenshots?: boolean;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface GetDocumentVersionContentsRequest {
@@ -84,23 +88,22 @@ export interface GetDocumentVersionContentsRequest {
     contentType?: DocumentVersionContentTypeFilter;
     limit?: number;
     offset?: number;
-    authorization?: string | null;
-    ksUat?: string | null;
+}
+
+export interface GetDocumentVersionDiffRequest {
+    versionId: string;
+    fromVersionId?: string | null;
 }
 
 export interface ListDocumentVersionsRequest {
     documentId: string;
     limit?: number;
     offset?: number;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface UpdateDocumentVersionMetadataRequest {
     versionId: string;
     documentVersionMetadataUpdate: DocumentVersionMetadataUpdate;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 /**
@@ -113,8 +116,6 @@ export interface DocumentVersionsApiInterface {
     /**
      * Creates request options for clearDocumentVersionContents without sending the request
      * @param {string} versionId DocumentVersion ID
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof DocumentVersionsApiInterface
      */
@@ -124,8 +125,6 @@ export interface DocumentVersionsApiInterface {
      * Delete all sections and chunks under a document version.  Removes all content (sections and chunks) from the version while keeping the version itself intact. Used by the ingestion pipeline for idempotent re-processing.
      * @summary Clear Document Version Contents Handler
      * @param {string} versionId DocumentVersion ID
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DocumentVersionsApiInterface
@@ -141,8 +140,6 @@ export interface DocumentVersionsApiInterface {
     /**
      * Creates request options for createDocumentVersion without sending the request
      * @param {string} documentId Document ID
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof DocumentVersionsApiInterface
      */
@@ -152,8 +149,6 @@ export interface DocumentVersionsApiInterface {
      * Create a new version for a document.  The version number is automatically incremented from the highest existing version.
      * @summary Create Document Version Handler
      * @param {string} documentId Document ID
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DocumentVersionsApiInterface
@@ -169,8 +164,6 @@ export interface DocumentVersionsApiInterface {
     /**
      * Creates request options for deleteDocumentVersion without sending the request
      * @param {string} versionId DocumentVersion ID
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof DocumentVersionsApiInterface
      */
@@ -180,8 +173,6 @@ export interface DocumentVersionsApiInterface {
      * Delete a document version by its ID.  Cannot delete the active version of a document.
      * @summary Delete Document Version Handler
      * @param {string} versionId DocumentVersion ID
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DocumentVersionsApiInterface
@@ -198,8 +189,6 @@ export interface DocumentVersionsApiInterface {
      * Creates request options for documentVersionAction without sending the request
      * @param {string} versionId DocumentVersion ID
      * @param {DocumentVersionAction} action Action to perform
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof DocumentVersionsApiInterface
      */
@@ -210,8 +199,6 @@ export interface DocumentVersionsApiInterface {
      * @summary Document Version Action Handler
      * @param {string} versionId DocumentVersion ID
      * @param {DocumentVersionAction} action Action to perform
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DocumentVersionsApiInterface
@@ -225,11 +212,35 @@ export interface DocumentVersionsApiInterface {
     documentVersionAction(requestParameters: DocumentVersionActionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DocumentVersionActionResponse>;
 
     /**
+     * Creates request options for downloadDocumentVersion without sending the request
+     * @param {string} versionId DocumentVersion ID
+     * @param {DownloadArtifact} [artifact] Artifact to download: source or fast_plaintext
+     * @throws {RequiredError}
+     * @memberof DocumentVersionsApiInterface
+     */
+    downloadDocumentVersionRequestOpts(requestParameters: DownloadDocumentVersionRequest): Promise<runtime.RequestOpts>;
+
+    /**
+     * Issue a short-lived, audited download link for a specific version.  Records a ``document.downloaded`` audit event anchored to the document so the customer audit log captures who downloaded which version and when.
+     * @summary Download Document Version Handler
+     * @param {string} versionId DocumentVersion ID
+     * @param {DownloadArtifact} [artifact] Artifact to download: source or fast_plaintext
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DocumentVersionsApiInterface
+     */
+    downloadDocumentVersionRaw(requestParameters: DownloadDocumentVersionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<DocumentDownloadResponse>>;
+
+    /**
+     * Issue a short-lived, audited download link for a specific version.  Records a ``document.downloaded`` audit event anchored to the document so the customer audit log captures who downloaded which version and when.
+     * Download Document Version Handler
+     */
+    downloadDocumentVersion(requestParameters: DownloadDocumentVersionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DocumentDownloadResponse>;
+
+    /**
      * Creates request options for getDocumentVersion without sending the request
      * @param {string} versionId DocumentVersion ID
      * @param {boolean} [includePageScreenshots] When true, populate page_screenshot_urls with presigned URLs for every per-page WEBP screenshot the ingestion pipeline produced. Off by default to keep typical responses small.
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof DocumentVersionsApiInterface
      */
@@ -240,8 +251,6 @@ export interface DocumentVersionsApiInterface {
      * @summary Get Document Version Handler
      * @param {string} versionId DocumentVersion ID
      * @param {boolean} [includePageScreenshots] When true, populate page_screenshot_urls with presigned URLs for every per-page WEBP screenshot the ingestion pipeline produced. Off by default to keep typical responses small.
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DocumentVersionsApiInterface
@@ -260,8 +269,6 @@ export interface DocumentVersionsApiInterface {
      * @param {DocumentVersionContentTypeFilter} [contentType] Filter by content type: SECTION or CHUNK. Omit to return both types.
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof DocumentVersionsApiInterface
      */
@@ -275,8 +282,6 @@ export interface DocumentVersionsApiInterface {
      * @param {DocumentVersionContentTypeFilter} [contentType] Filter by content type: SECTION or CHUNK. Omit to return both types.
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DocumentVersionsApiInterface
@@ -290,12 +295,36 @@ export interface DocumentVersionsApiInterface {
     getDocumentVersionContents(requestParameters: GetDocumentVersionContentsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedResponseAnnotatedUnionSectionContentItemChunkContentItemDiscriminator>;
 
     /**
+     * Creates request options for getDocumentVersionDiff without sending the request
+     * @param {string} versionId The new (right) version ID
+     * @param {string} [fromVersionId] The old (left) version; defaults to the predecessor
+     * @throws {RequiredError}
+     * @memberof DocumentVersionsApiInterface
+     */
+    getDocumentVersionDiffRequestOpts(requestParameters: GetDocumentVersionDiffRequest): Promise<runtime.RequestOpts>;
+
+    /**
+     * Side-by-side diff of a version against a previous one of the same document.  Diffs the two versions\' plaintext on the fly (no stored diff), so any pair of versions can be compared. ``from_version_id`` defaults to the immediate predecessor; the first version diffs against empty (all additions). Requires read permission on the document.
+     * @summary Get Document Version Diff Handler
+     * @param {string} versionId The new (right) version ID
+     * @param {string} [fromVersionId] The old (left) version; defaults to the predecessor
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DocumentVersionsApiInterface
+     */
+    getDocumentVersionDiffRaw(requestParameters: GetDocumentVersionDiffRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<VersionDiffResponse>>;
+
+    /**
+     * Side-by-side diff of a version against a previous one of the same document.  Diffs the two versions\' plaintext on the fly (no stored diff), so any pair of versions can be compared. ``from_version_id`` defaults to the immediate predecessor; the first version diffs against empty (all additions). Requires read permission on the document.
+     * Get Document Version Diff Handler
+     */
+    getDocumentVersionDiff(requestParameters: GetDocumentVersionDiffRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<VersionDiffResponse>;
+
+    /**
      * Creates request options for listDocumentVersions without sending the request
      * @param {string} documentId Document ID to list versions for
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof DocumentVersionsApiInterface
      */
@@ -307,8 +336,6 @@ export interface DocumentVersionsApiInterface {
      * @param {string} documentId Document ID to list versions for
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DocumentVersionsApiInterface
@@ -325,8 +352,6 @@ export interface DocumentVersionsApiInterface {
      * Creates request options for updateDocumentVersionMetadata without sending the request
      * @param {string} versionId DocumentVersion ID
      * @param {DocumentVersionMetadataUpdate} documentVersionMetadataUpdate 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof DocumentVersionsApiInterface
      */
@@ -337,8 +362,6 @@ export interface DocumentVersionsApiInterface {
      * @summary Update Document Version Metadata Handler
      * @param {string} versionId DocumentVersion ID
      * @param {DocumentVersionMetadataUpdate} documentVersionMetadataUpdate 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DocumentVersionsApiInterface
@@ -373,10 +396,14 @@ export class DocumentVersionsApi extends runtime.BaseAPI implements DocumentVers
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/document_versions/{version_id}/contents`;
         urlPath = urlPath.replace(`{${"version_id"}}`, encodeURIComponent(String(requestParameters['versionId'])));
@@ -424,10 +451,14 @@ export class DocumentVersionsApi extends runtime.BaseAPI implements DocumentVers
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/documents/{document_id}/versions`;
         urlPath = urlPath.replace(`{${"document_id"}}`, encodeURIComponent(String(requestParameters['documentId'])));
@@ -475,10 +506,14 @@ export class DocumentVersionsApi extends runtime.BaseAPI implements DocumentVers
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/document_versions/{version_id}`;
         urlPath = urlPath.replace(`{${"version_id"}}`, encodeURIComponent(String(requestParameters['versionId'])));
@@ -536,10 +571,14 @@ export class DocumentVersionsApi extends runtime.BaseAPI implements DocumentVers
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/document_versions/{version_id}`;
         urlPath = urlPath.replace(`{${"version_id"}}`, encodeURIComponent(String(requestParameters['versionId'])));
@@ -573,6 +612,65 @@ export class DocumentVersionsApi extends runtime.BaseAPI implements DocumentVers
     }
 
     /**
+     * Creates request options for downloadDocumentVersion without sending the request
+     */
+    async downloadDocumentVersionRequestOpts(requestParameters: DownloadDocumentVersionRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['versionId'] == null) {
+            throw new runtime.RequiredError(
+                'versionId',
+                'Required parameter "versionId" was null or undefined when calling downloadDocumentVersion().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        if (requestParameters['artifact'] != null) {
+            queryParameters['artifact'] = requestParameters['artifact'];
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/v1/document_versions/{version_id}/download`;
+        urlPath = urlPath.replace(`{${"version_id"}}`, encodeURIComponent(String(requestParameters['versionId'])));
+
+        return {
+            path: urlPath,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Issue a short-lived, audited download link for a specific version.  Records a ``document.downloaded`` audit event anchored to the document so the customer audit log captures who downloaded which version and when.
+     * Download Document Version Handler
+     */
+    async downloadDocumentVersionRaw(requestParameters: DownloadDocumentVersionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<DocumentDownloadResponse>> {
+        const requestOptions = await this.downloadDocumentVersionRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => DocumentDownloadResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * Issue a short-lived, audited download link for a specific version.  Records a ``document.downloaded`` audit event anchored to the document so the customer audit log captures who downloaded which version and when.
+     * Download Document Version Handler
+     */
+    async downloadDocumentVersion(requestParameters: DownloadDocumentVersionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DocumentDownloadResponse> {
+        const response = await this.downloadDocumentVersionRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
      * Creates request options for getDocumentVersion without sending the request
      */
     async getDocumentVersionRequestOpts(requestParameters: GetDocumentVersionRequest): Promise<runtime.RequestOpts> {
@@ -591,10 +689,14 @@ export class DocumentVersionsApi extends runtime.BaseAPI implements DocumentVers
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/document_versions/{version_id}`;
         urlPath = urlPath.replace(`{${"version_id"}}`, encodeURIComponent(String(requestParameters['versionId'])));
@@ -656,10 +758,14 @@ export class DocumentVersionsApi extends runtime.BaseAPI implements DocumentVers
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/document_versions/{version_id}/contents`;
         urlPath = urlPath.replace(`{${"version_id"}}`, encodeURIComponent(String(requestParameters['versionId'])));
@@ -693,6 +799,65 @@ export class DocumentVersionsApi extends runtime.BaseAPI implements DocumentVers
     }
 
     /**
+     * Creates request options for getDocumentVersionDiff without sending the request
+     */
+    async getDocumentVersionDiffRequestOpts(requestParameters: GetDocumentVersionDiffRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['versionId'] == null) {
+            throw new runtime.RequiredError(
+                'versionId',
+                'Required parameter "versionId" was null or undefined when calling getDocumentVersionDiff().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        if (requestParameters['fromVersionId'] != null) {
+            queryParameters['from_version_id'] = requestParameters['fromVersionId'];
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/v1/document_versions/{version_id}/diff`;
+        urlPath = urlPath.replace(`{${"version_id"}}`, encodeURIComponent(String(requestParameters['versionId'])));
+
+        return {
+            path: urlPath,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Side-by-side diff of a version against a previous one of the same document.  Diffs the two versions\' plaintext on the fly (no stored diff), so any pair of versions can be compared. ``from_version_id`` defaults to the immediate predecessor; the first version diffs against empty (all additions). Requires read permission on the document.
+     * Get Document Version Diff Handler
+     */
+    async getDocumentVersionDiffRaw(requestParameters: GetDocumentVersionDiffRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<VersionDiffResponse>> {
+        const requestOptions = await this.getDocumentVersionDiffRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => VersionDiffResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * Side-by-side diff of a version against a previous one of the same document.  Diffs the two versions\' plaintext on the fly (no stored diff), so any pair of versions can be compared. ``from_version_id`` defaults to the immediate predecessor; the first version diffs against empty (all additions). Requires read permission on the document.
+     * Get Document Version Diff Handler
+     */
+    async getDocumentVersionDiff(requestParameters: GetDocumentVersionDiffRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<VersionDiffResponse> {
+        const response = await this.getDocumentVersionDiffRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
      * Creates request options for listDocumentVersions without sending the request
      */
     async listDocumentVersionsRequestOpts(requestParameters: ListDocumentVersionsRequest): Promise<runtime.RequestOpts> {
@@ -719,10 +884,14 @@ export class DocumentVersionsApi extends runtime.BaseAPI implements DocumentVers
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/document_versions`;
 
@@ -778,10 +947,14 @@ export class DocumentVersionsApi extends runtime.BaseAPI implements DocumentVers
 
         headerParameters['Content-Type'] = 'application/json';
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/document_versions/{version_id}/metadata`;
         urlPath = urlPath.replace(`{${"version_id"}}`, encodeURIComponent(String(requestParameters['versionId'])));

@@ -34,32 +34,16 @@ import {
     UserResponseToJSON,
 } from '../models/index';
 
-export interface GetMeRequest {
-    authorization?: string | null;
-    ksUat?: string | null;
-}
-
-export interface SkipOnboardingRequest {
-    authorization?: string | null;
-    ksUat?: string | null;
-}
-
 export interface UpdateMeRequest {
     updateUserRequest: UpdateUserRequest;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface UpdateOnboardingCompanyRequest {
     onboardingCompanyRequest: OnboardingCompanyRequest;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface UpdateOnboardingProfileRequest {
     onboardingProfileRequest: OnboardingProfileRequest;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 /**
@@ -71,61 +55,51 @@ export interface UpdateOnboardingProfileRequest {
 export interface UsersApiInterface {
     /**
      * Creates request options for getMe without sending the request
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof UsersApiInterface
      */
-    getMeRequestOpts(requestParameters: GetMeRequest): Promise<runtime.RequestOpts>;
+    getMeRequestOpts(): Promise<runtime.RequestOpts>;
 
     /**
      * Get current user information including current tenant context.  Returns the authenticated user\'s profile along with their current tenant ID (from the UAT token) and default tenant ID (from user record).
      * @summary Get Me Handler
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof UsersApiInterface
      */
-    getMeRaw(requestParameters: GetMeRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserResponse>>;
+    getMeRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserResponse>>;
 
     /**
      * Get current user information including current tenant context.  Returns the authenticated user\'s profile along with their current tenant ID (from the UAT token) and default tenant ID (from user record).
      * Get Me Handler
      */
-    getMe(requestParameters: GetMeRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserResponse>;
+    getMe(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserResponse>;
 
     /**
      * Creates request options for skipOnboarding without sending the request
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof UsersApiInterface
      */
-    skipOnboardingRequestOpts(requestParameters: SkipOnboardingRequest): Promise<runtime.RequestOpts>;
+    skipOnboardingRequestOpts(): Promise<runtime.RequestOpts>;
 
     /**
      * Mark onboarding complete without writing any profile/company fields.  Idempotent — calling this after onboarding is already complete returns the current state unchanged (the CRUD only stamps the timestamp when it is NULL).
      * @summary Skip Onboarding Handler
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof UsersApiInterface
      */
-    skipOnboardingRaw(requestParameters: SkipOnboardingRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserResponse>>;
+    skipOnboardingRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserResponse>>;
 
     /**
      * Mark onboarding complete without writing any profile/company fields.  Idempotent — calling this after onboarding is already complete returns the current state unchanged (the CRUD only stamps the timestamp when it is NULL).
      * Skip Onboarding Handler
      */
-    skipOnboarding(requestParameters: SkipOnboardingRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserResponse>;
+    skipOnboarding(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserResponse>;
 
     /**
      * Creates request options for updateMe without sending the request
      * @param {UpdateUserRequest} updateUserRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof UsersApiInterface
      */
@@ -135,8 +109,6 @@ export interface UsersApiInterface {
      * Update the user\'s profile (default tenant, name fields).  When updating default_tenant_id, the user must belong to the specified tenant.
      * @summary Update Me Handler
      * @param {UpdateUserRequest} updateUserRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof UsersApiInterface
@@ -152,8 +124,6 @@ export interface UsersApiInterface {
     /**
      * Creates request options for updateOnboardingCompany without sending the request
      * @param {OnboardingCompanyRequest} onboardingCompanyRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof UsersApiInterface
      */
@@ -163,8 +133,6 @@ export interface UsersApiInterface {
      * Step 1 of onboarding: tenant-wide company info.  Writes ``industry`` and ``description`` into the current tenant\'s settings JSONB. Restricted to OWNER and ADMIN — invited USERs see a pre-filled, read-only step on the frontend instead.  Does not mark onboarding complete; the user finishes via the profile step. Re-running while the wizard is still open overwrites prior values; once onboarding has been completed/skipped, this endpoint returns 409. Post-onboarding edits go through PATCH /v1/tenants/{id}.
      * @summary Update Onboarding Company Handler
      * @param {OnboardingCompanyRequest} onboardingCompanyRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof UsersApiInterface
@@ -180,8 +148,6 @@ export interface UsersApiInterface {
     /**
      * Creates request options for updateOnboardingProfile without sending the request
      * @param {OnboardingProfileRequest} onboardingProfileRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof UsersApiInterface
      */
@@ -191,8 +157,6 @@ export interface UsersApiInterface {
      * Step 2 (final) of onboarding: per-user profile for the current tenant.  Writes name to the User row (global) and job_title to the TenantUser row (per-tenant), then stamps ``onboarding_completed_at`` on the membership. Returns 409 if onboarding has already been completed or skipped — post-onboarding edits go through PATCH /v1/users (name) or a future per-membership profile endpoint (job_title).
      * @summary Update Onboarding Profile Handler
      * @param {OnboardingProfileRequest} onboardingProfileRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof UsersApiInterface
@@ -215,15 +179,19 @@ export class UsersApi extends runtime.BaseAPI implements UsersApiInterface {
     /**
      * Creates request options for getMe without sending the request
      */
-    async getMeRequestOpts(requestParameters: GetMeRequest): Promise<runtime.RequestOpts> {
+    async getMeRequestOpts(): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/users/me`;
 
@@ -239,8 +207,8 @@ export class UsersApi extends runtime.BaseAPI implements UsersApiInterface {
      * Get current user information including current tenant context.  Returns the authenticated user\'s profile along with their current tenant ID (from the UAT token) and default tenant ID (from user record).
      * Get Me Handler
      */
-    async getMeRaw(requestParameters: GetMeRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserResponse>> {
-        const requestOptions = await this.getMeRequestOpts(requestParameters);
+    async getMeRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserResponse>> {
+        const requestOptions = await this.getMeRequestOpts();
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => UserResponseFromJSON(jsonValue));
@@ -250,23 +218,27 @@ export class UsersApi extends runtime.BaseAPI implements UsersApiInterface {
      * Get current user information including current tenant context.  Returns the authenticated user\'s profile along with their current tenant ID (from the UAT token) and default tenant ID (from user record).
      * Get Me Handler
      */
-    async getMe(requestParameters: GetMeRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserResponse> {
-        const response = await this.getMeRaw(requestParameters, initOverrides);
+    async getMe(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserResponse> {
+        const response = await this.getMeRaw(initOverrides);
         return await response.value();
     }
 
     /**
      * Creates request options for skipOnboarding without sending the request
      */
-    async skipOnboardingRequestOpts(requestParameters: SkipOnboardingRequest): Promise<runtime.RequestOpts> {
+    async skipOnboardingRequestOpts(): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/users/me/onboarding/skip`;
 
@@ -282,8 +254,8 @@ export class UsersApi extends runtime.BaseAPI implements UsersApiInterface {
      * Mark onboarding complete without writing any profile/company fields.  Idempotent — calling this after onboarding is already complete returns the current state unchanged (the CRUD only stamps the timestamp when it is NULL).
      * Skip Onboarding Handler
      */
-    async skipOnboardingRaw(requestParameters: SkipOnboardingRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserResponse>> {
-        const requestOptions = await this.skipOnboardingRequestOpts(requestParameters);
+    async skipOnboardingRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserResponse>> {
+        const requestOptions = await this.skipOnboardingRequestOpts();
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => UserResponseFromJSON(jsonValue));
@@ -293,8 +265,8 @@ export class UsersApi extends runtime.BaseAPI implements UsersApiInterface {
      * Mark onboarding complete without writing any profile/company fields.  Idempotent — calling this after onboarding is already complete returns the current state unchanged (the CRUD only stamps the timestamp when it is NULL).
      * Skip Onboarding Handler
      */
-    async skipOnboarding(requestParameters: SkipOnboardingRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserResponse> {
-        const response = await this.skipOnboardingRaw(requestParameters, initOverrides);
+    async skipOnboarding(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserResponse> {
+        const response = await this.skipOnboardingRaw(initOverrides);
         return await response.value();
     }
 
@@ -315,10 +287,14 @@ export class UsersApi extends runtime.BaseAPI implements UsersApiInterface {
 
         headerParameters['Content-Type'] = 'application/json';
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/users`;
 
@@ -368,10 +344,14 @@ export class UsersApi extends runtime.BaseAPI implements UsersApiInterface {
 
         headerParameters['Content-Type'] = 'application/json';
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/users/me/onboarding/company`;
 
@@ -421,10 +401,14 @@ export class UsersApi extends runtime.BaseAPI implements UsersApiInterface {
 
         headerParameters['Content-Type'] = 'application/json';
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/users/me/onboarding/profile`;
 

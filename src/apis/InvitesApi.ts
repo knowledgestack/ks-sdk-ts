@@ -42,20 +42,14 @@ import {
 
 export interface AcceptInviteRequest {
     inviteId: string;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface CreateInviteRequest {
     inviteUserRequest: InviteUserRequest;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface DeleteInviteRequest {
     inviteId: string;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface ListInvitesRequest {
@@ -63,15 +57,11 @@ export interface ListInvitesRequest {
     status?: InviteStatus;
     limit?: number;
     offset?: number;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 export interface UpdateInviteOperationRequest {
     inviteId: string;
     updateInviteRequest: UpdateInviteRequest;
-    authorization?: string | null;
-    ksUat?: string | null;
 }
 
 /**
@@ -84,8 +74,6 @@ export interface InvitesApiInterface {
     /**
      * Creates request options for acceptInvite without sending the request
      * @param {string} inviteId Either an Invite ID (traditional per-email invite) OR a Tenant ID (when the tenant has &#x60;&#x60;invite_link.enabled&#x60;&#x60;). Tenant lookup is tried first.
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof InvitesApiInterface
      */
@@ -95,8 +83,6 @@ export interface InvitesApiInterface {
      * Accept an invite OR a tenant invite-link.  The path parameter ``invite_id`` may be either:   * a Tenant ID (when an admin has enabled ``invite_link`` on the tenant), OR   * an Invite ID (the traditional per-email invite flow).  Tenant lookup is tried first. If the row is found, the request is treated as an invite-link request — both 400 paths below have *distinct* messages so the frontend can branch on copy:   * \"does not have invite link enabled\" → admin hasn\'t turned it on   * \"does not support inviting users\"   → tenant kill-switch ``system_metadata.can_invite`` is honored on this path too — it\'s a hard kill switch for self-serve onboarding. Only when no tenant matches do we look up an Invite row.
      * @summary Accept Invite
      * @param {string} inviteId Either an Invite ID (traditional per-email invite) OR a Tenant ID (when the tenant has &#x60;&#x60;invite_link.enabled&#x60;&#x60;). Tenant lookup is tried first.
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof InvitesApiInterface
@@ -112,8 +98,6 @@ export interface InvitesApiInterface {
     /**
      * Creates request options for createInvite without sending the request
      * @param {InviteUserRequest} inviteUserRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof InvitesApiInterface
      */
@@ -123,8 +107,6 @@ export interface InvitesApiInterface {
      * Create an invite for a user to join a tenant (admin-only).  For external IdP tenants (idp_config is set), users are added directly if they exist. For shared IdP tenants (PASSWORD/GOOGLE), an email invite is sent that must be accepted.
      * @summary Create Invite
      * @param {InviteUserRequest} inviteUserRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof InvitesApiInterface
@@ -140,8 +122,6 @@ export interface InvitesApiInterface {
     /**
      * Creates request options for deleteInvite without sending the request
      * @param {string} inviteId 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof InvitesApiInterface
      */
@@ -151,8 +131,6 @@ export interface InvitesApiInterface {
      * Hard-delete an invite (admin/owner only).  Permanently removes the invite. The invite must belong to the caller\'s current tenant.
      * @summary Delete Invite
      * @param {string} inviteId 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof InvitesApiInterface
@@ -171,8 +149,6 @@ export interface InvitesApiInterface {
      * @param {InviteStatus} [status] Filter by invite status (pending, accepted, expired)
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof InvitesApiInterface
      */
@@ -185,8 +161,6 @@ export interface InvitesApiInterface {
      * @param {InviteStatus} [status] Filter by invite status (pending, accepted, expired)
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof InvitesApiInterface
@@ -203,8 +177,6 @@ export interface InvitesApiInterface {
      * Creates request options for updateInvite without sending the request
      * @param {string} inviteId 
      * @param {UpdateInviteRequest} updateInviteRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof InvitesApiInterface
      */
@@ -215,8 +187,6 @@ export interface InvitesApiInterface {
      * @summary Update Invite Handler
      * @param {string} inviteId 
      * @param {UpdateInviteRequest} updateInviteRequest 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof InvitesApiInterface
@@ -251,10 +221,14 @@ export class InvitesApi extends runtime.BaseAPI implements InvitesApiInterface {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/invites/{invite_id}/accept`;
         urlPath = urlPath.replace(`{${"invite_id"}}`, encodeURIComponent(String(requestParameters['inviteId'])));
@@ -304,10 +278,14 @@ export class InvitesApi extends runtime.BaseAPI implements InvitesApiInterface {
 
         headerParameters['Content-Type'] = 'application/json';
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/invites`;
 
@@ -355,10 +333,14 @@ export class InvitesApi extends runtime.BaseAPI implements InvitesApiInterface {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/invites/{invite_id}`;
         urlPath = urlPath.replace(`{${"invite_id"}}`, encodeURIComponent(String(requestParameters['inviteId'])));
@@ -414,10 +396,14 @@ export class InvitesApi extends runtime.BaseAPI implements InvitesApiInterface {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/invites`;
 
@@ -473,10 +459,14 @@ export class InvitesApi extends runtime.BaseAPI implements InvitesApiInterface {
 
         headerParameters['Content-Type'] = 'application/json';
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/invites/{invite_id}`;
         urlPath = urlPath.replace(`{${"invite_id"}}`, encodeURIComponent(String(requestParameters['inviteId'])));
