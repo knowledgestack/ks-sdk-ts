@@ -61,6 +61,12 @@ export interface DocumentVersionMetadataUpdate {
      * @type {string}
      * @memberof DocumentVersionMetadataUpdate
      */
+    preconversionSourceS3?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof DocumentVersionMetadataUpdate
+     */
     standardPipelineJsonS3?: string | null;
     /**
      * 
@@ -208,6 +214,7 @@ export function DocumentVersionMetadataUpdateFromJSONTyped(json: any, ignoreDisc
         
         'sourceS3': json['source_s3'] == null ? undefined : json['source_s3'],
         'cleanedSourceS3': json['cleaned_source_s3'] == null ? undefined : json['cleaned_source_s3'],
+        'preconversionSourceS3': json['preconversion_source_s3'] == null ? undefined : json['preconversion_source_s3'],
         'standardPipelineJsonS3': json['standard_pipeline_json_s3'] == null ? undefined : json['standard_pipeline_json_s3'],
         'fastPlaintextS3': json['fast_plaintext_s3'] == null ? undefined : json['fast_plaintext_s3'],
         'highAccuracyContentListS3': json['high_accuracy_content_list_s3'] == null ? undefined : json['high_accuracy_content_list_s3'],
@@ -243,6 +250,7 @@ export function DocumentVersionMetadataUpdateToJSONTyped(value?: DocumentVersion
         
         'source_s3': value['sourceS3'],
         'cleaned_source_s3': value['cleanedSourceS3'],
+        'preconversion_source_s3': value['preconversionSourceS3'],
         'standard_pipeline_json_s3': value['standardPipelineJsonS3'],
         'fast_plaintext_s3': value['fastPlaintextS3'],
         'high_accuracy_content_list_s3': value['highAccuracyContentListS3'],

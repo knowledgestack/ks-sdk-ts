@@ -63,6 +63,12 @@ export interface DocumentVersionMetadata {
      */
     cleanedSourceS3?: string | null;
     /**
+     * S3 URL to the original pre-conversion legacy Office file; null unless this version was converted from a legacy binary format. After conversion source_s3 points at the modern OOXML file and this field preserves the original for traceability.
+     * @type {string}
+     * @memberof DocumentVersionMetadata
+     */
+    preconversionSourceS3?: string | null;
+    /**
      * S3 URL to the fast plaintext export of the document
      * @type {string}
      * @memberof DocumentVersionMetadata
@@ -196,6 +202,7 @@ export function DocumentVersionMetadataFromJSONTyped(json: any, ignoreDiscrimina
         
         'sourceS3': json['source_s3'] == null ? undefined : json['source_s3'],
         'cleanedSourceS3': json['cleaned_source_s3'] == null ? undefined : json['cleaned_source_s3'],
+        'preconversionSourceS3': json['preconversion_source_s3'] == null ? undefined : json['preconversion_source_s3'],
         'fastPlaintextS3': json['fast_plaintext_s3'] == null ? undefined : json['fast_plaintext_s3'],
         'hash': json['hash'] == null ? undefined : json['hash'],
         'pipelineState': json['pipeline_state'] == null ? undefined : PipelineStateFromJSON(json['pipeline_state']),
@@ -228,6 +235,7 @@ export function DocumentVersionMetadataToJSONTyped(value?: DocumentVersionMetada
         
         'source_s3': value['sourceS3'],
         'cleaned_source_s3': value['cleanedSourceS3'],
+        'preconversion_source_s3': value['preconversionSourceS3'],
         'fast_plaintext_s3': value['fastPlaintextS3'],
         'hash': value['hash'],
         'pipeline_state': PipelineStateToJSON(value['pipelineState']),
