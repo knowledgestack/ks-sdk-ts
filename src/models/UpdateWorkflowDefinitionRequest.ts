@@ -44,6 +44,12 @@ export interface UpdateWorkflowDefinitionRequest {
      */
     instructionPathPartId?: string | null;
     /**
+     * FOLDER path_part to move the definition under. Pass null (or omit) to leave it where it is. The move is rejected with 409 while any run of this definition is IN_PROGRESS.
+     * @type {string}
+     * @memberof UpdateWorkflowDefinitionRequest
+     */
+    parentPathPartId?: string | null;
+    /**
      * 
      * @type {boolean}
      * @memberof UpdateWorkflowDefinitionRequest
@@ -107,6 +113,7 @@ export function UpdateWorkflowDefinitionRequestFromJSONTyped(json: any, ignoreDi
         'description': json['description'] == null ? undefined : json['description'],
         'maxRunDurationSeconds': json['max_run_duration_seconds'] == null ? undefined : json['max_run_duration_seconds'],
         'instructionPathPartId': json['instruction_path_part_id'] == null ? undefined : json['instruction_path_part_id'],
+        'parentPathPartId': json['parent_path_part_id'] == null ? undefined : json['parent_path_part_id'],
         'isActive': json['is_active'],
         'approvalRequired': json['approval_required'],
     };
@@ -127,6 +134,7 @@ export function UpdateWorkflowDefinitionRequestToJSONTyped(value?: UpdateWorkflo
         'description': value['description'],
         'max_run_duration_seconds': value['maxRunDurationSeconds'],
         'instruction_path_part_id': value['instructionPathPartId'],
+        'parent_path_part_id': value['parentPathPartId'],
         'is_active': value['isActive'],
         'approval_required': value['approvalRequired'],
     };

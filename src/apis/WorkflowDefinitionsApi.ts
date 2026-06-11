@@ -243,7 +243,7 @@ export interface WorkflowDefinitionsApiInterface {
     updateWorkflowDefinitionRequestOpts(requestParameters: UpdateWorkflowDefinitionOperationRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * 
+     * Update a workflow definition (PUT semantics).  To move: provide ``parent_path_part_id``. Rejected with 409 while a run is IN_PROGRESS. The FOR UPDATE load serializes the move against run start, which takes the same definition-row lock.
      * @summary Update Workflow Definition Handler
      * @param {string} definitionId 
      * @param {UpdateWorkflowDefinitionRequest} updateWorkflowDefinitionRequest 
@@ -254,6 +254,7 @@ export interface WorkflowDefinitionsApiInterface {
     updateWorkflowDefinitionRaw(requestParameters: UpdateWorkflowDefinitionOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<WorkflowDefinitionResponse>>;
 
     /**
+     * Update a workflow definition (PUT semantics).  To move: provide ``parent_path_part_id``. Rejected with 409 while a run is IN_PROGRESS. The FOR UPDATE load serializes the move against run start, which takes the same definition-row lock.
      * Update Workflow Definition Handler
      */
     updateWorkflowDefinition(requestParameters: UpdateWorkflowDefinitionOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<WorkflowDefinitionResponse>;
@@ -671,6 +672,7 @@ export class WorkflowDefinitionsApi extends runtime.BaseAPI implements WorkflowD
     }
 
     /**
+     * Update a workflow definition (PUT semantics).  To move: provide ``parent_path_part_id``. Rejected with 409 while a run is IN_PROGRESS. The FOR UPDATE load serializes the move against run start, which takes the same definition-row lock.
      * Update Workflow Definition Handler
      */
     async updateWorkflowDefinitionRaw(requestParameters: UpdateWorkflowDefinitionOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<WorkflowDefinitionResponse>> {
@@ -681,6 +683,7 @@ export class WorkflowDefinitionsApi extends runtime.BaseAPI implements WorkflowD
     }
 
     /**
+     * Update a workflow definition (PUT semantics).  To move: provide ``parent_path_part_id``. Rejected with 409 while a run is IN_PROGRESS. The FOR UPDATE load serializes the move against run start, which takes the same definition-row lock.
      * Update Workflow Definition Handler
      */
     async updateWorkflowDefinition(requestParameters: UpdateWorkflowDefinitionOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<WorkflowDefinitionResponse> {
