@@ -107,17 +107,17 @@ export interface ChunkMetadata {
      */
     formulas?: Array<{ [key: string]: string; }> | null;
     /**
-     * Notable output/header cells for quick identification (XLSX only)
-     * @type {Array<{ [key: string]: any; }>}
+     * Notable output/header cells as A1 refs, e.g. 'Sheet1!A1' (XLSX only)
+     * @type {Array<string>}
      * @memberof ChunkMetadata
      */
-    keyCells?: Array<{ [key: string]: any; }> | null;
+    keyCells?: Array<string> | null;
     /**
-     * Named ranges overlapping this chunk (XLSX only)
-     * @type {Array<{ [key: string]: any; }>}
+     * Names of named ranges overlapping this chunk (XLSX only)
+     * @type {Array<string>}
      * @memberof ChunkMetadata
      */
-    namedRanges?: Array<{ [key: string]: any; }> | null;
+    namedRanges?: Array<string> | null;
 }
 
 
