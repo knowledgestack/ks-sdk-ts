@@ -26,7 +26,7 @@ import {
  * 
  * ``chunk_id`` is the load-bearing field — every reader can use it via
  * ``/v1/chunks/bulk``. The document fields are populated by
- * ``save_document`` when it resolves each chunk through the KS API at
+ * ``ks_upload_from_sandbox`` when it resolves each chunk through the KS API at
  * save time; they stay ``None`` only when the chunk could not be resolved
  * (e.g. the agent cited an id that no longer exists, or the resolve call
  * failed). The doc-info snapshot is captured at save time; later renames

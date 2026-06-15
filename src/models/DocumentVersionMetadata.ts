@@ -129,7 +129,7 @@ export interface DocumentVersionMetadata {
      */
     xlsxKpiCatalog?: Array<{ [key: string]: any; }> | null;
     /**
-     * In-file citation anchors for agent-generated .xlsx/.docx deliverables. Each anchor binds an in-file location (cell or paragraph) to the chunk IDs cited there. Populated by save_document during upload; ``null`` for versions ingested before this field shipped or for files re-uploaded outside the agent flow. FE enriches chunks via /v1/chunks/bulk.
+     * In-file citation anchors for agent-generated .xlsx/.docx deliverables. Each anchor binds an in-file location (cell or paragraph) to the chunk IDs cited there. Populated by ks_upload_from_sandbox during upload; ``null`` for versions ingested before this field shipped or for files re-uploaded outside the agent flow. FE enriches chunks via /v1/chunks/bulk.
      * @type {Array<XlsxCellAnchorOutputOrDocxParagraphAnchorOutput>}
      * @memberof DocumentVersionMetadata
      */
