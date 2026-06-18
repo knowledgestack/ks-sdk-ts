@@ -12,6 +12,13 @@
  * Do not edit the class manually.
  */
 
+import type { ApiConnectionResponse } from './ApiConnectionResponse';
+import {
+    instanceOfApiConnectionResponse,
+    ApiConnectionResponseFromJSON,
+    ApiConnectionResponseFromJSONTyped,
+    ApiConnectionResponseToJSON,
+} from './ApiConnectionResponse';
 import type { DataSourceResponse } from './DataSourceResponse';
 import {
     instanceOfDataSourceResponse,
@@ -56,21 +63,23 @@ import {
 } from './WorkflowRunResponse';
 
 /**
- * @type FolderResponseOrDocumentResponseOrWorkflowDefinitionResponseOrWorkflowRunResponseOrDataSourceResponseOrDataSourceTableResponse
+ * @type FolderResponseOrDocumentResponseOrWorkflowDefinitionResponseOrWorkflowRunResponseOrDataSourceResponseOrDataSourceTableResponseOrApiConnectionResponse
  * 
  * @export
  */
-export type FolderResponseOrDocumentResponseOrWorkflowDefinitionResponseOrWorkflowRunResponseOrDataSourceResponseOrDataSourceTableResponse = { partType: 'DATA_SOURCE' } & DataSourceResponse | { partType: 'DATA_SOURCE_TABLE' } & DataSourceTableResponse | { partType: 'DOCUMENT' } & DocumentResponse | { partType: 'FOLDER' } & FolderResponse | { partType: 'WORKFLOW_DEFINITION' } & WorkflowDefinitionResponse | { partType: 'WORKFLOW_RUN' } & WorkflowRunResponse;
+export type FolderResponseOrDocumentResponseOrWorkflowDefinitionResponseOrWorkflowRunResponseOrDataSourceResponseOrDataSourceTableResponseOrApiConnectionResponse = { partType: 'API_CONNECTION' } & ApiConnectionResponse | { partType: 'DATA_SOURCE' } & DataSourceResponse | { partType: 'DATA_SOURCE_TABLE' } & DataSourceTableResponse | { partType: 'DOCUMENT' } & DocumentResponse | { partType: 'FOLDER' } & FolderResponse | { partType: 'WORKFLOW_DEFINITION' } & WorkflowDefinitionResponse | { partType: 'WORKFLOW_RUN' } & WorkflowRunResponse;
 
-export function FolderResponseOrDocumentResponseOrWorkflowDefinitionResponseOrWorkflowRunResponseOrDataSourceResponseOrDataSourceTableResponseFromJSON(json: any): FolderResponseOrDocumentResponseOrWorkflowDefinitionResponseOrWorkflowRunResponseOrDataSourceResponseOrDataSourceTableResponse {
-    return FolderResponseOrDocumentResponseOrWorkflowDefinitionResponseOrWorkflowRunResponseOrDataSourceResponseOrDataSourceTableResponseFromJSONTyped(json, false);
+export function FolderResponseOrDocumentResponseOrWorkflowDefinitionResponseOrWorkflowRunResponseOrDataSourceResponseOrDataSourceTableResponseOrApiConnectionResponseFromJSON(json: any): FolderResponseOrDocumentResponseOrWorkflowDefinitionResponseOrWorkflowRunResponseOrDataSourceResponseOrDataSourceTableResponseOrApiConnectionResponse {
+    return FolderResponseOrDocumentResponseOrWorkflowDefinitionResponseOrWorkflowRunResponseOrDataSourceResponseOrDataSourceTableResponseOrApiConnectionResponseFromJSONTyped(json, false);
 }
 
-export function FolderResponseOrDocumentResponseOrWorkflowDefinitionResponseOrWorkflowRunResponseOrDataSourceResponseOrDataSourceTableResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): FolderResponseOrDocumentResponseOrWorkflowDefinitionResponseOrWorkflowRunResponseOrDataSourceResponseOrDataSourceTableResponse {
+export function FolderResponseOrDocumentResponseOrWorkflowDefinitionResponseOrWorkflowRunResponseOrDataSourceResponseOrDataSourceTableResponseOrApiConnectionResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): FolderResponseOrDocumentResponseOrWorkflowDefinitionResponseOrWorkflowRunResponseOrDataSourceResponseOrDataSourceTableResponseOrApiConnectionResponse {
     if (json == null) {
         return json;
     }
     switch (json['part_type']) {
+        case 'API_CONNECTION':
+            return Object.assign({}, ApiConnectionResponseFromJSONTyped(json, true), { partType: 'API_CONNECTION' } as const);
         case 'DATA_SOURCE':
             return Object.assign({}, DataSourceResponseFromJSONTyped(json, true), { partType: 'DATA_SOURCE' } as const);
         case 'DATA_SOURCE_TABLE':
@@ -88,15 +97,17 @@ export function FolderResponseOrDocumentResponseOrWorkflowDefinitionResponseOrWo
     }
 }
 
-export function FolderResponseOrDocumentResponseOrWorkflowDefinitionResponseOrWorkflowRunResponseOrDataSourceResponseOrDataSourceTableResponseToJSON(json: any): any {
-    return FolderResponseOrDocumentResponseOrWorkflowDefinitionResponseOrWorkflowRunResponseOrDataSourceResponseOrDataSourceTableResponseToJSONTyped(json, false);
+export function FolderResponseOrDocumentResponseOrWorkflowDefinitionResponseOrWorkflowRunResponseOrDataSourceResponseOrDataSourceTableResponseOrApiConnectionResponseToJSON(json: any): any {
+    return FolderResponseOrDocumentResponseOrWorkflowDefinitionResponseOrWorkflowRunResponseOrDataSourceResponseOrDataSourceTableResponseOrApiConnectionResponseToJSONTyped(json, false);
 }
 
-export function FolderResponseOrDocumentResponseOrWorkflowDefinitionResponseOrWorkflowRunResponseOrDataSourceResponseOrDataSourceTableResponseToJSONTyped(value?: FolderResponseOrDocumentResponseOrWorkflowDefinitionResponseOrWorkflowRunResponseOrDataSourceResponseOrDataSourceTableResponse | null, ignoreDiscriminator: boolean = false): any {
+export function FolderResponseOrDocumentResponseOrWorkflowDefinitionResponseOrWorkflowRunResponseOrDataSourceResponseOrDataSourceTableResponseOrApiConnectionResponseToJSONTyped(value?: FolderResponseOrDocumentResponseOrWorkflowDefinitionResponseOrWorkflowRunResponseOrDataSourceResponseOrDataSourceTableResponseOrApiConnectionResponse | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
     switch (value['partType']) {
+        case 'API_CONNECTION':
+            return Object.assign({}, ApiConnectionResponseToJSON(value), { partType: 'API_CONNECTION' } as const);
         case 'DATA_SOURCE':
             return Object.assign({}, DataSourceResponseToJSON(value), { partType: 'DATA_SOURCE' } as const);
         case 'DATA_SOURCE_TABLE':

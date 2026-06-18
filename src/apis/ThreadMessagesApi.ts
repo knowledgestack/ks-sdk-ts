@@ -16,17 +16,26 @@
 import * as runtime from '../runtime';
 import type {
   CreateThreadMessageRequest,
+  ErrorResponse,
   HTTPValidationError,
+  MessageRole,
   PaginatedResponseThreadMessageResponse,
+  SortDirection,
   ThreadMessageResponse,
 } from '../models/index';
 import {
     CreateThreadMessageRequestFromJSON,
     CreateThreadMessageRequestToJSON,
+    ErrorResponseFromJSON,
+    ErrorResponseToJSON,
     HTTPValidationErrorFromJSON,
     HTTPValidationErrorToJSON,
+    MessageRoleFromJSON,
+    MessageRoleToJSON,
     PaginatedResponseThreadMessageResponseFromJSON,
     PaginatedResponseThreadMessageResponseToJSON,
+    SortDirectionFromJSON,
+    SortDirectionToJSON,
     ThreadMessageResponseFromJSON,
     ThreadMessageResponseToJSON,
 } from '../models/index';
@@ -45,6 +54,8 @@ export interface GetThreadMessageRequest {
 export interface ListThreadMessagesRequest {
     threadId: string;
     before?: Date | null;
+    role?: MessageRole;
+    sortDir?: SortDirection;
     withDetails?: boolean;
     limit?: number;
     offset?: number;
@@ -115,6 +126,8 @@ export interface ThreadMessagesApiInterface {
      * Creates request options for listThreadMessages without sending the request
      * @param {string} threadId 
      * @param {Date} [before] Cursor for keyset pagination: only return messages with created_at &lt; this value
+     * @param {MessageRole} [role] Filter messages by role (USER, ASSISTANT, SYSTEM)
+     * @param {SortDirection} [sortDir] ASC for oldest-first; default/DESC keeps newest-first
      * @param {boolean} [withDetails] Include execution steps in response (default true)
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
@@ -128,6 +141,8 @@ export interface ThreadMessagesApiInterface {
      * @summary List Thread Messages Handler
      * @param {string} threadId 
      * @param {Date} [before] Cursor for keyset pagination: only return messages with created_at &lt; this value
+     * @param {MessageRole} [role] Filter messages by role (USER, ASSISTANT, SYSTEM)
+     * @param {SortDirection} [sortDir] ASC for oldest-first; default/DESC keeps newest-first
      * @param {boolean} [withDetails] Include execution steps in response (default true)
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
@@ -297,6 +312,14 @@ export class ThreadMessagesApi extends runtime.BaseAPI implements ThreadMessages
 
         if (requestParameters['before'] != null) {
             queryParameters['before'] = (requestParameters['before'] as any).toISOString();
+        }
+
+        if (requestParameters['role'] != null) {
+            queryParameters['role'] = requestParameters['role'];
+        }
+
+        if (requestParameters['sortDir'] != null) {
+            queryParameters['sort_dir'] = requestParameters['sortDir'];
         }
 
         if (requestParameters['withDetails'] != null) {

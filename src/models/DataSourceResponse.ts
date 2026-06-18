@@ -20,6 +20,13 @@ import {
     PathPartApprovalStateToJSON,
     PathPartApprovalStateToJSONTyped,
 } from './PathPartApprovalState';
+import type { UserInfo } from './UserInfo';
+import {
+    UserInfoFromJSON,
+    UserInfoFromJSONTyped,
+    UserInfoToJSON,
+    UserInfoToJSONTyped,
+} from './UserInfo';
 import type { DataSourceEngine } from './DataSourceEngine';
 import {
     DataSourceEngineFromJSON,
@@ -91,6 +98,12 @@ export interface DataSourceResponse {
      * @memberof DataSourceResponse
      */
     approvalState: PathPartApprovalState;
+    /**
+     * Current owner (creator) of the connector, or null if unowned.
+     * @type {UserInfo}
+     * @memberof DataSourceResponse
+     */
+    owner?: UserInfo | null;
     /**
      * 
      * @type {Date}
@@ -168,6 +181,7 @@ export function DataSourceResponseFromJSONTyped(json: any, ignoreDiscriminator: 
         'name': json['name'],
         'engine': DataSourceEngineFromJSON(json['engine']),
         'approvalState': PathPartApprovalStateFromJSON(json['approval_state']),
+        'owner': json['owner'] == null ? undefined : UserInfoFromJSON(json['owner']),
         'createdAt': (new Date(json['created_at'])),
         'updatedAt': (new Date(json['updated_at'])),
     };
@@ -193,6 +207,7 @@ export function DataSourceResponseToJSONTyped(value?: DataSourceResponse | null,
         'name': value['name'],
         'engine': DataSourceEngineToJSON(value['engine']),
         'approval_state': PathPartApprovalStateToJSON(value['approvalState']),
+        'owner': UserInfoToJSON(value['owner']),
         'created_at': value['createdAt'].toISOString(),
         'updated_at': value['updatedAt'].toISOString(),
     };

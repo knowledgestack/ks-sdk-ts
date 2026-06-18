@@ -34,6 +34,13 @@ import {
     PathPartApprovalStateToJSON,
     PathPartApprovalStateToJSONTyped,
 } from './PathPartApprovalState';
+import type { UserInfo } from './UserInfo';
+import {
+    UserInfoFromJSON,
+    UserInfoFromJSONTyped,
+    UserInfoToJSON,
+    UserInfoToJSONTyped,
+} from './UserInfo';
 
 /**
  * Folder response model.
@@ -101,6 +108,12 @@ export interface FolderResponse {
      * @memberof FolderResponse
      */
     tenantId: string;
+    /**
+     * Current owner (creator) of the folder, or null if unowned.
+     * @type {UserInfo}
+     * @memberof FolderResponse
+     */
+    owner?: UserInfo | null;
     /**
      * Creation timestamp
      * @type {Date}
@@ -193,6 +206,7 @@ export function FolderResponseFromJSONTyped(json: any, ignoreDiscriminator: bool
         'approvalState': PathPartApprovalStateFromJSON(json['approval_state']),
         'excludeFromQdrant': json['exclude_from_qdrant'],
         'tenantId': json['tenant_id'],
+        'owner': json['owner'] == null ? undefined : UserInfoFromJSON(json['owner']),
         'createdAt': (new Date(json['created_at'])),
         'updatedAt': (new Date(json['updated_at'])),
         'tags': json['tags'] == null ? undefined : ((json['tags'] as Array<any>).map(TagResponseFromJSON)),
@@ -221,6 +235,7 @@ export function FolderResponseToJSONTyped(value?: FolderResponse | null, ignoreD
         'approval_state': PathPartApprovalStateToJSON(value['approvalState']),
         'exclude_from_qdrant': value['excludeFromQdrant'],
         'tenant_id': value['tenantId'],
+        'owner': UserInfoToJSON(value['owner']),
         'created_at': value['createdAt'].toISOString(),
         'updated_at': value['updatedAt'].toISOString(),
         'tags': value['tags'] == null ? undefined : ((value['tags'] as Array<any>).map(TagResponseToJSON)),

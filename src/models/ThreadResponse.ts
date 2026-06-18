@@ -13,6 +13,14 @@
  */
 
 import { mapValues } from '../runtime';
+import type { UserInfo } from './UserInfo';
+import {
+    UserInfoFromJSON,
+    UserInfoFromJSONTyped,
+    UserInfoToJSON,
+    UserInfoToJSONTyped,
+} from './UserInfo';
+
 /**
  * 
  * @export
@@ -55,6 +63,12 @@ export interface ThreadResponse {
      * @memberof ThreadResponse
      */
     tenantId: string;
+    /**
+     * Current owner (creator) of the thread, or null if unowned.
+     * @type {UserInfo}
+     * @memberof ThreadResponse
+     */
+    owner?: UserInfo | null;
     /**
      * Creation timestamp
      * @type {Date}
@@ -116,6 +130,7 @@ export function ThreadResponseFromJSONTyped(json: any, ignoreDiscriminator: bool
         'parentThreadId': json['parent_thread_id'] == null ? undefined : json['parent_thread_id'],
         'materializedPath': json['materialized_path'],
         'tenantId': json['tenant_id'],
+        'owner': json['owner'] == null ? undefined : UserInfoFromJSON(json['owner']),
         'createdAt': (new Date(json['created_at'])),
         'updatedAt': (new Date(json['updated_at'])),
     };
@@ -138,6 +153,7 @@ export function ThreadResponseToJSONTyped(value?: ThreadResponse | null, ignoreD
         'parent_thread_id': value['parentThreadId'],
         'materialized_path': value['materializedPath'],
         'tenant_id': value['tenantId'],
+        'owner': UserInfoToJSON(value['owner']),
         'created_at': value['createdAt'].toISOString(),
         'updated_at': value['updatedAt'].toISOString(),
     };

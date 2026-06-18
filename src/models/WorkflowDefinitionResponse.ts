@@ -27,6 +27,13 @@ import {
     PathPartApprovalStateToJSON,
     PathPartApprovalStateToJSONTyped,
 } from './PathPartApprovalState';
+import type { UserInfo } from './UserInfo';
+import {
+    UserInfoFromJSON,
+    UserInfoFromJSONTyped,
+    UserInfoToJSON,
+    UserInfoToJSONTyped,
+} from './UserInfo';
 
 /**
  * Workflow definition response.
@@ -113,11 +120,35 @@ export interface WorkflowDefinitionResponse {
      */
     approvalRequired: boolean;
     /**
+     * Whether this definition is a non-runnable template
+     * @type {boolean}
+     * @memberof WorkflowDefinitionResponse
+     */
+    isTemplate: boolean;
+    /**
+     * Source definition this workflow was copied from (a template or any other workflow); null if hand-authored.
+     * @type {string}
+     * @memberof WorkflowDefinitionResponse
+     */
+    createdFromId: string | null;
+    /**
+     * Number of workflows copied from this definition.
+     * @type {number}
+     * @memberof WorkflowDefinitionResponse
+     */
+    copyCount?: number;
+    /**
      * 
      * @type {PathPartApprovalState}
      * @memberof WorkflowDefinitionResponse
      */
     approvalState: PathPartApprovalState;
+    /**
+     * Current owner (creator) of the workflow, or null if unowned.
+     * @type {UserInfo}
+     * @memberof WorkflowDefinitionResponse
+     */
+    owner?: UserInfo | null;
     /**
      * 
      * @type {Date}
@@ -180,6 +211,8 @@ export function instanceOfWorkflowDefinitionResponse(value: object): value is Wo
     if (!('instructionPathPartId' in value) || value['instructionPathPartId'] === undefined) return false;
     if (!('isActive' in value) || value['isActive'] === undefined) return false;
     if (!('approvalRequired' in value) || value['approvalRequired'] === undefined) return false;
+    if (!('isTemplate' in value) || value['isTemplate'] === undefined) return false;
+    if (!('createdFromId' in value) || value['createdFromId'] === undefined) return false;
     if (!('approvalState' in value) || value['approvalState'] === undefined) return false;
     if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
     if (!('updatedAt' in value) || value['updatedAt'] === undefined) return false;
@@ -208,7 +241,11 @@ export function WorkflowDefinitionResponseFromJSONTyped(json: any, ignoreDiscrim
         'instructionPathPartId': json['instruction_path_part_id'],
         'isActive': json['is_active'],
         'approvalRequired': json['approval_required'],
+        'isTemplate': json['is_template'],
+        'createdFromId': json['created_from_id'],
+        'copyCount': json['copy_count'] == null ? undefined : json['copy_count'],
         'approvalState': PathPartApprovalStateFromJSON(json['approval_state']),
+        'owner': json['owner'] == null ? undefined : UserInfoFromJSON(json['owner']),
         'createdAt': (new Date(json['created_at'])),
         'updatedAt': (new Date(json['updated_at'])),
         'permissions': json['permissions'] == null ? undefined : ItemPermissionsFromJSON(json['permissions']),
@@ -238,7 +275,11 @@ export function WorkflowDefinitionResponseToJSONTyped(value?: WorkflowDefinition
         'instruction_path_part_id': value['instructionPathPartId'],
         'is_active': value['isActive'],
         'approval_required': value['approvalRequired'],
+        'is_template': value['isTemplate'],
+        'created_from_id': value['createdFromId'],
+        'copy_count': value['copyCount'],
         'approval_state': PathPartApprovalStateToJSON(value['approvalState']),
+        'owner': UserInfoToJSON(value['owner']),
         'created_at': value['createdAt'].toISOString(),
         'updated_at': value['updatedAt'].toISOString(),
         'permissions': ItemPermissionsToJSON(value['permissions']),

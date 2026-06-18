@@ -15,6 +15,7 @@
 
 import * as runtime from '../runtime';
 import type {
+  ErrorResponse,
   HTTPValidationError,
   OnboardingCompanyRequest,
   OnboardingProfileRequest,
@@ -22,6 +23,8 @@ import type {
   UserResponse,
 } from '../models/index';
 import {
+    ErrorResponseFromJSON,
+    ErrorResponseToJSON,
     HTTPValidationErrorFromJSON,
     HTTPValidationErrorToJSON,
     OnboardingCompanyRequestFromJSON,

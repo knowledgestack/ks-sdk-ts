@@ -17,6 +17,7 @@ import * as runtime from '../runtime';
 import type {
   ChunkLineageResponse,
   CreateChunkLineageRequest,
+  ErrorResponse,
   HTTPValidationError,
   LineageGraphResponse,
 } from '../models/index';
@@ -25,6 +26,8 @@ import {
     ChunkLineageResponseToJSON,
     CreateChunkLineageRequestFromJSON,
     CreateChunkLineageRequestToJSON,
+    ErrorResponseFromJSON,
+    ErrorResponseToJSON,
     HTTPValidationErrorFromJSON,
     HTTPValidationErrorToJSON,
     LineageGraphResponseFromJSON,

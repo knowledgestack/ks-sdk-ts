@@ -16,26 +16,41 @@
 import * as runtime from '../runtime';
 import type {
   CreateWorkflowDefinitionRequest,
+  ErrorResponse,
   HTTPValidationError,
+  InstantiateWorkflowTemplateRequest,
   PaginatedResponseWorkflowDefinitionResponse,
   PaginatedResponseWorkflowRunResponse,
+  SortDirection,
   UpdateWorkflowDefinitionRequest,
+  WorkflowDefinitionOrder,
   WorkflowDefinitionResponse,
+  WorkflowRunOrder,
   WorkflowRunResponse,
 } from '../models/index';
 import {
     CreateWorkflowDefinitionRequestFromJSON,
     CreateWorkflowDefinitionRequestToJSON,
+    ErrorResponseFromJSON,
+    ErrorResponseToJSON,
     HTTPValidationErrorFromJSON,
     HTTPValidationErrorToJSON,
+    InstantiateWorkflowTemplateRequestFromJSON,
+    InstantiateWorkflowTemplateRequestToJSON,
     PaginatedResponseWorkflowDefinitionResponseFromJSON,
     PaginatedResponseWorkflowDefinitionResponseToJSON,
     PaginatedResponseWorkflowRunResponseFromJSON,
     PaginatedResponseWorkflowRunResponseToJSON,
+    SortDirectionFromJSON,
+    SortDirectionToJSON,
     UpdateWorkflowDefinitionRequestFromJSON,
     UpdateWorkflowDefinitionRequestToJSON,
+    WorkflowDefinitionOrderFromJSON,
+    WorkflowDefinitionOrderToJSON,
     WorkflowDefinitionResponseFromJSON,
     WorkflowDefinitionResponseToJSON,
+    WorkflowRunOrderFromJSON,
+    WorkflowRunOrderToJSON,
     WorkflowRunResponseFromJSON,
     WorkflowRunResponseToJSON,
 } from '../models/index';
@@ -59,15 +74,34 @@ export interface GetWorkflowDefinitionRequest {
     definitionId: string;
 }
 
+export interface InstantiateWorkflowTemplateOperationRequest {
+    templateId: string;
+    instantiateWorkflowTemplateRequest: InstantiateWorkflowTemplateRequest;
+}
+
 export interface ListWorkflowDefinitionsRequest {
+    mine?: boolean;
+    sortBy?: WorkflowDefinitionOrder;
+    sortDir?: SortDirection;
+    isTemplate?: boolean;
     limit?: number;
     offset?: number;
+    createdAfter?: Date | null;
+    createdBefore?: Date | null;
+    updatedAfter?: Date | null;
+    updatedBefore?: Date | null;
 }
 
 export interface ListWorkflowRunsRequest {
     definitionId: string;
+    sortBy?: WorkflowRunOrder;
+    sortDir?: SortDirection;
     limit?: number;
     offset?: number;
+    createdAfter?: Date | null;
+    createdBefore?: Date | null;
+    updatedAfter?: Date | null;
+    updatedBefore?: Date | null;
 }
 
 export interface UpdateWorkflowDefinitionOperationRequest {
@@ -182,9 +216,42 @@ export interface WorkflowDefinitionsApiInterface {
     getWorkflowDefinition(requestParameters: GetWorkflowDefinitionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<WorkflowDefinitionResponse>;
 
     /**
+     * Creates request options for instantiateWorkflowTemplate without sending the request
+     * @param {string} templateId 
+     * @param {InstantiateWorkflowTemplateRequest} instantiateWorkflowTemplateRequest 
+     * @throws {RequiredError}
+     * @memberof WorkflowDefinitionsApiInterface
+     */
+    instantiateWorkflowTemplateRequestOpts(requestParameters: InstantiateWorkflowTemplateOperationRequest): Promise<runtime.RequestOpts>;
+
+    /**
+     * 
+     * @summary Instantiate Workflow Template Handler
+     * @param {string} templateId 
+     * @param {InstantiateWorkflowTemplateRequest} instantiateWorkflowTemplateRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof WorkflowDefinitionsApiInterface
+     */
+    instantiateWorkflowTemplateRaw(requestParameters: InstantiateWorkflowTemplateOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<WorkflowDefinitionResponse>>;
+
+    /**
+     * Instantiate Workflow Template Handler
+     */
+    instantiateWorkflowTemplate(requestParameters: InstantiateWorkflowTemplateOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<WorkflowDefinitionResponse>;
+
+    /**
      * Creates request options for listWorkflowDefinitions without sending the request
+     * @param {boolean} [mine] Only definitions the caller created (owner).
+     * @param {WorkflowDefinitionOrder} [sortBy] Field to sort definitions by (default: CREATED_AT)
+     * @param {SortDirection} [sortDir] Sort direction; overrides the field\&#39;s natural default
+     * @param {boolean} [isTemplate] 
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
+     * @param {Date} [createdAfter] Only items created at or after this timestamp (inclusive)
+     * @param {Date} [createdBefore] Only items created strictly before this timestamp
+     * @param {Date} [updatedAfter] Only items updated at or after this timestamp (inclusive)
+     * @param {Date} [updatedBefore] Only items updated strictly before this timestamp
      * @throws {RequiredError}
      * @memberof WorkflowDefinitionsApiInterface
      */
@@ -193,8 +260,16 @@ export interface WorkflowDefinitionsApiInterface {
     /**
      * 
      * @summary List Workflow Definitions Handler
+     * @param {boolean} [mine] Only definitions the caller created (owner).
+     * @param {WorkflowDefinitionOrder} [sortBy] Field to sort definitions by (default: CREATED_AT)
+     * @param {SortDirection} [sortDir] Sort direction; overrides the field\&#39;s natural default
+     * @param {boolean} [isTemplate] 
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
+     * @param {Date} [createdAfter] Only items created at or after this timestamp (inclusive)
+     * @param {Date} [createdBefore] Only items created strictly before this timestamp
+     * @param {Date} [updatedAfter] Only items updated at or after this timestamp (inclusive)
+     * @param {Date} [updatedBefore] Only items updated strictly before this timestamp
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof WorkflowDefinitionsApiInterface
@@ -209,8 +284,14 @@ export interface WorkflowDefinitionsApiInterface {
     /**
      * Creates request options for listWorkflowRuns without sending the request
      * @param {string} definitionId 
+     * @param {WorkflowRunOrder} [sortBy] Field to sort runs by (default: STARTED_AT)
+     * @param {SortDirection} [sortDir] Sort direction; overrides the field\&#39;s natural default
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
+     * @param {Date} [createdAfter] Only items created at or after this timestamp (inclusive)
+     * @param {Date} [createdBefore] Only items created strictly before this timestamp
+     * @param {Date} [updatedAfter] Only items updated at or after this timestamp (inclusive)
+     * @param {Date} [updatedBefore] Only items updated strictly before this timestamp
      * @throws {RequiredError}
      * @memberof WorkflowDefinitionsApiInterface
      */
@@ -220,8 +301,14 @@ export interface WorkflowDefinitionsApiInterface {
      * 
      * @summary List Workflow Runs Handler
      * @param {string} definitionId 
+     * @param {WorkflowRunOrder} [sortBy] Field to sort runs by (default: STARTED_AT)
+     * @param {SortDirection} [sortDir] Sort direction; overrides the field\&#39;s natural default
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
+     * @param {Date} [createdAfter] Only items created at or after this timestamp (inclusive)
+     * @param {Date} [createdBefore] Only items created strictly before this timestamp
+     * @param {Date} [updatedAfter] Only items updated at or after this timestamp (inclusive)
+     * @param {Date} [updatedBefore] Only items updated strictly before this timestamp
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof WorkflowDefinitionsApiInterface
@@ -513,10 +600,89 @@ export class WorkflowDefinitionsApi extends runtime.BaseAPI implements WorkflowD
     }
 
     /**
+     * Creates request options for instantiateWorkflowTemplate without sending the request
+     */
+    async instantiateWorkflowTemplateRequestOpts(requestParameters: InstantiateWorkflowTemplateOperationRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['templateId'] == null) {
+            throw new runtime.RequiredError(
+                'templateId',
+                'Required parameter "templateId" was null or undefined when calling instantiateWorkflowTemplate().'
+            );
+        }
+
+        if (requestParameters['instantiateWorkflowTemplateRequest'] == null) {
+            throw new runtime.RequiredError(
+                'instantiateWorkflowTemplateRequest',
+                'Required parameter "instantiateWorkflowTemplateRequest" was null or undefined when calling instantiateWorkflowTemplate().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/v1/workflow-definitions/{template_id}/instantiate`;
+        urlPath = urlPath.replace(`{${"template_id"}}`, encodeURIComponent(String(requestParameters['templateId'])));
+
+        return {
+            path: urlPath,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: InstantiateWorkflowTemplateRequestToJSON(requestParameters['instantiateWorkflowTemplateRequest']),
+        };
+    }
+
+    /**
+     * Instantiate Workflow Template Handler
+     */
+    async instantiateWorkflowTemplateRaw(requestParameters: InstantiateWorkflowTemplateOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<WorkflowDefinitionResponse>> {
+        const requestOptions = await this.instantiateWorkflowTemplateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => WorkflowDefinitionResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * Instantiate Workflow Template Handler
+     */
+    async instantiateWorkflowTemplate(requestParameters: InstantiateWorkflowTemplateOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<WorkflowDefinitionResponse> {
+        const response = await this.instantiateWorkflowTemplateRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
      * Creates request options for listWorkflowDefinitions without sending the request
      */
     async listWorkflowDefinitionsRequestOpts(requestParameters: ListWorkflowDefinitionsRequest): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
+
+        if (requestParameters['mine'] != null) {
+            queryParameters['mine'] = requestParameters['mine'];
+        }
+
+        if (requestParameters['sortBy'] != null) {
+            queryParameters['sort_by'] = requestParameters['sortBy'];
+        }
+
+        if (requestParameters['sortDir'] != null) {
+            queryParameters['sort_dir'] = requestParameters['sortDir'];
+        }
+
+        if (requestParameters['isTemplate'] != null) {
+            queryParameters['is_template'] = requestParameters['isTemplate'];
+        }
 
         if (requestParameters['limit'] != null) {
             queryParameters['limit'] = requestParameters['limit'];
@@ -524,6 +690,22 @@ export class WorkflowDefinitionsApi extends runtime.BaseAPI implements WorkflowD
 
         if (requestParameters['offset'] != null) {
             queryParameters['offset'] = requestParameters['offset'];
+        }
+
+        if (requestParameters['createdAfter'] != null) {
+            queryParameters['created_after'] = (requestParameters['createdAfter'] as any).toISOString();
+        }
+
+        if (requestParameters['createdBefore'] != null) {
+            queryParameters['created_before'] = (requestParameters['createdBefore'] as any).toISOString();
+        }
+
+        if (requestParameters['updatedAfter'] != null) {
+            queryParameters['updated_after'] = (requestParameters['updatedAfter'] as any).toISOString();
+        }
+
+        if (requestParameters['updatedBefore'] != null) {
+            queryParameters['updated_before'] = (requestParameters['updatedBefore'] as any).toISOString();
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -578,12 +760,36 @@ export class WorkflowDefinitionsApi extends runtime.BaseAPI implements WorkflowD
 
         const queryParameters: any = {};
 
+        if (requestParameters['sortBy'] != null) {
+            queryParameters['sort_by'] = requestParameters['sortBy'];
+        }
+
+        if (requestParameters['sortDir'] != null) {
+            queryParameters['sort_dir'] = requestParameters['sortDir'];
+        }
+
         if (requestParameters['limit'] != null) {
             queryParameters['limit'] = requestParameters['limit'];
         }
 
         if (requestParameters['offset'] != null) {
             queryParameters['offset'] = requestParameters['offset'];
+        }
+
+        if (requestParameters['createdAfter'] != null) {
+            queryParameters['created_after'] = (requestParameters['createdAfter'] as any).toISOString();
+        }
+
+        if (requestParameters['createdBefore'] != null) {
+            queryParameters['created_before'] = (requestParameters['createdBefore'] as any).toISOString();
+        }
+
+        if (requestParameters['updatedAfter'] != null) {
+            queryParameters['updated_after'] = (requestParameters['updatedAfter'] as any).toISOString();
+        }
+
+        if (requestParameters['updatedBefore'] != null) {
+            queryParameters['updated_before'] = (requestParameters['updatedBefore'] as any).toISOString();
         }
 
         const headerParameters: runtime.HTTPHeaders = {};

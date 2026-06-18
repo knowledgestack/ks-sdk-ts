@@ -17,6 +17,7 @@ import * as runtime from '../runtime';
 import type {
   CreateSectionRequest,
   DissolveSectionResponse,
+  ErrorResponse,
   HTTPValidationError,
   SectionResponse,
   UpdateSectionRequest,
@@ -26,6 +27,8 @@ import {
     CreateSectionRequestToJSON,
     DissolveSectionResponseFromJSON,
     DissolveSectionResponseToJSON,
+    ErrorResponseFromJSON,
+    ErrorResponseToJSON,
     HTTPValidationErrorFromJSON,
     HTTPValidationErrorToJSON,
     SectionResponseFromJSON,

@@ -16,28 +16,46 @@
 import * as runtime from '../runtime';
 import type {
   CloneWorkflowRunRequest,
+  ErrorResponse,
   HTTPValidationError,
+  PaginatedResponseWorkflowRunResponse,
   SetWorkflowRunApprovalRequest,
+  SortDirection,
   UpdateWorkflowRunRequest,
   WorkflowCallbackResponse,
+  WorkflowExecutionState,
   WorkflowRunCallbackRequest,
+  WorkflowRunOrder,
   WorkflowRunResponse,
+  WorkflowRunSummaryResponse,
 } from '../models/index';
 import {
     CloneWorkflowRunRequestFromJSON,
     CloneWorkflowRunRequestToJSON,
+    ErrorResponseFromJSON,
+    ErrorResponseToJSON,
     HTTPValidationErrorFromJSON,
     HTTPValidationErrorToJSON,
+    PaginatedResponseWorkflowRunResponseFromJSON,
+    PaginatedResponseWorkflowRunResponseToJSON,
     SetWorkflowRunApprovalRequestFromJSON,
     SetWorkflowRunApprovalRequestToJSON,
+    SortDirectionFromJSON,
+    SortDirectionToJSON,
     UpdateWorkflowRunRequestFromJSON,
     UpdateWorkflowRunRequestToJSON,
     WorkflowCallbackResponseFromJSON,
     WorkflowCallbackResponseToJSON,
+    WorkflowExecutionStateFromJSON,
+    WorkflowExecutionStateToJSON,
     WorkflowRunCallbackRequestFromJSON,
     WorkflowRunCallbackRequestToJSON,
+    WorkflowRunOrderFromJSON,
+    WorkflowRunOrderToJSON,
     WorkflowRunResponseFromJSON,
     WorkflowRunResponseToJSON,
+    WorkflowRunSummaryResponseFromJSON,
+    WorkflowRunSummaryResponseToJSON,
 } from '../models/index';
 
 export interface CloneWorkflowRunOperationRequest {
@@ -51,6 +69,28 @@ export interface DeleteWorkflowRunRequest {
 
 export interface GetWorkflowRunRequest {
     runId: string;
+}
+
+export interface GetWorkflowRunsSummaryRequest {
+    since?: Date | null;
+    until?: Date | null;
+    definitionId?: string | null;
+}
+
+export interface ListWorkflowRunsForTenantRequest {
+    state?: Array<WorkflowExecutionState> | null;
+    mine?: boolean;
+    pendingApprovalForMe?: boolean;
+    definitionId?: string | null;
+    ownerId?: string | null;
+    sortBy?: WorkflowRunOrder;
+    sortDir?: SortDirection;
+    limit?: number;
+    offset?: number;
+    createdAfter?: Date | null;
+    createdBefore?: Date | null;
+    updatedAfter?: Date | null;
+    updatedBefore?: Date | null;
 }
 
 export interface RetryWorkflowRunRequest {
@@ -158,6 +198,82 @@ export interface WorkflowRunsApiInterface {
      * Get Workflow Run Handler
      */
     getWorkflowRun(requestParameters: GetWorkflowRunRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<WorkflowRunResponse>;
+
+    /**
+     * Creates request options for getWorkflowRunsSummary without sending the request
+     * @param {Date} [since] Window start (inclusive). Defaults to 7 days ago.
+     * @param {Date} [until] Window end (inclusive). Defaults to open-ended.
+     * @param {string} [definitionId] Scope all numbers to one workflow (requires read).
+     * @throws {RequiredError}
+     * @memberof WorkflowRunsApiInterface
+     */
+    getWorkflowRunsSummaryRequestOpts(requestParameters: GetWorkflowRunsSummaryRequest): Promise<runtime.RequestOpts>;
+
+    /**
+     * Aggregate workflow-runs health, read-gated and permission-scoped.  Numbers cover only runs under workflows the caller can read (OWNER/ADMIN ⇒ tenant-wide). Windowed metrics default to the last 7 days; the approval backlog and active-definition count are point-in-time.
+     * @summary Get Workflow Runs Summary Handler
+     * @param {Date} [since] Window start (inclusive). Defaults to 7 days ago.
+     * @param {Date} [until] Window end (inclusive). Defaults to open-ended.
+     * @param {string} [definitionId] Scope all numbers to one workflow (requires read).
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof WorkflowRunsApiInterface
+     */
+    getWorkflowRunsSummaryRaw(requestParameters: GetWorkflowRunsSummaryRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<WorkflowRunSummaryResponse>>;
+
+    /**
+     * Aggregate workflow-runs health, read-gated and permission-scoped.  Numbers cover only runs under workflows the caller can read (OWNER/ADMIN ⇒ tenant-wide). Windowed metrics default to the last 7 days; the approval backlog and active-definition count are point-in-time.
+     * Get Workflow Runs Summary Handler
+     */
+    getWorkflowRunsSummary(requestParameters: GetWorkflowRunsSummaryRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<WorkflowRunSummaryResponse>;
+
+    /**
+     * Creates request options for listWorkflowRunsForTenant without sending the request
+     * @param {Array<WorkflowExecutionState>} [state] Keep only runs in these execution states (repeatable).
+     * @param {boolean} [mine] Only runs the caller created (owner). Overrides owner_id.
+     * @param {boolean} [pendingApprovalForMe] Only runs pending approval that the caller may approve.
+     * @param {string} [definitionId] Only runs under this workflow definition.
+     * @param {string} [ownerId] Only runs created by this user.
+     * @param {WorkflowRunOrder} [sortBy] Field to sort runs by (default: STARTED_AT)
+     * @param {SortDirection} [sortDir] Sort direction; overrides the field\&#39;s natural default
+     * @param {number} [limit] Number of items per page
+     * @param {number} [offset] Number of items to skip
+     * @param {Date} [createdAfter] Only items created at or after this timestamp (inclusive)
+     * @param {Date} [createdBefore] Only items created strictly before this timestamp
+     * @param {Date} [updatedAfter] Only items updated at or after this timestamp (inclusive)
+     * @param {Date} [updatedBefore] Only items updated strictly before this timestamp
+     * @throws {RequiredError}
+     * @memberof WorkflowRunsApiInterface
+     */
+    listWorkflowRunsForTenantRequestOpts(requestParameters: ListWorkflowRunsForTenantRequest): Promise<runtime.RequestOpts>;
+
+    /**
+     * List runs across every workflow in the tenant, permission-scoped.  The single spine behind the dashboard worklists — the FE composes its tabs from preset filters (``mine`` + ``state``, ``pending_approval_for_me``). Visibility follows the same model as the per-definition list: OWNER/ADMIN see all; a USER sees runs under workflows they can read.
+     * @summary List Workflow Runs For Tenant Handler
+     * @param {Array<WorkflowExecutionState>} [state] Keep only runs in these execution states (repeatable).
+     * @param {boolean} [mine] Only runs the caller created (owner). Overrides owner_id.
+     * @param {boolean} [pendingApprovalForMe] Only runs pending approval that the caller may approve.
+     * @param {string} [definitionId] Only runs under this workflow definition.
+     * @param {string} [ownerId] Only runs created by this user.
+     * @param {WorkflowRunOrder} [sortBy] Field to sort runs by (default: STARTED_AT)
+     * @param {SortDirection} [sortDir] Sort direction; overrides the field\&#39;s natural default
+     * @param {number} [limit] Number of items per page
+     * @param {number} [offset] Number of items to skip
+     * @param {Date} [createdAfter] Only items created at or after this timestamp (inclusive)
+     * @param {Date} [createdBefore] Only items created strictly before this timestamp
+     * @param {Date} [updatedAfter] Only items updated at or after this timestamp (inclusive)
+     * @param {Date} [updatedBefore] Only items updated strictly before this timestamp
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof WorkflowRunsApiInterface
+     */
+    listWorkflowRunsForTenantRaw(requestParameters: ListWorkflowRunsForTenantRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedResponseWorkflowRunResponse>>;
+
+    /**
+     * List runs across every workflow in the tenant, permission-scoped.  The single spine behind the dashboard worklists — the FE composes its tabs from preset filters (``mine`` + ``state``, ``pending_approval_for_me``). Visibility follows the same model as the per-definition list: OWNER/ADMIN see all; a USER sees runs under workflows they can read.
+     * List Workflow Runs For Tenant Handler
+     */
+    listWorkflowRunsForTenant(requestParameters: ListWorkflowRunsForTenantRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedResponseWorkflowRunResponse>;
 
     /**
      * Creates request options for retryWorkflowRun without sending the request
@@ -483,6 +599,164 @@ export class WorkflowRunsApi extends runtime.BaseAPI implements WorkflowRunsApiI
      */
     async getWorkflowRun(requestParameters: GetWorkflowRunRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<WorkflowRunResponse> {
         const response = await this.getWorkflowRunRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for getWorkflowRunsSummary without sending the request
+     */
+    async getWorkflowRunsSummaryRequestOpts(requestParameters: GetWorkflowRunsSummaryRequest): Promise<runtime.RequestOpts> {
+        const queryParameters: any = {};
+
+        if (requestParameters['since'] != null) {
+            queryParameters['since'] = (requestParameters['since'] as any).toISOString();
+        }
+
+        if (requestParameters['until'] != null) {
+            queryParameters['until'] = (requestParameters['until'] as any).toISOString();
+        }
+
+        if (requestParameters['definitionId'] != null) {
+            queryParameters['definition_id'] = requestParameters['definitionId'];
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/v1/workflow-runs/summary`;
+
+        return {
+            path: urlPath,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Aggregate workflow-runs health, read-gated and permission-scoped.  Numbers cover only runs under workflows the caller can read (OWNER/ADMIN ⇒ tenant-wide). Windowed metrics default to the last 7 days; the approval backlog and active-definition count are point-in-time.
+     * Get Workflow Runs Summary Handler
+     */
+    async getWorkflowRunsSummaryRaw(requestParameters: GetWorkflowRunsSummaryRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<WorkflowRunSummaryResponse>> {
+        const requestOptions = await this.getWorkflowRunsSummaryRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => WorkflowRunSummaryResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * Aggregate workflow-runs health, read-gated and permission-scoped.  Numbers cover only runs under workflows the caller can read (OWNER/ADMIN ⇒ tenant-wide). Windowed metrics default to the last 7 days; the approval backlog and active-definition count are point-in-time.
+     * Get Workflow Runs Summary Handler
+     */
+    async getWorkflowRunsSummary(requestParameters: GetWorkflowRunsSummaryRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<WorkflowRunSummaryResponse> {
+        const response = await this.getWorkflowRunsSummaryRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for listWorkflowRunsForTenant without sending the request
+     */
+    async listWorkflowRunsForTenantRequestOpts(requestParameters: ListWorkflowRunsForTenantRequest): Promise<runtime.RequestOpts> {
+        const queryParameters: any = {};
+
+        if (requestParameters['state'] != null) {
+            queryParameters['state'] = requestParameters['state'];
+        }
+
+        if (requestParameters['mine'] != null) {
+            queryParameters['mine'] = requestParameters['mine'];
+        }
+
+        if (requestParameters['pendingApprovalForMe'] != null) {
+            queryParameters['pending_approval_for_me'] = requestParameters['pendingApprovalForMe'];
+        }
+
+        if (requestParameters['definitionId'] != null) {
+            queryParameters['definition_id'] = requestParameters['definitionId'];
+        }
+
+        if (requestParameters['ownerId'] != null) {
+            queryParameters['owner_id'] = requestParameters['ownerId'];
+        }
+
+        if (requestParameters['sortBy'] != null) {
+            queryParameters['sort_by'] = requestParameters['sortBy'];
+        }
+
+        if (requestParameters['sortDir'] != null) {
+            queryParameters['sort_dir'] = requestParameters['sortDir'];
+        }
+
+        if (requestParameters['limit'] != null) {
+            queryParameters['limit'] = requestParameters['limit'];
+        }
+
+        if (requestParameters['offset'] != null) {
+            queryParameters['offset'] = requestParameters['offset'];
+        }
+
+        if (requestParameters['createdAfter'] != null) {
+            queryParameters['created_after'] = (requestParameters['createdAfter'] as any).toISOString();
+        }
+
+        if (requestParameters['createdBefore'] != null) {
+            queryParameters['created_before'] = (requestParameters['createdBefore'] as any).toISOString();
+        }
+
+        if (requestParameters['updatedAfter'] != null) {
+            queryParameters['updated_after'] = (requestParameters['updatedAfter'] as any).toISOString();
+        }
+
+        if (requestParameters['updatedBefore'] != null) {
+            queryParameters['updated_before'] = (requestParameters['updatedBefore'] as any).toISOString();
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/v1/workflow-runs`;
+
+        return {
+            path: urlPath,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * List runs across every workflow in the tenant, permission-scoped.  The single spine behind the dashboard worklists — the FE composes its tabs from preset filters (``mine`` + ``state``, ``pending_approval_for_me``). Visibility follows the same model as the per-definition list: OWNER/ADMIN see all; a USER sees runs under workflows they can read.
+     * List Workflow Runs For Tenant Handler
+     */
+    async listWorkflowRunsForTenantRaw(requestParameters: ListWorkflowRunsForTenantRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedResponseWorkflowRunResponse>> {
+        const requestOptions = await this.listWorkflowRunsForTenantRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedResponseWorkflowRunResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * List runs across every workflow in the tenant, permission-scoped.  The single spine behind the dashboard worklists — the FE composes its tabs from preset filters (``mine`` + ``state``, ``pending_approval_for_me``). Visibility follows the same model as the per-definition list: OWNER/ADMIN see all; a USER sees runs under workflows they can read.
+     * List Workflow Runs For Tenant Handler
+     */
+    async listWorkflowRunsForTenant(requestParameters: ListWorkflowRunsForTenantRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedResponseWorkflowRunResponse> {
+        const response = await this.listWorkflowRunsForTenantRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

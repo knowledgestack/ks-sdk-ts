@@ -86,6 +86,12 @@ export interface InviteResponse {
      * @type {string}
      * @memberof InviteResponse
      */
+    invitedByUserId?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof InviteResponse
+     */
     inviteLink: string;
     /**
      * 
@@ -148,6 +154,7 @@ export function InviteResponseFromJSONTyped(json: any, ignoreDiscriminator: bool
         'acceptedAt': json['accepted_at'] == null ? undefined : (new Date(json['accepted_at'])),
         'createdAt': (new Date(json['created_at'])),
         'updatedAt': (new Date(json['updated_at'])),
+        'invitedByUserId': json['invited_by_user_id'] == null ? undefined : json['invited_by_user_id'],
         'inviteLink': json['invite_link'],
         'emailId': json['email_id'] == null ? undefined : json['email_id'],
     };
@@ -173,6 +180,7 @@ export function InviteResponseToJSONTyped(value?: InviteResponse | null, ignoreD
         'accepted_at': value['acceptedAt'] == null ? value['acceptedAt'] : value['acceptedAt'].toISOString(),
         'created_at': value['createdAt'].toISOString(),
         'updated_at': value['updatedAt'].toISOString(),
+        'invited_by_user_id': value['invitedByUserId'],
         'invite_link': value['inviteLink'],
         'email_id': value['emailId'],
     };

@@ -19,13 +19,16 @@ import type {
   CreateDocumentRequest,
   DocumentDownloadResponse,
   DocumentResponse,
+  DocumentType,
   DownloadArtifact,
+  ErrorResponse,
   HTTPValidationError,
   ImageTaxonomy,
   IngestDocumentResponse,
   IngestionMode,
   PaginatedResponseDocumentResponse,
   PathOrder,
+  SortDirection,
   UpdateDocumentRequest,
 } from '../models/index';
 import {
@@ -37,8 +40,12 @@ import {
     DocumentDownloadResponseToJSON,
     DocumentResponseFromJSON,
     DocumentResponseToJSON,
+    DocumentTypeFromJSON,
+    DocumentTypeToJSON,
     DownloadArtifactFromJSON,
     DownloadArtifactToJSON,
+    ErrorResponseFromJSON,
+    ErrorResponseToJSON,
     HTTPValidationErrorFromJSON,
     HTTPValidationErrorToJSON,
     ImageTaxonomyFromJSON,
@@ -51,6 +58,8 @@ import {
     PaginatedResponseDocumentResponseToJSON,
     PathOrderFromJSON,
     PathOrderToJSON,
+    SortDirectionFromJSON,
+    SortDirectionToJSON,
     UpdateDocumentRequestFromJSON,
     UpdateDocumentRequestToJSON,
 } from '../models/index';
@@ -99,9 +108,16 @@ export interface IngestDocumentVersionRequest {
 export interface ListDocumentsRequest {
     parentPathPartId?: string | null;
     sortOrder?: PathOrder;
+    sortDir?: SortDirection;
+    ownerId?: string | null;
+    documentType?: DocumentType;
     withTags?: boolean;
     limit?: number;
     offset?: number;
+    createdAfter?: Date | null;
+    createdBefore?: Date | null;
+    updatedAfter?: Date | null;
+    updatedBefore?: Date | null;
 }
 
 export interface UpdateDocumentOperationRequest {
@@ -297,9 +313,16 @@ export interface DocumentsApiInterface {
      * Creates request options for listDocuments without sending the request
      * @param {string} [parentPathPartId] Parent PathPart ID (defaults to root)
      * @param {PathOrder} [sortOrder] Sort order for results (default: LOGICAL)
+     * @param {SortDirection} [sortDir] Sort direction; overrides the column\&#39;s natural default
+     * @param {string} [ownerId] Filter to documents owned by this user
+     * @param {DocumentType} [documentType] Filter to documents of this type
      * @param {boolean} [withTags] Include tags in the response (default: false)
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
+     * @param {Date} [createdAfter] Only items created at or after this timestamp (inclusive)
+     * @param {Date} [createdBefore] Only items created strictly before this timestamp
+     * @param {Date} [updatedAfter] Only items updated at or after this timestamp (inclusive)
+     * @param {Date} [updatedBefore] Only items updated strictly before this timestamp
      * @throws {RequiredError}
      * @memberof DocumentsApiInterface
      */
@@ -310,9 +333,16 @@ export interface DocumentsApiInterface {
      * @summary List Documents Handler
      * @param {string} [parentPathPartId] Parent PathPart ID (defaults to root)
      * @param {PathOrder} [sortOrder] Sort order for results (default: LOGICAL)
+     * @param {SortDirection} [sortDir] Sort direction; overrides the column\&#39;s natural default
+     * @param {string} [ownerId] Filter to documents owned by this user
+     * @param {DocumentType} [documentType] Filter to documents of this type
      * @param {boolean} [withTags] Include tags in the response (default: false)
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
+     * @param {Date} [createdAfter] Only items created at or after this timestamp (inclusive)
+     * @param {Date} [createdBefore] Only items created strictly before this timestamp
+     * @param {Date} [updatedAfter] Only items updated at or after this timestamp (inclusive)
+     * @param {Date} [updatedBefore] Only items updated strictly before this timestamp
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DocumentsApiInterface
@@ -820,6 +850,18 @@ export class DocumentsApi extends runtime.BaseAPI implements DocumentsApiInterfa
             queryParameters['sort_order'] = requestParameters['sortOrder'];
         }
 
+        if (requestParameters['sortDir'] != null) {
+            queryParameters['sort_dir'] = requestParameters['sortDir'];
+        }
+
+        if (requestParameters['ownerId'] != null) {
+            queryParameters['owner_id'] = requestParameters['ownerId'];
+        }
+
+        if (requestParameters['documentType'] != null) {
+            queryParameters['document_type'] = requestParameters['documentType'];
+        }
+
         if (requestParameters['withTags'] != null) {
             queryParameters['with_tags'] = requestParameters['withTags'];
         }
@@ -830,6 +872,22 @@ export class DocumentsApi extends runtime.BaseAPI implements DocumentsApiInterfa
 
         if (requestParameters['offset'] != null) {
             queryParameters['offset'] = requestParameters['offset'];
+        }
+
+        if (requestParameters['createdAfter'] != null) {
+            queryParameters['created_after'] = (requestParameters['createdAfter'] as any).toISOString();
+        }
+
+        if (requestParameters['createdBefore'] != null) {
+            queryParameters['created_before'] = (requestParameters['createdBefore'] as any).toISOString();
+        }
+
+        if (requestParameters['updatedAfter'] != null) {
+            queryParameters['updated_after'] = (requestParameters['updatedAfter'] as any).toISOString();
+        }
+
+        if (requestParameters['updatedBefore'] != null) {
+            queryParameters['updated_before'] = (requestParameters['updatedBefore'] as any).toISOString();
         }
 
         const headerParameters: runtime.HTTPHeaders = {};

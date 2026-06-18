@@ -21,11 +21,14 @@ import type {
   DocumentVersionActionResponse,
   DocumentVersionContentTypeFilter,
   DocumentVersionMetadataUpdate,
+  DocumentVersionOrder,
   DocumentVersionResponse,
   DownloadArtifact,
+  ErrorResponse,
   HTTPValidationError,
   PaginatedResponseAnnotatedUnionSectionContentItemChunkContentItemDiscriminator,
   PaginatedResponseDocumentVersionResponse,
+  SortDirection,
   VersionDiffResponse,
 } from '../models/index';
 import {
@@ -41,16 +44,22 @@ import {
     DocumentVersionContentTypeFilterToJSON,
     DocumentVersionMetadataUpdateFromJSON,
     DocumentVersionMetadataUpdateToJSON,
+    DocumentVersionOrderFromJSON,
+    DocumentVersionOrderToJSON,
     DocumentVersionResponseFromJSON,
     DocumentVersionResponseToJSON,
     DownloadArtifactFromJSON,
     DownloadArtifactToJSON,
+    ErrorResponseFromJSON,
+    ErrorResponseToJSON,
     HTTPValidationErrorFromJSON,
     HTTPValidationErrorToJSON,
     PaginatedResponseAnnotatedUnionSectionContentItemChunkContentItemDiscriminatorFromJSON,
     PaginatedResponseAnnotatedUnionSectionContentItemChunkContentItemDiscriminatorToJSON,
     PaginatedResponseDocumentVersionResponseFromJSON,
     PaginatedResponseDocumentVersionResponseToJSON,
+    SortDirectionFromJSON,
+    SortDirectionToJSON,
     VersionDiffResponseFromJSON,
     VersionDiffResponseToJSON,
 } from '../models/index';
@@ -97,8 +106,15 @@ export interface GetDocumentVersionDiffRequest {
 
 export interface ListDocumentVersionsRequest {
     documentId: string;
+    sortBy?: DocumentVersionOrder;
+    sortDir?: SortDirection;
+    uploaderTenantUserId?: string | null;
     limit?: number;
     offset?: number;
+    createdAfter?: Date | null;
+    createdBefore?: Date | null;
+    updatedAfter?: Date | null;
+    updatedBefore?: Date | null;
 }
 
 export interface UpdateDocumentVersionMetadataRequest {
@@ -323,19 +339,33 @@ export interface DocumentVersionsApiInterface {
     /**
      * Creates request options for listDocumentVersions without sending the request
      * @param {string} documentId Document ID to list versions for
+     * @param {DocumentVersionOrder} [sortBy] Field to sort versions by (default: VERSION)
+     * @param {SortDirection} [sortDir] Sort direction; overrides the field\&#39;s natural default
+     * @param {string} [uploaderTenantUserId] Filter to versions created by this user
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
+     * @param {Date} [createdAfter] Only items created at or after this timestamp (inclusive)
+     * @param {Date} [createdBefore] Only items created strictly before this timestamp
+     * @param {Date} [updatedAfter] Only items updated at or after this timestamp (inclusive)
+     * @param {Date} [updatedBefore] Only items updated strictly before this timestamp
      * @throws {RequiredError}
      * @memberof DocumentVersionsApiInterface
      */
     listDocumentVersionsRequestOpts(requestParameters: ListDocumentVersionsRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * List all versions for a document.  Returns versions ordered by version number ascending (v0, v1, v2...).
+     * List all versions for a document.  Returns versions ordered by version number ascending (v0, v1, v2...) by default.
      * @summary List Document Versions Handler
      * @param {string} documentId Document ID to list versions for
+     * @param {DocumentVersionOrder} [sortBy] Field to sort versions by (default: VERSION)
+     * @param {SortDirection} [sortDir] Sort direction; overrides the field\&#39;s natural default
+     * @param {string} [uploaderTenantUserId] Filter to versions created by this user
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
+     * @param {Date} [createdAfter] Only items created at or after this timestamp (inclusive)
+     * @param {Date} [createdBefore] Only items created strictly before this timestamp
+     * @param {Date} [updatedAfter] Only items updated at or after this timestamp (inclusive)
+     * @param {Date} [updatedBefore] Only items updated strictly before this timestamp
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DocumentVersionsApiInterface
@@ -343,7 +373,7 @@ export interface DocumentVersionsApiInterface {
     listDocumentVersionsRaw(requestParameters: ListDocumentVersionsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedResponseDocumentVersionResponse>>;
 
     /**
-     * List all versions for a document.  Returns versions ordered by version number ascending (v0, v1, v2...).
+     * List all versions for a document.  Returns versions ordered by version number ascending (v0, v1, v2...) by default.
      * List Document Versions Handler
      */
     listDocumentVersions(requestParameters: ListDocumentVersionsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedResponseDocumentVersionResponse>;
@@ -874,12 +904,40 @@ export class DocumentVersionsApi extends runtime.BaseAPI implements DocumentVers
             queryParameters['document_id'] = requestParameters['documentId'];
         }
 
+        if (requestParameters['sortBy'] != null) {
+            queryParameters['sort_by'] = requestParameters['sortBy'];
+        }
+
+        if (requestParameters['sortDir'] != null) {
+            queryParameters['sort_dir'] = requestParameters['sortDir'];
+        }
+
+        if (requestParameters['uploaderTenantUserId'] != null) {
+            queryParameters['uploader_tenant_user_id'] = requestParameters['uploaderTenantUserId'];
+        }
+
         if (requestParameters['limit'] != null) {
             queryParameters['limit'] = requestParameters['limit'];
         }
 
         if (requestParameters['offset'] != null) {
             queryParameters['offset'] = requestParameters['offset'];
+        }
+
+        if (requestParameters['createdAfter'] != null) {
+            queryParameters['created_after'] = (requestParameters['createdAfter'] as any).toISOString();
+        }
+
+        if (requestParameters['createdBefore'] != null) {
+            queryParameters['created_before'] = (requestParameters['createdBefore'] as any).toISOString();
+        }
+
+        if (requestParameters['updatedAfter'] != null) {
+            queryParameters['updated_after'] = (requestParameters['updatedAfter'] as any).toISOString();
+        }
+
+        if (requestParameters['updatedBefore'] != null) {
+            queryParameters['updated_before'] = (requestParameters['updatedBefore'] as any).toISOString();
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -904,7 +962,7 @@ export class DocumentVersionsApi extends runtime.BaseAPI implements DocumentVers
     }
 
     /**
-     * List all versions for a document.  Returns versions ordered by version number ascending (v0, v1, v2...).
+     * List all versions for a document.  Returns versions ordered by version number ascending (v0, v1, v2...) by default.
      * List Document Versions Handler
      */
     async listDocumentVersionsRaw(requestParameters: ListDocumentVersionsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedResponseDocumentVersionResponse>> {
@@ -915,7 +973,7 @@ export class DocumentVersionsApi extends runtime.BaseAPI implements DocumentVers
     }
 
     /**
-     * List all versions for a document.  Returns versions ordered by version number ascending (v0, v1, v2...).
+     * List all versions for a document.  Returns versions ordered by version number ascending (v0, v1, v2...) by default.
      * List Document Versions Handler
      */
     async listDocumentVersions(requestParameters: ListDocumentVersionsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedResponseDocumentVersionResponse> {

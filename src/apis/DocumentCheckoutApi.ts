@@ -16,11 +16,14 @@
 import * as runtime from '../runtime';
 import type {
   DocumentCheckoutResponse,
+  ErrorResponse,
   HTTPValidationError,
 } from '../models/index';
 import {
     DocumentCheckoutResponseFromJSON,
     DocumentCheckoutResponseToJSON,
+    ErrorResponseFromJSON,
+    ErrorResponseToJSON,
     HTTPValidationErrorFromJSON,
     HTTPValidationErrorToJSON,
 } from '../models/index';

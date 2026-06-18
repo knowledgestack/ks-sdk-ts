@@ -16,32 +16,44 @@
 import * as runtime from '../runtime';
 import type {
   BrandingLogoType,
+  ErrorResponse,
   HTTPValidationError,
   PaginatedResponseTenantResponse,
   PaginatedResponseTenantUserResponse,
+  SortDirection,
   TenantQuotaStateResponse,
   TenantResponse,
   TenantUserEditRequest,
+  TenantUserOrder,
   TenantUserResponse,
+  TenantUserRole,
   UpdateTenantRequest,
 } from '../models/index';
 import {
     BrandingLogoTypeFromJSON,
     BrandingLogoTypeToJSON,
+    ErrorResponseFromJSON,
+    ErrorResponseToJSON,
     HTTPValidationErrorFromJSON,
     HTTPValidationErrorToJSON,
     PaginatedResponseTenantResponseFromJSON,
     PaginatedResponseTenantResponseToJSON,
     PaginatedResponseTenantUserResponseFromJSON,
     PaginatedResponseTenantUserResponseToJSON,
+    SortDirectionFromJSON,
+    SortDirectionToJSON,
     TenantQuotaStateResponseFromJSON,
     TenantQuotaStateResponseToJSON,
     TenantResponseFromJSON,
     TenantResponseToJSON,
     TenantUserEditRequestFromJSON,
     TenantUserEditRequestToJSON,
+    TenantUserOrderFromJSON,
+    TenantUserOrderToJSON,
     TenantUserResponseFromJSON,
     TenantUserResponseToJSON,
+    TenantUserRoleFromJSON,
+    TenantUserRoleToJSON,
     UpdateTenantRequestFromJSON,
     UpdateTenantRequestToJSON,
 } from '../models/index';
@@ -80,6 +92,11 @@ export interface GetTenantQuotaStateRequest {
 
 export interface ListTenantUsersRequest {
     tenantId: string;
+    sortBy?: TenantUserOrder;
+    sortDir?: SortDirection;
+    role?: TenantUserRole;
+    usernameLike?: string | null;
+    activeOnly?: boolean;
     limit?: number;
     offset?: number;
 }
@@ -292,6 +309,11 @@ export interface TenantsApiInterface {
     /**
      * Creates request options for listTenantUsers without sending the request
      * @param {string} tenantId 
+     * @param {TenantUserOrder} [sortBy] Field to sort members by (default: active-first)
+     * @param {SortDirection} [sortDir] Sort direction; overrides the field\&#39;s natural default
+     * @param {TenantUserRole} [role] Filter to members with this role
+     * @param {string} [usernameLike] Case-insensitive substring filter on first/last name
+     * @param {boolean} [activeOnly] Exclude deactivated members
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
      * @throws {RequiredError}
@@ -303,6 +325,11 @@ export interface TenantsApiInterface {
      * List members of a tenant with pagination.  Requires OWNER or ADMIN membership in the tenant.
      * @summary List Tenant Users
      * @param {string} tenantId 
+     * @param {TenantUserOrder} [sortBy] Field to sort members by (default: active-first)
+     * @param {SortDirection} [sortDir] Sort direction; overrides the field\&#39;s natural default
+     * @param {TenantUserRole} [role] Filter to members with this role
+     * @param {string} [usernameLike] Case-insensitive substring filter on first/last name
+     * @param {boolean} [activeOnly] Exclude deactivated members
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
      * @param {*} [options] Override http request option.
@@ -855,6 +882,26 @@ export class TenantsApi extends runtime.BaseAPI implements TenantsApiInterface {
         }
 
         const queryParameters: any = {};
+
+        if (requestParameters['sortBy'] != null) {
+            queryParameters['sort_by'] = requestParameters['sortBy'];
+        }
+
+        if (requestParameters['sortDir'] != null) {
+            queryParameters['sort_dir'] = requestParameters['sortDir'];
+        }
+
+        if (requestParameters['role'] != null) {
+            queryParameters['role'] = requestParameters['role'];
+        }
+
+        if (requestParameters['usernameLike'] != null) {
+            queryParameters['username_like'] = requestParameters['usernameLike'];
+        }
+
+        if (requestParameters['activeOnly'] != null) {
+            queryParameters['active_only'] = requestParameters['activeOnly'];
+        }
 
         if (requestParameters['limit'] != null) {
             queryParameters['limit'] = requestParameters['limit'];

@@ -17,6 +17,7 @@ import * as runtime from '../runtime';
 import type {
   AppendMemoryChunkRequest,
   EditMemoryChunkRequest,
+  ErrorResponse,
   HTTPValidationError,
   MemoryChunkResponse,
   PaginatedResponseMemoryChunkResponse,
@@ -26,6 +27,8 @@ import {
     AppendMemoryChunkRequestToJSON,
     EditMemoryChunkRequestFromJSON,
     EditMemoryChunkRequestToJSON,
+    ErrorResponseFromJSON,
+    ErrorResponseToJSON,
     HTTPValidationErrorFromJSON,
     HTTPValidationErrorToJSON,
     MemoryChunkResponseFromJSON,

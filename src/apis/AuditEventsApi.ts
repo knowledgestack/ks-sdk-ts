@@ -15,15 +15,30 @@
 
 import * as runtime from '../runtime';
 import type {
+  ErrorResponse,
   HTTPValidationError,
   PaginatedResponseEventResponse,
+  SortDirection,
 } from '../models/index';
 import {
+    ErrorResponseFromJSON,
+    ErrorResponseToJSON,
     HTTPValidationErrorFromJSON,
     HTTPValidationErrorToJSON,
     PaginatedResponseEventResponseFromJSON,
     PaginatedResponseEventResponseToJSON,
+    SortDirectionFromJSON,
+    SortDirectionToJSON,
 } from '../models/index';
+
+export interface ExportAuditEventsRequest {
+    actorUserId?: string | null;
+    kind?: string | null;
+    since?: Date | null;
+    until?: Date | null;
+    subjectPathPartId?: string | null;
+    recursive?: boolean;
+}
 
 export interface ListAuditEventsRequest {
     actorUserId?: string | null;
@@ -32,6 +47,7 @@ export interface ListAuditEventsRequest {
     until?: Date | null;
     subjectPathPartId?: string | null;
     recursive?: boolean;
+    sortDir?: SortDirection;
     limit?: number;
     offset?: number;
 }
@@ -44,6 +60,40 @@ export interface ListAuditEventsRequest {
  */
 export interface AuditEventsApiInterface {
     /**
+     * Creates request options for exportAuditEvents without sending the request
+     * @param {string} [actorUserId] Filter to one actor
+     * @param {string} [kind] Filter to one event kind
+     * @param {Date} [since] Only events at or after this timestamp
+     * @param {Date} [until] Only events strictly before this timestamp
+     * @param {string} [subjectPathPartId] Scope to one document/folder/run subject
+     * @param {boolean} [recursive] Include the subject\&#39;s descendants (needs subject)
+     * @throws {RequiredError}
+     * @memberof AuditEventsApiInterface
+     */
+    exportAuditEventsRequestOpts(requestParameters: ExportAuditEventsRequest): Promise<runtime.RequestOpts>;
+
+    /**
+     * Export the tenant\'s audit events as a CSV download (admin/owner only).  Same filters as ``list_audit_events`` but unpaginated — streams every matching event newest-first. Each row resolves the actor\'s name and the subject\'s name + path so an auditor can read the file directly in Excel.
+     * @summary Export Audit Events Handler
+     * @param {string} [actorUserId] Filter to one actor
+     * @param {string} [kind] Filter to one event kind
+     * @param {Date} [since] Only events at or after this timestamp
+     * @param {Date} [until] Only events strictly before this timestamp
+     * @param {string} [subjectPathPartId] Scope to one document/folder/run subject
+     * @param {boolean} [recursive] Include the subject\&#39;s descendants (needs subject)
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AuditEventsApiInterface
+     */
+    exportAuditEventsRaw(requestParameters: ExportAuditEventsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Blob>>;
+
+    /**
+     * Export the tenant\'s audit events as a CSV download (admin/owner only).  Same filters as ``list_audit_events`` but unpaginated — streams every matching event newest-first. Each row resolves the actor\'s name and the subject\'s name + path so an auditor can read the file directly in Excel.
+     * Export Audit Events Handler
+     */
+    exportAuditEvents(requestParameters: ExportAuditEventsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Blob>;
+
+    /**
      * Creates request options for listAuditEvents without sending the request
      * @param {string} [actorUserId] Filter to one actor
      * @param {string} [kind] Filter to one event kind
@@ -51,6 +101,7 @@ export interface AuditEventsApiInterface {
      * @param {Date} [until] Only events strictly before this timestamp
      * @param {string} [subjectPathPartId] Scope to one document/folder/run subject
      * @param {boolean} [recursive] Include the subject\&#39;s descendants (needs subject)
+     * @param {SortDirection} [sortDir] Sort by timestamp (default: DESC, newest first)
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
      * @throws {RequiredError}
@@ -67,6 +118,7 @@ export interface AuditEventsApiInterface {
      * @param {Date} [until] Only events strictly before this timestamp
      * @param {string} [subjectPathPartId] Scope to one document/folder/run subject
      * @param {boolean} [recursive] Include the subject\&#39;s descendants (needs subject)
+     * @param {SortDirection} [sortDir] Sort by timestamp (default: DESC, newest first)
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
      * @param {*} [options] Override http request option.
@@ -87,6 +139,77 @@ export interface AuditEventsApiInterface {
  * 
  */
 export class AuditEventsApi extends runtime.BaseAPI implements AuditEventsApiInterface {
+
+    /**
+     * Creates request options for exportAuditEvents without sending the request
+     */
+    async exportAuditEventsRequestOpts(requestParameters: ExportAuditEventsRequest): Promise<runtime.RequestOpts> {
+        const queryParameters: any = {};
+
+        if (requestParameters['actorUserId'] != null) {
+            queryParameters['actor_user_id'] = requestParameters['actorUserId'];
+        }
+
+        if (requestParameters['kind'] != null) {
+            queryParameters['kind'] = requestParameters['kind'];
+        }
+
+        if (requestParameters['since'] != null) {
+            queryParameters['since'] = (requestParameters['since'] as any).toISOString();
+        }
+
+        if (requestParameters['until'] != null) {
+            queryParameters['until'] = (requestParameters['until'] as any).toISOString();
+        }
+
+        if (requestParameters['subjectPathPartId'] != null) {
+            queryParameters['subject_path_part_id'] = requestParameters['subjectPathPartId'];
+        }
+
+        if (requestParameters['recursive'] != null) {
+            queryParameters['recursive'] = requestParameters['recursive'];
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/v1/audit-events/export`;
+
+        return {
+            path: urlPath,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Export the tenant\'s audit events as a CSV download (admin/owner only).  Same filters as ``list_audit_events`` but unpaginated — streams every matching event newest-first. Each row resolves the actor\'s name and the subject\'s name + path so an auditor can read the file directly in Excel.
+     * Export Audit Events Handler
+     */
+    async exportAuditEventsRaw(requestParameters: ExportAuditEventsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Blob>> {
+        const requestOptions = await this.exportAuditEventsRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.BlobApiResponse(response);
+    }
+
+    /**
+     * Export the tenant\'s audit events as a CSV download (admin/owner only).  Same filters as ``list_audit_events`` but unpaginated — streams every matching event newest-first. Each row resolves the actor\'s name and the subject\'s name + path so an auditor can read the file directly in Excel.
+     * Export Audit Events Handler
+     */
+    async exportAuditEvents(requestParameters: ExportAuditEventsRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Blob> {
+        const response = await this.exportAuditEventsRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
 
     /**
      * Creates request options for listAuditEvents without sending the request
@@ -116,6 +239,10 @@ export class AuditEventsApi extends runtime.BaseAPI implements AuditEventsApiInt
 
         if (requestParameters['recursive'] != null) {
             queryParameters['recursive'] = requestParameters['recursive'];
+        }
+
+        if (requestParameters['sortDir'] != null) {
+            queryParameters['sort_dir'] = requestParameters['sortDir'];
         }
 
         if (requestParameters['limit'] != null) {

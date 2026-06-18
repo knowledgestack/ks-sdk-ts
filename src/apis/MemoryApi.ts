@@ -15,6 +15,7 @@
 
 import * as runtime from '../runtime';
 import type {
+  ErrorResponse,
   HTTPValidationError,
   MemoryBodyResponse,
   MemoryChunkResponse,
@@ -24,6 +25,8 @@ import type {
   ProposedMemoryChunkResponse,
 } from '../models/index';
 import {
+    ErrorResponseFromJSON,
+    ErrorResponseToJSON,
     HTTPValidationErrorFromJSON,
     HTTPValidationErrorToJSON,
     MemoryBodyResponseFromJSON,

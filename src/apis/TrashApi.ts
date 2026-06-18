@@ -15,19 +15,40 @@
 
 import * as runtime from '../runtime';
 import type {
+  ErrorResponse,
   HTTPValidationError,
   PaginatedResponseTrashItemResponse,
+  PartType,
+  PathOrder,
+  SortDirection,
 } from '../models/index';
 import {
+    ErrorResponseFromJSON,
+    ErrorResponseToJSON,
     HTTPValidationErrorFromJSON,
     HTTPValidationErrorToJSON,
     PaginatedResponseTrashItemResponseFromJSON,
     PaginatedResponseTrashItemResponseToJSON,
+    PartTypeFromJSON,
+    PartTypeToJSON,
+    PathOrderFromJSON,
+    PathOrderToJSON,
+    SortDirectionFromJSON,
+    SortDirectionToJSON,
 } from '../models/index';
 
 export interface ListTrashRequest {
+    sortOrder?: PathOrder;
+    sortDir?: SortDirection;
+    deletedBy?: string | null;
+    partType?: Array<PartType> | null;
+    ownerId?: string | null;
     limit?: number;
     offset?: number;
+    createdAfter?: Date | null;
+    createdBefore?: Date | null;
+    updatedAfter?: Date | null;
+    updatedBefore?: Date | null;
 }
 
 export interface PermanentlyDeleteTrashItemRequest {
@@ -47,8 +68,17 @@ export interface RestoreTrashItemRequest {
 export interface TrashApiInterface {
     /**
      * Creates request options for listTrash without sending the request
+     * @param {PathOrder} [sortOrder] Sort order (default: LOGICAL &#x3D; deletion recency)
+     * @param {SortDirection} [sortDir] Sort direction; overrides the column\&#39;s natural default
+     * @param {string} [deletedBy] Filter to items deleted by this user
+     * @param {Array<PartType>} [partType] Filter to these path-part types (folders, documents, ...)
+     * @param {string} [ownerId] Filter to items owned (created) by this user
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
+     * @param {Date} [createdAfter] Only items created at or after this timestamp (inclusive)
+     * @param {Date} [createdBefore] Only items created strictly before this timestamp
+     * @param {Date} [updatedAfter] Only items updated at or after this timestamp (inclusive)
+     * @param {Date} [updatedBefore] Only items updated strictly before this timestamp
      * @throws {RequiredError}
      * @memberof TrashApiInterface
      */
@@ -57,8 +87,17 @@ export interface TrashApiInterface {
     /**
      * List top-level trash items visible to the caller.
      * @summary List Trash Handler
+     * @param {PathOrder} [sortOrder] Sort order (default: LOGICAL &#x3D; deletion recency)
+     * @param {SortDirection} [sortDir] Sort direction; overrides the column\&#39;s natural default
+     * @param {string} [deletedBy] Filter to items deleted by this user
+     * @param {Array<PartType>} [partType] Filter to these path-part types (folders, documents, ...)
+     * @param {string} [ownerId] Filter to items owned (created) by this user
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
+     * @param {Date} [createdAfter] Only items created at or after this timestamp (inclusive)
+     * @param {Date} [createdBefore] Only items created strictly before this timestamp
+     * @param {Date} [updatedAfter] Only items updated at or after this timestamp (inclusive)
+     * @param {Date} [updatedBefore] Only items updated strictly before this timestamp
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof TrashApiInterface
@@ -132,12 +171,48 @@ export class TrashApi extends runtime.BaseAPI implements TrashApiInterface {
     async listTrashRequestOpts(requestParameters: ListTrashRequest): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
+        if (requestParameters['sortOrder'] != null) {
+            queryParameters['sort_order'] = requestParameters['sortOrder'];
+        }
+
+        if (requestParameters['sortDir'] != null) {
+            queryParameters['sort_dir'] = requestParameters['sortDir'];
+        }
+
+        if (requestParameters['deletedBy'] != null) {
+            queryParameters['deleted_by'] = requestParameters['deletedBy'];
+        }
+
+        if (requestParameters['partType'] != null) {
+            queryParameters['part_type'] = requestParameters['partType'];
+        }
+
+        if (requestParameters['ownerId'] != null) {
+            queryParameters['owner_id'] = requestParameters['ownerId'];
+        }
+
         if (requestParameters['limit'] != null) {
             queryParameters['limit'] = requestParameters['limit'];
         }
 
         if (requestParameters['offset'] != null) {
             queryParameters['offset'] = requestParameters['offset'];
+        }
+
+        if (requestParameters['createdAfter'] != null) {
+            queryParameters['created_after'] = (requestParameters['createdAfter'] as any).toISOString();
+        }
+
+        if (requestParameters['createdBefore'] != null) {
+            queryParameters['created_before'] = (requestParameters['createdBefore'] as any).toISOString();
+        }
+
+        if (requestParameters['updatedAfter'] != null) {
+            queryParameters['updated_after'] = (requestParameters['updatedAfter'] as any).toISOString();
+        }
+
+        if (requestParameters['updatedBefore'] != null) {
+            queryParameters['updated_before'] = (requestParameters['updatedBefore'] as any).toISOString();
         }
 
         const headerParameters: runtime.HTTPHeaders = {};

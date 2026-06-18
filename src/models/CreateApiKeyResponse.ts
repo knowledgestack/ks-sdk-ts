@@ -49,6 +49,12 @@ export interface CreateApiKeyResponse {
      * @memberof CreateApiKeyResponse
      */
     createdAt: Date;
+    /**
+     * 
+     * @type {Date}
+     * @memberof CreateApiKeyResponse
+     */
+    expiresAt: Date | null;
 }
 export const CreateApiKeyResponsePropertyValidationAttributesMap: {
     [property: string]: {
@@ -77,6 +83,7 @@ export function instanceOfCreateApiKeyResponse(value: object): value is CreateAp
     if (!('key' in value) || value['key'] === undefined) return false;
     if (!('keySuffix' in value) || value['keySuffix'] === undefined) return false;
     if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
+    if (!('expiresAt' in value) || value['expiresAt'] === undefined) return false;
     return true;
 }
 
@@ -95,6 +102,7 @@ export function CreateApiKeyResponseFromJSONTyped(json: any, ignoreDiscriminator
         'key': json['key'],
         'keySuffix': json['key_suffix'],
         'createdAt': (new Date(json['created_at'])),
+        'expiresAt': (json['expires_at'] == null ? null : new Date(json['expires_at'])),
     };
 }
 
@@ -114,6 +122,7 @@ export function CreateApiKeyResponseToJSONTyped(value?: CreateApiKeyResponse | n
         'key': value['key'],
         'key_suffix': value['keySuffix'],
         'created_at': value['createdAt'].toISOString(),
+        'expires_at': value['expiresAt'] == null ? value['expiresAt'] : value['expiresAt'].toISOString(),
     };
 }
 

@@ -59,6 +59,12 @@ export interface CreateWorkflowDefinitionRequest {
      * @memberof CreateWorkflowDefinitionRequest
      */
     approvalRequired: boolean;
+    /**
+     * Create a non-runnable template. Templates are excluded from the default list and cannot have runs; users instantiate them into their own runnable workflow. Immutable after creation.
+     * @type {boolean}
+     * @memberof CreateWorkflowDefinitionRequest
+     */
+    isTemplate?: boolean;
 }
 export const CreateWorkflowDefinitionRequestPropertyValidationAttributesMap: {
     [property: string]: {
@@ -113,6 +119,7 @@ export function CreateWorkflowDefinitionRequestFromJSONTyped(json: any, ignoreDi
         'parentPathPartId': json['parent_path_part_id'],
         'instructionPathPartId': json['instruction_path_part_id'] == null ? undefined : json['instruction_path_part_id'],
         'approvalRequired': json['approval_required'],
+        'isTemplate': json['is_template'] == null ? undefined : json['is_template'],
     };
 }
 
@@ -133,6 +140,7 @@ export function CreateWorkflowDefinitionRequestToJSONTyped(value?: CreateWorkflo
         'parent_path_part_id': value['parentPathPartId'],
         'instruction_path_part_id': value['instructionPathPartId'],
         'approval_required': value['approvalRequired'],
+        'is_template': value['isTemplate'],
     };
 }
 

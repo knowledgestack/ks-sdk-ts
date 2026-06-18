@@ -161,11 +161,11 @@ export interface DocumentResponse {
      */
     tenantId: string;
     /**
-     * 
+     * Current owner (creator) of the document, or null if unowned. Transferable via PATCH by the current owner or an ADMIN/OWNER.
      * @type {UserInfo}
      * @memberof DocumentResponse
      */
-    owner: UserInfo;
+    owner?: UserInfo | null;
     /**
      * Creation timestamp
      * @type {Date}
@@ -243,7 +243,6 @@ export function instanceOfDocumentResponse(value: object): value is DocumentResp
     if (!('approvalState' in value) || value['approvalState'] === undefined) return false;
     if (!('excludeFromQdrant' in value) || value['excludeFromQdrant'] === undefined) return false;
     if (!('tenantId' in value) || value['tenantId'] === undefined) return false;
-    if (!('owner' in value) || value['owner'] === undefined) return false;
     if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
     if (!('updatedAt' in value) || value['updatedAt'] === undefined) return false;
     return true;
@@ -273,7 +272,7 @@ export function DocumentResponseFromJSONTyped(json: any, ignoreDiscriminator: bo
         'approvalState': PathPartApprovalStateFromJSON(json['approval_state']),
         'excludeFromQdrant': json['exclude_from_qdrant'],
         'tenantId': json['tenant_id'],
-        'owner': UserInfoFromJSON(json['owner']),
+        'owner': json['owner'] == null ? undefined : UserInfoFromJSON(json['owner']),
         'createdAt': (new Date(json['created_at'])),
         'updatedAt': (new Date(json['updated_at'])),
         'tags': json['tags'] == null ? undefined : ((json['tags'] as Array<any>).map(TagResponseFromJSON)),

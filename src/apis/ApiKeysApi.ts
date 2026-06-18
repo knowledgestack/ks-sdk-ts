@@ -18,6 +18,7 @@ import type {
   ApiKeyResponse,
   CreateApiKeyRequest,
   CreateApiKeyResponse,
+  ErrorResponse,
   HTTPValidationError,
 } from '../models/index';
 import {
@@ -27,6 +28,8 @@ import {
     CreateApiKeyRequestToJSON,
     CreateApiKeyResponseFromJSON,
     CreateApiKeyResponseToJSON,
+    ErrorResponseFromJSON,
+    ErrorResponseToJSON,
     HTTPValidationErrorFromJSON,
     HTTPValidationErrorToJSON,
 } from '../models/index';

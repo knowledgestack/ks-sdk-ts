@@ -15,16 +15,23 @@
 
 import * as runtime from '../runtime';
 import type {
+  ErrorResponse,
   FeedbackEventResponse,
+  FeedbackOrder,
   FeedbackRating,
   FeedbackTargetType,
   HTTPValidationError,
   PaginatedResponseFeedbackEventResponse,
+  SortDirection,
   SubmitFeedbackRequest,
 } from '../models/index';
 import {
+    ErrorResponseFromJSON,
+    ErrorResponseToJSON,
     FeedbackEventResponseFromJSON,
     FeedbackEventResponseToJSON,
+    FeedbackOrderFromJSON,
+    FeedbackOrderToJSON,
     FeedbackRatingFromJSON,
     FeedbackRatingToJSON,
     FeedbackTargetTypeFromJSON,
@@ -33,6 +40,8 @@ import {
     HTTPValidationErrorToJSON,
     PaginatedResponseFeedbackEventResponseFromJSON,
     PaginatedResponseFeedbackEventResponseToJSON,
+    SortDirectionFromJSON,
+    SortDirectionToJSON,
     SubmitFeedbackRequestFromJSON,
     SubmitFeedbackRequestToJSON,
 } from '../models/index';
@@ -45,8 +54,14 @@ export interface ListFeedbackRequest {
     targetType?: FeedbackTargetType;
     targetId?: string | null;
     rating?: FeedbackRating;
+    sortBy?: FeedbackOrder;
+    sortDir?: SortDirection;
     limit?: number;
     offset?: number;
+    createdAfter?: Date | null;
+    createdBefore?: Date | null;
+    updatedAfter?: Date | null;
+    updatedBefore?: Date | null;
 }
 
 export interface SubmitFeedbackOperationRequest {
@@ -89,8 +104,14 @@ export interface FeedbackApiInterface {
      * @param {FeedbackTargetType} [targetType] 
      * @param {string} [targetId] 
      * @param {FeedbackRating} [rating] 
+     * @param {FeedbackOrder} [sortBy] Field to sort feedback by (default: CREATED_AT)
+     * @param {SortDirection} [sortDir] Sort direction; overrides the field\&#39;s natural default
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
+     * @param {Date} [createdAfter] Only items created at or after this timestamp (inclusive)
+     * @param {Date} [createdBefore] Only items created strictly before this timestamp
+     * @param {Date} [updatedAfter] Only items updated at or after this timestamp (inclusive)
+     * @param {Date} [updatedBefore] Only items updated strictly before this timestamp
      * @throws {RequiredError}
      * @memberof FeedbackApiInterface
      */
@@ -102,8 +123,14 @@ export interface FeedbackApiInterface {
      * @param {FeedbackTargetType} [targetType] 
      * @param {string} [targetId] 
      * @param {FeedbackRating} [rating] 
+     * @param {FeedbackOrder} [sortBy] Field to sort feedback by (default: CREATED_AT)
+     * @param {SortDirection} [sortDir] Sort direction; overrides the field\&#39;s natural default
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
+     * @param {Date} [createdAfter] Only items created at or after this timestamp (inclusive)
+     * @param {Date} [createdBefore] Only items created strictly before this timestamp
+     * @param {Date} [updatedAfter] Only items updated at or after this timestamp (inclusive)
+     * @param {Date} [updatedBefore] Only items updated strictly before this timestamp
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof FeedbackApiInterface
@@ -219,12 +246,36 @@ export class FeedbackApi extends runtime.BaseAPI implements FeedbackApiInterface
             queryParameters['rating'] = requestParameters['rating'];
         }
 
+        if (requestParameters['sortBy'] != null) {
+            queryParameters['sort_by'] = requestParameters['sortBy'];
+        }
+
+        if (requestParameters['sortDir'] != null) {
+            queryParameters['sort_dir'] = requestParameters['sortDir'];
+        }
+
         if (requestParameters['limit'] != null) {
             queryParameters['limit'] = requestParameters['limit'];
         }
 
         if (requestParameters['offset'] != null) {
             queryParameters['offset'] = requestParameters['offset'];
+        }
+
+        if (requestParameters['createdAfter'] != null) {
+            queryParameters['created_after'] = (requestParameters['createdAfter'] as any).toISOString();
+        }
+
+        if (requestParameters['createdBefore'] != null) {
+            queryParameters['created_before'] = (requestParameters['createdBefore'] as any).toISOString();
+        }
+
+        if (requestParameters['updatedAfter'] != null) {
+            queryParameters['updated_after'] = (requestParameters['updatedAfter'] as any).toISOString();
+        }
+
+        if (requestParameters['updatedBefore'] != null) {
+            queryParameters['updated_before'] = (requestParameters['updatedBefore'] as any).toISOString();
         }
 
         const headerParameters: runtime.HTTPHeaders = {};

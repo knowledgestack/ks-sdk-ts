@@ -16,18 +16,27 @@
 import * as runtime from '../runtime';
 import type {
   CreateTagRequest,
+  ErrorResponse,
   HTTPValidationError,
   PaginatedResponseTagResponse,
+  SortDirection,
+  TagOrder,
   TagResponse,
   UpdateTagRequest,
 } from '../models/index';
 import {
     CreateTagRequestFromJSON,
     CreateTagRequestToJSON,
+    ErrorResponseFromJSON,
+    ErrorResponseToJSON,
     HTTPValidationErrorFromJSON,
     HTTPValidationErrorToJSON,
     PaginatedResponseTagResponseFromJSON,
     PaginatedResponseTagResponseToJSON,
+    SortDirectionFromJSON,
+    SortDirectionToJSON,
+    TagOrderFromJSON,
+    TagOrderToJSON,
     TagResponseFromJSON,
     TagResponseToJSON,
     UpdateTagRequestFromJSON,
@@ -47,8 +56,15 @@ export interface GetTagRequest {
 }
 
 export interface ListTagsRequest {
+    sortBy?: TagOrder;
+    sortDir?: SortDirection;
+    nameLike?: string | null;
     limit?: number;
     offset?: number;
+    createdAfter?: Date | null;
+    createdBefore?: Date | null;
+    updatedAfter?: Date | null;
+    updatedBefore?: Date | null;
 }
 
 export interface UpdateTagOperationRequest {
@@ -137,8 +153,15 @@ export interface TagsApiInterface {
 
     /**
      * Creates request options for listTags without sending the request
+     * @param {TagOrder} [sortBy] Field to sort tags by (default: NAME)
+     * @param {SortDirection} [sortDir] Sort direction; overrides the field\&#39;s natural default
+     * @param {string} [nameLike] Case-insensitive substring filter on name
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
+     * @param {Date} [createdAfter] Only items created at or after this timestamp (inclusive)
+     * @param {Date} [createdBefore] Only items created strictly before this timestamp
+     * @param {Date} [updatedAfter] Only items updated at or after this timestamp (inclusive)
+     * @param {Date} [updatedBefore] Only items updated strictly before this timestamp
      * @throws {RequiredError}
      * @memberof TagsApiInterface
      */
@@ -147,8 +170,15 @@ export interface TagsApiInterface {
     /**
      * List all tags for the current tenant.
      * @summary List Tags Handler
+     * @param {TagOrder} [sortBy] Field to sort tags by (default: NAME)
+     * @param {SortDirection} [sortDir] Sort direction; overrides the field\&#39;s natural default
+     * @param {string} [nameLike] Case-insensitive substring filter on name
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
+     * @param {Date} [createdAfter] Only items created at or after this timestamp (inclusive)
+     * @param {Date} [createdBefore] Only items created strictly before this timestamp
+     * @param {Date} [updatedAfter] Only items updated at or after this timestamp (inclusive)
+     * @param {Date} [updatedBefore] Only items updated strictly before this timestamp
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof TagsApiInterface
@@ -366,12 +396,40 @@ export class TagsApi extends runtime.BaseAPI implements TagsApiInterface {
     async listTagsRequestOpts(requestParameters: ListTagsRequest): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
+        if (requestParameters['sortBy'] != null) {
+            queryParameters['sort_by'] = requestParameters['sortBy'];
+        }
+
+        if (requestParameters['sortDir'] != null) {
+            queryParameters['sort_dir'] = requestParameters['sortDir'];
+        }
+
+        if (requestParameters['nameLike'] != null) {
+            queryParameters['name_like'] = requestParameters['nameLike'];
+        }
+
         if (requestParameters['limit'] != null) {
             queryParameters['limit'] = requestParameters['limit'];
         }
 
         if (requestParameters['offset'] != null) {
             queryParameters['offset'] = requestParameters['offset'];
+        }
+
+        if (requestParameters['createdAfter'] != null) {
+            queryParameters['created_after'] = (requestParameters['createdAfter'] as any).toISOString();
+        }
+
+        if (requestParameters['createdBefore'] != null) {
+            queryParameters['created_before'] = (requestParameters['createdBefore'] as any).toISOString();
+        }
+
+        if (requestParameters['updatedAfter'] != null) {
+            queryParameters['updated_after'] = (requestParameters['updatedAfter'] as any).toISOString();
+        }
+
+        if (requestParameters['updatedBefore'] != null) {
+            queryParameters['updated_before'] = (requestParameters['updatedBefore'] as any).toISOString();
         }
 
         const headerParameters: runtime.HTTPHeaders = {};

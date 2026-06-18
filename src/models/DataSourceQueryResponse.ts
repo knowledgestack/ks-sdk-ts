@@ -15,6 +15,10 @@
 import { mapValues } from '../runtime';
 /**
  * Read-only query result. ``generated_sql`` echoes the executed SQL.
+ * 
+ * ``sql_validation_warnings`` lists non-blocking semantic-lint findings (e.g.
+ * aggregate without a filter, fan-out join); empty when the SQL is clean. The
+ * query still runs and returns rows regardless of warnings.
  * @export
  * @interface DataSourceQueryResponse
  */
@@ -49,6 +53,12 @@ export interface DataSourceQueryResponse {
      * @memberof DataSourceQueryResponse
      */
     generatedSql: string;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof DataSourceQueryResponse
+     */
+    sqlValidationWarnings?: Array<string>;
 }
 export const DataSourceQueryResponsePropertyValidationAttributesMap: {
     [property: string]: {
@@ -95,6 +105,7 @@ export function DataSourceQueryResponseFromJSONTyped(json: any, ignoreDiscrimina
         'rowCount': json['row_count'],
         'truncated': json['truncated'],
         'generatedSql': json['generated_sql'],
+        'sqlValidationWarnings': json['sql_validation_warnings'] == null ? undefined : json['sql_validation_warnings'],
     };
 }
 
@@ -114,6 +125,7 @@ export function DataSourceQueryResponseToJSONTyped(value?: DataSourceQueryRespon
         'row_count': value['rowCount'],
         'truncated': value['truncated'],
         'generated_sql': value['generatedSql'],
+        'sql_validation_warnings': value['sqlValidationWarnings'],
     };
 }
 

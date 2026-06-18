@@ -16,6 +16,7 @@
 import * as runtime from '../runtime';
 import type {
   ChangeSubscriptionRequest,
+  ErrorResponse,
   HTTPValidationError,
   SubmitSubscriptionResponse,
   SubscriptionPlanResponse,
@@ -23,6 +24,8 @@ import type {
 import {
     ChangeSubscriptionRequestFromJSON,
     ChangeSubscriptionRequestToJSON,
+    ErrorResponseFromJSON,
+    ErrorResponseToJSON,
     HTTPValidationErrorFromJSON,
     HTTPValidationErrorToJSON,
     SubmitSubscriptionResponseFromJSON,

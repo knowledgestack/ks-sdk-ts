@@ -20,6 +20,13 @@ import {
     PartTypeToJSON,
     PartTypeToJSONTyped,
 } from './PartType';
+import type { UserInfo } from './UserInfo';
+import {
+    UserInfoFromJSON,
+    UserInfoFromJSONTyped,
+    UserInfoToJSON,
+    UserInfoToJSONTyped,
+} from './UserInfo';
 
 /**
  * A top-level item currently in trash.
@@ -75,6 +82,12 @@ export interface TrashItemResponse {
      * @memberof TrashItemResponse
      */
     deletedBy: string | null;
+    /**
+     * Current owner (creator) of the item, or null if unowned.
+     * @type {UserInfo}
+     * @memberof TrashItemResponse
+     */
+    owner?: UserInfo | null;
 }
 
 
@@ -129,6 +142,7 @@ export function TrashItemResponseFromJSONTyped(json: any, ignoreDiscriminator: b
         'materializedPath': json['materialized_path'],
         'deletedAt': (new Date(json['deleted_at'])),
         'deletedBy': json['deleted_by'],
+        'owner': json['owner'] == null ? undefined : UserInfoFromJSON(json['owner']),
     };
 }
 
@@ -151,6 +165,7 @@ export function TrashItemResponseToJSONTyped(value?: TrashItemResponse | null, i
         'materialized_path': value['materializedPath'],
         'deleted_at': value['deletedAt'].toISOString(),
         'deleted_by': value['deletedBy'],
+        'owner': UserInfoToJSON(value['owner']),
     };
 }
 

@@ -18,6 +18,9 @@ import type {
   AddMemberRequest,
   CreateGroupPermissionRequest,
   CreateGroupRequest,
+  ErrorResponse,
+  GroupMemberOrder,
+  GroupPermissionOrder,
   GroupPermissionResponse,
   GroupResponse,
   HTTPValidationError,
@@ -25,6 +28,9 @@ import type {
   PaginatedResponseGroupPermissionResponse,
   PaginatedResponseGroupResponse,
   PaginatedResponseMembershipResponse,
+  PermissionCapability,
+  SortDirection,
+  TenantGroupOrder,
   UpdateGroupPermissionRequest,
   UpdateGroupRequest,
 } from '../models/index';
@@ -35,6 +41,12 @@ import {
     CreateGroupPermissionRequestToJSON,
     CreateGroupRequestFromJSON,
     CreateGroupRequestToJSON,
+    ErrorResponseFromJSON,
+    ErrorResponseToJSON,
+    GroupMemberOrderFromJSON,
+    GroupMemberOrderToJSON,
+    GroupPermissionOrderFromJSON,
+    GroupPermissionOrderToJSON,
     GroupPermissionResponseFromJSON,
     GroupPermissionResponseToJSON,
     GroupResponseFromJSON,
@@ -49,6 +61,12 @@ import {
     PaginatedResponseGroupResponseToJSON,
     PaginatedResponseMembershipResponseFromJSON,
     PaginatedResponseMembershipResponseToJSON,
+    PermissionCapabilityFromJSON,
+    PermissionCapabilityToJSON,
+    SortDirectionFromJSON,
+    SortDirectionToJSON,
+    TenantGroupOrderFromJSON,
+    TenantGroupOrderToJSON,
     UpdateGroupPermissionRequestFromJSON,
     UpdateGroupPermissionRequestToJSON,
     UpdateGroupRequestFromJSON,
@@ -84,19 +102,33 @@ export interface GetTenantGroupRequest {
 
 export interface ListGroupMembersRequest {
     groupId: string;
+    sortBy?: GroupMemberOrder;
+    sortDir?: SortDirection;
+    usernameLike?: string | null;
     limit?: number;
     offset?: number;
 }
 
 export interface ListGroupPermissionsRequest {
     groupId: string;
+    sortBy?: GroupPermissionOrder;
+    sortDir?: SortDirection;
+    capability?: PermissionCapability;
     limit?: number;
     offset?: number;
 }
 
 export interface ListTenantGroupsRequest {
+    sortBy?: TenantGroupOrder;
+    sortDir?: SortDirection;
+    nameLike?: string | null;
+    hasUserIds?: Array<string> | null;
     limit?: number;
     offset?: number;
+    createdAfter?: Date | null;
+    createdBefore?: Date | null;
+    updatedAfter?: Date | null;
+    updatedBefore?: Date | null;
 }
 
 export interface RemoveGroupMemberRequest {
@@ -275,6 +307,9 @@ export interface TenantGroupsApiInterface {
     /**
      * Creates request options for listGroupMembers without sending the request
      * @param {string} groupId 
+     * @param {GroupMemberOrder} [sortBy] Field to sort members by (default: ADDED_AT)
+     * @param {SortDirection} [sortDir] Sort direction; overrides the field\&#39;s natural default
+     * @param {string} [usernameLike] Case-insensitive substring filter on member name
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
      * @throws {RequiredError}
@@ -286,6 +321,9 @@ export interface TenantGroupsApiInterface {
      * List members of a group (group members or admin/owner).
      * @summary List Group Members Handler
      * @param {string} groupId 
+     * @param {GroupMemberOrder} [sortBy] Field to sort members by (default: ADDED_AT)
+     * @param {SortDirection} [sortDir] Sort direction; overrides the field\&#39;s natural default
+     * @param {string} [usernameLike] Case-insensitive substring filter on member name
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
      * @param {*} [options] Override http request option.
@@ -303,6 +341,9 @@ export interface TenantGroupsApiInterface {
     /**
      * Creates request options for listGroupPermissions without sending the request
      * @param {string} groupId 
+     * @param {GroupPermissionOrder} [sortBy] Field to sort permissions by (default: CREATED_AT)
+     * @param {SortDirection} [sortDir] Sort direction; overrides the field\&#39;s natural default
+     * @param {PermissionCapability} [capability] Filter to permissions with this capability
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
      * @throws {RequiredError}
@@ -314,6 +355,9 @@ export interface TenantGroupsApiInterface {
      * List path permissions for a group (group member or admin/owner).
      * @summary List Group Permissions Handler
      * @param {string} groupId 
+     * @param {GroupPermissionOrder} [sortBy] Field to sort permissions by (default: CREATED_AT)
+     * @param {SortDirection} [sortDir] Sort direction; overrides the field\&#39;s natural default
+     * @param {PermissionCapability} [capability] Filter to permissions with this capability
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
      * @param {*} [options] Override http request option.
@@ -352,8 +396,16 @@ export interface TenantGroupsApiInterface {
 
     /**
      * Creates request options for listTenantGroups without sending the request
+     * @param {TenantGroupOrder} [sortBy] Field to sort groups by (default: NAME)
+     * @param {SortDirection} [sortDir] Sort direction; overrides the field\&#39;s natural default
+     * @param {string} [nameLike] Case-insensitive substring filter on name
+     * @param {Array<string>} [hasUserIds] Only groups containing ALL of these user ids
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
+     * @param {Date} [createdAfter] Only items created at or after this timestamp (inclusive)
+     * @param {Date} [createdBefore] Only items created strictly before this timestamp
+     * @param {Date} [updatedAfter] Only items updated at or after this timestamp (inclusive)
+     * @param {Date} [updatedBefore] Only items updated strictly before this timestamp
      * @throws {RequiredError}
      * @memberof TenantGroupsApiInterface
      */
@@ -362,8 +414,16 @@ export interface TenantGroupsApiInterface {
     /**
      * List tenant groups.  Admin/owner see all groups; other members see only groups they belong to.
      * @summary List Tenant Groups Handler
+     * @param {TenantGroupOrder} [sortBy] Field to sort groups by (default: NAME)
+     * @param {SortDirection} [sortDir] Sort direction; overrides the field\&#39;s natural default
+     * @param {string} [nameLike] Case-insensitive substring filter on name
+     * @param {Array<string>} [hasUserIds] Only groups containing ALL of these user ids
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
+     * @param {Date} [createdAfter] Only items created at or after this timestamp (inclusive)
+     * @param {Date} [createdBefore] Only items created strictly before this timestamp
+     * @param {Date} [updatedAfter] Only items updated at or after this timestamp (inclusive)
+     * @param {Date} [updatedBefore] Only items updated strictly before this timestamp
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof TenantGroupsApiInterface
@@ -834,6 +894,18 @@ export class TenantGroupsApi extends runtime.BaseAPI implements TenantGroupsApiI
 
         const queryParameters: any = {};
 
+        if (requestParameters['sortBy'] != null) {
+            queryParameters['sort_by'] = requestParameters['sortBy'];
+        }
+
+        if (requestParameters['sortDir'] != null) {
+            queryParameters['sort_dir'] = requestParameters['sortDir'];
+        }
+
+        if (requestParameters['usernameLike'] != null) {
+            queryParameters['username_like'] = requestParameters['usernameLike'];
+        }
+
         if (requestParameters['limit'] != null) {
             queryParameters['limit'] = requestParameters['limit'];
         }
@@ -896,6 +968,18 @@ export class TenantGroupsApi extends runtime.BaseAPI implements TenantGroupsApiI
         }
 
         const queryParameters: any = {};
+
+        if (requestParameters['sortBy'] != null) {
+            queryParameters['sort_by'] = requestParameters['sortBy'];
+        }
+
+        if (requestParameters['sortDir'] != null) {
+            queryParameters['sort_dir'] = requestParameters['sortDir'];
+        }
+
+        if (requestParameters['capability'] != null) {
+            queryParameters['capability'] = requestParameters['capability'];
+        }
 
         if (requestParameters['limit'] != null) {
             queryParameters['limit'] = requestParameters['limit'];
@@ -1000,12 +1084,44 @@ export class TenantGroupsApi extends runtime.BaseAPI implements TenantGroupsApiI
     async listTenantGroupsRequestOpts(requestParameters: ListTenantGroupsRequest): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
+        if (requestParameters['sortBy'] != null) {
+            queryParameters['sort_by'] = requestParameters['sortBy'];
+        }
+
+        if (requestParameters['sortDir'] != null) {
+            queryParameters['sort_dir'] = requestParameters['sortDir'];
+        }
+
+        if (requestParameters['nameLike'] != null) {
+            queryParameters['name_like'] = requestParameters['nameLike'];
+        }
+
+        if (requestParameters['hasUserIds'] != null) {
+            queryParameters['has_user_ids'] = requestParameters['hasUserIds'];
+        }
+
         if (requestParameters['limit'] != null) {
             queryParameters['limit'] = requestParameters['limit'];
         }
 
         if (requestParameters['offset'] != null) {
             queryParameters['offset'] = requestParameters['offset'];
+        }
+
+        if (requestParameters['createdAfter'] != null) {
+            queryParameters['created_after'] = (requestParameters['createdAfter'] as any).toISOString();
+        }
+
+        if (requestParameters['createdBefore'] != null) {
+            queryParameters['created_before'] = (requestParameters['createdBefore'] as any).toISOString();
+        }
+
+        if (requestParameters['updatedAfter'] != null) {
+            queryParameters['updated_after'] = (requestParameters['updatedAfter'] as any).toISOString();
+        }
+
+        if (requestParameters['updatedBefore'] != null) {
+            queryParameters['updated_before'] = (requestParameters['updatedBefore'] as any).toISOString();
         }
 
         const headerParameters: runtime.HTTPHeaders = {};

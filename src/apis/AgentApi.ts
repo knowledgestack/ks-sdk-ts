@@ -17,6 +17,7 @@ import * as runtime from '../runtime';
 import type {
   AskRequest,
   AskResponse,
+  ErrorResponse,
   ExtractRequest,
   ExtractResponse,
   HTTPValidationError,
@@ -26,6 +27,8 @@ import {
     AskRequestToJSON,
     AskResponseFromJSON,
     AskResponseToJSON,
+    ErrorResponseFromJSON,
+    ErrorResponseToJSON,
     ExtractRequestFromJSON,
     ExtractRequestToJSON,
     ExtractResponseFromJSON,

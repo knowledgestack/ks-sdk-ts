@@ -15,11 +15,14 @@
 
 import * as runtime from '../runtime';
 import type {
+  ErrorResponse,
   HTTPValidationError,
   PathPartApprovalResponse,
   SetApprovalStateRequest,
 } from '../models/index';
 import {
+    ErrorResponseFromJSON,
+    ErrorResponseToJSON,
     HTTPValidationErrorFromJSON,
     HTTPValidationErrorToJSON,
     PathPartApprovalResponseFromJSON,

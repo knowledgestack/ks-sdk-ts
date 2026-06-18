@@ -21,6 +21,7 @@ import type {
   DirectorySyncResponse,
   EmailSentResponse,
   EmailVerificationRequest,
+  ErrorResponse,
   HTTPValidationError,
   IdpType,
   PasswordResetRequest,
@@ -49,6 +50,8 @@ import {
     EmailSentResponseToJSON,
     EmailVerificationRequestFromJSON,
     EmailVerificationRequestToJSON,
+    ErrorResponseFromJSON,
+    ErrorResponseToJSON,
     HTTPValidationErrorFromJSON,
     HTTPValidationErrorToJSON,
     IdpTypeFromJSON,
@@ -583,13 +586,13 @@ export interface AuthApiInterface {
      * @throws {RequiredError}
      * @memberof AuthApiInterface
      */
-    ssoSigninRaw(requestParameters: SsoSigninRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>>;
+    ssoSigninRaw(requestParameters: SsoSigninRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ErrorResponse>>;
 
     /**
      * SSO login endpoint.  Resolves the tenant\'s IdP configuration and dispatches to the appropriate provider-specific handler. Sets the UAT cookie and redirects to the frontend.
      * Sso Login Handler
      */
-    ssoSignin(requestParameters: SsoSigninRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void>;
+    ssoSignin(requestParameters: SsoSigninRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ErrorResponse>;
 
     /**
      * Creates request options for validatePwResetCode without sending the request
@@ -1487,19 +1490,20 @@ export class AuthApi extends runtime.BaseAPI implements AuthApiInterface {
      * SSO login endpoint.  Resolves the tenant\'s IdP configuration and dispatches to the appropriate provider-specific handler. Sets the UAT cookie and redirects to the frontend.
      * Sso Login Handler
      */
-    async ssoSigninRaw(requestParameters: SsoSigninRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async ssoSigninRaw(requestParameters: SsoSigninRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ErrorResponse>> {
         const requestOptions = await this.ssoSigninRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.VoidApiResponse(response);
+        return new runtime.JSONApiResponse(response, (jsonValue) => ErrorResponseFromJSON(jsonValue));
     }
 
     /**
      * SSO login endpoint.  Resolves the tenant\'s IdP configuration and dispatches to the appropriate provider-specific handler. Sets the UAT cookie and redirects to the frontend.
      * Sso Login Handler
      */
-    async ssoSignin(requestParameters: SsoSigninRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
-        await this.ssoSigninRaw(requestParameters, initOverrides);
+    async ssoSignin(requestParameters: SsoSigninRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ErrorResponse> {
+        const response = await this.ssoSigninRaw(requestParameters, initOverrides);
+        return await response.value();
     }
 
     /**

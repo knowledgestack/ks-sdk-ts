@@ -16,22 +16,34 @@
 import * as runtime from '../runtime';
 import type {
   CreatePermissionRequest,
+  ErrorResponse,
   HTTPValidationError,
   PaginatedResponsePermissionResponse,
+  PermissionCapability,
   PermissionResponse,
+  SortDirection,
   UpdatePermissionRequest,
+  UserPermissionOrder,
 } from '../models/index';
 import {
     CreatePermissionRequestFromJSON,
     CreatePermissionRequestToJSON,
+    ErrorResponseFromJSON,
+    ErrorResponseToJSON,
     HTTPValidationErrorFromJSON,
     HTTPValidationErrorToJSON,
     PaginatedResponsePermissionResponseFromJSON,
     PaginatedResponsePermissionResponseToJSON,
+    PermissionCapabilityFromJSON,
+    PermissionCapabilityToJSON,
     PermissionResponseFromJSON,
     PermissionResponseToJSON,
+    SortDirectionFromJSON,
+    SortDirectionToJSON,
     UpdatePermissionRequestFromJSON,
     UpdatePermissionRequestToJSON,
+    UserPermissionOrderFromJSON,
+    UserPermissionOrderToJSON,
 } from '../models/index';
 
 export interface CreateUserPermissionRequest {
@@ -46,6 +58,9 @@ export interface DeleteUserPermissionRequest {
 export interface ListUserPermissionsRequest {
     tenantId: string;
     userId: string;
+    sortBy?: UserPermissionOrder;
+    sortDir?: SortDirection;
+    capability?: PermissionCapability;
     limit?: number;
     offset?: number;
 }
@@ -117,6 +132,9 @@ export interface UserPermissionsApiInterface {
      * Creates request options for listUserPermissions without sending the request
      * @param {string} tenantId Tenant ID to list permissions for
      * @param {string} userId User ID to list permissions for
+     * @param {UserPermissionOrder} [sortBy] Field to sort permissions by (default: CREATED_AT)
+     * @param {SortDirection} [sortDir] Sort direction; overrides the field\&#39;s natural default
+     * @param {PermissionCapability} [capability] Filter to a single capability level
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
      * @throws {RequiredError}
@@ -129,6 +147,9 @@ export interface UserPermissionsApiInterface {
      * @summary List User Permissions Handler
      * @param {string} tenantId Tenant ID to list permissions for
      * @param {string} userId User ID to list permissions for
+     * @param {UserPermissionOrder} [sortBy] Field to sort permissions by (default: CREATED_AT)
+     * @param {SortDirection} [sortDir] Sort direction; overrides the field\&#39;s natural default
+     * @param {PermissionCapability} [capability] Filter to a single capability level
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
      * @param {*} [options] Override http request option.
@@ -326,6 +347,18 @@ export class UserPermissionsApi extends runtime.BaseAPI implements UserPermissio
 
         if (requestParameters['userId'] != null) {
             queryParameters['user_id'] = requestParameters['userId'];
+        }
+
+        if (requestParameters['sortBy'] != null) {
+            queryParameters['sort_by'] = requestParameters['sortBy'];
+        }
+
+        if (requestParameters['sortDir'] != null) {
+            queryParameters['sort_dir'] = requestParameters['sortDir'];
+        }
+
+        if (requestParameters['capability'] != null) {
+            queryParameters['capability'] = requestParameters['capability'];
         }
 
         if (requestParameters['limit'] != null) {

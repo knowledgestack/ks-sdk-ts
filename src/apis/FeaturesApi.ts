@@ -15,9 +15,12 @@
 
 import * as runtime from '../runtime';
 import type {
+  ErrorResponse,
   FeaturesResponse,
 } from '../models/index';
 import {
+    ErrorResponseFromJSON,
+    ErrorResponseToJSON,
     FeaturesResponseFromJSON,
     FeaturesResponseToJSON,
 } from '../models/index';

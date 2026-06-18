@@ -16,18 +16,26 @@
 import * as runtime from '../runtime';
 import type {
   AcceptInviteResponse,
+  ErrorResponse,
   HTTPValidationError,
+  InviteOrder,
   InviteResponse,
   InviteStatus,
   InviteUserRequest,
   PaginatedResponseInviteResponse,
+  SortDirection,
+  TenantUserRole,
   UpdateInviteRequest,
 } from '../models/index';
 import {
     AcceptInviteResponseFromJSON,
     AcceptInviteResponseToJSON,
+    ErrorResponseFromJSON,
+    ErrorResponseToJSON,
     HTTPValidationErrorFromJSON,
     HTTPValidationErrorToJSON,
+    InviteOrderFromJSON,
+    InviteOrderToJSON,
     InviteResponseFromJSON,
     InviteResponseToJSON,
     InviteStatusFromJSON,
@@ -36,6 +44,10 @@ import {
     InviteUserRequestToJSON,
     PaginatedResponseInviteResponseFromJSON,
     PaginatedResponseInviteResponseToJSON,
+    SortDirectionFromJSON,
+    SortDirectionToJSON,
+    TenantUserRoleFromJSON,
+    TenantUserRoleToJSON,
     UpdateInviteRequestFromJSON,
     UpdateInviteRequestToJSON,
 } from '../models/index';
@@ -55,8 +67,16 @@ export interface DeleteInviteRequest {
 export interface ListInvitesRequest {
     email?: string | null;
     status?: InviteStatus;
+    role?: TenantUserRole;
+    invitedBy?: string | null;
+    sortBy?: InviteOrder;
+    sortDir?: SortDirection;
     limit?: number;
     offset?: number;
+    createdAfter?: Date | null;
+    createdBefore?: Date | null;
+    updatedAfter?: Date | null;
+    updatedBefore?: Date | null;
 }
 
 export interface UpdateInviteOperationRequest {
@@ -147,20 +167,36 @@ export interface InvitesApiInterface {
      * Creates request options for listInvites without sending the request
      * @param {string} [email] Filter by email (case-insensitive partial match)
      * @param {InviteStatus} [status] Filter by invite status (pending, accepted, expired)
+     * @param {TenantUserRole} [role] Filter by invite role
+     * @param {string} [invitedBy] Filter to invites sent by this user
+     * @param {InviteOrder} [sortBy] Field to sort invites by (default: CREATED_AT)
+     * @param {SortDirection} [sortDir] Sort direction; overrides the field\&#39;s natural default
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
+     * @param {Date} [createdAfter] Only items created at or after this timestamp (inclusive)
+     * @param {Date} [createdBefore] Only items created strictly before this timestamp
+     * @param {Date} [updatedAfter] Only items updated at or after this timestamp (inclusive)
+     * @param {Date} [updatedBefore] Only items updated strictly before this timestamp
      * @throws {RequiredError}
      * @memberof InvitesApiInterface
      */
     listInvitesRequestOpts(requestParameters: ListInvitesRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * List invites with pagination, filtering, and sorting.  Supports filtering by tenant_id (requires admin access), email, and status. Results can be sorted by created_at, updated_at, expires_at, or accepted_at.
+     * List invites with pagination, filtering, and sorting.  Supports filtering by email, status, role, and a created_at/updated_at timestamp range. Results sort by created_at (ascending) by default.
      * @summary List Invites Handler
      * @param {string} [email] Filter by email (case-insensitive partial match)
      * @param {InviteStatus} [status] Filter by invite status (pending, accepted, expired)
+     * @param {TenantUserRole} [role] Filter by invite role
+     * @param {string} [invitedBy] Filter to invites sent by this user
+     * @param {InviteOrder} [sortBy] Field to sort invites by (default: CREATED_AT)
+     * @param {SortDirection} [sortDir] Sort direction; overrides the field\&#39;s natural default
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
+     * @param {Date} [createdAfter] Only items created at or after this timestamp (inclusive)
+     * @param {Date} [createdBefore] Only items created strictly before this timestamp
+     * @param {Date} [updatedAfter] Only items updated at or after this timestamp (inclusive)
+     * @param {Date} [updatedBefore] Only items updated strictly before this timestamp
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof InvitesApiInterface
@@ -168,7 +204,7 @@ export interface InvitesApiInterface {
     listInvitesRaw(requestParameters: ListInvitesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedResponseInviteResponse>>;
 
     /**
-     * List invites with pagination, filtering, and sorting.  Supports filtering by tenant_id (requires admin access), email, and status. Results can be sorted by created_at, updated_at, expires_at, or accepted_at.
+     * List invites with pagination, filtering, and sorting.  Supports filtering by email, status, role, and a created_at/updated_at timestamp range. Results sort by created_at (ascending) by default.
      * List Invites Handler
      */
     listInvites(requestParameters: ListInvitesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedResponseInviteResponse>;
@@ -386,12 +422,44 @@ export class InvitesApi extends runtime.BaseAPI implements InvitesApiInterface {
             queryParameters['status'] = requestParameters['status'];
         }
 
+        if (requestParameters['role'] != null) {
+            queryParameters['role'] = requestParameters['role'];
+        }
+
+        if (requestParameters['invitedBy'] != null) {
+            queryParameters['invited_by'] = requestParameters['invitedBy'];
+        }
+
+        if (requestParameters['sortBy'] != null) {
+            queryParameters['sort_by'] = requestParameters['sortBy'];
+        }
+
+        if (requestParameters['sortDir'] != null) {
+            queryParameters['sort_dir'] = requestParameters['sortDir'];
+        }
+
         if (requestParameters['limit'] != null) {
             queryParameters['limit'] = requestParameters['limit'];
         }
 
         if (requestParameters['offset'] != null) {
             queryParameters['offset'] = requestParameters['offset'];
+        }
+
+        if (requestParameters['createdAfter'] != null) {
+            queryParameters['created_after'] = (requestParameters['createdAfter'] as any).toISOString();
+        }
+
+        if (requestParameters['createdBefore'] != null) {
+            queryParameters['created_before'] = (requestParameters['createdBefore'] as any).toISOString();
+        }
+
+        if (requestParameters['updatedAfter'] != null) {
+            queryParameters['updated_after'] = (requestParameters['updatedAfter'] as any).toISOString();
+        }
+
+        if (requestParameters['updatedBefore'] != null) {
+            queryParameters['updated_before'] = (requestParameters['updatedBefore'] as any).toISOString();
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -416,7 +484,7 @@ export class InvitesApi extends runtime.BaseAPI implements InvitesApiInterface {
     }
 
     /**
-     * List invites with pagination, filtering, and sorting.  Supports filtering by tenant_id (requires admin access), email, and status. Results can be sorted by created_at, updated_at, expires_at, or accepted_at.
+     * List invites with pagination, filtering, and sorting.  Supports filtering by email, status, role, and a created_at/updated_at timestamp range. Results sort by created_at (ascending) by default.
      * List Invites Handler
      */
     async listInvitesRaw(requestParameters: ListInvitesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedResponseInviteResponse>> {
@@ -427,7 +495,7 @@ export class InvitesApi extends runtime.BaseAPI implements InvitesApiInterface {
     }
 
     /**
-     * List invites with pagination, filtering, and sorting.  Supports filtering by tenant_id (requires admin access), email, and status. Results can be sorted by created_at, updated_at, expires_at, or accepted_at.
+     * List invites with pagination, filtering, and sorting.  Supports filtering by email, status, role, and a created_at/updated_at timestamp range. Results sort by created_at (ascending) by default.
      * List Invites Handler
      */
     async listInvites(requestParameters: ListInvitesRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedResponseInviteResponse> {

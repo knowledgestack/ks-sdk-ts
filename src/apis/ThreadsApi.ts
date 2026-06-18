@@ -16,8 +16,11 @@
 import * as runtime from '../runtime';
 import type {
   CreateThreadRequest,
+  ErrorResponse,
   HTTPValidationError,
   PaginatedResponseThreadResponse,
+  SortDirection,
+  ThreadOrder,
   ThreadResponse,
   UpdateThreadRequest,
   UserMessageRequest,
@@ -26,10 +29,16 @@ import type {
 import {
     CreateThreadRequestFromJSON,
     CreateThreadRequestToJSON,
+    ErrorResponseFromJSON,
+    ErrorResponseToJSON,
     HTTPValidationErrorFromJSON,
     HTTPValidationErrorToJSON,
     PaginatedResponseThreadResponseFromJSON,
     PaginatedResponseThreadResponseToJSON,
+    SortDirectionFromJSON,
+    SortDirectionToJSON,
+    ThreadOrderFromJSON,
+    ThreadOrderToJSON,
     ThreadResponseFromJSON,
     ThreadResponseToJSON,
     UpdateThreadRequestFromJSON,
@@ -54,8 +63,15 @@ export interface GetThreadRequest {
 
 export interface ListThreadsRequest {
     parentPathPartId?: string | null;
+    sortBy?: ThreadOrder;
+    sortDir?: SortDirection;
+    titleLike?: string | null;
     limit?: number;
     offset?: number;
+    createdAfter?: Date | null;
+    createdBefore?: Date | null;
+    updatedAfter?: Date | null;
+    updatedBefore?: Date | null;
 }
 
 export interface SendUserMessageRequest {
@@ -156,8 +172,15 @@ export interface ThreadsApiInterface {
     /**
      * Creates request options for listThreads without sending the request
      * @param {string} [parentPathPartId] Parent PathPart ID. Omit to list user\&#39;s conversation threads.
+     * @param {ThreadOrder} [sortBy] Field to sort threads by (default: CREATED_AT)
+     * @param {SortDirection} [sortDir] Sort direction; overrides the field\&#39;s natural default
+     * @param {string} [titleLike] Case-insensitive substring filter on title
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
+     * @param {Date} [createdAfter] Only items created at or after this timestamp (inclusive)
+     * @param {Date} [createdBefore] Only items created strictly before this timestamp
+     * @param {Date} [updatedAfter] Only items updated at or after this timestamp (inclusive)
+     * @param {Date} [updatedBefore] Only items updated strictly before this timestamp
      * @throws {RequiredError}
      * @memberof ThreadsApiInterface
      */
@@ -167,8 +190,15 @@ export interface ThreadsApiInterface {
      * List threads under a parent path_part.  When parent_path_part_id is omitted, lists the authenticated user\'s conversation threads from /users/{user_id}/threads/.
      * @summary List Threads Handler
      * @param {string} [parentPathPartId] Parent PathPart ID. Omit to list user\&#39;s conversation threads.
+     * @param {ThreadOrder} [sortBy] Field to sort threads by (default: CREATED_AT)
+     * @param {SortDirection} [sortDir] Sort direction; overrides the field\&#39;s natural default
+     * @param {string} [titleLike] Case-insensitive substring filter on title
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
+     * @param {Date} [createdAfter] Only items created at or after this timestamp (inclusive)
+     * @param {Date} [createdBefore] Only items created strictly before this timestamp
+     * @param {Date} [updatedAfter] Only items updated at or after this timestamp (inclusive)
+     * @param {Date} [updatedBefore] Only items updated strictly before this timestamp
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ThreadsApiInterface
@@ -444,12 +474,40 @@ export class ThreadsApi extends runtime.BaseAPI implements ThreadsApiInterface {
             queryParameters['parent_path_part_id'] = requestParameters['parentPathPartId'];
         }
 
+        if (requestParameters['sortBy'] != null) {
+            queryParameters['sort_by'] = requestParameters['sortBy'];
+        }
+
+        if (requestParameters['sortDir'] != null) {
+            queryParameters['sort_dir'] = requestParameters['sortDir'];
+        }
+
+        if (requestParameters['titleLike'] != null) {
+            queryParameters['title_like'] = requestParameters['titleLike'];
+        }
+
         if (requestParameters['limit'] != null) {
             queryParameters['limit'] = requestParameters['limit'];
         }
 
         if (requestParameters['offset'] != null) {
             queryParameters['offset'] = requestParameters['offset'];
+        }
+
+        if (requestParameters['createdAfter'] != null) {
+            queryParameters['created_after'] = (requestParameters['createdAfter'] as any).toISOString();
+        }
+
+        if (requestParameters['createdBefore'] != null) {
+            queryParameters['created_before'] = (requestParameters['createdBefore'] as any).toISOString();
+        }
+
+        if (requestParameters['updatedAfter'] != null) {
+            queryParameters['updated_after'] = (requestParameters['updatedAfter'] as any).toISOString();
+        }
+
+        if (requestParameters['updatedBefore'] != null) {
+            queryParameters['updated_before'] = (requestParameters['updatedBefore'] as any).toISOString();
         }
 
         const headerParameters: runtime.HTTPHeaders = {};

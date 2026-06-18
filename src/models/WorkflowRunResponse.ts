@@ -192,6 +192,12 @@ export interface WorkflowRunResponse {
      */
     runThreadId?: string | null;
     /**
+     * Current owner (creator) of the run, or null if unowned. Usually the same user as ``triggered_by`` unless ownership was transferred.
+     * @type {UserInfo}
+     * @memberof WorkflowRunResponse
+     */
+    owner?: UserInfo | null;
+    /**
      * 
      * @type {Date}
      * @memberof WorkflowRunResponse
@@ -296,6 +302,7 @@ export function WorkflowRunResponseFromJSONTyped(json: any, ignoreDiscriminator:
         'inputPathPartIds': json['input_path_part_ids'] == null ? undefined : json['input_path_part_ids'],
         'outputsPathPartIds': json['outputs_path_part_ids'],
         'runThreadId': json['run_thread_id'] == null ? undefined : json['run_thread_id'],
+        'owner': json['owner'] == null ? undefined : UserInfoFromJSON(json['owner']),
         'createdAt': (new Date(json['created_at'])),
         'updatedAt': (new Date(json['updated_at'])),
         'permissions': json['permissions'] == null ? undefined : ItemPermissionsFromJSON(json['permissions']),
@@ -334,6 +341,7 @@ export function WorkflowRunResponseToJSONTyped(value?: WorkflowRunResponse | nul
         'input_path_part_ids': value['inputPathPartIds'],
         'outputs_path_part_ids': value['outputsPathPartIds'],
         'run_thread_id': value['runThreadId'],
+        'owner': UserInfoToJSON(value['owner']),
         'created_at': value['createdAt'].toISOString(),
         'updated_at': value['updatedAt'].toISOString(),
         'permissions': ItemPermissionsToJSON(value['permissions']),

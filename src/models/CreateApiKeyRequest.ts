@@ -25,6 +25,12 @@ export interface CreateApiKeyRequest {
      * @memberof CreateApiKeyRequest
      */
     name: string;
+    /**
+     * Optional absolute expiry. Null means the key never expires.
+     * @type {Date}
+     * @memberof CreateApiKeyRequest
+     */
+    expiresAt?: Date | null;
 }
 export const CreateApiKeyRequestPropertyValidationAttributesMap: {
     [property: string]: {
@@ -67,6 +73,7 @@ export function CreateApiKeyRequestFromJSONTyped(json: any, ignoreDiscriminator:
     return {
         
         'name': json['name'],
+        'expiresAt': json['expires_at'] == null ? undefined : (new Date(json['expires_at'])),
     };
 }
 
@@ -82,6 +89,7 @@ export function CreateApiKeyRequestToJSONTyped(value?: CreateApiKeyRequest | nul
     return {
         
         'name': value['name'],
+        'expires_at': value['expiresAt'] == null ? value['expiresAt'] : value['expiresAt'].toISOString(),
     };
 }
 

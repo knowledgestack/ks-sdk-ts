@@ -29,6 +29,7 @@ export const ReferenceType = {
     WorkflowRun: 'WORKFLOW_RUN',
     DataSource: 'DATA_SOURCE',
     DataSourceTable: 'DATA_SOURCE_TABLE',
+    ApiConnection: 'API_CONNECTION',
     Image: 'image',
     Memory: 'memory',
     Tag: 'tag',

@@ -43,6 +43,18 @@ export interface ApiKeyResponse {
      * @memberof ApiKeyResponse
      */
     createdAt: Date;
+    /**
+     * 
+     * @type {Date}
+     * @memberof ApiKeyResponse
+     */
+    expiresAt: Date | null;
+    /**
+     * 
+     * @type {Date}
+     * @memberof ApiKeyResponse
+     */
+    lastUsedAt: Date | null;
 }
 export const ApiKeyResponsePropertyValidationAttributesMap: {
     [property: string]: {
@@ -70,6 +82,8 @@ export function instanceOfApiKeyResponse(value: object): value is ApiKeyResponse
     if (!('name' in value) || value['name'] === undefined) return false;
     if (!('keySuffix' in value) || value['keySuffix'] === undefined) return false;
     if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
+    if (!('expiresAt' in value) || value['expiresAt'] === undefined) return false;
+    if (!('lastUsedAt' in value) || value['lastUsedAt'] === undefined) return false;
     return true;
 }
 
@@ -87,6 +101,8 @@ export function ApiKeyResponseFromJSONTyped(json: any, ignoreDiscriminator: bool
         'name': json['name'],
         'keySuffix': json['key_suffix'],
         'createdAt': (new Date(json['created_at'])),
+        'expiresAt': (json['expires_at'] == null ? null : new Date(json['expires_at'])),
+        'lastUsedAt': (json['last_used_at'] == null ? null : new Date(json['last_used_at'])),
     };
 }
 
@@ -105,6 +121,8 @@ export function ApiKeyResponseToJSONTyped(value?: ApiKeyResponse | null, ignoreD
         'name': value['name'],
         'key_suffix': value['keySuffix'],
         'created_at': value['createdAt'].toISOString(),
+        'expires_at': value['expiresAt'] == null ? value['expiresAt'] : value['expiresAt'].toISOString(),
+        'last_used_at': value['lastUsedAt'] == null ? value['lastUsedAt'] : value['lastUsedAt'].toISOString(),
     };
 }
 

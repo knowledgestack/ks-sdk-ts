@@ -15,10 +15,13 @@
 
 import * as runtime from '../runtime';
 import type {
+  ErrorResponse,
   HealthCheckResponse,
   RootResponse,
 } from '../models/index';
 import {
+    ErrorResponseFromJSON,
+    ErrorResponseToJSON,
     HealthCheckResponseFromJSON,
     HealthCheckResponseToJSON,
     RootResponseFromJSON,

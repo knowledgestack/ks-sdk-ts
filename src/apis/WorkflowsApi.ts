@@ -15,6 +15,7 @@
 
 import * as runtime from '../runtime';
 import type {
+  ErrorResponse,
   HTTPValidationError,
   PaginatedResponseWorkflowSummaryResponse,
   TemporalWorkflowStatusResponse,
@@ -23,6 +24,8 @@ import type {
   WorkflowDetailResponse,
 } from '../models/index';
 import {
+    ErrorResponseFromJSON,
+    ErrorResponseToJSON,
     HTTPValidationErrorFromJSON,
     HTTPValidationErrorToJSON,
     PaginatedResponseWorkflowSummaryResponseFromJSON,

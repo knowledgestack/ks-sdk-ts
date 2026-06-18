@@ -19,6 +19,7 @@ import type {
   AncestryResponse,
   AppendEventRequest,
   BulkTagRequest,
+  ErrorResponse,
   EventResponse,
   HTTPValidationError,
   PaginatedResponseEventResponse,
@@ -27,7 +28,10 @@ import type {
   PathPartResponse,
   PathPartTagsResponse,
   PermissionCapability,
+  SortDirection,
   SubtreeChunksResponse,
+  TransferOwnerRequest,
+  TransferOwnerResponse,
 } from '../models/index';
 import {
     AccessCheckResponseFromJSON,
@@ -38,6 +42,8 @@ import {
     AppendEventRequestToJSON,
     BulkTagRequestFromJSON,
     BulkTagRequestToJSON,
+    ErrorResponseFromJSON,
+    ErrorResponseToJSON,
     EventResponseFromJSON,
     EventResponseToJSON,
     HTTPValidationErrorFromJSON,
@@ -54,8 +60,14 @@ import {
     PathPartTagsResponseToJSON,
     PermissionCapabilityFromJSON,
     PermissionCapabilityToJSON,
+    SortDirectionFromJSON,
+    SortDirectionToJSON,
     SubtreeChunksResponseFromJSON,
     SubtreeChunksResponseToJSON,
+    TransferOwnerRequestFromJSON,
+    TransferOwnerRequestToJSON,
+    TransferOwnerResponseFromJSON,
+    TransferOwnerResponseToJSON,
 } from '../models/index';
 
 export interface AppendPathPartEventRequest {
@@ -105,13 +117,23 @@ export interface ListPathPartsRequest {
     parentPathId?: string | null;
     maxDepth?: number;
     sortOrder?: PathOrder;
+    sortDir?: SortDirection;
     limit?: number;
     offset?: number;
+    createdAfter?: Date | null;
+    createdBefore?: Date | null;
+    updatedAfter?: Date | null;
+    updatedBefore?: Date | null;
 }
 
 export interface SetPathPartTagsRequest {
     pathPartId: string;
     bulkTagRequest: BulkTagRequest;
+}
+
+export interface TransferPathPartOwnerRequest {
+    pathPartId: string;
+    transferOwnerRequest: TransferOwnerRequest;
 }
 
 /**
@@ -340,8 +362,13 @@ export interface PathPartsApiInterface {
      * @param {string} [parentPathId] Parent PathPart ID (defaults to root)
      * @param {number} [maxDepth] Maximum depth to traverse (1 &#x3D; direct children, default: 1)
      * @param {PathOrder} [sortOrder] Sort order for results (default: LOGICAL)
+     * @param {SortDirection} [sortDir] Sort direction; overrides the column\&#39;s natural default
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
+     * @param {Date} [createdAfter] Only items created at or after this timestamp (inclusive)
+     * @param {Date} [createdBefore] Only items created strictly before this timestamp
+     * @param {Date} [updatedAfter] Only items updated at or after this timestamp (inclusive)
+     * @param {Date} [updatedBefore] Only items updated strictly before this timestamp
      * @throws {RequiredError}
      * @memberof PathPartsApiInterface
      */
@@ -353,8 +380,13 @@ export interface PathPartsApiInterface {
      * @param {string} [parentPathId] Parent PathPart ID (defaults to root)
      * @param {number} [maxDepth] Maximum depth to traverse (1 &#x3D; direct children, default: 1)
      * @param {PathOrder} [sortOrder] Sort order for results (default: LOGICAL)
+     * @param {SortDirection} [sortDir] Sort direction; overrides the column\&#39;s natural default
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
+     * @param {Date} [createdAfter] Only items created at or after this timestamp (inclusive)
+     * @param {Date} [createdBefore] Only items created strictly before this timestamp
+     * @param {Date} [updatedAfter] Only items updated at or after this timestamp (inclusive)
+     * @param {Date} [updatedBefore] Only items updated strictly before this timestamp
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof PathPartsApiInterface
@@ -392,6 +424,32 @@ export interface PathPartsApiInterface {
      * Set Path Part Tags Handler
      */
     setPathPartTags(requestParameters: SetPathPartTagsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PathPartTagsResponse>;
+
+    /**
+     * Creates request options for transferPathPartOwner without sending the request
+     * @param {string} pathPartId 
+     * @param {TransferOwnerRequest} transferOwnerRequest 
+     * @throws {RequiredError}
+     * @memberof PathPartsApiInterface
+     */
+    transferPathPartOwnerRequestOpts(requestParameters: TransferPathPartOwnerRequest): Promise<runtime.RequestOpts>;
+
+    /**
+     * Transfer ownership of a shared path_part to another tenant member.  Allowed for the current owner or a tenant ADMIN/OWNER. Personal items (under /users/{uid}) and system-managed items cannot be transferred.
+     * @summary Transfer Path Part Owner Handler
+     * @param {string} pathPartId 
+     * @param {TransferOwnerRequest} transferOwnerRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof PathPartsApiInterface
+     */
+    transferPathPartOwnerRaw(requestParameters: TransferPathPartOwnerRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TransferOwnerResponse>>;
+
+    /**
+     * Transfer ownership of a shared path_part to another tenant member.  Allowed for the current owner or a tenant ADMIN/OWNER. Personal items (under /users/{uid}) and system-managed items cannot be transferred.
+     * Transfer Path Part Owner Handler
+     */
+    transferPathPartOwner(requestParameters: TransferPathPartOwnerRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TransferOwnerResponse>;
 
 }
 
@@ -921,12 +979,32 @@ export class PathPartsApi extends runtime.BaseAPI implements PathPartsApiInterfa
             queryParameters['sort_order'] = requestParameters['sortOrder'];
         }
 
+        if (requestParameters['sortDir'] != null) {
+            queryParameters['sort_dir'] = requestParameters['sortDir'];
+        }
+
         if (requestParameters['limit'] != null) {
             queryParameters['limit'] = requestParameters['limit'];
         }
 
         if (requestParameters['offset'] != null) {
             queryParameters['offset'] = requestParameters['offset'];
+        }
+
+        if (requestParameters['createdAfter'] != null) {
+            queryParameters['created_after'] = (requestParameters['createdAfter'] as any).toISOString();
+        }
+
+        if (requestParameters['createdBefore'] != null) {
+            queryParameters['created_before'] = (requestParameters['createdBefore'] as any).toISOString();
+        }
+
+        if (requestParameters['updatedAfter'] != null) {
+            queryParameters['updated_after'] = (requestParameters['updatedAfter'] as any).toISOString();
+        }
+
+        if (requestParameters['updatedBefore'] != null) {
+            queryParameters['updated_before'] = (requestParameters['updatedBefore'] as any).toISOString();
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -1032,6 +1110,71 @@ export class PathPartsApi extends runtime.BaseAPI implements PathPartsApiInterfa
      */
     async setPathPartTags(requestParameters: SetPathPartTagsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PathPartTagsResponse> {
         const response = await this.setPathPartTagsRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for transferPathPartOwner without sending the request
+     */
+    async transferPathPartOwnerRequestOpts(requestParameters: TransferPathPartOwnerRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['pathPartId'] == null) {
+            throw new runtime.RequiredError(
+                'pathPartId',
+                'Required parameter "pathPartId" was null or undefined when calling transferPathPartOwner().'
+            );
+        }
+
+        if (requestParameters['transferOwnerRequest'] == null) {
+            throw new runtime.RequiredError(
+                'transferOwnerRequest',
+                'Required parameter "transferOwnerRequest" was null or undefined when calling transferPathPartOwner().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/v1/path-parts/{path_part_id}/owner`;
+        urlPath = urlPath.replace(`{${"path_part_id"}}`, encodeURIComponent(String(requestParameters['pathPartId'])));
+
+        return {
+            path: urlPath,
+            method: 'PUT',
+            headers: headerParameters,
+            query: queryParameters,
+            body: TransferOwnerRequestToJSON(requestParameters['transferOwnerRequest']),
+        };
+    }
+
+    /**
+     * Transfer ownership of a shared path_part to another tenant member.  Allowed for the current owner or a tenant ADMIN/OWNER. Personal items (under /users/{uid}) and system-managed items cannot be transferred.
+     * Transfer Path Part Owner Handler
+     */
+    async transferPathPartOwnerRaw(requestParameters: TransferPathPartOwnerRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TransferOwnerResponse>> {
+        const requestOptions = await this.transferPathPartOwnerRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => TransferOwnerResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * Transfer ownership of a shared path_part to another tenant member.  Allowed for the current owner or a tenant ADMIN/OWNER. Personal items (under /users/{uid}) and system-managed items cannot be transferred.
+     * Transfer Path Part Owner Handler
+     */
+    async transferPathPartOwner(requestParameters: TransferPathPartOwnerRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TransferOwnerResponse> {
+        const response = await this.transferPathPartOwnerRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
