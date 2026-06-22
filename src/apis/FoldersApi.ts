@@ -313,7 +313,7 @@ export interface FoldersApiInterface {
     searchItemsRequestOpts(requestParameters: SearchItemsRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * Search for folders and documents by name.  Performs a case-insensitive partial name match using trigram indexing. Results are filtered by the current user\'s path permissions.  When parent_path_part_id is provided, only items under that folder are searched. Otherwise, all accessible items across the tenant are searched.
+     * Search for folders, documents, and data-source connectors by name.  Performs a case-insensitive partial name match using trigram indexing. Results are filtered by the current user\'s path permissions.  When parent_path_part_id is provided, only items under that folder are searched. Otherwise, all accessible items across the tenant are searched.
      * @summary Search Items Handler
      * @param {string} nameLike Case-insensitive partial name search
      * @param {SearchSortOrder} [sortOrder] Sort order for results (default: NAME)
@@ -329,7 +329,7 @@ export interface FoldersApiInterface {
     searchItemsRaw(requestParameters: SearchItemsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseWorkflowDefinitionResponseWorkflowRunResponseDataSourceResponseDataSourceTableResponseApiConnectionResponseDiscriminator>>;
 
     /**
-     * Search for folders and documents by name.  Performs a case-insensitive partial name match using trigram indexing. Results are filtered by the current user\'s path permissions.  When parent_path_part_id is provided, only items under that folder are searched. Otherwise, all accessible items across the tenant are searched.
+     * Search for folders, documents, and data-source connectors by name.  Performs a case-insensitive partial name match using trigram indexing. Results are filtered by the current user\'s path permissions.  When parent_path_part_id is provided, only items under that folder are searched. Otherwise, all accessible items across the tenant are searched.
      * Search Items Handler
      */
     searchItems(requestParameters: SearchItemsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseWorkflowDefinitionResponseWorkflowRunResponseDataSourceResponseDataSourceTableResponseApiConnectionResponseDiscriminator>;
@@ -830,7 +830,7 @@ export class FoldersApi extends runtime.BaseAPI implements FoldersApiInterface {
     }
 
     /**
-     * Search for folders and documents by name.  Performs a case-insensitive partial name match using trigram indexing. Results are filtered by the current user\'s path permissions.  When parent_path_part_id is provided, only items under that folder are searched. Otherwise, all accessible items across the tenant are searched.
+     * Search for folders, documents, and data-source connectors by name.  Performs a case-insensitive partial name match using trigram indexing. Results are filtered by the current user\'s path permissions.  When parent_path_part_id is provided, only items under that folder are searched. Otherwise, all accessible items across the tenant are searched.
      * Search Items Handler
      */
     async searchItemsRaw(requestParameters: SearchItemsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseWorkflowDefinitionResponseWorkflowRunResponseDataSourceResponseDataSourceTableResponseApiConnectionResponseDiscriminator>> {
@@ -841,7 +841,7 @@ export class FoldersApi extends runtime.BaseAPI implements FoldersApiInterface {
     }
 
     /**
-     * Search for folders and documents by name.  Performs a case-insensitive partial name match using trigram indexing. Results are filtered by the current user\'s path permissions.  When parent_path_part_id is provided, only items under that folder are searched. Otherwise, all accessible items across the tenant are searched.
+     * Search for folders, documents, and data-source connectors by name.  Performs a case-insensitive partial name match using trigram indexing. Results are filtered by the current user\'s path permissions.  When parent_path_part_id is provided, only items under that folder are searched. Otherwise, all accessible items across the tenant are searched.
      * Search Items Handler
      */
     async searchItems(requestParameters: SearchItemsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseWorkflowDefinitionResponseWorkflowRunResponseDataSourceResponseDataSourceTableResponseApiConnectionResponseDiscriminator> {

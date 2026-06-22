@@ -15,6 +15,9 @@
 import { mapValues } from '../runtime';
 /**
  * A read-only SQL query the caller (or agent) wrote.
+ * 
+ * ``offset`` skips that many leading result rows, so callers can page through
+ * a large result a window of ``max_rows`` at a time.
  * @export
  * @interface DataSourceQueryRequest
  */
@@ -31,6 +34,12 @@ export interface DataSourceQueryRequest {
      * @memberof DataSourceQueryRequest
      */
     maxRows?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof DataSourceQueryRequest
+     */
+    offset?: number;
 }
 export const DataSourceQueryRequestPropertyValidationAttributesMap: {
     [property: string]: {
@@ -51,6 +60,10 @@ export const DataSourceQueryRequestPropertyValidationAttributesMap: {
         maximum: 10000,
         exclusiveMaximum: false,
         minimum: 1,
+        exclusiveMinimum: false,
+    },
+    offset: {
+        minimum: 0,
         exclusiveMinimum: false,
     },
 }
@@ -76,6 +89,7 @@ export function DataSourceQueryRequestFromJSONTyped(json: any, ignoreDiscriminat
         
         'sql': json['sql'],
         'maxRows': json['max_rows'] == null ? undefined : json['max_rows'],
+        'offset': json['offset'] == null ? undefined : json['offset'],
     };
 }
 
@@ -92,6 +106,7 @@ export function DataSourceQueryRequestToJSONTyped(value?: DataSourceQueryRequest
         
         'sql': value['sql'],
         'max_rows': value['maxRows'],
+        'offset': value['offset'],
     };
 }
 
