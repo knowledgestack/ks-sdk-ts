@@ -106,7 +106,7 @@ export interface ThreadsApiInterface {
     createThreadRequestOpts(requestParameters: CreateThreadOperationRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * Create a new thread.  If parent_path_part_id is omitted, the thread is created under the user\'s /users/{user_id}/threads/ folder (auto-provisioned if needed).
+     * Create a new thread.  If parent_path_part_id is omitted, the thread is created under the user\'s /users/{user_id}/threads/ folder (auto-provisioned if needed).  With ``message_for_title``, the thread is created as \"New Thread\" and its title is summarized in a background task; the FE learns the final title via a ``THREAD_TITLE_CHANGED`` WebSocket event.
      * @summary Create Thread Handler
      * @param {CreateThreadRequest} createThreadRequest 
      * @param {*} [options] Override http request option.
@@ -116,7 +116,7 @@ export interface ThreadsApiInterface {
     createThreadRaw(requestParameters: CreateThreadOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ThreadResponse>>;
 
     /**
-     * Create a new thread.  If parent_path_part_id is omitted, the thread is created under the user\'s /users/{user_id}/threads/ folder (auto-provisioned if needed).
+     * Create a new thread.  If parent_path_part_id is omitted, the thread is created under the user\'s /users/{user_id}/threads/ folder (auto-provisioned if needed).  With ``message_for_title``, the thread is created as \"New Thread\" and its title is summarized in a background task; the FE learns the final title via a ``THREAD_TITLE_CHANGED`` WebSocket event.
      * Create Thread Handler
      */
     createThread(requestParameters: CreateThreadOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ThreadResponse>;
@@ -336,7 +336,7 @@ export class ThreadsApi extends runtime.BaseAPI implements ThreadsApiInterface {
     }
 
     /**
-     * Create a new thread.  If parent_path_part_id is omitted, the thread is created under the user\'s /users/{user_id}/threads/ folder (auto-provisioned if needed).
+     * Create a new thread.  If parent_path_part_id is omitted, the thread is created under the user\'s /users/{user_id}/threads/ folder (auto-provisioned if needed).  With ``message_for_title``, the thread is created as \"New Thread\" and its title is summarized in a background task; the FE learns the final title via a ``THREAD_TITLE_CHANGED`` WebSocket event.
      * Create Thread Handler
      */
     async createThreadRaw(requestParameters: CreateThreadOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ThreadResponse>> {
@@ -347,7 +347,7 @@ export class ThreadsApi extends runtime.BaseAPI implements ThreadsApiInterface {
     }
 
     /**
-     * Create a new thread.  If parent_path_part_id is omitted, the thread is created under the user\'s /users/{user_id}/threads/ folder (auto-provisioned if needed).
+     * Create a new thread.  If parent_path_part_id is omitted, the thread is created under the user\'s /users/{user_id}/threads/ folder (auto-provisioned if needed).  With ``message_for_title``, the thread is created as \"New Thread\" and its title is summarized in a background task; the FE learns the final title via a ``THREAD_TITLE_CHANGED`` WebSocket event.
      * Create Thread Handler
      */
     async createThread(requestParameters: CreateThreadOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ThreadResponse> {
