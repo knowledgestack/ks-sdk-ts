@@ -37,7 +37,7 @@ export interface CheckpointDetails {
      */
     uptoMessageCreatedAt: Date;
     /**
-     * Agent-internal CompressionSummary as a JSON blob. Server does not interpret this; the agent serializes/deserializes via its own model.
+     * Agent-internal summary blob (currently {"text": ...}). Server does not interpret this; the agent reads the summary back from the message's content.text.
      * @type {{ [key: string]: any; }}
      * @memberof CheckpointDetails
      */
