@@ -56,6 +56,10 @@ export interface CreateDataSourceOperationRequest {
     createDataSourceRequest: CreateDataSourceRequest;
 }
 
+export interface DeleteDataSourceRequest {
+    dataSourceId: string;
+}
+
 export interface GetDataSourceRequest {
     dataSourceId: string;
 }
@@ -114,6 +118,30 @@ export interface DataSourcesApiInterface {
      * Create Data Source Handler
      */
     createDataSource(requestParameters: CreateDataSourceOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DataSourceResponse>;
+
+    /**
+     * Creates request options for deleteDataSource without sending the request
+     * @param {string} dataSourceId 
+     * @throws {RequiredError}
+     * @memberof DataSourcesApiInterface
+     */
+    deleteDataSourceRequestOpts(requestParameters: DeleteDataSourceRequest): Promise<runtime.RequestOpts>;
+
+    /**
+     * Move a connector and its modeled tables to trash.  Soft-delete via the path_part subtree (the tables are children, so they trash with it). Connectors carry no Qdrant vectors, so there is no trash-sync workflow.
+     * @summary Delete Data Source Handler
+     * @param {string} dataSourceId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DataSourcesApiInterface
+     */
+    deleteDataSourceRaw(requestParameters: DeleteDataSourceRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>>;
+
+    /**
+     * Move a connector and its modeled tables to trash.  Soft-delete via the path_part subtree (the tables are children, so they trash with it). Connectors carry no Qdrant vectors, so there is no trash-sync workflow.
+     * Delete Data Source Handler
+     */
+    deleteDataSource(requestParameters: DeleteDataSourceRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void>;
 
     /**
      * Creates request options for getDataSource without sending the request
@@ -329,6 +357,60 @@ export class DataSourcesApi extends runtime.BaseAPI implements DataSourcesApiInt
     async createDataSource(requestParameters: CreateDataSourceOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DataSourceResponse> {
         const response = await this.createDataSourceRaw(requestParameters, initOverrides);
         return await response.value();
+    }
+
+    /**
+     * Creates request options for deleteDataSource without sending the request
+     */
+    async deleteDataSourceRequestOpts(requestParameters: DeleteDataSourceRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['dataSourceId'] == null) {
+            throw new runtime.RequiredError(
+                'dataSourceId',
+                'Required parameter "dataSourceId" was null or undefined when calling deleteDataSource().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/v1/data-sources/{data_source_id}`;
+        urlPath = urlPath.replace(`{${"data_source_id"}}`, encodeURIComponent(String(requestParameters['dataSourceId'])));
+
+        return {
+            path: urlPath,
+            method: 'DELETE',
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Move a connector and its modeled tables to trash.  Soft-delete via the path_part subtree (the tables are children, so they trash with it). Connectors carry no Qdrant vectors, so there is no trash-sync workflow.
+     * Delete Data Source Handler
+     */
+    async deleteDataSourceRaw(requestParameters: DeleteDataSourceRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        const requestOptions = await this.deleteDataSourceRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * Move a connector and its modeled tables to trash.  Soft-delete via the path_part subtree (the tables are children, so they trash with it). Connectors carry no Qdrant vectors, so there is no trash-sync workflow.
+     * Delete Data Source Handler
+     */
+    async deleteDataSource(requestParameters: DeleteDataSourceRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.deleteDataSourceRaw(requestParameters, initOverrides);
     }
 
     /**

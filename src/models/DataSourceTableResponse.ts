@@ -13,6 +13,13 @@
  */
 
 import { mapValues } from '../runtime';
+import type { ItemPermissions } from './ItemPermissions';
+import {
+    ItemPermissionsFromJSON,
+    ItemPermissionsFromJSONTyped,
+    ItemPermissionsToJSON,
+    ItemPermissionsToJSONTyped,
+} from './ItemPermissions';
 import type { PathPartApprovalState } from './PathPartApprovalState';
 import {
     PathPartApprovalStateFromJSON,
@@ -101,6 +108,12 @@ export interface DataSourceTableResponse {
     approvalState: PathPartApprovalState;
     /**
      * 
+     * @type {ItemPermissions}
+     * @memberof DataSourceTableResponse
+     */
+    permissions: ItemPermissions;
+    /**
+     * 
      * @type {Date}
      * @memberof DataSourceTableResponse
      */
@@ -155,6 +168,7 @@ export function instanceOfDataSourceTableResponse(value: object): value is DataS
     if (!('description' in value) || value['description'] === undefined) return false;
     if (!('columnConfig' in value) || value['columnConfig'] === undefined) return false;
     if (!('approvalState' in value) || value['approvalState'] === undefined) return false;
+    if (!('permissions' in value) || value['permissions'] === undefined) return false;
     if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
     if (!('updatedAt' in value) || value['updatedAt'] === undefined) return false;
     return true;
@@ -182,6 +196,7 @@ export function DataSourceTableResponseFromJSONTyped(json: any, ignoreDiscrimina
         'description': json['description'],
         'columnConfig': json['column_config'],
         'approvalState': PathPartApprovalStateFromJSON(json['approval_state']),
+        'permissions': ItemPermissionsFromJSON(json['permissions']),
         'createdAt': (new Date(json['created_at'])),
         'updatedAt': (new Date(json['updated_at'])),
     };
@@ -210,6 +225,7 @@ export function DataSourceTableResponseToJSONTyped(value?: DataSourceTableRespon
         'description': value['description'],
         'column_config': value['columnConfig'],
         'approval_state': PathPartApprovalStateToJSON(value['approvalState']),
+        'permissions': ItemPermissionsToJSON(value['permissions']),
         'created_at': value['createdAt'].toISOString(),
         'updated_at': value['updatedAt'].toISOString(),
     };

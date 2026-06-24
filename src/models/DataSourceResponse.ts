@@ -13,6 +13,13 @@
  */
 
 import { mapValues } from '../runtime';
+import type { ItemPermissions } from './ItemPermissions';
+import {
+    ItemPermissionsFromJSON,
+    ItemPermissionsFromJSONTyped,
+    ItemPermissionsToJSON,
+    ItemPermissionsToJSONTyped,
+} from './ItemPermissions';
 import type { PathPartApprovalState } from './PathPartApprovalState';
 import {
     PathPartApprovalStateFromJSON,
@@ -106,6 +113,12 @@ export interface DataSourceResponse {
     owner?: UserInfo | null;
     /**
      * 
+     * @type {ItemPermissions}
+     * @memberof DataSourceResponse
+     */
+    permissions: ItemPermissions;
+    /**
+     * 
      * @type {Date}
      * @memberof DataSourceResponse
      */
@@ -157,6 +170,7 @@ export function instanceOfDataSourceResponse(value: object): value is DataSource
     if (!('name' in value) || value['name'] === undefined) return false;
     if (!('engine' in value) || value['engine'] === undefined) return false;
     if (!('approvalState' in value) || value['approvalState'] === undefined) return false;
+    if (!('permissions' in value) || value['permissions'] === undefined) return false;
     if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
     if (!('updatedAt' in value) || value['updatedAt'] === undefined) return false;
     return true;
@@ -182,6 +196,7 @@ export function DataSourceResponseFromJSONTyped(json: any, ignoreDiscriminator: 
         'engine': DataSourceEngineFromJSON(json['engine']),
         'approvalState': PathPartApprovalStateFromJSON(json['approval_state']),
         'owner': json['owner'] == null ? undefined : UserInfoFromJSON(json['owner']),
+        'permissions': ItemPermissionsFromJSON(json['permissions']),
         'createdAt': (new Date(json['created_at'])),
         'updatedAt': (new Date(json['updated_at'])),
     };
@@ -208,6 +223,7 @@ export function DataSourceResponseToJSONTyped(value?: DataSourceResponse | null,
         'engine': DataSourceEngineToJSON(value['engine']),
         'approval_state': PathPartApprovalStateToJSON(value['approvalState']),
         'owner': UserInfoToJSON(value['owner']),
+        'permissions': ItemPermissionsToJSON(value['permissions']),
         'created_at': value['createdAt'].toISOString(),
         'updated_at': value['updatedAt'].toISOString(),
     };

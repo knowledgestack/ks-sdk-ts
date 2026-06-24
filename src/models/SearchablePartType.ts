@@ -20,7 +20,8 @@
 export const SearchablePartType = {
     Folder: 'FOLDER',
     Document: 'DOCUMENT',
-    DataSource: 'DATA_SOURCE'
+    DataSource: 'DATA_SOURCE',
+    ApiConnection: 'API_CONNECTION'
 } as const;
 export type SearchablePartType = typeof SearchablePartType[keyof typeof SearchablePartType];
 

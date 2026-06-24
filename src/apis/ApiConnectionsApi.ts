@@ -52,6 +52,10 @@ export interface CreateApiConnectionOperationRequest {
     createApiConnectionRequest: CreateApiConnectionRequest;
 }
 
+export interface DeleteApiConnectionRequest {
+    connectionId: string;
+}
+
 export interface ExecuteApiConnectionRequestRequest {
     connectionId: string;
     apiConnectionRequestRequest: ApiConnectionRequestRequest;
@@ -122,6 +126,30 @@ export interface ApiConnectionsApiInterface {
      * Create Api Connection Handler
      */
     createApiConnection(requestParameters: CreateApiConnectionOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ApiConnectionResponse>;
+
+    /**
+     * Creates request options for deleteApiConnection without sending the request
+     * @param {string} connectionId 
+     * @throws {RequiredError}
+     * @memberof ApiConnectionsApiInterface
+     */
+    deleteApiConnectionRequestOpts(requestParameters: DeleteApiConnectionRequest): Promise<runtime.RequestOpts>;
+
+    /**
+     * Move a connection to trash (Admin/Owner).  Soft-delete via the path_part subtree, mirroring create/update authz. A connection holds no Qdrant vectors, so there is no trash-sync workflow.
+     * @summary Delete Api Connection Handler
+     * @param {string} connectionId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ApiConnectionsApiInterface
+     */
+    deleteApiConnectionRaw(requestParameters: DeleteApiConnectionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>>;
+
+    /**
+     * Move a connection to trash (Admin/Owner).  Soft-delete via the path_part subtree, mirroring create/update authz. A connection holds no Qdrant vectors, so there is no trash-sync workflow.
+     * Delete Api Connection Handler
+     */
+    deleteApiConnection(requestParameters: DeleteApiConnectionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void>;
 
     /**
      * Creates request options for executeApiConnectionRequest without sending the request
@@ -326,6 +354,60 @@ export class ApiConnectionsApi extends runtime.BaseAPI implements ApiConnections
     async createApiConnection(requestParameters: CreateApiConnectionOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ApiConnectionResponse> {
         const response = await this.createApiConnectionRaw(requestParameters, initOverrides);
         return await response.value();
+    }
+
+    /**
+     * Creates request options for deleteApiConnection without sending the request
+     */
+    async deleteApiConnectionRequestOpts(requestParameters: DeleteApiConnectionRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['connectionId'] == null) {
+            throw new runtime.RequiredError(
+                'connectionId',
+                'Required parameter "connectionId" was null or undefined when calling deleteApiConnection().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/v1/api-connections/{connection_id}`;
+        urlPath = urlPath.replace(`{${"connection_id"}}`, encodeURIComponent(String(requestParameters['connectionId'])));
+
+        return {
+            path: urlPath,
+            method: 'DELETE',
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Move a connection to trash (Admin/Owner).  Soft-delete via the path_part subtree, mirroring create/update authz. A connection holds no Qdrant vectors, so there is no trash-sync workflow.
+     * Delete Api Connection Handler
+     */
+    async deleteApiConnectionRaw(requestParameters: DeleteApiConnectionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        const requestOptions = await this.deleteApiConnectionRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * Move a connection to trash (Admin/Owner).  Soft-delete via the path_part subtree, mirroring create/update authz. A connection holds no Qdrant vectors, so there is no trash-sync workflow.
+     * Delete Api Connection Handler
+     */
+    async deleteApiConnection(requestParameters: DeleteApiConnectionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.deleteApiConnectionRaw(requestParameters, initOverrides);
     }
 
     /**
