@@ -45,6 +45,12 @@ export interface GroupResponse {
     description: string | null;
     /**
      * 
+     * @type {string}
+     * @memberof GroupResponse
+     */
+    idpGroupId?: string | null;
+    /**
+     * 
      * @type {number}
      * @memberof GroupResponse
      */
@@ -107,6 +113,7 @@ export function GroupResponseFromJSONTyped(json: any, ignoreDiscriminator: boole
         'tenantId': json['tenant_id'],
         'name': json['name'],
         'description': json['description'],
+        'idpGroupId': json['idp_group_id'] == null ? undefined : json['idp_group_id'],
         'memberCount': json['member_count'] == null ? undefined : json['member_count'],
         'createdAt': (new Date(json['created_at'])),
         'updatedAt': (new Date(json['updated_at'])),
@@ -128,6 +135,7 @@ export function GroupResponseToJSONTyped(value?: GroupResponse | null, ignoreDis
         'tenant_id': value['tenantId'],
         'name': value['name'],
         'description': value['description'],
+        'idp_group_id': value['idpGroupId'],
         'member_count': value['memberCount'],
         'created_at': value['createdAt'].toISOString(),
         'updated_at': value['updatedAt'].toISOString(),

@@ -51,6 +51,36 @@ export interface DirectorySyncResponse {
     usersSkipped?: number;
     /**
      * 
+     * @type {number}
+     * @memberof DirectorySyncResponse
+     */
+    seatCapExcludedNum?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof DirectorySyncResponse
+     */
+    groupsCreated?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof DirectorySyncResponse
+     */
+    groupsUpdated?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof DirectorySyncResponse
+     */
+    groupMembershipsAdded?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof DirectorySyncResponse
+     */
+    groupMembershipsRemoved?: number;
+    /**
+     * 
      * @type {Array<string>}
      * @memberof DirectorySyncResponse
      */
@@ -102,6 +132,11 @@ export function DirectorySyncResponseFromJSONTyped(json: any, ignoreDiscriminato
         'usersActivated': json['users_activated'] == null ? undefined : json['users_activated'],
         'usersDeactivated': json['users_deactivated'] == null ? undefined : json['users_deactivated'],
         'usersSkipped': json['users_skipped'] == null ? undefined : json['users_skipped'],
+        'seatCapExcludedNum': json['seat_cap_excluded_num'] == null ? undefined : json['seat_cap_excluded_num'],
+        'groupsCreated': json['groups_created'] == null ? undefined : json['groups_created'],
+        'groupsUpdated': json['groups_updated'] == null ? undefined : json['groups_updated'],
+        'groupMembershipsAdded': json['group_memberships_added'] == null ? undefined : json['group_memberships_added'],
+        'groupMembershipsRemoved': json['group_memberships_removed'] == null ? undefined : json['group_memberships_removed'],
         'warnings': json['warnings'] == null ? undefined : json['warnings'],
         'errors': json['errors'] == null ? undefined : json['errors'],
     };
@@ -123,6 +158,11 @@ export function DirectorySyncResponseToJSONTyped(value?: DirectorySyncResponse |
         'users_activated': value['usersActivated'],
         'users_deactivated': value['usersDeactivated'],
         'users_skipped': value['usersSkipped'],
+        'seat_cap_excluded_num': value['seatCapExcludedNum'],
+        'groups_created': value['groupsCreated'],
+        'groups_updated': value['groupsUpdated'],
+        'group_memberships_added': value['groupMembershipsAdded'],
+        'group_memberships_removed': value['groupMembershipsRemoved'],
         'warnings': value['warnings'],
         'errors': value['errors'],
     };

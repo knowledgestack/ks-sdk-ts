@@ -45,6 +45,12 @@ export interface MembershipResponse {
     userId: string;
     /**
      * 
+     * @type {boolean}
+     * @memberof MembershipResponse
+     */
+    idpManaged?: boolean;
+    /**
+     * 
      * @type {Date}
      * @memberof MembershipResponse
      */
@@ -101,6 +107,7 @@ export function MembershipResponseFromJSONTyped(json: any, ignoreDiscriminator: 
         'tenantId': json['tenant_id'],
         'groupId': json['group_id'],
         'userId': json['user_id'],
+        'idpManaged': json['idp_managed'] == null ? undefined : json['idp_managed'],
         'createdAt': (new Date(json['created_at'])),
         'updatedAt': (new Date(json['updated_at'])),
     };
@@ -121,6 +128,7 @@ export function MembershipResponseToJSONTyped(value?: MembershipResponse | null,
         'tenant_id': value['tenantId'],
         'group_id': value['groupId'],
         'user_id': value['userId'],
+        'idp_managed': value['idpManaged'],
         'created_at': value['createdAt'].toISOString(),
         'updated_at': value['updatedAt'].toISOString(),
     };
