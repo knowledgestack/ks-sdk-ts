@@ -21,6 +21,7 @@ import type {
   PaginatedResponseWorkflowRunResponse,
   SetWorkflowRunApprovalRequest,
   SortDirection,
+  StartWorkflowRunRequest,
   UpdateWorkflowRunRequest,
   WorkflowCallbackResponse,
   WorkflowExecutionState,
@@ -42,6 +43,8 @@ import {
     SetWorkflowRunApprovalRequestToJSON,
     SortDirectionFromJSON,
     SortDirectionToJSON,
+    StartWorkflowRunRequestFromJSON,
+    StartWorkflowRunRequestToJSON,
     UpdateWorkflowRunRequestFromJSON,
     UpdateWorkflowRunRequestToJSON,
     WorkflowCallbackResponseFromJSON,
@@ -102,8 +105,9 @@ export interface SetWorkflowRunApprovalOperationRequest {
     setWorkflowRunApprovalRequest: SetWorkflowRunApprovalRequest;
 }
 
-export interface StartWorkflowRunRequest {
+export interface StartWorkflowRunOperationRequest {
     runId: string;
+    startWorkflowRunRequest?: StartWorkflowRunRequest | null;
 }
 
 export interface StopWorkflowRunRequest {
@@ -328,26 +332,28 @@ export interface WorkflowRunsApiInterface {
     /**
      * Creates request options for startWorkflowRun without sending the request
      * @param {string} runId 
+     * @param {StartWorkflowRunRequest} [startWorkflowRunRequest] 
      * @throws {RequiredError}
      * @memberof WorkflowRunsApiInterface
      */
-    startWorkflowRunRequestOpts(requestParameters: StartWorkflowRunRequest): Promise<runtime.RequestOpts>;
+    startWorkflowRunRequestOpts(requestParameters: StartWorkflowRunOperationRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * Flip a NOT_STARTED run to IN_PROGRESS and dispatch its agent run.  Idempotent on IN_PROGRESS (returns the row). Terminal states → 409. Inputs still ingesting or in a failed terminal state → 409. The snapshot is built at this point (KB DOCUMENTs resolve to active versions, uploaded DVs are walked from inputs/, KB FOLDERs stay live).
+     * Flip a NOT_STARTED run to IN_PROGRESS and dispatch its agent run.  Idempotent on IN_PROGRESS (returns the row). Terminal states → 409. Inputs still ingesting or in a failed terminal state → 409. The snapshot is built at this point (KB DOCUMENTs resolve to active versions, uploaded DVs are walked from inputs/, KB FOLDERs stay live).  The body is optional; ``user_message`` (when sent) is pinned into the snapshot and shown in the run thread (see ``StartWorkflowRunRequest``).
      * @summary Start Workflow Run Handler
      * @param {string} runId 
+     * @param {StartWorkflowRunRequest} [startWorkflowRunRequest] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof WorkflowRunsApiInterface
      */
-    startWorkflowRunRaw(requestParameters: StartWorkflowRunRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<WorkflowRunResponse>>;
+    startWorkflowRunRaw(requestParameters: StartWorkflowRunOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<WorkflowRunResponse>>;
 
     /**
-     * Flip a NOT_STARTED run to IN_PROGRESS and dispatch its agent run.  Idempotent on IN_PROGRESS (returns the row). Terminal states → 409. Inputs still ingesting or in a failed terminal state → 409. The snapshot is built at this point (KB DOCUMENTs resolve to active versions, uploaded DVs are walked from inputs/, KB FOLDERs stay live).
+     * Flip a NOT_STARTED run to IN_PROGRESS and dispatch its agent run.  Idempotent on IN_PROGRESS (returns the row). Terminal states → 409. Inputs still ingesting or in a failed terminal state → 409. The snapshot is built at this point (KB DOCUMENTs resolve to active versions, uploaded DVs are walked from inputs/, KB FOLDERs stay live).  The body is optional; ``user_message`` (when sent) is pinned into the snapshot and shown in the run thread (see ``StartWorkflowRunRequest``).
      * Start Workflow Run Handler
      */
-    startWorkflowRun(requestParameters: StartWorkflowRunRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<WorkflowRunResponse>;
+    startWorkflowRun(requestParameters: StartWorkflowRunOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<WorkflowRunResponse>;
 
     /**
      * Creates request options for stopWorkflowRun without sending the request
@@ -883,7 +889,7 @@ export class WorkflowRunsApi extends runtime.BaseAPI implements WorkflowRunsApiI
     /**
      * Creates request options for startWorkflowRun without sending the request
      */
-    async startWorkflowRunRequestOpts(requestParameters: StartWorkflowRunRequest): Promise<runtime.RequestOpts> {
+    async startWorkflowRunRequestOpts(requestParameters: StartWorkflowRunOperationRequest): Promise<runtime.RequestOpts> {
         if (requestParameters['runId'] == null) {
             throw new runtime.RequiredError(
                 'runId',
@@ -894,6 +900,8 @@ export class WorkflowRunsApi extends runtime.BaseAPI implements WorkflowRunsApiI
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -912,14 +920,15 @@ export class WorkflowRunsApi extends runtime.BaseAPI implements WorkflowRunsApiI
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
+            body: StartWorkflowRunRequestToJSON(requestParameters['startWorkflowRunRequest']),
         };
     }
 
     /**
-     * Flip a NOT_STARTED run to IN_PROGRESS and dispatch its agent run.  Idempotent on IN_PROGRESS (returns the row). Terminal states → 409. Inputs still ingesting or in a failed terminal state → 409. The snapshot is built at this point (KB DOCUMENTs resolve to active versions, uploaded DVs are walked from inputs/, KB FOLDERs stay live).
+     * Flip a NOT_STARTED run to IN_PROGRESS and dispatch its agent run.  Idempotent on IN_PROGRESS (returns the row). Terminal states → 409. Inputs still ingesting or in a failed terminal state → 409. The snapshot is built at this point (KB DOCUMENTs resolve to active versions, uploaded DVs are walked from inputs/, KB FOLDERs stay live).  The body is optional; ``user_message`` (when sent) is pinned into the snapshot and shown in the run thread (see ``StartWorkflowRunRequest``).
      * Start Workflow Run Handler
      */
-    async startWorkflowRunRaw(requestParameters: StartWorkflowRunRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<WorkflowRunResponse>> {
+    async startWorkflowRunRaw(requestParameters: StartWorkflowRunOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<WorkflowRunResponse>> {
         const requestOptions = await this.startWorkflowRunRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -927,10 +936,10 @@ export class WorkflowRunsApi extends runtime.BaseAPI implements WorkflowRunsApiI
     }
 
     /**
-     * Flip a NOT_STARTED run to IN_PROGRESS and dispatch its agent run.  Idempotent on IN_PROGRESS (returns the row). Terminal states → 409. Inputs still ingesting or in a failed terminal state → 409. The snapshot is built at this point (KB DOCUMENTs resolve to active versions, uploaded DVs are walked from inputs/, KB FOLDERs stay live).
+     * Flip a NOT_STARTED run to IN_PROGRESS and dispatch its agent run.  Idempotent on IN_PROGRESS (returns the row). Terminal states → 409. Inputs still ingesting or in a failed terminal state → 409. The snapshot is built at this point (KB DOCUMENTs resolve to active versions, uploaded DVs are walked from inputs/, KB FOLDERs stay live).  The body is optional; ``user_message`` (when sent) is pinned into the snapshot and shown in the run thread (see ``StartWorkflowRunRequest``).
      * Start Workflow Run Handler
      */
-    async startWorkflowRun(requestParameters: StartWorkflowRunRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<WorkflowRunResponse> {
+    async startWorkflowRun(requestParameters: StartWorkflowRunOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<WorkflowRunResponse> {
         const response = await this.startWorkflowRunRaw(requestParameters, initOverrides);
         return await response.value();
     }

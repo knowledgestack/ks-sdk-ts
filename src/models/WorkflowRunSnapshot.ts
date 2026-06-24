@@ -66,6 +66,12 @@ export interface WorkflowRunSnapshot {
      * @memberof WorkflowRunSnapshot
      */
     inputs: Array<InputSnapshot>;
+    /**
+     * Optional free-text message the caller supplied at Start. Pinned here so the runner injects it into the agent's first user turn and it survives retry, redrive, and workflow-thread follow-ups (all of which re-assemble the prompt from this snapshot).
+     * @type {string}
+     * @memberof WorkflowRunSnapshot
+     */
+    userMessage?: string | null;
 }
 export const WorkflowRunSnapshotPropertyValidationAttributesMap: {
     [property: string]: {
@@ -82,6 +88,9 @@ export const WorkflowRunSnapshotPropertyValidationAttributesMap: {
         uniqueItems?: boolean
     }
 } = {
+    userMessage: {
+        maxLength: 4000,
+    },
 }
 
 
@@ -110,6 +119,7 @@ export function WorkflowRunSnapshotFromJSONTyped(json: any, ignoreDiscriminator:
         'maxRunDurationSeconds': json['max_run_duration_seconds'],
         'instruction': InstructionSnapshotFromJSON(json['instruction']),
         'inputs': ((json['inputs'] as Array<any>).map(InputSnapshotFromJSON)),
+        'userMessage': json['user_message'] == null ? undefined : json['user_message'],
     };
 }
 
@@ -128,6 +138,7 @@ export function WorkflowRunSnapshotToJSONTyped(value?: WorkflowRunSnapshot | nul
         'max_run_duration_seconds': value['maxRunDurationSeconds'],
         'instruction': InstructionSnapshotToJSON(value['instruction']),
         'inputs': ((value['inputs'] as Array<any>).map(InputSnapshotToJSON)),
+        'user_message': value['userMessage'],
     };
 }
 

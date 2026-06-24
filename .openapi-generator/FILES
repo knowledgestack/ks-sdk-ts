@@ -236,6 +236,7 @@ docs/SetApprovalStateRequest.md
 docs/SetWorkflowRunApprovalRequest.md
 docs/SignInRequest.md
 docs/SortDirection.md
+docs/StartWorkflowRunRequest.md
 docs/StepInput.md
 docs/StepKind.md
 docs/StepOutput.md
@@ -577,6 +578,7 @@ src/models/SetApprovalStateRequest.ts
 src/models/SetWorkflowRunApprovalRequest.ts
 src/models/SignInRequest.ts
 src/models/SortDirection.ts
+src/models/StartWorkflowRunRequest.ts
 src/models/StepInput.ts
 src/models/StepKind.ts
 src/models/StepOutput.ts

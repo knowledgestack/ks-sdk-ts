@@ -213,6 +213,7 @@ export * from './SetApprovalStateRequest';
 export * from './SetWorkflowRunApprovalRequest';
 export * from './SignInRequest';
 export * from './SortDirection';
+export * from './StartWorkflowRunRequest';
 export * from './StepInput';
 export * from './StepKind';
 export * from './StepOutput';
