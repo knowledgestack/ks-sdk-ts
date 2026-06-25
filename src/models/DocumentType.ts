@@ -25,6 +25,8 @@ export const DocumentType = {
     Xlsx: 'XLSX',
     Csv: 'CSV',
     Pptx: 'PPTX',
+    Json: 'JSON',
+    Yaml: 'YAML',
     Unknown: 'UNKNOWN'
 } as const;
 export type DocumentType = typeof DocumentType[keyof typeof DocumentType];

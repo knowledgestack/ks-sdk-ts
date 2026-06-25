@@ -47,11 +47,17 @@ export interface ChunkMetadata {
      */
     s3Urls?: Array<string>;
     /**
-     * LLM-generated summary of the chunk content. Used for TABLE and HTML chunks to enrich embedding text.
+     * LLM-generated summary of the chunk content. Used for TABLE and HTML chunks to enrich embedding text, and for JSON/YAML chunks (with summarize_for_embedding) as the sole dense embedding text.
      * @type {string}
      * @memberof ChunkMetadata
      */
     summary?: string | null;
+    /**
+     * When True, this chunk's dense embedding is built from its LLM-generated summary (see summary) instead of its raw content. Set for parsed JSON/YAML single chunks so noisy structured text does not dominate the vector; the raw content is still kept for display and sparse (keyword) retrieval. Enrichment generates the summary when this is set and summary is empty.
+     * @type {boolean}
+     * @memberof ChunkMetadata
+     */
+    summarizeForEmbedding?: boolean;
     /**
      * S3 URI to extracted PDF text used for LLM grounding during enrichment
      * @type {string}
@@ -159,6 +165,7 @@ export function ChunkMetadataFromJSONTyped(json: any, ignoreDiscriminator: boole
         'polygons': json['polygons'] == null ? undefined : ((json['polygons'] as Array<any>).map(PolygonReferenceFromJSON)),
         's3Urls': json['s3_urls'] == null ? undefined : json['s3_urls'],
         'summary': json['summary'] == null ? undefined : json['summary'],
+        'summarizeForEmbedding': json['summarize_for_embedding'] == null ? undefined : json['summarize_for_embedding'],
         'extractedTextS3Uri': json['extracted_text_s3_uri'] == null ? undefined : json['extracted_text_s3_uri'],
         'secondaryTaxonomy': json['secondary_taxonomy'] == null ? undefined : ImageTaxonomyFromJSON(json['secondary_taxonomy']),
         'sheetName': json['sheet_name'] == null ? undefined : json['sheet_name'],
@@ -187,6 +194,7 @@ export function ChunkMetadataToJSONTyped(value?: ChunkMetadata | null, ignoreDis
         'polygons': value['polygons'] == null ? undefined : ((value['polygons'] as Array<any>).map(PolygonReferenceToJSON)),
         's3_urls': value['s3Urls'],
         'summary': value['summary'],
+        'summarize_for_embedding': value['summarizeForEmbedding'],
         'extracted_text_s3_uri': value['extractedTextS3Uri'],
         'secondary_taxonomy': ImageTaxonomyToJSON(value['secondaryTaxonomy']),
         'sheet_name': value['sheetName'],
