@@ -20,6 +20,8 @@
 export const SearchablePartType = {
     Folder: 'FOLDER',
     Document: 'DOCUMENT',
+    WorkflowDefinition: 'WORKFLOW_DEFINITION',
+    WorkflowRun: 'WORKFLOW_RUN',
     DataSource: 'DATA_SOURCE',
     ApiConnection: 'API_CONNECTION'
 } as const;
