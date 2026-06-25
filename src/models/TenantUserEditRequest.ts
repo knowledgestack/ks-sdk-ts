@@ -22,7 +22,11 @@ import {
 } from './TenantUserRole';
 
 /**
- * Request to update a tenant user's role.
+ * Request to update a tenant user's role and optional profile fields.
+ * 
+ * ``job_title`` and ``department`` follow partial-update semantics: omit
+ * (or send null) to leave the field unchanged, send an empty string to
+ * clear it to NULL.
  * @export
  * @interface TenantUserEditRequest
  */
@@ -33,6 +37,18 @@ export interface TenantUserEditRequest {
      * @memberof TenantUserEditRequest
      */
     role: TenantUserRole;
+    /**
+     * User's job title; omit to leave unchanged, empty string to clear
+     * @type {string}
+     * @memberof TenantUserEditRequest
+     */
+    jobTitle?: string | null;
+    /**
+     * User's department; omit to leave unchanged, empty string to clear
+     * @type {string}
+     * @memberof TenantUserEditRequest
+     */
+    department?: string | null;
 }
 
 
@@ -51,6 +67,12 @@ export const TenantUserEditRequestPropertyValidationAttributesMap: {
         uniqueItems?: boolean
     }
 } = {
+    jobTitle: {
+        maxLength: 120,
+    },
+    department: {
+        maxLength: 120,
+    },
 }
 
 
@@ -73,6 +95,8 @@ export function TenantUserEditRequestFromJSONTyped(json: any, ignoreDiscriminato
     return {
         
         'role': TenantUserRoleFromJSON(json['role']),
+        'jobTitle': json['job_title'] == null ? undefined : json['job_title'],
+        'department': json['department'] == null ? undefined : json['department'],
     };
 }
 
@@ -88,6 +112,8 @@ export function TenantUserEditRequestToJSONTyped(value?: TenantUserEditRequest |
     return {
         
         'role': TenantUserRoleToJSON(value['role']),
+        'job_title': value['jobTitle'],
+        'department': value['department'],
     };
 }
 

@@ -407,7 +407,7 @@ export interface TenantsApiInterface {
     updateTenantUserRequestOpts(requestParameters: UpdateTenantUserRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * Update a user\'s role in a tenant.  Requires OWNER or ADMIN role. Cannot create a duplicate owner.
+     * Update a user\'s role and optional profile fields in a tenant.  Requires OWNER or ADMIN role. Cannot create a duplicate owner.
      * @summary Update Tenant User
      * @param {string} tenantId 
      * @param {string} userId 
@@ -419,7 +419,7 @@ export interface TenantsApiInterface {
     updateTenantUserRaw(requestParameters: UpdateTenantUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TenantUserResponse>>;
 
     /**
-     * Update a user\'s role in a tenant.  Requires OWNER or ADMIN role. Cannot create a duplicate owner.
+     * Update a user\'s role and optional profile fields in a tenant.  Requires OWNER or ADMIN role. Cannot create a duplicate owner.
      * Update Tenant User
      */
     updateTenantUser(requestParameters: UpdateTenantUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TenantUserResponse>;
@@ -1127,7 +1127,7 @@ export class TenantsApi extends runtime.BaseAPI implements TenantsApiInterface {
     }
 
     /**
-     * Update a user\'s role in a tenant.  Requires OWNER or ADMIN role. Cannot create a duplicate owner.
+     * Update a user\'s role and optional profile fields in a tenant.  Requires OWNER or ADMIN role. Cannot create a duplicate owner.
      * Update Tenant User
      */
     async updateTenantUserRaw(requestParameters: UpdateTenantUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TenantUserResponse>> {
@@ -1138,7 +1138,7 @@ export class TenantsApi extends runtime.BaseAPI implements TenantsApiInterface {
     }
 
     /**
-     * Update a user\'s role in a tenant.  Requires OWNER or ADMIN role. Cannot create a duplicate owner.
+     * Update a user\'s role and optional profile fields in a tenant.  Requires OWNER or ADMIN role. Cannot create a duplicate owner.
      * Update Tenant User
      */
     async updateTenantUser(requestParameters: UpdateTenantUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TenantUserResponse> {
