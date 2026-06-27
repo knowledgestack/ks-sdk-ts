@@ -36,6 +36,18 @@ export interface UpdateWorkflowRunRequest {
      * @memberof UpdateWorkflowRunRequest
      */
     name?: string | null;
+    /**
+     * Arm (or disarm) auto-start on a draft run. When set true, the run dispatches itself once its ``inputs/`` uploads finish ingesting (see ``CreateWorkflowRunRequest.auto_start``). Arm a PENDING run after queuing all uploads to avoid a partial-input start. ``null`` leaves the current setting unchanged.
+     * @type {boolean}
+     * @memberof UpdateWorkflowRunRequest
+     */
+    autoStart?: boolean | null;
+    /**
+     * Set the note applied when this run auto-starts (see ``CreateWorkflowRunRequest.user_message``). ``null`` leaves the stored message unchanged; send an empty string to clear it.
+     * @type {string}
+     * @memberof UpdateWorkflowRunRequest
+     */
+    userMessage?: string | null;
 }
 export const UpdateWorkflowRunRequestPropertyValidationAttributesMap: {
     [property: string]: {
@@ -60,6 +72,9 @@ export const UpdateWorkflowRunRequestPropertyValidationAttributesMap: {
         maxLength: 255,
         minLength: 1,
     },
+    userMessage: {
+        maxLength: 4000,
+    },
 }
 
 
@@ -82,6 +97,8 @@ export function UpdateWorkflowRunRequestFromJSONTyped(json: any, ignoreDiscrimin
         
         'inputScope': json['input_scope'] == null ? undefined : json['input_scope'],
         'name': json['name'] == null ? undefined : json['name'],
+        'autoStart': json['auto_start'] == null ? undefined : json['auto_start'],
+        'userMessage': json['user_message'] == null ? undefined : json['user_message'],
     };
 }
 
@@ -98,6 +115,8 @@ export function UpdateWorkflowRunRequestToJSONTyped(value?: UpdateWorkflowRunReq
         
         'input_scope': value['inputScope'],
         'name': value['name'],
+        'auto_start': value['autoStart'],
+        'user_message': value['userMessage'],
     };
 }
 

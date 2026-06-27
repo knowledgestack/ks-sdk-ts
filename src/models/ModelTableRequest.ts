@@ -34,6 +34,12 @@ export interface ModelTableRequest {
      */
     tableName: string;
     /**
+     * Schema/namespace of the table; omit for the default schema
+     * @type {string}
+     * @memberof ModelTableRequest
+     */
+    schemaName?: string | null;
+    /**
      * Display name; defaults to table_name
      * @type {string}
      * @memberof ModelTableRequest
@@ -89,6 +95,7 @@ export function ModelTableRequestFromJSONTyped(json: any, ignoreDiscriminator: b
     return {
         
         'tableName': json['table_name'],
+        'schemaName': json['schema_name'] == null ? undefined : json['schema_name'],
         'name': json['name'] == null ? undefined : json['name'],
         'description': json['description'] == null ? undefined : json['description'],
         'columnConfig': json['column_config'] == null ? undefined : ((json['column_config'] as Array<any>).map(ColumnConfigFromJSON)),
@@ -107,6 +114,7 @@ export function ModelTableRequestToJSONTyped(value?: ModelTableRequest | null, i
     return {
         
         'table_name': value['tableName'],
+        'schema_name': value['schemaName'],
         'name': value['name'],
         'description': value['description'],
         'column_config': value['columnConfig'] == null ? undefined : ((value['columnConfig'] as Array<any>).map(ColumnConfigToJSON)),

@@ -35,6 +35,12 @@ export interface CatalogTableResponse {
     name: string;
     /**
      * 
+     * @type {string}
+     * @memberof CatalogTableResponse
+     */
+    schemaName: string;
+    /**
+     * 
      * @type {Array<CatalogColumnResponse>}
      * @memberof CatalogTableResponse
      */
@@ -63,6 +69,7 @@ export const CatalogTableResponsePropertyValidationAttributesMap: {
  */
 export function instanceOfCatalogTableResponse(value: object): value is CatalogTableResponse {
     if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('schemaName' in value) || value['schemaName'] === undefined) return false;
     if (!('columns' in value) || value['columns'] === undefined) return false;
     return true;
 }
@@ -78,6 +85,7 @@ export function CatalogTableResponseFromJSONTyped(json: any, ignoreDiscriminator
     return {
         
         'name': json['name'],
+        'schemaName': json['schema_name'],
         'columns': ((json['columns'] as Array<any>).map(CatalogColumnResponseFromJSON)),
     };
 }
@@ -94,6 +102,7 @@ export function CatalogTableResponseToJSONTyped(value?: CatalogTableResponse | n
     return {
         
         'name': value['name'],
+        'schema_name': value['schemaName'],
         'columns': ((value['columns'] as Array<any>).map(CatalogColumnResponseToJSON)),
     };
 }

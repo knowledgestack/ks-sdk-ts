@@ -64,6 +64,8 @@ export interface CreateWorkflowRunRequest {
     files?: Array<Blob>;
     inputScope?: string | null;
     idempotencyKey?: string | null;
+    autoStart?: boolean;
+    userMessage?: string | null;
 }
 
 export interface DeleteWorkflowDefinitionRequest {
@@ -145,6 +147,8 @@ export interface WorkflowDefinitionsApiInterface {
      * @param {Array<Blob>} [files] DEPRECATED — do not send files here. Carrying file bytes on run creation makes the call block on synchronous S3 upload (the ~30s \\\&#39;Create run\\\&#39; wait). Instead create an empty draft (omit this field), then upload each file to the run\\\&#39;s &#x60;&#x60;inputs/&#x60;&#x60; folder via &#x60;&#x60;POST /v1/documents/ingest&#x60;&#x60; with &#x60;&#x60;path_part_id&#x60;&#x60; set to the run\\\&#39;s &#x60;&#x60;inputs_path_part_id&#x60;&#x60;; that path ingests asynchronously and auto-syncs the run\\\&#39;s state. This field will be removed once the FE has migrated.
      * @param {string} [inputScope] JSON array of &#x60;&#x60;DOCUMENT&#x60;&#x60; or &#x60;&#x60;FOLDER&#x60;&#x60; path_part UUIDs referenced from the existing knowledge base, pinned onto the new draft\\\&#39;s input scope. Optional — omit for an empty draft and add references later via PATCH.
      * @param {string} [idempotencyKey] Optional key to prevent duplicate runs from retries.
+     * @param {boolean} [autoStart] When true, the run starts itself once its &#x60;&#x60;inputs/&#x60;&#x60; uploads finish ingesting — eliminating the separate Start call. If an upload\\\&#39;s ingestion fails, the run is marked FAILED. Default false (two-step flow). Arm only after all uploads are queued; a synchronously-completing first upload would otherwise start the run before later uploads are added.
+     * @param {string} [userMessage] Optional note carried to the auto-start dispatch (the equivalent of the Start endpoint\\\&#39;s &#x60;&#x60;user_message&#x60;&#x60; for a self-starting run). Applied only when &#x60;&#x60;auto_start&#x60;&#x60; fires.
      * @throws {RequiredError}
      * @memberof WorkflowDefinitionsApiInterface
      */
@@ -157,6 +161,8 @@ export interface WorkflowDefinitionsApiInterface {
      * @param {Array<Blob>} [files] DEPRECATED — do not send files here. Carrying file bytes on run creation makes the call block on synchronous S3 upload (the ~30s \\\&#39;Create run\\\&#39; wait). Instead create an empty draft (omit this field), then upload each file to the run\\\&#39;s &#x60;&#x60;inputs/&#x60;&#x60; folder via &#x60;&#x60;POST /v1/documents/ingest&#x60;&#x60; with &#x60;&#x60;path_part_id&#x60;&#x60; set to the run\\\&#39;s &#x60;&#x60;inputs_path_part_id&#x60;&#x60;; that path ingests asynchronously and auto-syncs the run\\\&#39;s state. This field will be removed once the FE has migrated.
      * @param {string} [inputScope] JSON array of &#x60;&#x60;DOCUMENT&#x60;&#x60; or &#x60;&#x60;FOLDER&#x60;&#x60; path_part UUIDs referenced from the existing knowledge base, pinned onto the new draft\\\&#39;s input scope. Optional — omit for an empty draft and add references later via PATCH.
      * @param {string} [idempotencyKey] Optional key to prevent duplicate runs from retries.
+     * @param {boolean} [autoStart] When true, the run starts itself once its &#x60;&#x60;inputs/&#x60;&#x60; uploads finish ingesting — eliminating the separate Start call. If an upload\\\&#39;s ingestion fails, the run is marked FAILED. Default false (two-step flow). Arm only after all uploads are queued; a synchronously-completing first upload would otherwise start the run before later uploads are added.
+     * @param {string} [userMessage] Optional note carried to the auto-start dispatch (the equivalent of the Start endpoint\\\&#39;s &#x60;&#x60;user_message&#x60;&#x60; for a self-starting run). Applied only when &#x60;&#x60;auto_start&#x60;&#x60; fires.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof WorkflowDefinitionsApiInterface
@@ -459,6 +465,14 @@ export class WorkflowDefinitionsApi extends runtime.BaseAPI implements WorkflowD
 
         if (requestParameters['idempotencyKey'] != null) {
             formParams.append('idempotency_key', requestParameters['idempotencyKey'] as any);
+        }
+
+        if (requestParameters['autoStart'] != null) {
+            formParams.append('auto_start', requestParameters['autoStart'] as any);
+        }
+
+        if (requestParameters['userMessage'] != null) {
+            formParams.append('user_message', requestParameters['userMessage'] as any);
         }
 
 

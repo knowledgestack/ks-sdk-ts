@@ -21,6 +21,7 @@ import type {
   DataSourceQueryRequest,
   DataSourceQueryResponse,
   DataSourceResponse,
+  DataSourceSchemaListResponse,
   DataSourceTableResponse,
   ErrorResponse,
   HTTPValidationError,
@@ -40,6 +41,8 @@ import {
     DataSourceQueryResponseToJSON,
     DataSourceResponseFromJSON,
     DataSourceResponseToJSON,
+    DataSourceSchemaListResponseFromJSON,
+    DataSourceSchemaListResponseToJSON,
     DataSourceTableResponseFromJSON,
     DataSourceTableResponseToJSON,
     ErrorResponseFromJSON,
@@ -65,6 +68,11 @@ export interface GetDataSourceRequest {
 }
 
 export interface GetDataSourceCatalogRequest {
+    dataSourceId: string;
+    schema?: string | null;
+}
+
+export interface ListDataSourceSchemasRequest {
     dataSourceId: string;
 }
 
@@ -170,15 +178,17 @@ export interface DataSourcesApiInterface {
     /**
      * Creates request options for getDataSourceCatalog without sending the request
      * @param {string} dataSourceId 
+     * @param {string} [schema] Schema/namespace to introspect (default: connection default)
      * @throws {RequiredError}
      * @memberof DataSourcesApiInterface
      */
     getDataSourceCatalogRequestOpts(requestParameters: GetDataSourceCatalogRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * Live-introspect the external DB so an admin can pick tables to model.
+     * Live-introspect a schema of the external DB so an admin can pick tables.
      * @summary Get Data Source Catalog Handler
      * @param {string} dataSourceId 
+     * @param {string} [schema] Schema/namespace to introspect (default: connection default)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DataSourcesApiInterface
@@ -186,10 +196,34 @@ export interface DataSourcesApiInterface {
     getDataSourceCatalogRaw(requestParameters: GetDataSourceCatalogRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<DataSourceCatalogResponse>>;
 
     /**
-     * Live-introspect the external DB so an admin can pick tables to model.
+     * Live-introspect a schema of the external DB so an admin can pick tables.
      * Get Data Source Catalog Handler
      */
     getDataSourceCatalog(requestParameters: GetDataSourceCatalogRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DataSourceCatalogResponse>;
+
+    /**
+     * Creates request options for listDataSourceSchemas without sending the request
+     * @param {string} dataSourceId 
+     * @throws {RequiredError}
+     * @memberof DataSourcesApiInterface
+     */
+    listDataSourceSchemasRequestOpts(requestParameters: ListDataSourceSchemasRequest): Promise<runtime.RequestOpts>;
+
+    /**
+     * List the source\'s user namespaces (PG schemas / MySQL databases).
+     * @summary List Data Source Schemas Handler
+     * @param {string} dataSourceId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DataSourcesApiInterface
+     */
+    listDataSourceSchemasRaw(requestParameters: ListDataSourceSchemasRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<DataSourceSchemaListResponse>>;
+
+    /**
+     * List the source\'s user namespaces (PG schemas / MySQL databases).
+     * List Data Source Schemas Handler
+     */
+    listDataSourceSchemas(requestParameters: ListDataSourceSchemasRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DataSourceSchemaListResponse>;
 
     /**
      * Creates request options for modelDataSourceTable without sending the request
@@ -481,6 +515,10 @@ export class DataSourcesApi extends runtime.BaseAPI implements DataSourcesApiInt
 
         const queryParameters: any = {};
 
+        if (requestParameters['schema'] != null) {
+            queryParameters['schema'] = requestParameters['schema'];
+        }
+
         const headerParameters: runtime.HTTPHeaders = {};
 
         if (this.configuration && this.configuration.accessToken) {
@@ -504,7 +542,7 @@ export class DataSourcesApi extends runtime.BaseAPI implements DataSourcesApiInt
     }
 
     /**
-     * Live-introspect the external DB so an admin can pick tables to model.
+     * Live-introspect a schema of the external DB so an admin can pick tables.
      * Get Data Source Catalog Handler
      */
     async getDataSourceCatalogRaw(requestParameters: GetDataSourceCatalogRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<DataSourceCatalogResponse>> {
@@ -515,11 +553,66 @@ export class DataSourcesApi extends runtime.BaseAPI implements DataSourcesApiInt
     }
 
     /**
-     * Live-introspect the external DB so an admin can pick tables to model.
+     * Live-introspect a schema of the external DB so an admin can pick tables.
      * Get Data Source Catalog Handler
      */
     async getDataSourceCatalog(requestParameters: GetDataSourceCatalogRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DataSourceCatalogResponse> {
         const response = await this.getDataSourceCatalogRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for listDataSourceSchemas without sending the request
+     */
+    async listDataSourceSchemasRequestOpts(requestParameters: ListDataSourceSchemasRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['dataSourceId'] == null) {
+            throw new runtime.RequiredError(
+                'dataSourceId',
+                'Required parameter "dataSourceId" was null or undefined when calling listDataSourceSchemas().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/v1/data-sources/{data_source_id}/schemas`;
+        urlPath = urlPath.replace(`{${"data_source_id"}}`, encodeURIComponent(String(requestParameters['dataSourceId'])));
+
+        return {
+            path: urlPath,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * List the source\'s user namespaces (PG schemas / MySQL databases).
+     * List Data Source Schemas Handler
+     */
+    async listDataSourceSchemasRaw(requestParameters: ListDataSourceSchemasRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<DataSourceSchemaListResponse>> {
+        const requestOptions = await this.listDataSourceSchemasRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => DataSourceSchemaListResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * List the source\'s user namespaces (PG schemas / MySQL databases).
+     * List Data Source Schemas Handler
+     */
+    async listDataSourceSchemas(requestParameters: ListDataSourceSchemasRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DataSourceSchemaListResponse> {
+        const response = await this.listDataSourceSchemasRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

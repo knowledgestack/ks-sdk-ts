@@ -89,6 +89,12 @@ export interface DataSourceTableResponse {
      */
     tableName: string;
     /**
+     * Schema/namespace in the external DB; null = default schema
+     * @type {string}
+     * @memberof DataSourceTableResponse
+     */
+    schemaName?: string | null;
+    /**
      * 
      * @type {string}
      * @memberof DataSourceTableResponse
@@ -193,6 +199,7 @@ export function DataSourceTableResponseFromJSONTyped(json: any, ignoreDiscrimina
         'name': json['name'],
         'dataSourceId': json['data_source_id'],
         'tableName': json['table_name'],
+        'schemaName': json['schema_name'] == null ? undefined : json['schema_name'],
         'description': json['description'],
         'columnConfig': json['column_config'],
         'approvalState': PathPartApprovalStateFromJSON(json['approval_state']),
@@ -222,6 +229,7 @@ export function DataSourceTableResponseToJSONTyped(value?: DataSourceTableRespon
         'name': value['name'],
         'data_source_id': value['dataSourceId'],
         'table_name': value['tableName'],
+        'schema_name': value['schemaName'],
         'description': value['description'],
         'column_config': value['columnConfig'],
         'approval_state': PathPartApprovalStateToJSON(value['approvalState']),

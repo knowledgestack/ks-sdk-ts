@@ -49,6 +49,7 @@ docs/CitedChunk.md
 docs/ClearVersionContentsResponse.md
 docs/CloneWorkflowRunRequest.md
 docs/ColumnConfig.md
+docs/ColumnReference.md
 docs/ConnectionConfig.md
 docs/CreateApiConnectionRequest.md
 docs/CreateApiKeyRequest.md
@@ -74,6 +75,8 @@ docs/DataSourceEngine.md
 docs/DataSourceQueryRequest.md
 docs/DataSourceQueryResponse.md
 docs/DataSourceResponse.md
+docs/DataSourceSchemaListResponse.md
+docs/DataSourceSchemaResponse.md
 docs/DataSourceTableResponse.md
 docs/DataSourcesApi.md
 docs/DefaultApi.md
@@ -405,6 +408,7 @@ src/models/CitedChunk.ts
 src/models/ClearVersionContentsResponse.ts
 src/models/CloneWorkflowRunRequest.ts
 src/models/ColumnConfig.ts
+src/models/ColumnReference.ts
 src/models/ConnectionConfig.ts
 src/models/CreateApiConnectionRequest.ts
 src/models/CreateApiKeyRequest.ts
@@ -430,6 +434,8 @@ src/models/DataSourceEngine.ts
 src/models/DataSourceQueryRequest.ts
 src/models/DataSourceQueryResponse.ts
 src/models/DataSourceResponse.ts
+src/models/DataSourceSchemaListResponse.ts
+src/models/DataSourceSchemaResponse.ts
 src/models/DataSourceTableResponse.ts
 src/models/DiffFormat.ts
 src/models/DiffRow.ts

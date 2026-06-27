@@ -13,6 +13,14 @@
  */
 
 import { mapValues } from '../runtime';
+import type { ColumnReference } from './ColumnReference';
+import {
+    ColumnReferenceFromJSON,
+    ColumnReferenceFromJSONTyped,
+    ColumnReferenceToJSON,
+    ColumnReferenceToJSONTyped,
+} from './ColumnReference';
+
 /**
  * 
  * @export
@@ -37,6 +45,12 @@ export interface CatalogColumnResponse {
      * @memberof CatalogColumnResponse
      */
     isPk: boolean;
+    /**
+     * 
+     * @type {ColumnReference}
+     * @memberof CatalogColumnResponse
+     */
+    references?: ColumnReference | null;
 }
 export const CatalogColumnResponsePropertyValidationAttributesMap: {
     [property: string]: {
@@ -79,6 +93,7 @@ export function CatalogColumnResponseFromJSONTyped(json: any, ignoreDiscriminato
         'name': json['name'],
         'dataType': json['data_type'],
         'isPk': json['is_pk'],
+        'references': json['references'] == null ? undefined : ColumnReferenceFromJSON(json['references']),
     };
 }
 
@@ -96,6 +111,7 @@ export function CatalogColumnResponseToJSONTyped(value?: CatalogColumnResponse |
         'name': value['name'],
         'data_type': value['dataType'],
         'is_pk': value['isPk'],
+        'references': ColumnReferenceToJSON(value['references']),
     };
 }
 

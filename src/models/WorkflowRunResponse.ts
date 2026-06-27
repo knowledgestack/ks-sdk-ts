@@ -156,6 +156,18 @@ export interface WorkflowRunResponse {
      */
     error: string | null;
     /**
+     * Whether the run dispatches itself once its ``inputs/`` uploads finish ingesting, with no separate Start call.
+     * @type {boolean}
+     * @memberof WorkflowRunResponse
+     */
+    autoStart: boolean;
+    /**
+     * The note applied when this run auto-starts (set via create / PATCH ``user_message``); null when none was supplied.
+     * @type {string}
+     * @memberof WorkflowRunResponse
+     */
+    autoStartUserMessage?: string | null;
+    /**
      * FOLDER path_part of the run's ``inputs/`` subfolder
      * @type {string}
      * @memberof WorkflowRunResponse
@@ -262,6 +274,7 @@ export function instanceOfWorkflowRunResponse(value: object): value is WorkflowR
     if (!('completedAt' in value) || value['completedAt'] === undefined) return false;
     if (!('runSnapshot' in value) || value['runSnapshot'] === undefined) return false;
     if (!('error' in value) || value['error'] === undefined) return false;
+    if (!('autoStart' in value) || value['autoStart'] === undefined) return false;
     if (!('inputsPathPartId' in value) || value['inputsPathPartId'] === undefined) return false;
     if (!('outputsPathPartId' in value) || value['outputsPathPartId'] === undefined) return false;
     if (!('discussionsPathPartId' in value) || value['discussionsPathPartId'] === undefined) return false;
@@ -296,6 +309,8 @@ export function WorkflowRunResponseFromJSONTyped(json: any, ignoreDiscriminator:
         'completedAt': (json['completed_at'] == null ? null : new Date(json['completed_at'])),
         'runSnapshot': WorkflowRunSnapshotFromJSON(json['run_snapshot']),
         'error': json['error'],
+        'autoStart': json['auto_start'],
+        'autoStartUserMessage': json['auto_start_user_message'] == null ? undefined : json['auto_start_user_message'],
         'inputsPathPartId': json['inputs_path_part_id'],
         'outputsPathPartId': json['outputs_path_part_id'],
         'discussionsPathPartId': json['discussions_path_part_id'],
@@ -335,6 +350,8 @@ export function WorkflowRunResponseToJSONTyped(value?: WorkflowRunResponse | nul
         'completed_at': value['completedAt'] == null ? value['completedAt'] : value['completedAt'].toISOString(),
         'run_snapshot': WorkflowRunSnapshotToJSON(value['runSnapshot']),
         'error': value['error'],
+        'auto_start': value['autoStart'],
+        'auto_start_user_message': value['autoStartUserMessage'],
         'inputs_path_part_id': value['inputsPathPartId'],
         'outputs_path_part_id': value['outputsPathPartId'],
         'discussions_path_part_id': value['discussionsPathPartId'],

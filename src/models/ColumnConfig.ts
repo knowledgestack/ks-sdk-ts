@@ -13,6 +13,14 @@
  */
 
 import { mapValues } from '../runtime';
+import type { ColumnReference } from './ColumnReference';
+import {
+    ColumnReferenceFromJSON,
+    ColumnReferenceFromJSONTyped,
+    ColumnReferenceToJSON,
+    ColumnReferenceToJSONTyped,
+} from './ColumnReference';
+
 /**
  * A modeled column. Only ``exposed`` columns are surfaced to the agent.
  * @export
@@ -49,6 +57,12 @@ export interface ColumnConfig {
      * @memberof ColumnConfig
      */
     exposed?: boolean;
+    /**
+     * 
+     * @type {ColumnReference}
+     * @memberof ColumnConfig
+     */
+    references?: ColumnReference | null;
 }
 export const ColumnConfigPropertyValidationAttributesMap: {
     [property: string]: {
@@ -91,6 +105,7 @@ export function ColumnConfigFromJSONTyped(json: any, ignoreDiscriminator: boolea
         'comment': json['comment'] == null ? undefined : json['comment'],
         'isPk': json['is_pk'] == null ? undefined : json['is_pk'],
         'exposed': json['exposed'] == null ? undefined : json['exposed'],
+        'references': json['references'] == null ? undefined : ColumnReferenceFromJSON(json['references']),
     };
 }
 
@@ -110,6 +125,7 @@ export function ColumnConfigToJSONTyped(value?: ColumnConfig | null, ignoreDiscr
         'comment': value['comment'],
         'is_pk': value['isPk'],
         'exposed': value['exposed'],
+        'references': ColumnReferenceToJSON(value['references']),
     };
 }
 

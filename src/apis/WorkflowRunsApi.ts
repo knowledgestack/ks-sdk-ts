@@ -389,7 +389,7 @@ export interface WorkflowRunsApiInterface {
     updateWorkflowRunRequestOpts(requestParameters: UpdateWorkflowRunOperationRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * Edit a NOT_STARTED run\'s KB scope and / or display name.  Both body fields are optional but at least one must be present. The run must be ``NOT_STARTED`` (409 otherwise). Caller must be the triggerer or OWNER/ADMIN (403 otherwise). A name collision with a sibling run under the same definition\'s ``runs/`` folder maps to a 409 via ``IntegrityError`` translation.
+     * Edit a NOT_STARTED run\'s KB scope, name, and / or auto_start.  Both body fields are optional but at least one must be present. The run must be ``NOT_STARTED`` or ``PENDING`` (409 otherwise). Caller must be the triggerer or OWNER/ADMIN (403 otherwise). A name collision with a sibling run under the same definition\'s ``runs/`` folder maps to a 409 via ``IntegrityError`` translation.  Arming ``auto_start`` on a run that is already ``NOT_STARTED`` (its inputs have settled) dispatches it immediately — the run would otherwise never receive an ingestion-completion hook to start it. A ``PENDING`` run is left to auto-advance when its uploads finish.
      * @summary Update Workflow Run Handler
      * @param {string} runId 
      * @param {UpdateWorkflowRunRequest} updateWorkflowRunRequest 
@@ -400,7 +400,7 @@ export interface WorkflowRunsApiInterface {
     updateWorkflowRunRaw(requestParameters: UpdateWorkflowRunOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<WorkflowRunResponse>>;
 
     /**
-     * Edit a NOT_STARTED run\'s KB scope and / or display name.  Both body fields are optional but at least one must be present. The run must be ``NOT_STARTED`` (409 otherwise). Caller must be the triggerer or OWNER/ADMIN (403 otherwise). A name collision with a sibling run under the same definition\'s ``runs/`` folder maps to a 409 via ``IntegrityError`` translation.
+     * Edit a NOT_STARTED run\'s KB scope, name, and / or auto_start.  Both body fields are optional but at least one must be present. The run must be ``NOT_STARTED`` or ``PENDING`` (409 otherwise). Caller must be the triggerer or OWNER/ADMIN (403 otherwise). A name collision with a sibling run under the same definition\'s ``runs/`` folder maps to a 409 via ``IntegrityError`` translation.  Arming ``auto_start`` on a run that is already ``NOT_STARTED`` (its inputs have settled) dispatches it immediately — the run would otherwise never receive an ingestion-completion hook to start it. A ``PENDING`` run is left to auto-advance when its uploads finish.
      * Update Workflow Run Handler
      */
     updateWorkflowRun(requestParameters: UpdateWorkflowRunOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<WorkflowRunResponse>;
@@ -1045,7 +1045,7 @@ export class WorkflowRunsApi extends runtime.BaseAPI implements WorkflowRunsApiI
     }
 
     /**
-     * Edit a NOT_STARTED run\'s KB scope and / or display name.  Both body fields are optional but at least one must be present. The run must be ``NOT_STARTED`` (409 otherwise). Caller must be the triggerer or OWNER/ADMIN (403 otherwise). A name collision with a sibling run under the same definition\'s ``runs/`` folder maps to a 409 via ``IntegrityError`` translation.
+     * Edit a NOT_STARTED run\'s KB scope, name, and / or auto_start.  Both body fields are optional but at least one must be present. The run must be ``NOT_STARTED`` or ``PENDING`` (409 otherwise). Caller must be the triggerer or OWNER/ADMIN (403 otherwise). A name collision with a sibling run under the same definition\'s ``runs/`` folder maps to a 409 via ``IntegrityError`` translation.  Arming ``auto_start`` on a run that is already ``NOT_STARTED`` (its inputs have settled) dispatches it immediately — the run would otherwise never receive an ingestion-completion hook to start it. A ``PENDING`` run is left to auto-advance when its uploads finish.
      * Update Workflow Run Handler
      */
     async updateWorkflowRunRaw(requestParameters: UpdateWorkflowRunOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<WorkflowRunResponse>> {
@@ -1056,7 +1056,7 @@ export class WorkflowRunsApi extends runtime.BaseAPI implements WorkflowRunsApiI
     }
 
     /**
-     * Edit a NOT_STARTED run\'s KB scope and / or display name.  Both body fields are optional but at least one must be present. The run must be ``NOT_STARTED`` (409 otherwise). Caller must be the triggerer or OWNER/ADMIN (403 otherwise). A name collision with a sibling run under the same definition\'s ``runs/`` folder maps to a 409 via ``IntegrityError`` translation.
+     * Edit a NOT_STARTED run\'s KB scope, name, and / or auto_start.  Both body fields are optional but at least one must be present. The run must be ``NOT_STARTED`` or ``PENDING`` (409 otherwise). Caller must be the triggerer or OWNER/ADMIN (403 otherwise). A name collision with a sibling run under the same definition\'s ``runs/`` folder maps to a 409 via ``IntegrityError`` translation.  Arming ``auto_start`` on a run that is already ``NOT_STARTED`` (its inputs have settled) dispatches it immediately — the run would otherwise never receive an ingestion-completion hook to start it. A ``PENDING`` run is left to auto-advance when its uploads finish.
      * Update Workflow Run Handler
      */
     async updateWorkflowRun(requestParameters: UpdateWorkflowRunOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<WorkflowRunResponse> {
