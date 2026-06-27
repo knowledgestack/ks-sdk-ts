@@ -16,6 +16,7 @@ export * from './Args';
 export * from './AskRequest';
 export * from './AskResponse';
 export * from './BrandingLogoType';
+export * from './BulkDownloadRequest';
 export * from './BulkTagRequest';
 export * from './CatalogColumnResponse';
 export * from './CatalogTableResponse';

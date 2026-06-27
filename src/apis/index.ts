@@ -5,6 +5,7 @@ export * from './ApiConnectionsApi';
 export * from './ApiKeysApi';
 export * from './AuditEventsApi';
 export * from './AuthApi';
+export * from './BulkDownloadApi';
 export * from './ChunkLineagesApi';
 export * from './ChunksApi';
 export * from './DataSourcesApi';

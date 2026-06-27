@@ -23,6 +23,8 @@ docs/AskResponse.md
 docs/AuditEventsApi.md
 docs/AuthApi.md
 docs/BrandingLogoType.md
+docs/BulkDownloadApi.md
+docs/BulkDownloadRequest.md
 docs/BulkTagRequest.md
 docs/CatalogColumnResponse.md
 docs/CatalogTableResponse.md
@@ -337,6 +339,7 @@ src/apis/ApiConnectionsApi.ts
 src/apis/ApiKeysApi.ts
 src/apis/AuditEventsApi.ts
 src/apis/AuthApi.ts
+src/apis/BulkDownloadApi.ts
 src/apis/ChunkLineagesApi.ts
 src/apis/ChunksApi.ts
 src/apis/DataSourcesApi.ts
@@ -384,6 +387,7 @@ src/models/Args.ts
 src/models/AskRequest.ts
 src/models/AskResponse.ts
 src/models/BrandingLogoType.ts
+src/models/BulkDownloadRequest.ts
 src/models/BulkTagRequest.ts
 src/models/CatalogColumnResponse.ts
 src/models/CatalogTableResponse.ts
