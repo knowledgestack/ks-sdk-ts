@@ -41,6 +41,12 @@ export interface CatalogTableResponse {
     schemaName: string;
     /**
      * 
+     * @type {boolean}
+     * @memberof CatalogTableResponse
+     */
+    isView?: boolean;
+    /**
+     * 
      * @type {Array<CatalogColumnResponse>}
      * @memberof CatalogTableResponse
      */
@@ -86,6 +92,7 @@ export function CatalogTableResponseFromJSONTyped(json: any, ignoreDiscriminator
         
         'name': json['name'],
         'schemaName': json['schema_name'],
+        'isView': json['is_view'] == null ? undefined : json['is_view'],
         'columns': ((json['columns'] as Array<any>).map(CatalogColumnResponseFromJSON)),
     };
 }
@@ -103,6 +110,7 @@ export function CatalogTableResponseToJSONTyped(value?: CatalogTableResponse | n
         
         'name': value['name'],
         'schema_name': value['schemaName'],
+        'is_view': value['isView'],
         'columns': ((value['columns'] as Array<any>).map(CatalogColumnResponseToJSON)),
     };
 }
