@@ -66,6 +66,7 @@ export interface CreateWorkflowRunRequest {
     idempotencyKey?: string | null;
     autoStart?: boolean;
     userMessage?: string | null;
+    name?: string | null;
 }
 
 export interface DeleteWorkflowDefinitionRequest {
@@ -149,6 +150,7 @@ export interface WorkflowDefinitionsApiInterface {
      * @param {string} [idempotencyKey] Optional key to prevent duplicate runs from retries.
      * @param {boolean} [autoStart] When true, the run starts itself once its &#x60;&#x60;inputs/&#x60;&#x60; uploads finish ingesting — eliminating the separate Start call. If an upload\\\&#39;s ingestion fails, the run is marked FAILED. Default false (two-step flow). Arm only after all uploads are queued; a synchronously-completing first upload would otherwise start the run before later uploads are added.
      * @param {string} [userMessage] Optional note carried to the auto-start dispatch (the equivalent of the Start endpoint\\\&#39;s &#x60;&#x60;user_message&#x60;&#x60; for a self-starting run). Applied only when &#x60;&#x60;auto_start&#x60;&#x60; fires.
+     * @param {string} [name] Optional display name for the run. Omit to default to the run\\\&#39;s UUID; rename later via PATCH. Must be unique among sibling runs under this definition\\\&#39;s &#x60;&#x60;runs/&#x60;&#x60; folder — a collision returns 409.
      * @throws {RequiredError}
      * @memberof WorkflowDefinitionsApiInterface
      */
@@ -163,6 +165,7 @@ export interface WorkflowDefinitionsApiInterface {
      * @param {string} [idempotencyKey] Optional key to prevent duplicate runs from retries.
      * @param {boolean} [autoStart] When true, the run starts itself once its &#x60;&#x60;inputs/&#x60;&#x60; uploads finish ingesting — eliminating the separate Start call. If an upload\\\&#39;s ingestion fails, the run is marked FAILED. Default false (two-step flow). Arm only after all uploads are queued; a synchronously-completing first upload would otherwise start the run before later uploads are added.
      * @param {string} [userMessage] Optional note carried to the auto-start dispatch (the equivalent of the Start endpoint\\\&#39;s &#x60;&#x60;user_message&#x60;&#x60; for a self-starting run). Applied only when &#x60;&#x60;auto_start&#x60;&#x60; fires.
+     * @param {string} [name] Optional display name for the run. Omit to default to the run\\\&#39;s UUID; rename later via PATCH. Must be unique among sibling runs under this definition\\\&#39;s &#x60;&#x60;runs/&#x60;&#x60; folder — a collision returns 409.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof WorkflowDefinitionsApiInterface
@@ -473,6 +476,10 @@ export class WorkflowDefinitionsApi extends runtime.BaseAPI implements WorkflowD
 
         if (requestParameters['userMessage'] != null) {
             formParams.append('user_message', requestParameters['userMessage'] as any);
+        }
+
+        if (requestParameters['name'] != null) {
+            formParams.append('name', requestParameters['name'] as any);
         }
 
 
