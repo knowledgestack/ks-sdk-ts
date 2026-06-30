@@ -20,6 +20,13 @@ import {
     TextDiffToJSON,
     TextDiffToJSONTyped,
 } from './TextDiff';
+import type { DocumentDiff } from './DocumentDiff';
+import {
+    DocumentDiffFromJSON,
+    DocumentDiffFromJSONTyped,
+    DocumentDiffToJSON,
+    DocumentDiffToJSONTyped,
+} from './DocumentDiff';
 import type { CellDiff } from './CellDiff';
 import {
     CellDiffFromJSON,
@@ -34,12 +41,28 @@ import {
     DiffFormatToJSON,
     DiffFormatToJSONTyped,
 } from './DiffFormat';
+import type { StructuredDiff } from './StructuredDiff';
+import {
+    StructuredDiffFromJSON,
+    StructuredDiffFromJSONTyped,
+    StructuredDiffToJSON,
+    StructuredDiffToJSONTyped,
+} from './StructuredDiff';
+import type { UserInfo } from './UserInfo';
+import {
+    UserInfoFromJSON,
+    UserInfoFromJSONTyped,
+    UserInfoToJSON,
+    UserInfoToJSONTyped,
+} from './UserInfo';
 
 /**
  * The diff between two document versions.
  * 
  * ``format`` selects the populated payload: ``text`` (side-by-side line diff,
- * for Word/PDF/text) or ``cells`` (cell-level diff, for spreadsheets).
+ * for PDF/Markdown/text), ``cells`` (cell-level diff, for spreadsheets),
+ * ``structured`` (key-path diff, for JSON/YAML), or ``document`` (structured
+ * block diff, for Word .docx).
  * @export
  * @interface VersionDiffResponse
  */
@@ -86,6 +109,72 @@ export interface VersionDiffResponse {
      * @memberof VersionDiffResponse
      */
     cells?: CellDiff | null;
+    /**
+     * 
+     * @type {StructuredDiff}
+     * @memberof VersionDiffResponse
+     */
+    structured?: StructuredDiff | null;
+    /**
+     * 
+     * @type {DocumentDiff}
+     * @memberof VersionDiffResponse
+     */
+    document?: DocumentDiff | null;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof VersionDiffResponse
+     */
+    degraded?: boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof VersionDiffResponse
+     */
+    degradedReason?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof VersionDiffResponse
+     */
+    algorithmVersion?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof VersionDiffResponse
+     */
+    fromContentHash?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof VersionDiffResponse
+     */
+    toContentHash?: string | null;
+    /**
+     * 
+     * @type {UserInfo}
+     * @memberof VersionDiffResponse
+     */
+    fromUploader?: UserInfo | null;
+    /**
+     * 
+     * @type {UserInfo}
+     * @memberof VersionDiffResponse
+     */
+    toUploader?: UserInfo | null;
+    /**
+     * 
+     * @type {Date}
+     * @memberof VersionDiffResponse
+     */
+    fromUploadedAt?: Date | null;
+    /**
+     * 
+     * @type {Date}
+     * @memberof VersionDiffResponse
+     */
+    toUploadedAt?: Date | null;
 }
 
 
@@ -134,6 +223,17 @@ export function VersionDiffResponseFromJSONTyped(json: any, ignoreDiscriminator:
         'format': DiffFormatFromJSON(json['format']),
         'text': json['text'] == null ? undefined : TextDiffFromJSON(json['text']),
         'cells': json['cells'] == null ? undefined : CellDiffFromJSON(json['cells']),
+        'structured': json['structured'] == null ? undefined : StructuredDiffFromJSON(json['structured']),
+        'document': json['document'] == null ? undefined : DocumentDiffFromJSON(json['document']),
+        'degraded': json['degraded'] == null ? undefined : json['degraded'],
+        'degradedReason': json['degraded_reason'] == null ? undefined : json['degraded_reason'],
+        'algorithmVersion': json['algorithm_version'] == null ? undefined : json['algorithm_version'],
+        'fromContentHash': json['from_content_hash'] == null ? undefined : json['from_content_hash'],
+        'toContentHash': json['to_content_hash'] == null ? undefined : json['to_content_hash'],
+        'fromUploader': json['from_uploader'] == null ? undefined : UserInfoFromJSON(json['from_uploader']),
+        'toUploader': json['to_uploader'] == null ? undefined : UserInfoFromJSON(json['to_uploader']),
+        'fromUploadedAt': json['from_uploaded_at'] == null ? undefined : (new Date(json['from_uploaded_at'])),
+        'toUploadedAt': json['to_uploaded_at'] == null ? undefined : (new Date(json['to_uploaded_at'])),
     };
 }
 
@@ -155,6 +255,17 @@ export function VersionDiffResponseToJSONTyped(value?: VersionDiffResponse | nul
         'format': DiffFormatToJSON(value['format']),
         'text': TextDiffToJSON(value['text']),
         'cells': CellDiffToJSON(value['cells']),
+        'structured': StructuredDiffToJSON(value['structured']),
+        'document': DocumentDiffToJSON(value['document']),
+        'degraded': value['degraded'],
+        'degraded_reason': value['degradedReason'],
+        'algorithm_version': value['algorithmVersion'],
+        'from_content_hash': value['fromContentHash'],
+        'to_content_hash': value['toContentHash'],
+        'from_uploader': UserInfoToJSON(value['fromUploader']),
+        'to_uploader': UserInfoToJSON(value['toUploader']),
+        'from_uploaded_at': value['fromUploadedAt'] == null ? value['fromUploadedAt'] : value['fromUploadedAt'].toISOString(),
+        'to_uploaded_at': value['toUploadedAt'] == null ? value['toUploadedAt'] : value['toUploadedAt'].toISOString(),
     };
 }
 

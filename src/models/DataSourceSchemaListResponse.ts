@@ -13,13 +13,13 @@
  */
 
 import { mapValues } from '../runtime';
-import type { DataSourceSchemaResponse } from './DataSourceSchemaResponse';
+import type { DataSourceSchemaListItem } from './DataSourceSchemaListItem';
 import {
-    DataSourceSchemaResponseFromJSON,
-    DataSourceSchemaResponseFromJSONTyped,
-    DataSourceSchemaResponseToJSON,
-    DataSourceSchemaResponseToJSONTyped,
-} from './DataSourceSchemaResponse';
+    DataSourceSchemaListItemFromJSON,
+    DataSourceSchemaListItemFromJSONTyped,
+    DataSourceSchemaListItemToJSON,
+    DataSourceSchemaListItemToJSONTyped,
+} from './DataSourceSchemaListItem';
 
 /**
  * The source's user namespaces (PG schemas / MySQL databases).
@@ -29,10 +29,10 @@ import {
 export interface DataSourceSchemaListResponse {
     /**
      * 
-     * @type {Array<DataSourceSchemaResponse>}
+     * @type {Array<DataSourceSchemaListItem>}
      * @memberof DataSourceSchemaListResponse
      */
-    schemas: Array<DataSourceSchemaResponse>;
+    schemas: Array<DataSourceSchemaListItem>;
 }
 export const DataSourceSchemaListResponsePropertyValidationAttributesMap: {
     [property: string]: {
@@ -70,7 +70,7 @@ export function DataSourceSchemaListResponseFromJSONTyped(json: any, ignoreDiscr
     }
     return {
         
-        'schemas': ((json['schemas'] as Array<any>).map(DataSourceSchemaResponseFromJSON)),
+        'schemas': ((json['schemas'] as Array<any>).map(DataSourceSchemaListItemFromJSON)),
     };
 }
 
@@ -85,7 +85,7 @@ export function DataSourceSchemaListResponseToJSONTyped(value?: DataSourceSchema
 
     return {
         
-        'schemas': ((value['schemas'] as Array<any>).map(DataSourceSchemaResponseToJSON)),
+        'schemas': ((value['schemas'] as Array<any>).map(DataSourceSchemaListItemToJSON)),
     };
 }
 

@@ -23,6 +23,11 @@ import {
 
 /**
  * One changed spreadsheet cell (``old`` is null for added, ``new`` for removed).
+ * 
+ * ``old``/``new`` are the displayed values (cached result for a formula cell);
+ * ``*_formula`` carry the formula text so a formula edit is visible even when the
+ * computed value is unchanged. ``formatting_changed`` flags a bold/colour/
+ * number-format change on an otherwise unchanged cell.
  * @export
  * @interface CellChange
  */
@@ -57,6 +62,48 @@ export interface CellChange {
      * @memberof CellChange
      */
     type: CellChangeType;
+    /**
+     * 
+     * @type {string}
+     * @memberof CellChange
+     */
+    oldFormula?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof CellChange
+     */
+    newFormula?: string | null;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof CellChange
+     */
+    formulaChanged?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof CellChange
+     */
+    formattingChanged?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof CellChange
+     */
+    commentChanged?: boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof CellChange
+     */
+    oldComment?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof CellChange
+     */
+    newComment?: string | null;
 }
 
 
@@ -105,6 +152,13 @@ export function CellChangeFromJSONTyped(json: any, ignoreDiscriminator: boolean)
         'old': json['old'],
         '_new': json['new'],
         'type': CellChangeTypeFromJSON(json['type']),
+        'oldFormula': json['old_formula'] == null ? undefined : json['old_formula'],
+        'newFormula': json['new_formula'] == null ? undefined : json['new_formula'],
+        'formulaChanged': json['formula_changed'] == null ? undefined : json['formula_changed'],
+        'formattingChanged': json['formatting_changed'] == null ? undefined : json['formatting_changed'],
+        'commentChanged': json['comment_changed'] == null ? undefined : json['comment_changed'],
+        'oldComment': json['old_comment'] == null ? undefined : json['old_comment'],
+        'newComment': json['new_comment'] == null ? undefined : json['new_comment'],
     };
 }
 
@@ -124,6 +178,13 @@ export function CellChangeToJSONTyped(value?: CellChange | null, ignoreDiscrimin
         'old': value['old'],
         'new': value['_new'],
         'type': CellChangeTypeToJSON(value['type']),
+        'old_formula': value['oldFormula'],
+        'new_formula': value['newFormula'],
+        'formula_changed': value['formulaChanged'],
+        'formatting_changed': value['formattingChanged'],
+        'comment_changed': value['commentChanged'],
+        'old_comment': value['oldComment'],
+        'new_comment': value['newComment'],
     };
 }
 

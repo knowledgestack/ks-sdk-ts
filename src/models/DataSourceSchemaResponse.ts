@@ -13,12 +13,70 @@
  */
 
 import { mapValues } from '../runtime';
+import type { ItemPermissions } from './ItemPermissions';
+import {
+    ItemPermissionsFromJSON,
+    ItemPermissionsFromJSONTyped,
+    ItemPermissionsToJSON,
+    ItemPermissionsToJSONTyped,
+} from './ItemPermissions';
+import type { PathPartApprovalState } from './PathPartApprovalState';
+import {
+    PathPartApprovalStateFromJSON,
+    PathPartApprovalStateFromJSONTyped,
+    PathPartApprovalStateToJSON,
+    PathPartApprovalStateToJSONTyped,
+} from './PathPartApprovalState';
+import type { DataSourceTableResponse } from './DataSourceTableResponse';
+import {
+    DataSourceTableResponseFromJSON,
+    DataSourceTableResponseFromJSONTyped,
+    DataSourceTableResponseToJSON,
+    DataSourceTableResponseToJSONTyped,
+} from './DataSourceTableResponse';
+
 /**
- * 
+ * A schema PDO under a connector, with the readable tables it contains.
  * @export
  * @interface DataSourceSchemaResponse
  */
 export interface DataSourceSchemaResponse {
+    /**
+     * Path part type
+     * @type {DataSourceSchemaResponsePartTypeEnum}
+     * @memberof DataSourceSchemaResponse
+     */
+    partType?: DataSourceSchemaResponsePartTypeEnum;
+    /**
+     * 
+     * @type {string}
+     * @memberof DataSourceSchemaResponse
+     */
+    id: string;
+    /**
+     * DATA_SOURCE_SCHEMA path_part of this schema
+     * @type {string}
+     * @memberof DataSourceSchemaResponse
+     */
+    pathPartId: string;
+    /**
+     * DATA_SOURCE path_part of the parent connector
+     * @type {string}
+     * @memberof DataSourceSchemaResponse
+     */
+    parentPathPartId: string | null;
+    /**
+     * Full materialized path from root
+     * @type {string}
+     * @memberof DataSourceSchemaResponse
+     */
+    materializedPath: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof DataSourceSchemaResponse
+     */
+    tenantId: string;
     /**
      * 
      * @type {string}
@@ -27,11 +85,69 @@ export interface DataSourceSchemaResponse {
     name: string;
     /**
      * 
+     * @type {string}
+     * @memberof DataSourceSchemaResponse
+     */
+    dataSourceId: string;
+    /**
+     * Real namespace in the external DB
+     * @type {string}
+     * @memberof DataSourceSchemaResponse
+     */
+    schemaName: string;
+    /**
+     * True for the connection's default namespace
      * @type {boolean}
      * @memberof DataSourceSchemaResponse
      */
     isDefault: boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof DataSourceSchemaResponse
+     */
+    description: string | null;
+    /**
+     * 
+     * @type {PathPartApprovalState}
+     * @memberof DataSourceSchemaResponse
+     */
+    approvalState: PathPartApprovalState;
+    /**
+     * 
+     * @type {ItemPermissions}
+     * @memberof DataSourceSchemaResponse
+     */
+    permissions: ItemPermissions;
+    /**
+     * 
+     * @type {Date}
+     * @memberof DataSourceSchemaResponse
+     */
+    createdAt: Date;
+    /**
+     * 
+     * @type {Date}
+     * @memberof DataSourceSchemaResponse
+     */
+    updatedAt: Date;
+    /**
+     * Readable modeled tables in this schema
+     * @type {Array<DataSourceTableResponse>}
+     * @memberof DataSourceSchemaResponse
+     */
+    tables?: Array<DataSourceTableResponse>;
 }
+
+
+/**
+ * @export
+ */
+export const DataSourceSchemaResponsePartTypeEnum = {
+    DataSourceSchema: 'DATA_SOURCE_SCHEMA'
+} as const;
+export type DataSourceSchemaResponsePartTypeEnum = typeof DataSourceSchemaResponsePartTypeEnum[keyof typeof DataSourceSchemaResponsePartTypeEnum];
+
 export const DataSourceSchemaResponsePropertyValidationAttributesMap: {
     [property: string]: {
         maxLength?: number,
@@ -54,8 +170,20 @@ export const DataSourceSchemaResponsePropertyValidationAttributesMap: {
  * Check if a given object implements the DataSourceSchemaResponse interface.
  */
 export function instanceOfDataSourceSchemaResponse(value: object): value is DataSourceSchemaResponse {
+    if (!('id' in value) || value['id'] === undefined) return false;
+    if (!('pathPartId' in value) || value['pathPartId'] === undefined) return false;
+    if (!('parentPathPartId' in value) || value['parentPathPartId'] === undefined) return false;
+    if (!('materializedPath' in value) || value['materializedPath'] === undefined) return false;
+    if (!('tenantId' in value) || value['tenantId'] === undefined) return false;
     if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('dataSourceId' in value) || value['dataSourceId'] === undefined) return false;
+    if (!('schemaName' in value) || value['schemaName'] === undefined) return false;
     if (!('isDefault' in value) || value['isDefault'] === undefined) return false;
+    if (!('description' in value) || value['description'] === undefined) return false;
+    if (!('approvalState' in value) || value['approvalState'] === undefined) return false;
+    if (!('permissions' in value) || value['permissions'] === undefined) return false;
+    if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
+    if (!('updatedAt' in value) || value['updatedAt'] === undefined) return false;
     return true;
 }
 
@@ -69,8 +197,22 @@ export function DataSourceSchemaResponseFromJSONTyped(json: any, ignoreDiscrimin
     }
     return {
         
+        'partType': json['part_type'] == null ? undefined : json['part_type'],
+        'id': json['id'],
+        'pathPartId': json['path_part_id'],
+        'parentPathPartId': json['parent_path_part_id'],
+        'materializedPath': json['materialized_path'],
+        'tenantId': json['tenant_id'],
         'name': json['name'],
+        'dataSourceId': json['data_source_id'],
+        'schemaName': json['schema_name'],
         'isDefault': json['is_default'],
+        'description': json['description'],
+        'approvalState': PathPartApprovalStateFromJSON(json['approval_state']),
+        'permissions': ItemPermissionsFromJSON(json['permissions']),
+        'createdAt': (new Date(json['created_at'])),
+        'updatedAt': (new Date(json['updated_at'])),
+        'tables': json['tables'] == null ? undefined : ((json['tables'] as Array<any>).map(DataSourceTableResponseFromJSON)),
     };
 }
 
@@ -85,8 +227,22 @@ export function DataSourceSchemaResponseToJSONTyped(value?: DataSourceSchemaResp
 
     return {
         
+        'part_type': value['partType'],
+        'id': value['id'],
+        'path_part_id': value['pathPartId'],
+        'parent_path_part_id': value['parentPathPartId'],
+        'materialized_path': value['materializedPath'],
+        'tenant_id': value['tenantId'],
         'name': value['name'],
+        'data_source_id': value['dataSourceId'],
+        'schema_name': value['schemaName'],
         'is_default': value['isDefault'],
+        'description': value['description'],
+        'approval_state': PathPartApprovalStateToJSON(value['approvalState']),
+        'permissions': ItemPermissionsToJSON(value['permissions']),
+        'created_at': value['createdAt'].toISOString(),
+        'updated_at': value['updatedAt'].toISOString(),
+        'tables': value['tables'] == null ? undefined : ((value['tables'] as Array<any>).map(DataSourceTableResponseToJSON)),
     };
 }
 

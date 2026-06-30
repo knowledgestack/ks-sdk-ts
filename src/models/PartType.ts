@@ -28,6 +28,7 @@ export const PartType = {
     WorkflowDefinition: 'WORKFLOW_DEFINITION',
     WorkflowRun: 'WORKFLOW_RUN',
     DataSource: 'DATA_SOURCE',
+    DataSourceSchema: 'DATA_SOURCE_SCHEMA',
     DataSourceTable: 'DATA_SOURCE_TABLE',
     ApiConnection: 'API_CONNECTION'
 } as const;

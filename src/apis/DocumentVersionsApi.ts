@@ -320,7 +320,7 @@ export interface DocumentVersionsApiInterface {
     getDocumentVersionDiffRequestOpts(requestParameters: GetDocumentVersionDiffRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * Side-by-side diff of a version against a previous one of the same document.  Diffs the two versions\' plaintext on the fly (no stored diff), so any pair of versions can be compared. ``from_version_id`` defaults to the immediate predecessor; the first version diffs against empty (all additions). Requires read permission on the document.
+     * Side-by-side diff of a version against a previous one of the same document.  Diffs the two versions on the fly (no stored diff), so any pair of versions can be compared. ``from_version_id`` defaults to the immediate predecessor; the first version diffs against empty (all additions). Requires read permission on both versions. Viewing a diff is a sensitive read, so it emits a ``document.diff.viewed`` audit event (a durable write on this GET, by design — like a download).
      * @summary Get Document Version Diff Handler
      * @param {string} versionId The new (right) version ID
      * @param {string} [fromVersionId] The old (left) version; defaults to the predecessor
@@ -331,7 +331,7 @@ export interface DocumentVersionsApiInterface {
     getDocumentVersionDiffRaw(requestParameters: GetDocumentVersionDiffRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<VersionDiffResponse>>;
 
     /**
-     * Side-by-side diff of a version against a previous one of the same document.  Diffs the two versions\' plaintext on the fly (no stored diff), so any pair of versions can be compared. ``from_version_id`` defaults to the immediate predecessor; the first version diffs against empty (all additions). Requires read permission on the document.
+     * Side-by-side diff of a version against a previous one of the same document.  Diffs the two versions on the fly (no stored diff), so any pair of versions can be compared. ``from_version_id`` defaults to the immediate predecessor; the first version diffs against empty (all additions). Requires read permission on both versions. Viewing a diff is a sensitive read, so it emits a ``document.diff.viewed`` audit event (a durable write on this GET, by design — like a download).
      * Get Document Version Diff Handler
      */
     getDocumentVersionDiff(requestParameters: GetDocumentVersionDiffRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<VersionDiffResponse>;
@@ -868,7 +868,7 @@ export class DocumentVersionsApi extends runtime.BaseAPI implements DocumentVers
     }
 
     /**
-     * Side-by-side diff of a version against a previous one of the same document.  Diffs the two versions\' plaintext on the fly (no stored diff), so any pair of versions can be compared. ``from_version_id`` defaults to the immediate predecessor; the first version diffs against empty (all additions). Requires read permission on the document.
+     * Side-by-side diff of a version against a previous one of the same document.  Diffs the two versions on the fly (no stored diff), so any pair of versions can be compared. ``from_version_id`` defaults to the immediate predecessor; the first version diffs against empty (all additions). Requires read permission on both versions. Viewing a diff is a sensitive read, so it emits a ``document.diff.viewed`` audit event (a durable write on this GET, by design — like a download).
      * Get Document Version Diff Handler
      */
     async getDocumentVersionDiffRaw(requestParameters: GetDocumentVersionDiffRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<VersionDiffResponse>> {
@@ -879,7 +879,7 @@ export class DocumentVersionsApi extends runtime.BaseAPI implements DocumentVers
     }
 
     /**
-     * Side-by-side diff of a version against a previous one of the same document.  Diffs the two versions\' plaintext on the fly (no stored diff), so any pair of versions can be compared. ``from_version_id`` defaults to the immediate predecessor; the first version diffs against empty (all additions). Requires read permission on the document.
+     * Side-by-side diff of a version against a previous one of the same document.  Diffs the two versions on the fly (no stored diff), so any pair of versions can be compared. ``from_version_id`` defaults to the immediate predecessor; the first version diffs against empty (all additions). Requires read permission on both versions. Viewing a diff is a sensitive read, so it emits a ``document.diff.viewed`` audit event (a durable write on this GET, by design — like a download).
      * Get Document Version Diff Handler
      */
     async getDocumentVersionDiff(requestParameters: GetDocumentVersionDiffRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<VersionDiffResponse> {

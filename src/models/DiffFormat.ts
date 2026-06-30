@@ -19,7 +19,9 @@
  */
 export const DiffFormat = {
     Text: 'text',
-    Cells: 'cells'
+    Cells: 'cells',
+    Structured: 'structured',
+    Document: 'document'
 } as const;
 export type DiffFormat = typeof DiffFormat[keyof typeof DiffFormat];
 

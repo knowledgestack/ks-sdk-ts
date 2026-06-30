@@ -13,6 +13,13 @@
  */
 
 import { mapValues } from '../runtime';
+import type { DataSourceSchemaResponse } from './DataSourceSchemaResponse';
+import {
+    DataSourceSchemaResponseFromJSON,
+    DataSourceSchemaResponseFromJSONTyped,
+    DataSourceSchemaResponseToJSON,
+    DataSourceSchemaResponseToJSONTyped,
+} from './DataSourceSchemaResponse';
 import type { DataSourceResponse } from './DataSourceResponse';
 import {
     DataSourceResponseFromJSON,
@@ -20,16 +27,12 @@ import {
     DataSourceResponseToJSON,
     DataSourceResponseToJSONTyped,
 } from './DataSourceResponse';
-import type { DataSourceTableResponse } from './DataSourceTableResponse';
-import {
-    DataSourceTableResponseFromJSON,
-    DataSourceTableResponseFromJSONTyped,
-    DataSourceTableResponseToJSON,
-    DataSourceTableResponseToJSONTyped,
-} from './DataSourceTableResponse';
 
 /**
- * A connector plus the modeled tables the caller can read (describe).
+ * A connector plus the schemas (and their readable tables) the caller sees.
+ * 
+ * ``description_document_id`` points at the connector's generated, ingested
+ * "Database overview" Document (a hidden system file); null until generated.
  * @export
  * @interface DataSourceDetailResponse
  */
@@ -42,10 +45,16 @@ export interface DataSourceDetailResponse {
     dataSource: DataSourceResponse;
     /**
      * 
-     * @type {Array<DataSourceTableResponse>}
+     * @type {Array<DataSourceSchemaResponse>}
      * @memberof DataSourceDetailResponse
      */
-    tables: Array<DataSourceTableResponse>;
+    schemas: Array<DataSourceSchemaResponse>;
+    /**
+     * 
+     * @type {string}
+     * @memberof DataSourceDetailResponse
+     */
+    descriptionDocumentId?: string | null;
 }
 export const DataSourceDetailResponsePropertyValidationAttributesMap: {
     [property: string]: {
@@ -70,7 +79,7 @@ export const DataSourceDetailResponsePropertyValidationAttributesMap: {
  */
 export function instanceOfDataSourceDetailResponse(value: object): value is DataSourceDetailResponse {
     if (!('dataSource' in value) || value['dataSource'] === undefined) return false;
-    if (!('tables' in value) || value['tables'] === undefined) return false;
+    if (!('schemas' in value) || value['schemas'] === undefined) return false;
     return true;
 }
 
@@ -85,7 +94,8 @@ export function DataSourceDetailResponseFromJSONTyped(json: any, ignoreDiscrimin
     return {
         
         'dataSource': DataSourceResponseFromJSON(json['data_source']),
-        'tables': ((json['tables'] as Array<any>).map(DataSourceTableResponseFromJSON)),
+        'schemas': ((json['schemas'] as Array<any>).map(DataSourceSchemaResponseFromJSON)),
+        'descriptionDocumentId': json['description_document_id'] == null ? undefined : json['description_document_id'],
     };
 }
 
@@ -101,7 +111,8 @@ export function DataSourceDetailResponseToJSONTyped(value?: DataSourceDetailResp
     return {
         
         'data_source': DataSourceResponseToJSON(value['dataSource']),
-        'tables': ((value['tables'] as Array<any>).map(DataSourceTableResponseToJSON)),
+        'schemas': ((value['schemas'] as Array<any>).map(DataSourceSchemaResponseToJSON)),
+        'description_document_id': value['descriptionDocumentId'],
     };
 }
 

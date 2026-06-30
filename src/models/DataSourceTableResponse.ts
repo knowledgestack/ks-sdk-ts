@@ -30,6 +30,9 @@ import {
 
 /**
  * Modeled-table response; a discriminated-union variant for listings.
+ * 
+ * The table's schema is its parent ``DataSourceSchema`` PDO; the table no
+ * longer carries a ``schema_name`` of its own.
  * @export
  * @interface DataSourceTableResponse
  */
@@ -53,7 +56,7 @@ export interface DataSourceTableResponse {
      */
     pathPartId: string;
     /**
-     * DATA_SOURCE path_part of the parent connector
+     * DATA_SOURCE_SCHEMA path_part of the parent schema
      * @type {string}
      * @memberof DataSourceTableResponse
      */
@@ -83,17 +86,17 @@ export interface DataSourceTableResponse {
      */
     dataSourceId: string;
     /**
+     * PDO id of the parent schema this table belongs to
+     * @type {string}
+     * @memberof DataSourceTableResponse
+     */
+    dataSourceSchemaId: string;
+    /**
      * 
      * @type {string}
      * @memberof DataSourceTableResponse
      */
     tableName: string;
-    /**
-     * Schema/namespace in the external DB; null = default schema
-     * @type {string}
-     * @memberof DataSourceTableResponse
-     */
-    schemaName?: string | null;
     /**
      * 
      * @type {string}
@@ -170,6 +173,7 @@ export function instanceOfDataSourceTableResponse(value: object): value is DataS
     if (!('tenantId' in value) || value['tenantId'] === undefined) return false;
     if (!('name' in value) || value['name'] === undefined) return false;
     if (!('dataSourceId' in value) || value['dataSourceId'] === undefined) return false;
+    if (!('dataSourceSchemaId' in value) || value['dataSourceSchemaId'] === undefined) return false;
     if (!('tableName' in value) || value['tableName'] === undefined) return false;
     if (!('description' in value) || value['description'] === undefined) return false;
     if (!('columnConfig' in value) || value['columnConfig'] === undefined) return false;
@@ -198,8 +202,8 @@ export function DataSourceTableResponseFromJSONTyped(json: any, ignoreDiscrimina
         'tenantId': json['tenant_id'],
         'name': json['name'],
         'dataSourceId': json['data_source_id'],
+        'dataSourceSchemaId': json['data_source_schema_id'],
         'tableName': json['table_name'],
-        'schemaName': json['schema_name'] == null ? undefined : json['schema_name'],
         'description': json['description'],
         'columnConfig': json['column_config'],
         'approvalState': PathPartApprovalStateFromJSON(json['approval_state']),
@@ -228,8 +232,8 @@ export function DataSourceTableResponseToJSONTyped(value?: DataSourceTableRespon
         'tenant_id': value['tenantId'],
         'name': value['name'],
         'data_source_id': value['dataSourceId'],
+        'data_source_schema_id': value['dataSourceSchemaId'],
         'table_name': value['tableName'],
-        'schema_name': value['schemaName'],
         'description': value['description'],
         'column_config': value['columnConfig'],
         'approval_state': PathPartApprovalStateToJSON(value['approvalState']),

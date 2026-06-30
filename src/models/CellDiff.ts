@@ -20,6 +20,13 @@ import {
     CellChangeToJSON,
     CellChangeToJSONTyped,
 } from './CellChange';
+import type { SheetVisibilityChange } from './SheetVisibilityChange';
+import {
+    SheetVisibilityChangeFromJSON,
+    SheetVisibilityChangeFromJSONTyped,
+    SheetVisibilityChangeToJSON,
+    SheetVisibilityChangeToJSONTyped,
+} from './SheetVisibilityChange';
 
 /**
  * A cell-level diff of two spreadsheet versions.
@@ -57,6 +64,12 @@ export interface CellDiff {
      * @memberof CellDiff
      */
     truncated: boolean;
+    /**
+     * 
+     * @type {Array<SheetVisibilityChange>}
+     * @memberof CellDiff
+     */
+    sheetVisibilityChanges: Array<SheetVisibilityChange>;
 }
 export const CellDiffPropertyValidationAttributesMap: {
     [property: string]: {
@@ -85,6 +98,7 @@ export function instanceOfCellDiff(value: object): value is CellDiff {
     if (!('removed' in value) || value['removed'] === undefined) return false;
     if (!('modified' in value) || value['modified'] === undefined) return false;
     if (!('truncated' in value) || value['truncated'] === undefined) return false;
+    if (!('sheetVisibilityChanges' in value) || value['sheetVisibilityChanges'] === undefined) return false;
     return true;
 }
 
@@ -103,6 +117,7 @@ export function CellDiffFromJSONTyped(json: any, ignoreDiscriminator: boolean): 
         'removed': json['removed'],
         'modified': json['modified'],
         'truncated': json['truncated'],
+        'sheetVisibilityChanges': ((json['sheet_visibility_changes'] as Array<any>).map(SheetVisibilityChangeFromJSON)),
     };
 }
 
@@ -122,6 +137,7 @@ export function CellDiffToJSONTyped(value?: CellDiff | null, ignoreDiscriminator
         'removed': value['removed'],
         'modified': value['modified'],
         'truncated': value['truncated'],
+        'sheet_visibility_changes': ((value['sheetVisibilityChanges'] as Array<any>).map(SheetVisibilityChangeToJSON)),
     };
 }
 

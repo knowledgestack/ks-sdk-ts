@@ -15,8 +15,11 @@
 
 import * as runtime from '../runtime';
 import type {
+  BulkModelTablesRequest,
+  BulkModelTablesResponse,
   CreateDataSourceRequest,
   DataSourceCatalogResponse,
+  DataSourceDescriptionResponse,
   DataSourceDetailResponse,
   DataSourceQueryRequest,
   DataSourceQueryResponse,
@@ -30,10 +33,16 @@ import type {
   UpdateTableRequest,
 } from '../models/index';
 import {
+    BulkModelTablesRequestFromJSON,
+    BulkModelTablesRequestToJSON,
+    BulkModelTablesResponseFromJSON,
+    BulkModelTablesResponseToJSON,
     CreateDataSourceRequestFromJSON,
     CreateDataSourceRequestToJSON,
     DataSourceCatalogResponseFromJSON,
     DataSourceCatalogResponseToJSON,
+    DataSourceDescriptionResponseFromJSON,
+    DataSourceDescriptionResponseToJSON,
     DataSourceDetailResponseFromJSON,
     DataSourceDetailResponseToJSON,
     DataSourceQueryRequestFromJSON,
@@ -66,6 +75,20 @@ export interface DeleteDataSourceRequest {
     dataSourceId: string;
 }
 
+export interface DeleteDataSourceSchemaRequest {
+    dataSourceId: string;
+    schemaId: string;
+}
+
+export interface DeleteDataSourceTableRequest {
+    dataSourceId: string;
+    tableId: string;
+}
+
+export interface GenerateDataSourceDescriptionRequest {
+    dataSourceId: string;
+}
+
 export interface GetDataSourceRequest {
     dataSourceId: string;
 }
@@ -82,6 +105,11 @@ export interface ListDataSourceSchemasRequest {
 export interface ModelDataSourceTableRequest {
     dataSourceId: string;
     modelTableRequest: ModelTableRequest;
+}
+
+export interface ModelDataSourceTablesRequest {
+    dataSourceId: string;
+    bulkModelTablesRequest: BulkModelTablesRequest;
 }
 
 export interface QueryDataSourceRequest {
@@ -144,7 +172,7 @@ export interface DataSourcesApiInterface {
     deleteDataSourceRequestOpts(requestParameters: DeleteDataSourceRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * Move a connector and its modeled tables to trash.  Soft-delete via the path_part subtree (the tables are children, so they trash with it). Connectors carry no Qdrant vectors, so there is no trash-sync workflow.
+     * Move a connector and its schemas/tables to trash.  Soft-delete via the path_part subtree (schemas + tables are children, so they trash with it). The connector\'s generated ``.overview`` description Document IS ingested, so its Qdrant points are flipped to trashed via the set-trashed workflow (best-effort, mirrors the document delete path).
      * @summary Delete Data Source Handler
      * @param {string} dataSourceId 
      * @param {*} [options] Override http request option.
@@ -154,10 +182,86 @@ export interface DataSourcesApiInterface {
     deleteDataSourceRaw(requestParameters: DeleteDataSourceRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>>;
 
     /**
-     * Move a connector and its modeled tables to trash.  Soft-delete via the path_part subtree (the tables are children, so they trash with it). Connectors carry no Qdrant vectors, so there is no trash-sync workflow.
+     * Move a connector and its schemas/tables to trash.  Soft-delete via the path_part subtree (schemas + tables are children, so they trash with it). The connector\'s generated ``.overview`` description Document IS ingested, so its Qdrant points are flipped to trashed via the set-trashed workflow (best-effort, mirrors the document delete path).
      * Delete Data Source Handler
      */
     deleteDataSource(requestParameters: DeleteDataSourceRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void>;
+
+    /**
+     * Creates request options for deleteDataSourceSchema without sending the request
+     * @param {string} dataSourceId 
+     * @param {string} schemaId 
+     * @throws {RequiredError}
+     * @memberof DataSourcesApiInterface
+     */
+    deleteDataSourceSchemaRequestOpts(requestParameters: DeleteDataSourceSchemaRequest): Promise<runtime.RequestOpts>;
+
+    /**
+     * Un-model a schema and the tables under it (hard-delete the namespace).
+     * @summary Delete Data Source Schema Handler
+     * @param {string} dataSourceId 
+     * @param {string} schemaId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DataSourcesApiInterface
+     */
+    deleteDataSourceSchemaRaw(requestParameters: DeleteDataSourceSchemaRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>>;
+
+    /**
+     * Un-model a schema and the tables under it (hard-delete the namespace).
+     * Delete Data Source Schema Handler
+     */
+    deleteDataSourceSchema(requestParameters: DeleteDataSourceSchemaRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void>;
+
+    /**
+     * Creates request options for deleteDataSourceTable without sending the request
+     * @param {string} dataSourceId 
+     * @param {string} tableId 
+     * @throws {RequiredError}
+     * @memberof DataSourcesApiInterface
+     */
+    deleteDataSourceTableRequestOpts(requestParameters: DeleteDataSourceTableRequest): Promise<runtime.RequestOpts>;
+
+    /**
+     * Un-model a single table (hard-delete it from its schema).
+     * @summary Delete Data Source Table Handler
+     * @param {string} dataSourceId 
+     * @param {string} tableId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DataSourcesApiInterface
+     */
+    deleteDataSourceTableRaw(requestParameters: DeleteDataSourceTableRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>>;
+
+    /**
+     * Un-model a single table (hard-delete it from its schema).
+     * Delete Data Source Table Handler
+     */
+    deleteDataSourceTable(requestParameters: DeleteDataSourceTableRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void>;
+
+    /**
+     * Creates request options for generateDataSourceDescription without sending the request
+     * @param {string} dataSourceId 
+     * @throws {RequiredError}
+     * @memberof DataSourcesApiInterface
+     */
+    generateDataSourceDescriptionRequestOpts(requestParameters: GenerateDataSourceDescriptionRequest): Promise<runtime.RequestOpts>;
+
+    /**
+     * (Re)generate the connector\'s hidden, searchable \'Database overview\' Document.  Requires ``can_write`` on the connector. The structural overview is deterministic; an LLM prose summary is prepended best-effort. The document ingests through the normal pipeline so the agent\'s semantic search finds it.
+     * @summary Generate Data Source Description Handler
+     * @param {string} dataSourceId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DataSourcesApiInterface
+     */
+    generateDataSourceDescriptionRaw(requestParameters: GenerateDataSourceDescriptionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<DataSourceDescriptionResponse>>;
+
+    /**
+     * (Re)generate the connector\'s hidden, searchable \'Database overview\' Document.  Requires ``can_write`` on the connector. The structural overview is deterministic; an LLM prose summary is prepended best-effort. The document ingests through the normal pipeline so the agent\'s semantic search finds it.
+     * Generate Data Source Description Handler
+     */
+    generateDataSourceDescription(requestParameters: GenerateDataSourceDescriptionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DataSourceDescriptionResponse>;
 
     /**
      * Creates request options for getDataSource without sending the request
@@ -243,7 +347,7 @@ export interface DataSourcesApiInterface {
     modelDataSourceTableRequestOpts(requestParameters: ModelDataSourceTableRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * Model a table as a queryable PathPart child; auto-introspect columns.
+     * Model a table under its (auto-created) Schema PDO; auto-introspect columns.
      * @summary Model Data Source Table Handler
      * @param {string} dataSourceId 
      * @param {ModelTableRequest} modelTableRequest 
@@ -254,10 +358,36 @@ export interface DataSourcesApiInterface {
     modelDataSourceTableRaw(requestParameters: ModelDataSourceTableRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<DataSourceTableResponse>>;
 
     /**
-     * Model a table as a queryable PathPart child; auto-introspect columns.
+     * Model a table under its (auto-created) Schema PDO; auto-introspect columns.
      * Model Data Source Table Handler
      */
     modelDataSourceTable(requestParameters: ModelDataSourceTableRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DataSourceTableResponse>;
+
+    /**
+     * Creates request options for modelDataSourceTables without sending the request
+     * @param {string} dataSourceId 
+     * @param {BulkModelTablesRequest} bulkModelTablesRequest 
+     * @throws {RequiredError}
+     * @memberof DataSourcesApiInterface
+     */
+    modelDataSourceTablesRequestOpts(requestParameters: ModelDataSourceTablesRequest): Promise<runtime.RequestOpts>;
+
+    /**
+     * Import several tables across one or more schemas; per-item results.  Schemas are auto find-or-created. Duplicates are pre-checked against the already-modeled tables and earlier items in the same batch (so a conflict never triggers a failed INSERT, which would otherwise roll back the batch\'s prior writes); introspection failures are reported per item. One bad item never aborts the batch.
+     * @summary Model Data Source Tables Handler
+     * @param {string} dataSourceId 
+     * @param {BulkModelTablesRequest} bulkModelTablesRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DataSourcesApiInterface
+     */
+    modelDataSourceTablesRaw(requestParameters: ModelDataSourceTablesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<BulkModelTablesResponse>>;
+
+    /**
+     * Import several tables across one or more schemas; per-item results.  Schemas are auto find-or-created. Duplicates are pre-checked against the already-modeled tables and earlier items in the same batch (so a conflict never triggers a failed INSERT, which would otherwise roll back the batch\'s prior writes); introspection failures are reported per item. One bad item never aborts the batch.
+     * Model Data Source Tables Handler
+     */
+    modelDataSourceTables(requestParameters: ModelDataSourceTablesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<BulkModelTablesResponse>;
 
     /**
      * Creates request options for queryDataSource without sending the request
@@ -463,7 +593,7 @@ export class DataSourcesApi extends runtime.BaseAPI implements DataSourcesApiInt
     }
 
     /**
-     * Move a connector and its modeled tables to trash.  Soft-delete via the path_part subtree (the tables are children, so they trash with it). Connectors carry no Qdrant vectors, so there is no trash-sync workflow.
+     * Move a connector and its schemas/tables to trash.  Soft-delete via the path_part subtree (schemas + tables are children, so they trash with it). The connector\'s generated ``.overview`` description Document IS ingested, so its Qdrant points are flipped to trashed via the set-trashed workflow (best-effort, mirrors the document delete path).
      * Delete Data Source Handler
      */
     async deleteDataSourceRaw(requestParameters: DeleteDataSourceRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
@@ -474,11 +604,190 @@ export class DataSourcesApi extends runtime.BaseAPI implements DataSourcesApiInt
     }
 
     /**
-     * Move a connector and its modeled tables to trash.  Soft-delete via the path_part subtree (the tables are children, so they trash with it). Connectors carry no Qdrant vectors, so there is no trash-sync workflow.
+     * Move a connector and its schemas/tables to trash.  Soft-delete via the path_part subtree (schemas + tables are children, so they trash with it). The connector\'s generated ``.overview`` description Document IS ingested, so its Qdrant points are flipped to trashed via the set-trashed workflow (best-effort, mirrors the document delete path).
      * Delete Data Source Handler
      */
     async deleteDataSource(requestParameters: DeleteDataSourceRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.deleteDataSourceRaw(requestParameters, initOverrides);
+    }
+
+    /**
+     * Creates request options for deleteDataSourceSchema without sending the request
+     */
+    async deleteDataSourceSchemaRequestOpts(requestParameters: DeleteDataSourceSchemaRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['dataSourceId'] == null) {
+            throw new runtime.RequiredError(
+                'dataSourceId',
+                'Required parameter "dataSourceId" was null or undefined when calling deleteDataSourceSchema().'
+            );
+        }
+
+        if (requestParameters['schemaId'] == null) {
+            throw new runtime.RequiredError(
+                'schemaId',
+                'Required parameter "schemaId" was null or undefined when calling deleteDataSourceSchema().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/v1/data-sources/{data_source_id}/schemas/{schema_id}`;
+        urlPath = urlPath.replace(`{${"data_source_id"}}`, encodeURIComponent(String(requestParameters['dataSourceId'])));
+        urlPath = urlPath.replace(`{${"schema_id"}}`, encodeURIComponent(String(requestParameters['schemaId'])));
+
+        return {
+            path: urlPath,
+            method: 'DELETE',
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Un-model a schema and the tables under it (hard-delete the namespace).
+     * Delete Data Source Schema Handler
+     */
+    async deleteDataSourceSchemaRaw(requestParameters: DeleteDataSourceSchemaRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        const requestOptions = await this.deleteDataSourceSchemaRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * Un-model a schema and the tables under it (hard-delete the namespace).
+     * Delete Data Source Schema Handler
+     */
+    async deleteDataSourceSchema(requestParameters: DeleteDataSourceSchemaRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.deleteDataSourceSchemaRaw(requestParameters, initOverrides);
+    }
+
+    /**
+     * Creates request options for deleteDataSourceTable without sending the request
+     */
+    async deleteDataSourceTableRequestOpts(requestParameters: DeleteDataSourceTableRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['dataSourceId'] == null) {
+            throw new runtime.RequiredError(
+                'dataSourceId',
+                'Required parameter "dataSourceId" was null or undefined when calling deleteDataSourceTable().'
+            );
+        }
+
+        if (requestParameters['tableId'] == null) {
+            throw new runtime.RequiredError(
+                'tableId',
+                'Required parameter "tableId" was null or undefined when calling deleteDataSourceTable().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/v1/data-sources/{data_source_id}/tables/{table_id}`;
+        urlPath = urlPath.replace(`{${"data_source_id"}}`, encodeURIComponent(String(requestParameters['dataSourceId'])));
+        urlPath = urlPath.replace(`{${"table_id"}}`, encodeURIComponent(String(requestParameters['tableId'])));
+
+        return {
+            path: urlPath,
+            method: 'DELETE',
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Un-model a single table (hard-delete it from its schema).
+     * Delete Data Source Table Handler
+     */
+    async deleteDataSourceTableRaw(requestParameters: DeleteDataSourceTableRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        const requestOptions = await this.deleteDataSourceTableRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * Un-model a single table (hard-delete it from its schema).
+     * Delete Data Source Table Handler
+     */
+    async deleteDataSourceTable(requestParameters: DeleteDataSourceTableRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.deleteDataSourceTableRaw(requestParameters, initOverrides);
+    }
+
+    /**
+     * Creates request options for generateDataSourceDescription without sending the request
+     */
+    async generateDataSourceDescriptionRequestOpts(requestParameters: GenerateDataSourceDescriptionRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['dataSourceId'] == null) {
+            throw new runtime.RequiredError(
+                'dataSourceId',
+                'Required parameter "dataSourceId" was null or undefined when calling generateDataSourceDescription().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/v1/data-sources/{data_source_id}/describe`;
+        urlPath = urlPath.replace(`{${"data_source_id"}}`, encodeURIComponent(String(requestParameters['dataSourceId'])));
+
+        return {
+            path: urlPath,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * (Re)generate the connector\'s hidden, searchable \'Database overview\' Document.  Requires ``can_write`` on the connector. The structural overview is deterministic; an LLM prose summary is prepended best-effort. The document ingests through the normal pipeline so the agent\'s semantic search finds it.
+     * Generate Data Source Description Handler
+     */
+    async generateDataSourceDescriptionRaw(requestParameters: GenerateDataSourceDescriptionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<DataSourceDescriptionResponse>> {
+        const requestOptions = await this.generateDataSourceDescriptionRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => DataSourceDescriptionResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * (Re)generate the connector\'s hidden, searchable \'Database overview\' Document.  Requires ``can_write`` on the connector. The structural overview is deterministic; an LLM prose summary is prepended best-effort. The document ingests through the normal pipeline so the agent\'s semantic search finds it.
+     * Generate Data Source Description Handler
+     */
+    async generateDataSourceDescription(requestParameters: GenerateDataSourceDescriptionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DataSourceDescriptionResponse> {
+        const response = await this.generateDataSourceDescriptionRaw(requestParameters, initOverrides);
+        return await response.value();
     }
 
     /**
@@ -696,7 +1005,7 @@ export class DataSourcesApi extends runtime.BaseAPI implements DataSourcesApiInt
     }
 
     /**
-     * Model a table as a queryable PathPart child; auto-introspect columns.
+     * Model a table under its (auto-created) Schema PDO; auto-introspect columns.
      * Model Data Source Table Handler
      */
     async modelDataSourceTableRaw(requestParameters: ModelDataSourceTableRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<DataSourceTableResponse>> {
@@ -707,11 +1016,76 @@ export class DataSourcesApi extends runtime.BaseAPI implements DataSourcesApiInt
     }
 
     /**
-     * Model a table as a queryable PathPart child; auto-introspect columns.
+     * Model a table under its (auto-created) Schema PDO; auto-introspect columns.
      * Model Data Source Table Handler
      */
     async modelDataSourceTable(requestParameters: ModelDataSourceTableRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DataSourceTableResponse> {
         const response = await this.modelDataSourceTableRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for modelDataSourceTables without sending the request
+     */
+    async modelDataSourceTablesRequestOpts(requestParameters: ModelDataSourceTablesRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['dataSourceId'] == null) {
+            throw new runtime.RequiredError(
+                'dataSourceId',
+                'Required parameter "dataSourceId" was null or undefined when calling modelDataSourceTables().'
+            );
+        }
+
+        if (requestParameters['bulkModelTablesRequest'] == null) {
+            throw new runtime.RequiredError(
+                'bulkModelTablesRequest',
+                'Required parameter "bulkModelTablesRequest" was null or undefined when calling modelDataSourceTables().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/v1/data-sources/{data_source_id}/tables/batch`;
+        urlPath = urlPath.replace(`{${"data_source_id"}}`, encodeURIComponent(String(requestParameters['dataSourceId'])));
+
+        return {
+            path: urlPath,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: BulkModelTablesRequestToJSON(requestParameters['bulkModelTablesRequest']),
+        };
+    }
+
+    /**
+     * Import several tables across one or more schemas; per-item results.  Schemas are auto find-or-created. Duplicates are pre-checked against the already-modeled tables and earlier items in the same batch (so a conflict never triggers a failed INSERT, which would otherwise roll back the batch\'s prior writes); introspection failures are reported per item. One bad item never aborts the batch.
+     * Model Data Source Tables Handler
+     */
+    async modelDataSourceTablesRaw(requestParameters: ModelDataSourceTablesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<BulkModelTablesResponse>> {
+        const requestOptions = await this.modelDataSourceTablesRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => BulkModelTablesResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * Import several tables across one or more schemas; per-item results.  Schemas are auto find-or-created. Duplicates are pre-checked against the already-modeled tables and earlier items in the same batch (so a conflict never triggers a failed INSERT, which would otherwise roll back the batch\'s prior writes); introspection failures are reported per item. One bad item never aborts the batch.
+     * Model Data Source Tables Handler
+     */
+    async modelDataSourceTables(requestParameters: ModelDataSourceTablesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<BulkModelTablesResponse> {
+        const response = await this.modelDataSourceTablesRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
