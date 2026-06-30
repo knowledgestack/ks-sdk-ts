@@ -26,6 +26,7 @@ import type {
   ErrorResponse,
   HTTPValidationError,
   ModelTableRequest,
+  UpdateDataSourceRequest,
   UpdateTableRequest,
 } from '../models/index';
 import {
@@ -51,6 +52,8 @@ import {
     HTTPValidationErrorToJSON,
     ModelTableRequestFromJSON,
     ModelTableRequestToJSON,
+    UpdateDataSourceRequestFromJSON,
+    UpdateDataSourceRequestToJSON,
     UpdateTableRequestFromJSON,
     UpdateTableRequestToJSON,
 } from '../models/index';
@@ -88,6 +91,11 @@ export interface QueryDataSourceRequest {
 
 export interface TestDataSourceConnectionRequest {
     dataSourceId: string;
+}
+
+export interface UpdateDataSourceOperationRequest {
+    dataSourceId: string;
+    updateDataSourceRequest: UpdateDataSourceRequest;
 }
 
 export interface UpdateDataSourceTableRequest {
@@ -300,6 +308,32 @@ export interface DataSourcesApiInterface {
      * Test Data Source Connection Handler
      */
     testDataSourceConnection(requestParameters: TestDataSourceConnectionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void>;
+
+    /**
+     * Creates request options for updateDataSource without sending the request
+     * @param {string} dataSourceId 
+     * @param {UpdateDataSourceRequest} updateDataSourceRequest 
+     * @throws {RequiredError}
+     * @memberof DataSourcesApiInterface
+     */
+    updateDataSourceRequestOpts(requestParameters: UpdateDataSourceOperationRequest): Promise<runtime.RequestOpts>;
+
+    /**
+     * Rename and/or move a connector.  Requires ``can_write`` on the connector (and on the destination folder for a move).
+     * @summary Update Data Source Handler
+     * @param {string} dataSourceId 
+     * @param {UpdateDataSourceRequest} updateDataSourceRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DataSourcesApiInterface
+     */
+    updateDataSourceRaw(requestParameters: UpdateDataSourceOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<DataSourceResponse>>;
+
+    /**
+     * Rename and/or move a connector.  Requires ``can_write`` on the connector (and on the destination folder for a move).
+     * Update Data Source Handler
+     */
+    updateDataSource(requestParameters: UpdateDataSourceOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DataSourceResponse>;
 
     /**
      * Creates request options for updateDataSourceTable without sending the request
@@ -798,6 +832,71 @@ export class DataSourcesApi extends runtime.BaseAPI implements DataSourcesApiInt
      */
     async testDataSourceConnection(requestParameters: TestDataSourceConnectionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.testDataSourceConnectionRaw(requestParameters, initOverrides);
+    }
+
+    /**
+     * Creates request options for updateDataSource without sending the request
+     */
+    async updateDataSourceRequestOpts(requestParameters: UpdateDataSourceOperationRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['dataSourceId'] == null) {
+            throw new runtime.RequiredError(
+                'dataSourceId',
+                'Required parameter "dataSourceId" was null or undefined when calling updateDataSource().'
+            );
+        }
+
+        if (requestParameters['updateDataSourceRequest'] == null) {
+            throw new runtime.RequiredError(
+                'updateDataSourceRequest',
+                'Required parameter "updateDataSourceRequest" was null or undefined when calling updateDataSource().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/v1/data-sources/{data_source_id}`;
+        urlPath = urlPath.replace(`{${"data_source_id"}}`, encodeURIComponent(String(requestParameters['dataSourceId'])));
+
+        return {
+            path: urlPath,
+            method: 'PATCH',
+            headers: headerParameters,
+            query: queryParameters,
+            body: UpdateDataSourceRequestToJSON(requestParameters['updateDataSourceRequest']),
+        };
+    }
+
+    /**
+     * Rename and/or move a connector.  Requires ``can_write`` on the connector (and on the destination folder for a move).
+     * Update Data Source Handler
+     */
+    async updateDataSourceRaw(requestParameters: UpdateDataSourceOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<DataSourceResponse>> {
+        const requestOptions = await this.updateDataSourceRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => DataSourceResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * Rename and/or move a connector.  Requires ``can_write`` on the connector (and on the destination folder for a move).
+     * Update Data Source Handler
+     */
+    async updateDataSource(requestParameters: UpdateDataSourceOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DataSourceResponse> {
+        const response = await this.updateDataSourceRaw(requestParameters, initOverrides);
+        return await response.value();
     }
 
     /**

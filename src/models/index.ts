@@ -254,6 +254,7 @@ export * from './TrashItemResponse';
 export * from './UpdateApiConnectionRequest';
 export * from './UpdateChunkContentRequest';
 export * from './UpdateChunkMetadataRequest';
+export * from './UpdateDataSourceRequest';
 export * from './UpdateDocumentRequest';
 export * from './UpdateFolderRequest';
 export * from './UpdateGroupPermissionRequest';

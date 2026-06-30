@@ -285,6 +285,7 @@ docs/TrashItemResponse.md
 docs/UpdateApiConnectionRequest.md
 docs/UpdateChunkContentRequest.md
 docs/UpdateChunkMetadataRequest.md
+docs/UpdateDataSourceRequest.md
 docs/UpdateDocumentRequest.md
 docs/UpdateFolderRequest.md
 docs/UpdateGroupPermissionRequest.md
@@ -625,6 +626,7 @@ src/models/TrashItemResponse.ts
 src/models/UpdateApiConnectionRequest.ts
 src/models/UpdateChunkContentRequest.ts
 src/models/UpdateChunkMetadataRequest.ts
+src/models/UpdateDataSourceRequest.ts
 src/models/UpdateDocumentRequest.ts
 src/models/UpdateFolderRequest.ts
 src/models/UpdateGroupPermissionRequest.ts

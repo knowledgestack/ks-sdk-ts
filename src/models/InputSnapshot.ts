@@ -26,15 +26,20 @@ import { mapValues } from '../runtime';
  *   FOLDER path_part itself; its contents are NOT captured here and
  *   are enumerated live by the runner (see ``materialized_path`` for
  *   subtree scoping).
+ * * ``DATA_SOURCE`` / ``API_CONNECTION`` — a live connector reference
+ *   (DB / API). ``path_part_id`` is the connector path_part itself; the
+ *   runner queries it live via its connector tools, nothing is captured
+ *   here.
  * 
- * The underlying PDO id (DocumentVersion or Folder) is resolved live at
- * run time from ``path_part.metadata_obj_id``, not stored here.
+ * The underlying PDO id (DocumentVersion / Folder / connector) is
+ * resolved live at run time from ``path_part.metadata_obj_id``, not
+ * stored here.
  * @export
  * @interface InputSnapshot
  */
 export interface InputSnapshot {
     /**
-     * DOCUMENT_VERSION path_part of the pinned input version, or the FOLDER path_part of a live folder reference — see ``part_type``.
+     * DOCUMENT_VERSION path_part of the pinned input version, or the path_part of a live FOLDER / DATA_SOURCE / API_CONNECTION reference — see ``part_type``.
      * @type {string}
      * @memberof InputSnapshot
      */
@@ -59,7 +64,9 @@ export interface InputSnapshot {
  */
 export const InputSnapshotPartTypeEnum = {
     DocumentVersion: 'DOCUMENT_VERSION',
-    Folder: 'FOLDER'
+    Folder: 'FOLDER',
+    DataSource: 'DATA_SOURCE',
+    ApiConnection: 'API_CONNECTION'
 } as const;
 export type InputSnapshotPartTypeEnum = typeof InputSnapshotPartTypeEnum[keyof typeof InputSnapshotPartTypeEnum];
 

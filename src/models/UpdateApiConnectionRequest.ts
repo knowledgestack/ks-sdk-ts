@@ -30,10 +30,26 @@ import {
 
 /**
  * Partial update (PATCH). A risk-increasing change re-arms the disclaimer.
+ * 
+ * ``name`` renames the connection and ``parent_path_part_id`` moves it under
+ * a new FOLDER; neither is a risk-increasing change, so a rename/move alone
+ * leaves the disclaimer intact.
  * @export
  * @interface UpdateApiConnectionRequest
  */
 export interface UpdateApiConnectionRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof UpdateApiConnectionRequest
+     */
+    name?: string | null;
+    /**
+     * New parent FOLDER path_part to move the connection under.
+     * @type {string}
+     * @memberof UpdateApiConnectionRequest
+     */
+    parentPathPartId?: string | null;
     /**
      * 
      * @type {string}
@@ -82,6 +98,10 @@ export const UpdateApiConnectionRequestPropertyValidationAttributesMap: {
         uniqueItems?: boolean
     }
 } = {
+    name: {
+        maxLength: 255,
+        minLength: 1,
+    },
     baseUrl: {
         maxLength: 2048,
     },
@@ -108,6 +128,8 @@ export function UpdateApiConnectionRequestFromJSONTyped(json: any, ignoreDiscrim
     }
     return {
         
+        'name': json['name'] == null ? undefined : json['name'],
+        'parentPathPartId': json['parent_path_part_id'] == null ? undefined : json['parent_path_part_id'],
         'baseUrl': json['base_url'] == null ? undefined : json['base_url'],
         'networkClass': json['network_class'] == null ? undefined : NetworkClassFromJSON(json['network_class']),
         'verifyTls': json['verify_tls'] == null ? undefined : json['verify_tls'],
@@ -127,6 +149,8 @@ export function UpdateApiConnectionRequestToJSONTyped(value?: UpdateApiConnectio
 
     return {
         
+        'name': value['name'],
+        'parent_path_part_id': value['parentPathPartId'],
         'base_url': value['baseUrl'],
         'network_class': NetworkClassToJSON(value['networkClass']),
         'verify_tls': value['verifyTls'],

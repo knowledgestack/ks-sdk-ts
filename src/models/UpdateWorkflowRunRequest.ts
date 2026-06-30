@@ -25,7 +25,7 @@ import { mapValues } from '../runtime';
  */
 export interface UpdateWorkflowRunRequest {
     /**
-     * New KB-reference scope (DOCUMENT + FOLDER pp_ids). Replaces the row's ``input_path_part_ids`` wholesale. Uploaded files live in ``inputs/`` and are walked at Start; they are not part of this list.
+     * New KB-reference scope (DOCUMENT + FOLDER + DATA_SOURCE + API_CONNECTION pp_ids). Replaces the row's ``input_path_part_ids`` wholesale. Uploaded files live in ``inputs/`` and are walked at Start; they are not part of this list.
      * @type {Array<string>}
      * @memberof UpdateWorkflowRunRequest
      */

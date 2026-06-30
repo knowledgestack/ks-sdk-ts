@@ -27,7 +27,7 @@ import { mapValues } from '../runtime';
  */
 export interface CloneWorkflowRunRequest {
     /**
-     * When True, the new run's input_path_part_ids are pinned from the source run's snapshotted inputs (DOCUMENT_VERSION + FOLDER path_parts). When False, the new run is created with an empty input scope.
+     * When True, the new run's input_path_part_ids are pinned from the source run's snapshotted inputs (DOCUMENT_VERSION, FOLDER, DATA_SOURCE, API_CONNECTION path_parts). When False, the new run is created with an empty input scope.
      * @type {boolean}
      * @memberof CloneWorkflowRunRequest
      */
