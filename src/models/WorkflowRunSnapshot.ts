@@ -20,6 +20,13 @@ import {
     InputSnapshotToJSON,
     InputSnapshotToJSONTyped,
 } from './InputSnapshot';
+import type { ExcludedCommonFile } from './ExcludedCommonFile';
+import {
+    ExcludedCommonFileFromJSON,
+    ExcludedCommonFileFromJSONTyped,
+    ExcludedCommonFileToJSON,
+    ExcludedCommonFileToJSONTyped,
+} from './ExcludedCommonFile';
 import type { InstructionSnapshot } from './InstructionSnapshot';
 import {
     InstructionSnapshotFromJSON,
@@ -66,6 +73,12 @@ export interface WorkflowRunSnapshot {
      * @memberof WorkflowRunSnapshot
      */
     inputs: Array<InputSnapshot>;
+    /**
+     * Definition common files left out of this run at Start (deleted or unreadable by the starter), each with its exclusion reason. Empty for the common happy path; pre-feature snapshots default to empty.
+     * @type {Array<ExcludedCommonFile>}
+     * @memberof WorkflowRunSnapshot
+     */
+    excludedCommonFiles?: Array<ExcludedCommonFile>;
     /**
      * Optional free-text message the caller supplied at Start. Pinned here so the runner injects it into the agent's first user turn and it survives retry, redrive, and workflow-thread follow-ups (all of which re-assemble the prompt from this snapshot).
      * @type {string}
@@ -119,6 +132,7 @@ export function WorkflowRunSnapshotFromJSONTyped(json: any, ignoreDiscriminator:
         'maxRunDurationSeconds': json['max_run_duration_seconds'],
         'instruction': InstructionSnapshotFromJSON(json['instruction']),
         'inputs': ((json['inputs'] as Array<any>).map(InputSnapshotFromJSON)),
+        'excludedCommonFiles': json['excluded_common_files'] == null ? undefined : ((json['excluded_common_files'] as Array<any>).map(ExcludedCommonFileFromJSON)),
         'userMessage': json['user_message'] == null ? undefined : json['user_message'],
     };
 }
@@ -138,6 +152,7 @@ export function WorkflowRunSnapshotToJSONTyped(value?: WorkflowRunSnapshot | nul
         'max_run_duration_seconds': value['maxRunDurationSeconds'],
         'instruction': InstructionSnapshotToJSON(value['instruction']),
         'inputs': ((value['inputs'] as Array<any>).map(InputSnapshotToJSON)),
+        'excluded_common_files': value['excludedCommonFiles'] == null ? undefined : ((value['excludedCommonFiles'] as Array<any>).map(ExcludedCommonFileToJSON)),
         'user_message': value['userMessage'],
     };
 }

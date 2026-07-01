@@ -126,6 +126,12 @@ export interface WorkflowDefinitionResponse {
      */
     isTemplate: boolean;
     /**
+     * Common files attached to every run (path_part ids). The FE renders these as 'attached to every run' on the workflow page.
+     * @type {Array<string>}
+     * @memberof WorkflowDefinitionResponse
+     */
+    commonFilePathPartIds?: Array<string>;
+    /**
      * Source definition this workflow was copied from (a template or any other workflow); null if hand-authored.
      * @type {string}
      * @memberof WorkflowDefinitionResponse
@@ -242,6 +248,7 @@ export function WorkflowDefinitionResponseFromJSONTyped(json: any, ignoreDiscrim
         'isActive': json['is_active'],
         'approvalRequired': json['approval_required'],
         'isTemplate': json['is_template'],
+        'commonFilePathPartIds': json['common_file_path_part_ids'] == null ? undefined : json['common_file_path_part_ids'],
         'createdFromId': json['created_from_id'],
         'copyCount': json['copy_count'] == null ? undefined : json['copy_count'],
         'approvalState': PathPartApprovalStateFromJSON(json['approval_state']),
@@ -276,6 +283,7 @@ export function WorkflowDefinitionResponseToJSONTyped(value?: WorkflowDefinition
         'is_active': value['isActive'],
         'approval_required': value['approvalRequired'],
         'is_template': value['isTemplate'],
+        'common_file_path_part_ids': value['commonFilePathPartIds'],
         'created_from_id': value['createdFromId'],
         'copy_count': value['copyCount'],
         'approval_state': PathPartApprovalStateToJSON(value['approvalState']),

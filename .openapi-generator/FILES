@@ -57,6 +57,7 @@ docs/ClearVersionContentsResponse.md
 docs/CloneWorkflowRunRequest.md
 docs/ColumnConfig.md
 docs/ColumnReference.md
+docs/CommonFileExclusionReason.md
 docs/ConnectionConfig.md
 docs/CreateApiConnectionRequest.md
 docs/CreateApiKeyRequest.md
@@ -123,6 +124,7 @@ docs/EnrichedCitation.md
 docs/EnrichedThreadMessageContent.md
 docs/ErrorResponse.md
 docs/EventResponse.md
+docs/ExcludedCommonFile.md
 docs/ExtractRequest.md
 docs/ExtractResponse.md
 docs/FeaturesApi.md
@@ -151,6 +153,7 @@ docs/ImageTaxonomy.md
 docs/InformationStatistics.md
 docs/IngestDocumentResponse.md
 docs/IngestionMode.md
+docs/InputOrigin.md
 docs/InputSnapshot.md
 docs/InstantiateWorkflowTemplateRequest.md
 docs/InstructionSnapshot.md
@@ -436,6 +439,7 @@ src/models/ClearVersionContentsResponse.ts
 src/models/CloneWorkflowRunRequest.ts
 src/models/ColumnConfig.ts
 src/models/ColumnReference.ts
+src/models/CommonFileExclusionReason.ts
 src/models/ConnectionConfig.ts
 src/models/CreateApiConnectionRequest.ts
 src/models/CreateApiKeyRequest.ts
@@ -497,6 +501,7 @@ src/models/EnrichedCitation.ts
 src/models/EnrichedThreadMessageContent.ts
 src/models/ErrorResponse.ts
 src/models/EventResponse.ts
+src/models/ExcludedCommonFile.ts
 src/models/ExtractRequest.ts
 src/models/ExtractResponse.ts
 src/models/FeaturesResponse.ts
@@ -522,6 +527,7 @@ src/models/ImageTaxonomy.ts
 src/models/InformationStatistics.ts
 src/models/IngestDocumentResponse.ts
 src/models/IngestionMode.ts
+src/models/InputOrigin.ts
 src/models/InputSnapshot.ts
 src/models/InstantiateWorkflowTemplateRequest.ts
 src/models/InstructionSnapshot.ts

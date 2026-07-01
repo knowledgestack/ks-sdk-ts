@@ -61,6 +61,12 @@ export interface UpdateWorkflowDefinitionRequest {
      * @memberof UpdateWorkflowDefinitionRequest
      */
     approvalRequired: boolean;
+    /**
+     * Common files attached to every run (DOCUMENT / FOLDER / DATA_SOURCE / API_CONNECTION path_part ids). Like ``instruction_path_part_id``, this is the exception to PUT semantics: null (or omit) retains the stored list; pass [] to clear; pass a list to replace it wholesale. The caller must be able to read each one.
+     * @type {Array<string>}
+     * @memberof UpdateWorkflowDefinitionRequest
+     */
+    commonFilePathPartIds?: Array<string> | null;
 }
 export const UpdateWorkflowDefinitionRequestPropertyValidationAttributesMap: {
     [property: string]: {
@@ -85,6 +91,10 @@ export const UpdateWorkflowDefinitionRequestPropertyValidationAttributesMap: {
         exclusiveMaximum: false,
         minimum: 60,
         exclusiveMinimum: false,
+    },
+    commonFilePathPartIds: {
+        maxItems: 20,
+        uniqueItems: false,
     },
 }
 
@@ -116,6 +126,7 @@ export function UpdateWorkflowDefinitionRequestFromJSONTyped(json: any, ignoreDi
         'parentPathPartId': json['parent_path_part_id'] == null ? undefined : json['parent_path_part_id'],
         'isActive': json['is_active'],
         'approvalRequired': json['approval_required'],
+        'commonFilePathPartIds': json['common_file_path_part_ids'] == null ? undefined : json['common_file_path_part_ids'],
     };
 }
 
@@ -137,6 +148,7 @@ export function UpdateWorkflowDefinitionRequestToJSONTyped(value?: UpdateWorkflo
         'parent_path_part_id': value['parentPathPartId'],
         'is_active': value['isActive'],
         'approval_required': value['approvalRequired'],
+        'common_file_path_part_ids': value['commonFilePathPartIds'],
     };
 }
 

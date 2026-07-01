@@ -13,6 +13,14 @@
  */
 
 import { mapValues } from '../runtime';
+import type { InputOrigin } from './InputOrigin';
+import {
+    InputOriginFromJSON,
+    InputOriginFromJSONTyped,
+    InputOriginToJSON,
+    InputOriginToJSONTyped,
+} from './InputOrigin';
+
 /**
  * One entry of a run's input scope, self-describing its pin semantics.
  * 
@@ -56,6 +64,12 @@ export interface InputSnapshot {
      * @memberof InputSnapshot
      */
     partType: InputSnapshotPartTypeEnum;
+    /**
+     * 
+     * @type {InputOrigin}
+     * @memberof InputSnapshot
+     */
+    origin?: InputOrigin;
 }
 
 
@@ -111,6 +125,7 @@ export function InputSnapshotFromJSONTyped(json: any, ignoreDiscriminator: boole
         'pathPartId': json['path_part_id'],
         'materializedPath': json['materialized_path'],
         'partType': json['part_type'],
+        'origin': json['origin'] == null ? undefined : InputOriginFromJSON(json['origin']),
     };
 }
 
@@ -128,6 +143,7 @@ export function InputSnapshotToJSONTyped(value?: InputSnapshot | null, ignoreDis
         'path_part_id': value['pathPartId'],
         'materialized_path': value['materializedPath'],
         'part_type': value['partType'],
+        'origin': InputOriginToJSON(value['origin']),
     };
 }
 

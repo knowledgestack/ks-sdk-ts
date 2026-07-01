@@ -34,6 +34,13 @@ import {
     WorkflowExecutionStateToJSON,
     WorkflowExecutionStateToJSONTyped,
 } from './WorkflowExecutionState';
+import type { ExcludedCommonFile } from './ExcludedCommonFile';
+import {
+    ExcludedCommonFileFromJSON,
+    ExcludedCommonFileFromJSONTyped,
+    ExcludedCommonFileToJSON,
+    ExcludedCommonFileToJSONTyped,
+} from './ExcludedCommonFile';
 import type { PathPartApprovalState } from './PathPartApprovalState';
 import {
     PathPartApprovalStateFromJSON,
@@ -198,6 +205,12 @@ export interface WorkflowRunResponse {
      */
     outputsPathPartIds: Array<string>;
     /**
+     * Definition common files that were excluded from this run at Start (deleted or unreadable by the starter). Empty until Start builds the snapshot, and empty for the common happy path.
+     * @type {Array<ExcludedCommonFile>}
+     * @memberof WorkflowRunResponse
+     */
+    excludedCommonFiles?: Array<ExcludedCommonFile>;
+    /**
      * The run's primary chat thread (1:1). NULL while NOT_STARTED; set by Start. The FE opens the run by opening this thread.
      * @type {string}
      * @memberof WorkflowRunResponse
@@ -316,6 +329,7 @@ export function WorkflowRunResponseFromJSONTyped(json: any, ignoreDiscriminator:
         'discussionsPathPartId': json['discussions_path_part_id'],
         'inputPathPartIds': json['input_path_part_ids'] == null ? undefined : json['input_path_part_ids'],
         'outputsPathPartIds': json['outputs_path_part_ids'],
+        'excludedCommonFiles': json['excluded_common_files'] == null ? undefined : ((json['excluded_common_files'] as Array<any>).map(ExcludedCommonFileFromJSON)),
         'runThreadId': json['run_thread_id'] == null ? undefined : json['run_thread_id'],
         'owner': json['owner'] == null ? undefined : UserInfoFromJSON(json['owner']),
         'createdAt': (new Date(json['created_at'])),
@@ -357,6 +371,7 @@ export function WorkflowRunResponseToJSONTyped(value?: WorkflowRunResponse | nul
         'discussions_path_part_id': value['discussionsPathPartId'],
         'input_path_part_ids': value['inputPathPartIds'],
         'outputs_path_part_ids': value['outputsPathPartIds'],
+        'excluded_common_files': value['excludedCommonFiles'] == null ? undefined : ((value['excludedCommonFiles'] as Array<any>).map(ExcludedCommonFileToJSON)),
         'run_thread_id': value['runThreadId'],
         'owner': UserInfoToJSON(value['owner']),
         'created_at': value['createdAt'].toISOString(),
