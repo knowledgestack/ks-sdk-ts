@@ -97,6 +97,7 @@ docs/DiffSpan.md
 docs/DirectorySyncResponse.md
 docs/DisplayNameFormat.md
 docs/DissolveSectionResponse.md
+docs/DocEditPart.md
 docs/DocumentBlockChange.md
 docs/DocumentCheckoutApi.md
 docs/DocumentCheckoutResponse.md
@@ -153,6 +154,7 @@ docs/ImageTaxonomy.md
 docs/InformationStatistics.md
 docs/IngestDocumentResponse.md
 docs/IngestionMode.md
+docs/Input.md
 docs/InputOrigin.md
 docs/InputSnapshot.md
 docs/InstantiateWorkflowTemplateRequest.md
@@ -176,6 +178,7 @@ docs/MemoryChunkResponse.md
 docs/MemoryKind.md
 docs/MemoryScope.md
 docs/MessageRole.md
+docs/MessageUsage.md
 docs/MeteredQuotaStatus.md
 docs/ModelTableRequest.md
 docs/ModelTableResult.md
@@ -233,6 +236,7 @@ docs/PolygonReference.md
 docs/ProposeMemoryChunkRequest.md
 docs/ProposedMemoryChunkResponse.md
 docs/PublicApi.md
+docs/ReasoningPart.md
 docs/ReferenceType.md
 docs/RequestPhoneChangeRequest.md
 docs/ResolvedReferenceInput.md
@@ -258,9 +262,8 @@ docs/SheetVisibilityChange.md
 docs/SignInRequest.md
 docs/SortDirection.md
 docs/StartWorkflowRunRequest.md
-docs/StepInput.md
+docs/Step.md
 docs/StepKind.md
-docs/StepOutput.md
 docs/StructuredChange.md
 docs/StructuredChangeType.md
 docs/StructuredDiff.md
@@ -290,14 +293,17 @@ docs/TenantUserResponse.md
 docs/TenantUserRole.md
 docs/TenantsApi.md
 docs/TextDiff.md
+docs/TextPart.md
+docs/TextPartOrReasoningPartOrToolPartOrDocEditPart.md
 docs/ThreadMessageContent.md
-docs/ThreadMessageDetailsInput.md
-docs/ThreadMessageDetailsOutput.md
+docs/ThreadMessageDetails.md
 docs/ThreadMessageResponse.md
 docs/ThreadMessagesApi.md
 docs/ThreadOrder.md
 docs/ThreadResponse.md
 docs/ThreadsApi.md
+docs/ToolPart.md
+docs/ToolStatus.md
 docs/TransferOwnerRequest.md
 docs/TransferOwnerResponse.md
 docs/TrashApi.md
@@ -342,6 +348,7 @@ docs/WorkflowDefinitionsApi.md
 docs/WorkflowDetailResponse.md
 docs/WorkflowExecutionState.md
 docs/WorkflowMemoryApi.md
+docs/WorkflowRunAsset.md
 docs/WorkflowRunCallbackRequest.md
 docs/WorkflowRunOrder.md
 docs/WorkflowRunResponse.md
@@ -477,6 +484,7 @@ src/models/DiffSpan.ts
 src/models/DirectorySyncResponse.ts
 src/models/DisplayNameFormat.ts
 src/models/DissolveSectionResponse.ts
+src/models/DocEditPart.ts
 src/models/DocumentBlockChange.ts
 src/models/DocumentCheckoutResponse.ts
 src/models/DocumentDiff.ts
@@ -527,6 +535,7 @@ src/models/ImageTaxonomy.ts
 src/models/InformationStatistics.ts
 src/models/IngestDocumentResponse.ts
 src/models/IngestionMode.ts
+src/models/Input.ts
 src/models/InputOrigin.ts
 src/models/InputSnapshot.ts
 src/models/InstantiateWorkflowTemplateRequest.ts
@@ -548,6 +557,7 @@ src/models/MemoryChunkResponse.ts
 src/models/MemoryKind.ts
 src/models/MemoryScope.ts
 src/models/MessageRole.ts
+src/models/MessageUsage.ts
 src/models/MeteredQuotaStatus.ts
 src/models/ModelTableRequest.ts
 src/models/ModelTableResult.ts
@@ -602,6 +612,7 @@ src/models/Polygon.ts
 src/models/PolygonReference.ts
 src/models/ProposeMemoryChunkRequest.ts
 src/models/ProposedMemoryChunkResponse.ts
+src/models/ReasoningPart.ts
 src/models/ReferenceType.ts
 src/models/RequestPhoneChangeRequest.ts
 src/models/ResolvedReferenceInput.ts
@@ -626,9 +637,8 @@ src/models/SheetVisibilityChange.ts
 src/models/SignInRequest.ts
 src/models/SortDirection.ts
 src/models/StartWorkflowRunRequest.ts
-src/models/StepInput.ts
+src/models/Step.ts
 src/models/StepKind.ts
-src/models/StepOutput.ts
 src/models/StructuredChange.ts
 src/models/StructuredChangeType.ts
 src/models/StructuredDiff.ts
@@ -654,12 +664,15 @@ src/models/TenantUserOrder.ts
 src/models/TenantUserResponse.ts
 src/models/TenantUserRole.ts
 src/models/TextDiff.ts
+src/models/TextPart.ts
+src/models/TextPartOrReasoningPartOrToolPartOrDocEditPart.ts
 src/models/ThreadMessageContent.ts
-src/models/ThreadMessageDetailsInput.ts
-src/models/ThreadMessageDetailsOutput.ts
+src/models/ThreadMessageDetails.ts
 src/models/ThreadMessageResponse.ts
 src/models/ThreadOrder.ts
 src/models/ThreadResponse.ts
+src/models/ToolPart.ts
+src/models/ToolStatus.ts
 src/models/TransferOwnerRequest.ts
 src/models/TransferOwnerResponse.ts
 src/models/TrashItemResponse.ts
@@ -699,6 +712,7 @@ src/models/WorkflowDefinitionOrder.ts
 src/models/WorkflowDefinitionResponse.ts
 src/models/WorkflowDetailResponse.ts
 src/models/WorkflowExecutionState.ts
+src/models/WorkflowRunAsset.ts
 src/models/WorkflowRunCallbackRequest.ts
 src/models/WorkflowRunOrder.ts
 src/models/WorkflowRunResponse.ts

@@ -20,6 +20,13 @@ import {
     ItemPermissionsToJSON,
     ItemPermissionsToJSONTyped,
 } from './ItemPermissions';
+import type { WorkflowRunAsset } from './WorkflowRunAsset';
+import {
+    WorkflowRunAssetFromJSON,
+    WorkflowRunAssetFromJSONTyped,
+    WorkflowRunAssetToJSON,
+    WorkflowRunAssetToJSONTyped,
+} from './WorkflowRunAsset';
 import type { WorkflowRunSnapshot } from './WorkflowRunSnapshot';
 import {
     WorkflowRunSnapshotFromJSON,
@@ -199,11 +206,29 @@ export interface WorkflowRunResponse {
      */
     inputPathPartIds?: Array<string>;
     /**
-     * 
-     * @type {Array<string>}
+     * Generated files under ``outputs/`` (recursing nested folders), each carrying the DOCUMENT PDO ``id`` to feed straight to download / bulk-download. Empty until the run produces output.
+     * @type {Array<WorkflowRunAsset>}
      * @memberof WorkflowRunResponse
      */
-    outputsPathPartIds: Array<string>;
+    outputAssets?: Array<WorkflowRunAsset>;
+    /**
+     * The run's input context: pinned KB references (``input_path_part_ids``) plus any files uploaded under ``inputs/``, each resolved to its PDO ``id`` + metadata.
+     * @type {Array<WorkflowRunAsset>}
+     * @memberof WorkflowRunResponse
+     */
+    inputAssets?: Array<WorkflowRunAsset>;
+    /**
+     * Full materialized path of the run's ``inputs/`` folder
+     * @type {string}
+     * @memberof WorkflowRunResponse
+     */
+    inputsPath: string;
+    /**
+     * Full materialized path of the run's ``outputs/`` folder
+     * @type {string}
+     * @memberof WorkflowRunResponse
+     */
+    outputsPath: string;
     /**
      * Definition common files that were excluded from this run at Start (deleted or unreadable by the starter). Empty until Start builds the snapshot, and empty for the common happy path.
      * @type {Array<ExcludedCommonFile>}
@@ -291,7 +316,8 @@ export function instanceOfWorkflowRunResponse(value: object): value is WorkflowR
     if (!('inputsPathPartId' in value) || value['inputsPathPartId'] === undefined) return false;
     if (!('outputsPathPartId' in value) || value['outputsPathPartId'] === undefined) return false;
     if (!('discussionsPathPartId' in value) || value['discussionsPathPartId'] === undefined) return false;
-    if (!('outputsPathPartIds' in value) || value['outputsPathPartIds'] === undefined) return false;
+    if (!('inputsPath' in value) || value['inputsPath'] === undefined) return false;
+    if (!('outputsPath' in value) || value['outputsPath'] === undefined) return false;
     if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
     if (!('updatedAt' in value) || value['updatedAt'] === undefined) return false;
     return true;
@@ -328,7 +354,10 @@ export function WorkflowRunResponseFromJSONTyped(json: any, ignoreDiscriminator:
         'outputsPathPartId': json['outputs_path_part_id'],
         'discussionsPathPartId': json['discussions_path_part_id'],
         'inputPathPartIds': json['input_path_part_ids'] == null ? undefined : json['input_path_part_ids'],
-        'outputsPathPartIds': json['outputs_path_part_ids'],
+        'outputAssets': json['output_assets'] == null ? undefined : ((json['output_assets'] as Array<any>).map(WorkflowRunAssetFromJSON)),
+        'inputAssets': json['input_assets'] == null ? undefined : ((json['input_assets'] as Array<any>).map(WorkflowRunAssetFromJSON)),
+        'inputsPath': json['inputs_path'],
+        'outputsPath': json['outputs_path'],
         'excludedCommonFiles': json['excluded_common_files'] == null ? undefined : ((json['excluded_common_files'] as Array<any>).map(ExcludedCommonFileFromJSON)),
         'runThreadId': json['run_thread_id'] == null ? undefined : json['run_thread_id'],
         'owner': json['owner'] == null ? undefined : UserInfoFromJSON(json['owner']),
@@ -370,7 +399,10 @@ export function WorkflowRunResponseToJSONTyped(value?: WorkflowRunResponse | nul
         'outputs_path_part_id': value['outputsPathPartId'],
         'discussions_path_part_id': value['discussionsPathPartId'],
         'input_path_part_ids': value['inputPathPartIds'],
-        'outputs_path_part_ids': value['outputsPathPartIds'],
+        'output_assets': value['outputAssets'] == null ? undefined : ((value['outputAssets'] as Array<any>).map(WorkflowRunAssetToJSON)),
+        'input_assets': value['inputAssets'] == null ? undefined : ((value['inputAssets'] as Array<any>).map(WorkflowRunAssetToJSON)),
+        'inputs_path': value['inputsPath'],
+        'outputs_path': value['outputsPath'],
         'excluded_common_files': value['excludedCommonFiles'] == null ? undefined : ((value['excludedCommonFiles'] as Array<any>).map(ExcludedCommonFileToJSON)),
         'run_thread_id': value['runThreadId'],
         'owner': UserInfoToJSON(value['owner']),

@@ -31,61 +31,55 @@ import {
 /**
  * 
  * @export
- * @interface StepInput
+ * @interface Step
  */
-export interface StepInput {
+export interface Step {
     /**
      * Stable step identifier within the message
      * @type {string}
-     * @memberof StepInput
+     * @memberof Step
      */
     id: string;
     /**
      * The name of the step
      * @type {string}
-     * @memberof StepInput
+     * @memberof Step
      */
     name: string;
     /**
      * 
      * @type {StepKind}
-     * @memberof StepInput
+     * @memberof Step
      */
     kind: StepKind;
     /**
      * 
      * @type {Args}
-     * @memberof StepInput
+     * @memberof Step
      */
     args?: Args | null;
     /**
      * 
      * @type {string}
-     * @memberof StepInput
+     * @memberof Step
      */
     detail?: string | null;
     /**
      * The start time of the step
      * @type {Date}
-     * @memberof StepInput
+     * @memberof Step
      */
     startTime: Date;
     /**
      * 
      * @type {Date}
-     * @memberof StepInput
+     * @memberof Step
      */
     endTime?: Date | null;
-    /**
-     * 
-     * @type {Array<StepInput>}
-     * @memberof StepInput
-     */
-    steps?: Array<StepInput> | null;
 }
 
 
-export const StepInputPropertyValidationAttributesMap: {
+export const StepPropertyValidationAttributesMap: {
     [property: string]: {
         maxLength?: number,
         minLength?: number,
@@ -104,9 +98,9 @@ export const StepInputPropertyValidationAttributesMap: {
 
 
 /**
- * Check if a given object implements the StepInput interface.
+ * Check if a given object implements the Step interface.
  */
-export function instanceOfStepInput(value: object): value is StepInput {
+export function instanceOfStep(value: object): value is Step {
     if (!('id' in value) || value['id'] === undefined) return false;
     if (!('name' in value) || value['name'] === undefined) return false;
     if (!('kind' in value) || value['kind'] === undefined) return false;
@@ -114,11 +108,11 @@ export function instanceOfStepInput(value: object): value is StepInput {
     return true;
 }
 
-export function StepInputFromJSON(json: any): StepInput {
-    return StepInputFromJSONTyped(json, false);
+export function StepFromJSON(json: any): Step {
+    return StepFromJSONTyped(json, false);
 }
 
-export function StepInputFromJSONTyped(json: any, ignoreDiscriminator: boolean): StepInput {
+export function StepFromJSONTyped(json: any, ignoreDiscriminator: boolean): Step {
     if (json == null) {
         return json;
     }
@@ -131,15 +125,14 @@ export function StepInputFromJSONTyped(json: any, ignoreDiscriminator: boolean):
         'detail': json['detail'] == null ? undefined : json['detail'],
         'startTime': (new Date(json['start_time'])),
         'endTime': json['end_time'] == null ? undefined : (new Date(json['end_time'])),
-        'steps': json['steps'] == null ? undefined : ((json['steps'] as Array<any>).map(StepInputFromJSON)),
     };
 }
 
-export function StepInputToJSON(json: any): StepInput {
-    return StepInputToJSONTyped(json, false);
+export function StepToJSON(json: any): Step {
+    return StepToJSONTyped(json, false);
 }
 
-export function StepInputToJSONTyped(value?: StepInput | null, ignoreDiscriminator: boolean = false): any {
+export function StepToJSONTyped(value?: Step | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
@@ -153,7 +146,6 @@ export function StepInputToJSONTyped(value?: StepInput | null, ignoreDiscriminat
         'detail': value['detail'],
         'start_time': value['startTime'].toISOString(),
         'end_time': value['endTime'] == null ? value['endTime'] : value['endTime'].toISOString(),
-        'steps': value['steps'] == null ? undefined : ((value['steps'] as Array<any>).map(StepInputToJSON)),
     };
 }
 

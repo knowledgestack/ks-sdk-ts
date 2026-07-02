@@ -20,13 +20,6 @@ import {
     MessageRoleToJSON,
     MessageRoleToJSONTyped,
 } from './MessageRole';
-import type { ThreadMessageDetailsInput } from './ThreadMessageDetailsInput';
-import {
-    ThreadMessageDetailsInputFromJSON,
-    ThreadMessageDetailsInputFromJSONTyped,
-    ThreadMessageDetailsInputToJSON,
-    ThreadMessageDetailsInputToJSONTyped,
-} from './ThreadMessageDetailsInput';
 import type { ThreadMessageContent } from './ThreadMessageContent';
 import {
     ThreadMessageContentFromJSON,
@@ -34,6 +27,13 @@ import {
     ThreadMessageContentToJSON,
     ThreadMessageContentToJSONTyped,
 } from './ThreadMessageContent';
+import type { ThreadMessageDetails } from './ThreadMessageDetails';
+import {
+    ThreadMessageDetailsFromJSON,
+    ThreadMessageDetailsFromJSONTyped,
+    ThreadMessageDetailsToJSON,
+    ThreadMessageDetailsToJSONTyped,
+} from './ThreadMessageDetails';
 
 /**
  * 
@@ -61,10 +61,10 @@ export interface CreateThreadMessageRequest {
     content: ThreadMessageContent;
     /**
      * Message details (execution steps). Omit for user messages.
-     * @type {ThreadMessageDetailsInput}
+     * @type {ThreadMessageDetails}
      * @memberof CreateThreadMessageRequest
      */
-    details?: ThreadMessageDetailsInput | null;
+    details?: ThreadMessageDetails | null;
 }
 
 
@@ -108,7 +108,7 @@ export function CreateThreadMessageRequestFromJSONTyped(json: any, ignoreDiscrim
         'messageId': json['message_id'] == null ? undefined : json['message_id'],
         'role': MessageRoleFromJSON(json['role']),
         'content': ThreadMessageContentFromJSON(json['content']),
-        'details': json['details'] == null ? undefined : ThreadMessageDetailsInputFromJSON(json['details']),
+        'details': json['details'] == null ? undefined : ThreadMessageDetailsFromJSON(json['details']),
     };
 }
 
@@ -126,7 +126,7 @@ export function CreateThreadMessageRequestToJSONTyped(value?: CreateThreadMessag
         'message_id': value['messageId'],
         'role': MessageRoleToJSON(value['role']),
         'content': ThreadMessageContentToJSON(value['content']),
-        'details': ThreadMessageDetailsInputToJSON(value['details']),
+        'details': ThreadMessageDetailsToJSON(value['details']),
     };
 }
 

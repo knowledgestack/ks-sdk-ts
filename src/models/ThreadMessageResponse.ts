@@ -27,13 +27,20 @@ import {
     MessageRoleToJSON,
     MessageRoleToJSONTyped,
 } from './MessageRole';
-import type { ThreadMessageDetailsOutput } from './ThreadMessageDetailsOutput';
+import type { TextPartOrReasoningPartOrToolPartOrDocEditPart } from './TextPartOrReasoningPartOrToolPartOrDocEditPart';
 import {
-    ThreadMessageDetailsOutputFromJSON,
-    ThreadMessageDetailsOutputFromJSONTyped,
-    ThreadMessageDetailsOutputToJSON,
-    ThreadMessageDetailsOutputToJSONTyped,
-} from './ThreadMessageDetailsOutput';
+    TextPartOrReasoningPartOrToolPartOrDocEditPartFromJSON,
+    TextPartOrReasoningPartOrToolPartOrDocEditPartFromJSONTyped,
+    TextPartOrReasoningPartOrToolPartOrDocEditPartToJSON,
+    TextPartOrReasoningPartOrToolPartOrDocEditPartToJSONTyped,
+} from './TextPartOrReasoningPartOrToolPartOrDocEditPart';
+import type { ThreadMessageDetails } from './ThreadMessageDetails';
+import {
+    ThreadMessageDetailsFromJSON,
+    ThreadMessageDetailsFromJSONTyped,
+    ThreadMessageDetailsToJSON,
+    ThreadMessageDetailsToJSONTyped,
+} from './ThreadMessageDetails';
 
 /**
  * 
@@ -73,10 +80,16 @@ export interface ThreadMessageResponse {
     content: EnrichedThreadMessageContent;
     /**
      * Message details (None when not requested via with_details)
-     * @type {ThreadMessageDetailsOutput}
+     * @type {ThreadMessageDetails}
      * @memberof ThreadMessageResponse
      */
-    details?: ThreadMessageDetailsOutput | null;
+    details?: ThreadMessageDetails | null;
+    /**
+     * Ordered content parts (text/reasoning/tool/doc_edit). Native rows return details.parts; legacy rows return a best-effort read-time projection of details.steps. Empty when details are not requested.
+     * @type {Array<TextPartOrReasoningPartOrToolPartOrDocEditPart>}
+     * @memberof ThreadMessageResponse
+     */
+    parts?: Array<TextPartOrReasoningPartOrToolPartOrDocEditPart>;
     /**
      * Thread's PathPart ID
      * @type {string}
@@ -166,7 +179,8 @@ export function ThreadMessageResponseFromJSONTyped(json: any, ignoreDiscriminato
         'sequence': json['sequence'],
         'role': MessageRoleFromJSON(json['role']),
         'content': EnrichedThreadMessageContentFromJSON(json['content']),
-        'details': json['details'] == null ? undefined : ThreadMessageDetailsOutputFromJSON(json['details']),
+        'details': json['details'] == null ? undefined : ThreadMessageDetailsFromJSON(json['details']),
+        'parts': json['parts'] == null ? undefined : ((json['parts'] as Array<any>).map(TextPartOrReasoningPartOrToolPartOrDocEditPartFromJSON)),
         'parentPathId': json['parent_path_id'],
         'materializedPath': json['materialized_path'],
         'tenantId': json['tenant_id'],
@@ -192,7 +206,8 @@ export function ThreadMessageResponseToJSONTyped(value?: ThreadMessageResponse |
         'sequence': value['sequence'],
         'role': MessageRoleToJSON(value['role']),
         'content': EnrichedThreadMessageContentToJSON(value['content']),
-        'details': ThreadMessageDetailsOutputToJSON(value['details']),
+        'details': ThreadMessageDetailsToJSON(value['details']),
+        'parts': value['parts'] == null ? undefined : ((value['parts'] as Array<any>).map(TextPartOrReasoningPartOrToolPartOrDocEditPartToJSON)),
         'parent_path_id': value['parentPathId'],
         'materialized_path': value['materializedPath'],
         'tenant_id': value['tenantId'],
