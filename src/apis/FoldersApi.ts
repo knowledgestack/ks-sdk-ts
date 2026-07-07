@@ -24,6 +24,7 @@ import type {
   PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseWorkflowDefinitionResponseWorkflowRunResponseDataSourceResponseDataSourceSchemaResponseDataSourceTableResponseApiConnectionResponseDiscriminator,
   PaginatedResponseFolderResponse,
   PathOrder,
+  PathPartApprovalState,
   SearchSortOrder,
   SearchablePartType,
   SortDirection,
@@ -48,6 +49,8 @@ import {
     PaginatedResponseFolderResponseToJSON,
     PathOrderFromJSON,
     PathOrderToJSON,
+    PathPartApprovalStateFromJSON,
+    PathPartApprovalStateToJSON,
     SearchSortOrderFromJSON,
     SearchSortOrderToJSON,
     SearchablePartTypeFromJSON,
@@ -83,6 +86,9 @@ export interface ListFolderContentsRequest {
     withTags?: boolean;
     limit?: number;
     offset?: number;
+    approvalState?: Array<PathPartApprovalState> | null;
+    includeTagIds?: Array<string> | null;
+    excludeTagIds?: Array<string> | null;
 }
 
 export interface ListFoldersRequest {
@@ -228,13 +234,16 @@ export interface FoldersApiInterface {
      * @param {boolean} [withTags] Include tag IDs for each item (default: false)
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
+     * @param {Array<PathPartApprovalState>} [approvalState] Keep only items in these approval states (repeatable): not_required, pending, approved.
+     * @param {Array<string>} [includeTagIds] Keep only items that carry at least one of these tags on the item itself or any ancestor folder (repeatable, OR / tag inheritance).
+     * @param {Array<string>} [excludeTagIds] Drop items that carry any of these tags on the item itself or any ancestor folder (repeatable). Takes precedence over include_tag_ids.
      * @throws {RequiredError}
      * @memberof FoldersApiInterface
      */
     listFolderContentsRequestOpts(requestParameters: ListFolderContentsRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * List all contents (folders and documents) under a folder.  Returns a discriminated union of FolderResponse and DocumentResponse items, distinguished by the `part_type` field (\"FOLDER\" or \"DOCUMENT\").  When with_tags=true, each item includes a tags field with the full tag objects.  This is the preferred way to list folder contents when you need document metadata. For generic path traversal of folders only, use GET /path-parts.
+     * List all contents (folders and documents) under a folder.  Returns a discriminated union of FolderResponse and DocumentResponse items, distinguished by the `part_type` field (\"FOLDER\" or \"DOCUMENT\").  When with_tags=true, each item includes a tags field with the full tag objects.  ``approval_state`` / ``include_tag_ids`` / ``exclude_tag_ids`` filter the result at the path_part layer: approval state on the item, tags matched by self-or-ancestor inheritance (include = OR, exclude wins).  This is the preferred way to list folder contents when you need document metadata. For generic path traversal of folders only, use GET /path-parts.
      * @summary List Folder Contents Handler
      * @param {string} folderId 
      * @param {number} [maxDepth] Maximum depth to traverse (1&#x3D;direct children, default: 1)
@@ -242,6 +251,9 @@ export interface FoldersApiInterface {
      * @param {boolean} [withTags] Include tag IDs for each item (default: false)
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
+     * @param {Array<PathPartApprovalState>} [approvalState] Keep only items in these approval states (repeatable): not_required, pending, approved.
+     * @param {Array<string>} [includeTagIds] Keep only items that carry at least one of these tags on the item itself or any ancestor folder (repeatable, OR / tag inheritance).
+     * @param {Array<string>} [excludeTagIds] Drop items that carry any of these tags on the item itself or any ancestor folder (repeatable). Takes precedence over include_tag_ids.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof FoldersApiInterface
@@ -249,7 +261,7 @@ export interface FoldersApiInterface {
     listFolderContentsRaw(requestParameters: ListFolderContentsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseWorkflowDefinitionResponseWorkflowRunResponseDataSourceResponseDataSourceSchemaResponseDataSourceTableResponseApiConnectionResponseDiscriminator>>;
 
     /**
-     * List all contents (folders and documents) under a folder.  Returns a discriminated union of FolderResponse and DocumentResponse items, distinguished by the `part_type` field (\"FOLDER\" or \"DOCUMENT\").  When with_tags=true, each item includes a tags field with the full tag objects.  This is the preferred way to list folder contents when you need document metadata. For generic path traversal of folders only, use GET /path-parts.
+     * List all contents (folders and documents) under a folder.  Returns a discriminated union of FolderResponse and DocumentResponse items, distinguished by the `part_type` field (\"FOLDER\" or \"DOCUMENT\").  When with_tags=true, each item includes a tags field with the full tag objects.  ``approval_state`` / ``include_tag_ids`` / ``exclude_tag_ids`` filter the result at the path_part layer: approval state on the item, tags matched by self-or-ancestor inheritance (include = OR, exclude wins).  This is the preferred way to list folder contents when you need document metadata. For generic path traversal of folders only, use GET /path-parts.
      * List Folder Contents Handler
      */
     listFolderContents(requestParameters: ListFolderContentsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseWorkflowDefinitionResponseWorkflowRunResponseDataSourceResponseDataSourceSchemaResponseDataSourceTableResponseApiConnectionResponseDiscriminator>;
@@ -634,6 +646,18 @@ export class FoldersApi extends runtime.BaseAPI implements FoldersApiInterface {
             queryParameters['offset'] = requestParameters['offset'];
         }
 
+        if (requestParameters['approvalState'] != null) {
+            queryParameters['approval_state'] = requestParameters['approvalState'];
+        }
+
+        if (requestParameters['includeTagIds'] != null) {
+            queryParameters['include_tag_ids'] = requestParameters['includeTagIds'];
+        }
+
+        if (requestParameters['excludeTagIds'] != null) {
+            queryParameters['exclude_tag_ids'] = requestParameters['excludeTagIds'];
+        }
+
         const headerParameters: runtime.HTTPHeaders = {};
 
         if (this.configuration && this.configuration.accessToken) {
@@ -657,7 +681,7 @@ export class FoldersApi extends runtime.BaseAPI implements FoldersApiInterface {
     }
 
     /**
-     * List all contents (folders and documents) under a folder.  Returns a discriminated union of FolderResponse and DocumentResponse items, distinguished by the `part_type` field (\"FOLDER\" or \"DOCUMENT\").  When with_tags=true, each item includes a tags field with the full tag objects.  This is the preferred way to list folder contents when you need document metadata. For generic path traversal of folders only, use GET /path-parts.
+     * List all contents (folders and documents) under a folder.  Returns a discriminated union of FolderResponse and DocumentResponse items, distinguished by the `part_type` field (\"FOLDER\" or \"DOCUMENT\").  When with_tags=true, each item includes a tags field with the full tag objects.  ``approval_state`` / ``include_tag_ids`` / ``exclude_tag_ids`` filter the result at the path_part layer: approval state on the item, tags matched by self-or-ancestor inheritance (include = OR, exclude wins).  This is the preferred way to list folder contents when you need document metadata. For generic path traversal of folders only, use GET /path-parts.
      * List Folder Contents Handler
      */
     async listFolderContentsRaw(requestParameters: ListFolderContentsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseWorkflowDefinitionResponseWorkflowRunResponseDataSourceResponseDataSourceSchemaResponseDataSourceTableResponseApiConnectionResponseDiscriminator>> {
@@ -668,7 +692,7 @@ export class FoldersApi extends runtime.BaseAPI implements FoldersApiInterface {
     }
 
     /**
-     * List all contents (folders and documents) under a folder.  Returns a discriminated union of FolderResponse and DocumentResponse items, distinguished by the `part_type` field (\"FOLDER\" or \"DOCUMENT\").  When with_tags=true, each item includes a tags field with the full tag objects.  This is the preferred way to list folder contents when you need document metadata. For generic path traversal of folders only, use GET /path-parts.
+     * List all contents (folders and documents) under a folder.  Returns a discriminated union of FolderResponse and DocumentResponse items, distinguished by the `part_type` field (\"FOLDER\" or \"DOCUMENT\").  When with_tags=true, each item includes a tags field with the full tag objects.  ``approval_state`` / ``include_tag_ids`` / ``exclude_tag_ids`` filter the result at the path_part layer: approval state on the item, tags matched by self-or-ancestor inheritance (include = OR, exclude wins).  This is the preferred way to list folder contents when you need document metadata. For generic path traversal of folders only, use GET /path-parts.
      * List Folder Contents Handler
      */
     async listFolderContents(requestParameters: ListFolderContentsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseWorkflowDefinitionResponseWorkflowRunResponseDataSourceResponseDataSourceSchemaResponseDataSourceTableResponseApiConnectionResponseDiscriminator> {

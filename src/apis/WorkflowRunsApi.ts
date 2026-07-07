@@ -19,6 +19,7 @@ import type {
   ErrorResponse,
   HTTPValidationError,
   PaginatedResponseWorkflowRunResponse,
+  PathPartApprovalState,
   SetWorkflowRunApprovalRequest,
   SortDirection,
   StartWorkflowRunRequest,
@@ -39,6 +40,8 @@ import {
     HTTPValidationErrorToJSON,
     PaginatedResponseWorkflowRunResponseFromJSON,
     PaginatedResponseWorkflowRunResponseToJSON,
+    PathPartApprovalStateFromJSON,
+    PathPartApprovalStateToJSON,
     SetWorkflowRunApprovalRequestFromJSON,
     SetWorkflowRunApprovalRequestToJSON,
     SortDirectionFromJSON,
@@ -83,7 +86,7 @@ export interface GetWorkflowRunsSummaryRequest {
 export interface ListWorkflowRunsForTenantRequest {
     state?: Array<WorkflowExecutionState> | null;
     mine?: boolean;
-    pendingApprovalForMe?: boolean;
+    approvableByMe?: boolean;
     definitionId?: string | null;
     ownerId?: string | null;
     sortBy?: WorkflowRunOrder;
@@ -94,6 +97,9 @@ export interface ListWorkflowRunsForTenantRequest {
     createdBefore?: Date | null;
     updatedAfter?: Date | null;
     updatedBefore?: Date | null;
+    approvalState?: Array<PathPartApprovalState> | null;
+    includeTagIds?: Array<string> | null;
+    excludeTagIds?: Array<string> | null;
 }
 
 export interface RetryWorkflowRunRequest {
@@ -235,7 +241,7 @@ export interface WorkflowRunsApiInterface {
      * Creates request options for listWorkflowRunsForTenant without sending the request
      * @param {Array<WorkflowExecutionState>} [state] Keep only runs in these execution states (repeatable).
      * @param {boolean} [mine] Only runs the caller created (owner). Overrides owner_id.
-     * @param {boolean} [pendingApprovalForMe] Only runs pending approval that the caller may approve.
+     * @param {boolean} [approvableByMe] Only runs the caller may approve (approve-path scoped). Compose with approval_state&#x3D;pending for the approval worklist.
      * @param {string} [definitionId] Only runs under this workflow definition.
      * @param {string} [ownerId] Only runs created by this user.
      * @param {WorkflowRunOrder} [sortBy] Field to sort runs by (default: STARTED_AT)
@@ -246,17 +252,20 @@ export interface WorkflowRunsApiInterface {
      * @param {Date} [createdBefore] Only items created strictly before this timestamp
      * @param {Date} [updatedAfter] Only items updated at or after this timestamp (inclusive)
      * @param {Date} [updatedBefore] Only items updated strictly before this timestamp
+     * @param {Array<PathPartApprovalState>} [approvalState] Keep only items in these approval states (repeatable): not_required, pending, approved.
+     * @param {Array<string>} [includeTagIds] Keep only items that carry at least one of these tags on the item itself or any ancestor folder (repeatable, OR / tag inheritance).
+     * @param {Array<string>} [excludeTagIds] Drop items that carry any of these tags on the item itself or any ancestor folder (repeatable). Takes precedence over include_tag_ids.
      * @throws {RequiredError}
      * @memberof WorkflowRunsApiInterface
      */
     listWorkflowRunsForTenantRequestOpts(requestParameters: ListWorkflowRunsForTenantRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * List runs across every workflow in the tenant, permission-scoped.  The single spine behind the dashboard worklists — the FE composes its tabs from preset filters (``mine`` + ``state``, ``pending_approval_for_me``). Visibility follows the same model as the per-definition list: OWNER/ADMIN see all; a USER sees runs under workflows they can read.
+     * List runs across every workflow in the tenant, permission-scoped.  The single spine behind the dashboard worklists — the FE composes its tabs from preset filters (``mine`` + ``state``, and the approval worklist ``approval_state=pending`` + ``approvable_by_me``). Visibility follows the same model as the per-definition list: OWNER/ADMIN see all; a USER sees runs under workflows they can read.
      * @summary List Workflow Runs For Tenant Handler
      * @param {Array<WorkflowExecutionState>} [state] Keep only runs in these execution states (repeatable).
      * @param {boolean} [mine] Only runs the caller created (owner). Overrides owner_id.
-     * @param {boolean} [pendingApprovalForMe] Only runs pending approval that the caller may approve.
+     * @param {boolean} [approvableByMe] Only runs the caller may approve (approve-path scoped). Compose with approval_state&#x3D;pending for the approval worklist.
      * @param {string} [definitionId] Only runs under this workflow definition.
      * @param {string} [ownerId] Only runs created by this user.
      * @param {WorkflowRunOrder} [sortBy] Field to sort runs by (default: STARTED_AT)
@@ -267,6 +276,9 @@ export interface WorkflowRunsApiInterface {
      * @param {Date} [createdBefore] Only items created strictly before this timestamp
      * @param {Date} [updatedAfter] Only items updated at or after this timestamp (inclusive)
      * @param {Date} [updatedBefore] Only items updated strictly before this timestamp
+     * @param {Array<PathPartApprovalState>} [approvalState] Keep only items in these approval states (repeatable): not_required, pending, approved.
+     * @param {Array<string>} [includeTagIds] Keep only items that carry at least one of these tags on the item itself or any ancestor folder (repeatable, OR / tag inheritance).
+     * @param {Array<string>} [excludeTagIds] Drop items that carry any of these tags on the item itself or any ancestor folder (repeatable). Takes precedence over include_tag_ids.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof WorkflowRunsApiInterface
@@ -274,7 +286,7 @@ export interface WorkflowRunsApiInterface {
     listWorkflowRunsForTenantRaw(requestParameters: ListWorkflowRunsForTenantRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedResponseWorkflowRunResponse>>;
 
     /**
-     * List runs across every workflow in the tenant, permission-scoped.  The single spine behind the dashboard worklists — the FE composes its tabs from preset filters (``mine`` + ``state``, ``pending_approval_for_me``). Visibility follows the same model as the per-definition list: OWNER/ADMIN see all; a USER sees runs under workflows they can read.
+     * List runs across every workflow in the tenant, permission-scoped.  The single spine behind the dashboard worklists — the FE composes its tabs from preset filters (``mine`` + ``state``, and the approval worklist ``approval_state=pending`` + ``approvable_by_me``). Visibility follows the same model as the per-definition list: OWNER/ADMIN see all; a USER sees runs under workflows they can read.
      * List Workflow Runs For Tenant Handler
      */
     listWorkflowRunsForTenant(requestParameters: ListWorkflowRunsForTenantRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedResponseWorkflowRunResponse>;
@@ -681,8 +693,8 @@ export class WorkflowRunsApi extends runtime.BaseAPI implements WorkflowRunsApiI
             queryParameters['mine'] = requestParameters['mine'];
         }
 
-        if (requestParameters['pendingApprovalForMe'] != null) {
-            queryParameters['pending_approval_for_me'] = requestParameters['pendingApprovalForMe'];
+        if (requestParameters['approvableByMe'] != null) {
+            queryParameters['approvable_by_me'] = requestParameters['approvableByMe'];
         }
 
         if (requestParameters['definitionId'] != null) {
@@ -725,6 +737,18 @@ export class WorkflowRunsApi extends runtime.BaseAPI implements WorkflowRunsApiI
             queryParameters['updated_before'] = (requestParameters['updatedBefore'] as any).toISOString();
         }
 
+        if (requestParameters['approvalState'] != null) {
+            queryParameters['approval_state'] = requestParameters['approvalState'];
+        }
+
+        if (requestParameters['includeTagIds'] != null) {
+            queryParameters['include_tag_ids'] = requestParameters['includeTagIds'];
+        }
+
+        if (requestParameters['excludeTagIds'] != null) {
+            queryParameters['exclude_tag_ids'] = requestParameters['excludeTagIds'];
+        }
+
         const headerParameters: runtime.HTTPHeaders = {};
 
         if (this.configuration && this.configuration.accessToken) {
@@ -747,7 +771,7 @@ export class WorkflowRunsApi extends runtime.BaseAPI implements WorkflowRunsApiI
     }
 
     /**
-     * List runs across every workflow in the tenant, permission-scoped.  The single spine behind the dashboard worklists — the FE composes its tabs from preset filters (``mine`` + ``state``, ``pending_approval_for_me``). Visibility follows the same model as the per-definition list: OWNER/ADMIN see all; a USER sees runs under workflows they can read.
+     * List runs across every workflow in the tenant, permission-scoped.  The single spine behind the dashboard worklists — the FE composes its tabs from preset filters (``mine`` + ``state``, and the approval worklist ``approval_state=pending`` + ``approvable_by_me``). Visibility follows the same model as the per-definition list: OWNER/ADMIN see all; a USER sees runs under workflows they can read.
      * List Workflow Runs For Tenant Handler
      */
     async listWorkflowRunsForTenantRaw(requestParameters: ListWorkflowRunsForTenantRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedResponseWorkflowRunResponse>> {
@@ -758,7 +782,7 @@ export class WorkflowRunsApi extends runtime.BaseAPI implements WorkflowRunsApiI
     }
 
     /**
-     * List runs across every workflow in the tenant, permission-scoped.  The single spine behind the dashboard worklists — the FE composes its tabs from preset filters (``mine`` + ``state``, ``pending_approval_for_me``). Visibility follows the same model as the per-definition list: OWNER/ADMIN see all; a USER sees runs under workflows they can read.
+     * List runs across every workflow in the tenant, permission-scoped.  The single spine behind the dashboard worklists — the FE composes its tabs from preset filters (``mine`` + ``state``, and the approval worklist ``approval_state=pending`` + ``approvable_by_me``). Visibility follows the same model as the per-definition list: OWNER/ADMIN see all; a USER sees runs under workflows they can read.
      * List Workflow Runs For Tenant Handler
      */
     async listWorkflowRunsForTenant(requestParameters: ListWorkflowRunsForTenantRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedResponseWorkflowRunResponse> {
