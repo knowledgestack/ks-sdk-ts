@@ -59,6 +59,7 @@ docs/ColumnConfig.md
 docs/ColumnReference.md
 docs/CommonFileExclusionReason.md
 docs/ConnectionConfig.md
+docs/ContentsSortOrder.md
 docs/CreateApiConnectionRequest.md
 docs/CreateApiKeyRequest.md
 docs/CreateApiKeyResponse.md
@@ -448,6 +449,7 @@ src/models/ColumnConfig.ts
 src/models/ColumnReference.ts
 src/models/CommonFileExclusionReason.ts
 src/models/ConnectionConfig.ts
+src/models/ContentsSortOrder.ts
 src/models/CreateApiConnectionRequest.ts
 src/models/CreateApiKeyRequest.ts
 src/models/CreateApiKeyResponse.ts

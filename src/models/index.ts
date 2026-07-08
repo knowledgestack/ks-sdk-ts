@@ -49,6 +49,7 @@ export * from './ColumnConfig';
 export * from './ColumnReference';
 export * from './CommonFileExclusionReason';
 export * from './ConnectionConfig';
+export * from './ContentsSortOrder';
 export * from './CreateApiConnectionRequest';
 export * from './CreateApiKeyRequest';
 export * from './CreateApiKeyResponse';

@@ -15,6 +15,7 @@
 
 import * as runtime from '../runtime';
 import type {
+  ContentsSortOrder,
   CreateFolderRequest,
   ErrorResponse,
   FolderAction,
@@ -31,6 +32,8 @@ import type {
   UpdateFolderRequest,
 } from '../models/index';
 import {
+    ContentsSortOrderFromJSON,
+    ContentsSortOrderToJSON,
     CreateFolderRequestFromJSON,
     CreateFolderRequestToJSON,
     ErrorResponseFromJSON,
@@ -82,13 +85,20 @@ export interface GetFolderRequest {
 export interface ListFolderContentsRequest {
     folderId: string;
     maxDepth?: number;
-    sortOrder?: PathOrder;
+    sortOrder?: ContentsSortOrder;
+    sortDir?: SortDirection;
+    ownerId?: string | null;
+    nameLike?: string | null;
     withTags?: boolean;
     limit?: number;
     offset?: number;
     approvalState?: Array<PathPartApprovalState> | null;
     includeTagIds?: Array<string> | null;
     excludeTagIds?: Array<string> | null;
+    createdAfter?: Date | null;
+    createdBefore?: Date | null;
+    updatedAfter?: Date | null;
+    updatedBefore?: Date | null;
 }
 
 export interface ListFoldersRequest {
@@ -230,30 +240,44 @@ export interface FoldersApiInterface {
      * Creates request options for listFolderContents without sending the request
      * @param {string} folderId 
      * @param {number} [maxDepth] Maximum depth to traverse (1&#x3D;direct children, default: 1)
-     * @param {PathOrder} [sortOrder] Sort order for results (default: LOGICAL)
+     * @param {ContentsSortOrder} [sortOrder] Sort order for results (default: LOGICAL)
+     * @param {SortDirection} [sortDir] Sort direction; overrides the column\&#39;s natural default
+     * @param {string} [ownerId] Filter to items owned by this user
+     * @param {string} [nameLike] Case-insensitive substring filter on the item name
      * @param {boolean} [withTags] Include tag IDs for each item (default: false)
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
      * @param {Array<PathPartApprovalState>} [approvalState] Keep only items in these approval states (repeatable): not_required, pending, approved.
      * @param {Array<string>} [includeTagIds] Keep only items that carry at least one of these tags on the item itself or any ancestor folder (repeatable, OR / tag inheritance).
      * @param {Array<string>} [excludeTagIds] Drop items that carry any of these tags on the item itself or any ancestor folder (repeatable). Takes precedence over include_tag_ids.
+     * @param {Date} [createdAfter] Only items created at or after this timestamp (inclusive)
+     * @param {Date} [createdBefore] Only items created strictly before this timestamp
+     * @param {Date} [updatedAfter] Only items updated at or after this timestamp (inclusive)
+     * @param {Date} [updatedBefore] Only items updated strictly before this timestamp
      * @throws {RequiredError}
      * @memberof FoldersApiInterface
      */
     listFolderContentsRequestOpts(requestParameters: ListFolderContentsRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * List all contents (folders and documents) under a folder.  Returns a discriminated union of FolderResponse and DocumentResponse items, distinguished by the `part_type` field (\"FOLDER\" or \"DOCUMENT\").  When with_tags=true, each item includes a tags field with the full tag objects.  ``approval_state`` / ``include_tag_ids`` / ``exclude_tag_ids`` filter the result at the path_part layer: approval state on the item, tags matched by self-or-ancestor inheritance (include = OR, exclude wins).  This is the preferred way to list folder contents when you need document metadata. For generic path traversal of folders only, use GET /path-parts.
+     * List all contents (folders and documents) under a folder.  Returns a discriminated union of FolderResponse and DocumentResponse items, distinguished by the `part_type` field (\"FOLDER\" or \"DOCUMENT\").  When with_tags=true, each item includes a tags field with the full tag objects.  ``approval_state`` / ``include_tag_ids`` / ``exclude_tag_ids`` filter the result at the path_part layer: approval state on the item, tags matched by self-or-ancestor inheritance (include = OR, exclude wins).  ``sort_dir``, ``owner_id``, ``name_like``, the created_at/updated_at range filters, and the STATUS/OWNER/TAGS sorts apply to the direct-children listing only (``max_depth=1``); combining them with a deeper traversal is a 400.  This is the preferred way to list folder contents when you need document metadata. For generic path traversal of folders only, use GET /path-parts.
      * @summary List Folder Contents Handler
      * @param {string} folderId 
      * @param {number} [maxDepth] Maximum depth to traverse (1&#x3D;direct children, default: 1)
-     * @param {PathOrder} [sortOrder] Sort order for results (default: LOGICAL)
+     * @param {ContentsSortOrder} [sortOrder] Sort order for results (default: LOGICAL)
+     * @param {SortDirection} [sortDir] Sort direction; overrides the column\&#39;s natural default
+     * @param {string} [ownerId] Filter to items owned by this user
+     * @param {string} [nameLike] Case-insensitive substring filter on the item name
      * @param {boolean} [withTags] Include tag IDs for each item (default: false)
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
      * @param {Array<PathPartApprovalState>} [approvalState] Keep only items in these approval states (repeatable): not_required, pending, approved.
      * @param {Array<string>} [includeTagIds] Keep only items that carry at least one of these tags on the item itself or any ancestor folder (repeatable, OR / tag inheritance).
      * @param {Array<string>} [excludeTagIds] Drop items that carry any of these tags on the item itself or any ancestor folder (repeatable). Takes precedence over include_tag_ids.
+     * @param {Date} [createdAfter] Only items created at or after this timestamp (inclusive)
+     * @param {Date} [createdBefore] Only items created strictly before this timestamp
+     * @param {Date} [updatedAfter] Only items updated at or after this timestamp (inclusive)
+     * @param {Date} [updatedBefore] Only items updated strictly before this timestamp
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof FoldersApiInterface
@@ -261,7 +285,7 @@ export interface FoldersApiInterface {
     listFolderContentsRaw(requestParameters: ListFolderContentsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseWorkflowDefinitionResponseWorkflowRunResponseDataSourceResponseDataSourceSchemaResponseDataSourceTableResponseApiConnectionResponseDiscriminator>>;
 
     /**
-     * List all contents (folders and documents) under a folder.  Returns a discriminated union of FolderResponse and DocumentResponse items, distinguished by the `part_type` field (\"FOLDER\" or \"DOCUMENT\").  When with_tags=true, each item includes a tags field with the full tag objects.  ``approval_state`` / ``include_tag_ids`` / ``exclude_tag_ids`` filter the result at the path_part layer: approval state on the item, tags matched by self-or-ancestor inheritance (include = OR, exclude wins).  This is the preferred way to list folder contents when you need document metadata. For generic path traversal of folders only, use GET /path-parts.
+     * List all contents (folders and documents) under a folder.  Returns a discriminated union of FolderResponse and DocumentResponse items, distinguished by the `part_type` field (\"FOLDER\" or \"DOCUMENT\").  When with_tags=true, each item includes a tags field with the full tag objects.  ``approval_state`` / ``include_tag_ids`` / ``exclude_tag_ids`` filter the result at the path_part layer: approval state on the item, tags matched by self-or-ancestor inheritance (include = OR, exclude wins).  ``sort_dir``, ``owner_id``, ``name_like``, the created_at/updated_at range filters, and the STATUS/OWNER/TAGS sorts apply to the direct-children listing only (``max_depth=1``); combining them with a deeper traversal is a 400.  This is the preferred way to list folder contents when you need document metadata. For generic path traversal of folders only, use GET /path-parts.
      * List Folder Contents Handler
      */
     listFolderContents(requestParameters: ListFolderContentsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseWorkflowDefinitionResponseWorkflowRunResponseDataSourceResponseDataSourceSchemaResponseDataSourceTableResponseApiConnectionResponseDiscriminator>;
@@ -634,6 +658,18 @@ export class FoldersApi extends runtime.BaseAPI implements FoldersApiInterface {
             queryParameters['sort_order'] = requestParameters['sortOrder'];
         }
 
+        if (requestParameters['sortDir'] != null) {
+            queryParameters['sort_dir'] = requestParameters['sortDir'];
+        }
+
+        if (requestParameters['ownerId'] != null) {
+            queryParameters['owner_id'] = requestParameters['ownerId'];
+        }
+
+        if (requestParameters['nameLike'] != null) {
+            queryParameters['name_like'] = requestParameters['nameLike'];
+        }
+
         if (requestParameters['withTags'] != null) {
             queryParameters['with_tags'] = requestParameters['withTags'];
         }
@@ -656,6 +692,22 @@ export class FoldersApi extends runtime.BaseAPI implements FoldersApiInterface {
 
         if (requestParameters['excludeTagIds'] != null) {
             queryParameters['exclude_tag_ids'] = requestParameters['excludeTagIds'];
+        }
+
+        if (requestParameters['createdAfter'] != null) {
+            queryParameters['created_after'] = (requestParameters['createdAfter'] as any).toISOString();
+        }
+
+        if (requestParameters['createdBefore'] != null) {
+            queryParameters['created_before'] = (requestParameters['createdBefore'] as any).toISOString();
+        }
+
+        if (requestParameters['updatedAfter'] != null) {
+            queryParameters['updated_after'] = (requestParameters['updatedAfter'] as any).toISOString();
+        }
+
+        if (requestParameters['updatedBefore'] != null) {
+            queryParameters['updated_before'] = (requestParameters['updatedBefore'] as any).toISOString();
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -681,7 +733,7 @@ export class FoldersApi extends runtime.BaseAPI implements FoldersApiInterface {
     }
 
     /**
-     * List all contents (folders and documents) under a folder.  Returns a discriminated union of FolderResponse and DocumentResponse items, distinguished by the `part_type` field (\"FOLDER\" or \"DOCUMENT\").  When with_tags=true, each item includes a tags field with the full tag objects.  ``approval_state`` / ``include_tag_ids`` / ``exclude_tag_ids`` filter the result at the path_part layer: approval state on the item, tags matched by self-or-ancestor inheritance (include = OR, exclude wins).  This is the preferred way to list folder contents when you need document metadata. For generic path traversal of folders only, use GET /path-parts.
+     * List all contents (folders and documents) under a folder.  Returns a discriminated union of FolderResponse and DocumentResponse items, distinguished by the `part_type` field (\"FOLDER\" or \"DOCUMENT\").  When with_tags=true, each item includes a tags field with the full tag objects.  ``approval_state`` / ``include_tag_ids`` / ``exclude_tag_ids`` filter the result at the path_part layer: approval state on the item, tags matched by self-or-ancestor inheritance (include = OR, exclude wins).  ``sort_dir``, ``owner_id``, ``name_like``, the created_at/updated_at range filters, and the STATUS/OWNER/TAGS sorts apply to the direct-children listing only (``max_depth=1``); combining them with a deeper traversal is a 400.  This is the preferred way to list folder contents when you need document metadata. For generic path traversal of folders only, use GET /path-parts.
      * List Folder Contents Handler
      */
     async listFolderContentsRaw(requestParameters: ListFolderContentsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseWorkflowDefinitionResponseWorkflowRunResponseDataSourceResponseDataSourceSchemaResponseDataSourceTableResponseApiConnectionResponseDiscriminator>> {
@@ -692,7 +744,7 @@ export class FoldersApi extends runtime.BaseAPI implements FoldersApiInterface {
     }
 
     /**
-     * List all contents (folders and documents) under a folder.  Returns a discriminated union of FolderResponse and DocumentResponse items, distinguished by the `part_type` field (\"FOLDER\" or \"DOCUMENT\").  When with_tags=true, each item includes a tags field with the full tag objects.  ``approval_state`` / ``include_tag_ids`` / ``exclude_tag_ids`` filter the result at the path_part layer: approval state on the item, tags matched by self-or-ancestor inheritance (include = OR, exclude wins).  This is the preferred way to list folder contents when you need document metadata. For generic path traversal of folders only, use GET /path-parts.
+     * List all contents (folders and documents) under a folder.  Returns a discriminated union of FolderResponse and DocumentResponse items, distinguished by the `part_type` field (\"FOLDER\" or \"DOCUMENT\").  When with_tags=true, each item includes a tags field with the full tag objects.  ``approval_state`` / ``include_tag_ids`` / ``exclude_tag_ids`` filter the result at the path_part layer: approval state on the item, tags matched by self-or-ancestor inheritance (include = OR, exclude wins).  ``sort_dir``, ``owner_id``, ``name_like``, the created_at/updated_at range filters, and the STATUS/OWNER/TAGS sorts apply to the direct-children listing only (``max_depth=1``); combining them with a deeper traversal is a 400.  This is the preferred way to list folder contents when you need document metadata. For generic path traversal of folders only, use GET /path-parts.
      * List Folder Contents Handler
      */
     async listFolderContents(requestParameters: ListFolderContentsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseWorkflowDefinitionResponseWorkflowRunResponseDataSourceResponseDataSourceSchemaResponseDataSourceTableResponseApiConnectionResponseDiscriminator> {
