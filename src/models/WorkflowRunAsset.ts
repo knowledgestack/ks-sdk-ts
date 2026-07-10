@@ -20,6 +20,13 @@ import {
     PartTypeToJSON,
     PartTypeToJSONTyped,
 } from './PartType';
+import type { InputOrigin } from './InputOrigin';
+import {
+    InputOriginFromJSON,
+    InputOriginFromJSONTyped,
+    InputOriginToJSON,
+    InputOriginToJSONTyped,
+} from './InputOrigin';
 import type { PathPartApprovalState } from './PathPartApprovalState';
 import {
     PathPartApprovalStateFromJSON,
@@ -38,6 +45,10 @@ import {
  * download_document_version (a version-pinned input, e.g. a cloned run's
  * inputs); ``FOLDER`` / ``DATA_SOURCE`` / ``API_CONNECTION`` → list/query via
  * that type's endpoint. Output assets are always ``DOCUMENT``.
+ * 
+ * ``origin`` tags an input asset's provenance (definition common file vs run
+ * reference vs upload) so the FE can group them; it is ``None`` on output
+ * assets.
  * @export
  * @interface WorkflowRunAsset
  */
@@ -78,6 +89,12 @@ export interface WorkflowRunAsset {
      * @memberof WorkflowRunAsset
      */
     approvalState: PathPartApprovalState;
+    /**
+     * 
+     * @type {InputOrigin}
+     * @memberof WorkflowRunAsset
+     */
+    origin?: InputOrigin;
 }
 
 
@@ -128,6 +145,7 @@ export function WorkflowRunAssetFromJSONTyped(json: any, ignoreDiscriminator: bo
         'partType': PartTypeFromJSON(json['part_type']),
         'materializedPath': json['materialized_path'],
         'approvalState': PathPartApprovalStateFromJSON(json['approval_state']),
+        'origin': json['origin'] == null ? undefined : InputOriginFromJSON(json['origin']),
     };
 }
 
@@ -148,6 +166,7 @@ export function WorkflowRunAssetToJSONTyped(value?: WorkflowRunAsset | null, ign
         'part_type': PartTypeToJSON(value['partType']),
         'materialized_path': value['materializedPath'],
         'approval_state': PathPartApprovalStateToJSON(value['approvalState']),
+        'origin': InputOriginToJSON(value['origin']),
     };
 }
 
