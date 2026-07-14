@@ -2,7 +2,7 @@
 /* eslint-disable */
 /**
  * Knowledge Stack API
- * Knowledge Stack backend API for authentication and knowledge management
+ * Knowledge Stack backend API for authentication and knowledge management.  ## Integrating (RPA / machine clients)  **Base URL.** Knowledge Stack is self-hosted — point at your own deployment host (see `servers`). The `localhost` entry is for local development only.  **Authentication.** Send `Authorization: Bearer <api-key>` on every request. Mint an API key once via `POST /v1/api-keys` from a signed-in browser session; the raw `sk-user-...` secret is returned **only** at creation, so store it then. A key inherits its owning user\'s live tenant role and path permissions — create RPA keys from a least-privilege user, and set `expires_at` for rotation. The `ks_uat` cookie scheme is browser-only and cannot be used by headless clients.  **Async work is polled, not pushed.** There are no outbound webhooks. - `POST /v1/documents/ingest` returns `201` immediately with a `workflow_id`;   poll `GET /v1/system-jobs/document_versions/{workflow_id}` until `status` is   terminal (anything other than `pending`/`processing`). The `Location` response   header points at this poll resource. - `POST /v1/workflow-runs/{run_id}/start` returns `202`; poll   `GET /v1/workflow-runs/{run_id}` until `execution_state` is `COMPLETED` or   `FAILED`. The `Location` header points at the run resource. - `POST /v1/agent/ask` is **synchronous** — it blocks until the agent finishes   and returns the answer inline. Use a generous HTTP timeout.  **Pagination.** List endpoints accept `limit`/`offset` and return `{items, total, limit, offset}`.  **Errors.** Every non-2xx body is `{detail, code, request_id}`. `code` is a stable value from a closed set (see the `ErrorResponse` schema\'s `code` enum) — branch on it rather than parsing `detail`. Quota rejections return `429` with a `Retry-After` header; transient lock contention returns a retryable `503`. Quote `request_id` (also the `x-request-id` response header) to support.  **Idempotency.** `POST /v1/workflow-runs` accepts an `idempotency_key` to dedupe retried run creation. `agent/ask` charges one message *before* running and does not refund a client-cancelled call. 
  *
  * The version of the OpenAPI document: 0.1.0
  * 
@@ -63,8 +63,8 @@ export interface AuditEventsApiInterface {
      * Creates request options for exportAuditEvents without sending the request
      * @param {string} [actorUserId] Filter to one actor
      * @param {string} [kind] Filter to one event kind
-     * @param {Date} [since] Only events at or after this timestamp
-     * @param {Date} [until] Only events strictly before this timestamp
+     * @param {Date} [since] Only events at or after this timestamp (from). Omit to export the entire audit log. Must not be in the future or after &#x60;until&#x60;.
+     * @param {Date} [until] Only events strictly before this timestamp (to). Omit for no upper bound. Must not be in the future.
      * @param {string} [subjectPathPartId] Scope to one document/folder/run subject
      * @param {boolean} [recursive] Include the subject\&#39;s descendants (needs subject)
      * @throws {RequiredError}
@@ -73,12 +73,12 @@ export interface AuditEventsApiInterface {
     exportAuditEventsRequestOpts(requestParameters: ExportAuditEventsRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * Export the tenant\'s audit events as a CSV download (admin/owner only).  Same filters as ``list_audit_events`` but unpaginated — streams every matching event newest-first. Each row resolves the actor\'s name and the subject\'s name + path so an auditor can read the file directly in Excel.
+     * Export the tenant\'s audit events as a CSV download (admin/owner only).  Same filters as ``list_audit_events`` but unpaginated — streams every matching event newest-first. Each row resolves the actor\'s name and the subject\'s name + path so an auditor can read the file directly in Excel.  With no `since`/`until` the export covers the entire audit log; pass either bound to narrow to an optional from/to window.
      * @summary Export Audit Events Handler
      * @param {string} [actorUserId] Filter to one actor
      * @param {string} [kind] Filter to one event kind
-     * @param {Date} [since] Only events at or after this timestamp
-     * @param {Date} [until] Only events strictly before this timestamp
+     * @param {Date} [since] Only events at or after this timestamp (from). Omit to export the entire audit log. Must not be in the future or after &#x60;until&#x60;.
+     * @param {Date} [until] Only events strictly before this timestamp (to). Omit for no upper bound. Must not be in the future.
      * @param {string} [subjectPathPartId] Scope to one document/folder/run subject
      * @param {boolean} [recursive] Include the subject\&#39;s descendants (needs subject)
      * @param {*} [options] Override http request option.
@@ -88,7 +88,7 @@ export interface AuditEventsApiInterface {
     exportAuditEventsRaw(requestParameters: ExportAuditEventsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Blob>>;
 
     /**
-     * Export the tenant\'s audit events as a CSV download (admin/owner only).  Same filters as ``list_audit_events`` but unpaginated — streams every matching event newest-first. Each row resolves the actor\'s name and the subject\'s name + path so an auditor can read the file directly in Excel.
+     * Export the tenant\'s audit events as a CSV download (admin/owner only).  Same filters as ``list_audit_events`` but unpaginated — streams every matching event newest-first. Each row resolves the actor\'s name and the subject\'s name + path so an auditor can read the file directly in Excel.  With no `since`/`until` the export covers the entire audit log; pass either bound to narrow to an optional from/to window.
      * Export Audit Events Handler
      */
     exportAuditEvents(requestParameters: ExportAuditEventsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Blob>;
@@ -97,8 +97,8 @@ export interface AuditEventsApiInterface {
      * Creates request options for listAuditEvents without sending the request
      * @param {string} [actorUserId] Filter to one actor
      * @param {string} [kind] Filter to one event kind
-     * @param {Date} [since] Only events at or after this timestamp
-     * @param {Date} [until] Only events strictly before this timestamp
+     * @param {Date} [since] Only events at or after this timestamp (from). Omit for no lower bound. Must not be in the future or after &#x60;until&#x60;.
+     * @param {Date} [until] Only events strictly before this timestamp (to). Omit for no upper bound. Must not be in the future.
      * @param {string} [subjectPathPartId] Scope to one document/folder/run subject
      * @param {boolean} [recursive] Include the subject\&#39;s descendants (needs subject)
      * @param {SortDirection} [sortDir] Sort by timestamp (default: DESC, newest first)
@@ -110,12 +110,12 @@ export interface AuditEventsApiInterface {
     listAuditEventsRequestOpts(requestParameters: ListAuditEventsRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * List the tenant\'s audit events, newest first (admin/owner only).  Returns every event in the caller\'s own tenant — ADMIN/OWNER bypass path permissions by design. Filter by actor, kind, time window, and/or a subject subtree. Each event carries its resolved actor name.
+     * List the tenant\'s audit events, newest first (admin/owner only).  Returns every event in the caller\'s own tenant — ADMIN/OWNER bypass path permissions by design. Filter by actor, kind, an optional `since`(from)/ `until`(to) window, and/or a subject subtree. Each event carries its resolved actor name.
      * @summary List Audit Events Handler
      * @param {string} [actorUserId] Filter to one actor
      * @param {string} [kind] Filter to one event kind
-     * @param {Date} [since] Only events at or after this timestamp
-     * @param {Date} [until] Only events strictly before this timestamp
+     * @param {Date} [since] Only events at or after this timestamp (from). Omit for no lower bound. Must not be in the future or after &#x60;until&#x60;.
+     * @param {Date} [until] Only events strictly before this timestamp (to). Omit for no upper bound. Must not be in the future.
      * @param {string} [subjectPathPartId] Scope to one document/folder/run subject
      * @param {boolean} [recursive] Include the subject\&#39;s descendants (needs subject)
      * @param {SortDirection} [sortDir] Sort by timestamp (default: DESC, newest first)
@@ -128,7 +128,7 @@ export interface AuditEventsApiInterface {
     listAuditEventsRaw(requestParameters: ListAuditEventsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedResponseEventResponse>>;
 
     /**
-     * List the tenant\'s audit events, newest first (admin/owner only).  Returns every event in the caller\'s own tenant — ADMIN/OWNER bypass path permissions by design. Filter by actor, kind, time window, and/or a subject subtree. Each event carries its resolved actor name.
+     * List the tenant\'s audit events, newest first (admin/owner only).  Returns every event in the caller\'s own tenant — ADMIN/OWNER bypass path permissions by design. Filter by actor, kind, an optional `since`(from)/ `until`(to) window, and/or a subject subtree. Each event carries its resolved actor name.
      * List Audit Events Handler
      */
     listAuditEvents(requestParameters: ListAuditEventsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedResponseEventResponse>;
@@ -192,7 +192,7 @@ export class AuditEventsApi extends runtime.BaseAPI implements AuditEventsApiInt
     }
 
     /**
-     * Export the tenant\'s audit events as a CSV download (admin/owner only).  Same filters as ``list_audit_events`` but unpaginated — streams every matching event newest-first. Each row resolves the actor\'s name and the subject\'s name + path so an auditor can read the file directly in Excel.
+     * Export the tenant\'s audit events as a CSV download (admin/owner only).  Same filters as ``list_audit_events`` but unpaginated — streams every matching event newest-first. Each row resolves the actor\'s name and the subject\'s name + path so an auditor can read the file directly in Excel.  With no `since`/`until` the export covers the entire audit log; pass either bound to narrow to an optional from/to window.
      * Export Audit Events Handler
      */
     async exportAuditEventsRaw(requestParameters: ExportAuditEventsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Blob>> {
@@ -203,7 +203,7 @@ export class AuditEventsApi extends runtime.BaseAPI implements AuditEventsApiInt
     }
 
     /**
-     * Export the tenant\'s audit events as a CSV download (admin/owner only).  Same filters as ``list_audit_events`` but unpaginated — streams every matching event newest-first. Each row resolves the actor\'s name and the subject\'s name + path so an auditor can read the file directly in Excel.
+     * Export the tenant\'s audit events as a CSV download (admin/owner only).  Same filters as ``list_audit_events`` but unpaginated — streams every matching event newest-first. Each row resolves the actor\'s name and the subject\'s name + path so an auditor can read the file directly in Excel.  With no `since`/`until` the export covers the entire audit log; pass either bound to narrow to an optional from/to window.
      * Export Audit Events Handler
      */
     async exportAuditEvents(requestParameters: ExportAuditEventsRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Blob> {
@@ -275,7 +275,7 @@ export class AuditEventsApi extends runtime.BaseAPI implements AuditEventsApiInt
     }
 
     /**
-     * List the tenant\'s audit events, newest first (admin/owner only).  Returns every event in the caller\'s own tenant — ADMIN/OWNER bypass path permissions by design. Filter by actor, kind, time window, and/or a subject subtree. Each event carries its resolved actor name.
+     * List the tenant\'s audit events, newest first (admin/owner only).  Returns every event in the caller\'s own tenant — ADMIN/OWNER bypass path permissions by design. Filter by actor, kind, an optional `since`(from)/ `until`(to) window, and/or a subject subtree. Each event carries its resolved actor name.
      * List Audit Events Handler
      */
     async listAuditEventsRaw(requestParameters: ListAuditEventsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedResponseEventResponse>> {
@@ -286,7 +286,7 @@ export class AuditEventsApi extends runtime.BaseAPI implements AuditEventsApiInt
     }
 
     /**
-     * List the tenant\'s audit events, newest first (admin/owner only).  Returns every event in the caller\'s own tenant — ADMIN/OWNER bypass path permissions by design. Filter by actor, kind, time window, and/or a subject subtree. Each event carries its resolved actor name.
+     * List the tenant\'s audit events, newest first (admin/owner only).  Returns every event in the caller\'s own tenant — ADMIN/OWNER bypass path permissions by design. Filter by actor, kind, an optional `since`(from)/ `until`(to) window, and/or a subject subtree. Each event carries its resolved actor name.
      * List Audit Events Handler
      */
     async listAuditEvents(requestParameters: ListAuditEventsRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedResponseEventResponse> {

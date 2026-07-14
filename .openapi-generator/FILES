@@ -79,7 +79,7 @@ docs/CreateThreadMessageRequest.md
 docs/CreateThreadRequest.md
 docs/CreateWorkflowDefinitionRequest.md
 docs/DataSourceCatalogResponse.md
-docs/DataSourceDescriptionResponse.md
+docs/DataSourceDescribeResponse.md
 docs/DataSourceDetailResponse.md
 docs/DataSourceEngine.md
 docs/DataSourceQueryRequest.md
@@ -88,6 +88,7 @@ docs/DataSourceResponse.md
 docs/DataSourceSchemaListItem.md
 docs/DataSourceSchemaListResponse.md
 docs/DataSourceSchemaResponse.md
+docs/DataSourceSyncResponse.md
 docs/DataSourceTableResponse.md
 docs/DataSourcesApi.md
 docs/DefaultApi.md
@@ -245,9 +246,13 @@ docs/ResolvedReferenceOutput.md
 docs/ResponseSendPwResetEmail.md
 docs/RevisionEdit.md
 docs/RootResponse.md
+docs/RunFolder.md
+docs/RunFolderRef.md
 docs/SSOInitiateResponse.md
 docs/ScoredChunkResponse.md
 docs/SearchSortOrder.md
+docs/SearchTablesRequest.md
+docs/SearchTablesResponse.md
 docs/SearchType.md
 docs/SearchablePartType.md
 docs/SeatQuotaStatus.md
@@ -276,7 +281,9 @@ docs/SubtreeChunkGroup.md
 docs/SubtreeChunksResponse.md
 docs/SupportedIdP.md
 docs/SupportedLanguage.md
+docs/SystemJobsApi.md
 docs/TableCellChange.md
+docs/TableSearchResult.md
 docs/TagOrder.md
 docs/TagResponse.md
 docs/TagsApi.md
@@ -293,6 +300,8 @@ docs/TenantUserOrder.md
 docs/TenantUserResponse.md
 docs/TenantUserRole.md
 docs/TenantsApi.md
+docs/TestConnectionRequest.md
+docs/TestConnectionResponse.md
 docs/TextDiff.md
 docs/TextPart.md
 docs/TextPartOrReasoningPartOrToolPartOrDocEditPart.md
@@ -303,6 +312,7 @@ docs/ThreadMessagesApi.md
 docs/ThreadOrder.md
 docs/ThreadResponse.md
 docs/ThreadsApi.md
+docs/ToolDisplayType.md
 docs/ToolPart.md
 docs/ToolStatus.md
 docs/TransferOwnerRequest.md
@@ -357,7 +367,6 @@ docs/WorkflowRunSnapshot.md
 docs/WorkflowRunSummaryResponse.md
 docs/WorkflowRunsApi.md
 docs/WorkflowSummaryResponse.md
-docs/WorkflowsApi.md
 docs/XlsxCellAnchorInput.md
 docs/XlsxCellAnchorInputOrDocxParagraphAnchorInput.md
 docs/XlsxCellAnchorOutput.md
@@ -386,6 +395,7 @@ src/apis/PathPartsApi.ts
 src/apis/PublicApi.ts
 src/apis/SectionsApi.ts
 src/apis/SubscriptionsApi.ts
+src/apis/SystemJobsApi.ts
 src/apis/TagsApi.ts
 src/apis/TenantGroupsApi.ts
 src/apis/TenantsApi.ts
@@ -397,7 +407,6 @@ src/apis/UsersApi.ts
 src/apis/WorkflowDefinitionsApi.ts
 src/apis/WorkflowMemoryApi.ts
 src/apis/WorkflowRunsApi.ts
-src/apis/WorkflowsApi.ts
 src/apis/index.ts
 src/index.ts
 src/models/AcceptDisclaimerRequest.ts
@@ -469,7 +478,7 @@ src/models/CreateThreadMessageRequest.ts
 src/models/CreateThreadRequest.ts
 src/models/CreateWorkflowDefinitionRequest.ts
 src/models/DataSourceCatalogResponse.ts
-src/models/DataSourceDescriptionResponse.ts
+src/models/DataSourceDescribeResponse.ts
 src/models/DataSourceDetailResponse.ts
 src/models/DataSourceEngine.ts
 src/models/DataSourceQueryRequest.ts
@@ -478,6 +487,7 @@ src/models/DataSourceResponse.ts
 src/models/DataSourceSchemaListItem.ts
 src/models/DataSourceSchemaListResponse.ts
 src/models/DataSourceSchemaResponse.ts
+src/models/DataSourceSyncResponse.ts
 src/models/DataSourceTableResponse.ts
 src/models/DiffFormat.ts
 src/models/DiffRow.ts
@@ -622,9 +632,13 @@ src/models/ResolvedReferenceOutput.ts
 src/models/ResponseSendPwResetEmail.ts
 src/models/RevisionEdit.ts
 src/models/RootResponse.ts
+src/models/RunFolder.ts
+src/models/RunFolderRef.ts
 src/models/SSOInitiateResponse.ts
 src/models/ScoredChunkResponse.ts
 src/models/SearchSortOrder.ts
+src/models/SearchTablesRequest.ts
+src/models/SearchTablesResponse.ts
 src/models/SearchType.ts
 src/models/SearchablePartType.ts
 src/models/SeatQuotaStatus.ts
@@ -652,6 +666,7 @@ src/models/SubtreeChunksResponse.ts
 src/models/SupportedIdP.ts
 src/models/SupportedLanguage.ts
 src/models/TableCellChange.ts
+src/models/TableSearchResult.ts
 src/models/TagOrder.ts
 src/models/TagResponse.ts
 src/models/TemporalWorkflowStatusResponse.ts
@@ -665,6 +680,8 @@ src/models/TenantUserEditRequest.ts
 src/models/TenantUserOrder.ts
 src/models/TenantUserResponse.ts
 src/models/TenantUserRole.ts
+src/models/TestConnectionRequest.ts
+src/models/TestConnectionResponse.ts
 src/models/TextDiff.ts
 src/models/TextPart.ts
 src/models/TextPartOrReasoningPartOrToolPartOrDocEditPart.ts
@@ -673,6 +690,7 @@ src/models/ThreadMessageDetails.ts
 src/models/ThreadMessageResponse.ts
 src/models/ThreadOrder.ts
 src/models/ThreadResponse.ts
+src/models/ToolDisplayType.ts
 src/models/ToolPart.ts
 src/models/ToolStatus.ts
 src/models/TransferOwnerRequest.ts

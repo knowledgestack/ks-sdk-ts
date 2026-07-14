@@ -2,7 +2,7 @@
 /* eslint-disable */
 /**
  * Knowledge Stack API
- * Knowledge Stack backend API for authentication and knowledge management
+ * Knowledge Stack backend API for authentication and knowledge management.  ## Integrating (RPA / machine clients)  **Base URL.** Knowledge Stack is self-hosted — point at your own deployment host (see `servers`). The `localhost` entry is for local development only.  **Authentication.** Send `Authorization: Bearer <api-key>` on every request. Mint an API key once via `POST /v1/api-keys` from a signed-in browser session; the raw `sk-user-...` secret is returned **only** at creation, so store it then. A key inherits its owning user\'s live tenant role and path permissions — create RPA keys from a least-privilege user, and set `expires_at` for rotation. The `ks_uat` cookie scheme is browser-only and cannot be used by headless clients.  **Async work is polled, not pushed.** There are no outbound webhooks. - `POST /v1/documents/ingest` returns `201` immediately with a `workflow_id`;   poll `GET /v1/system-jobs/document_versions/{workflow_id}` until `status` is   terminal (anything other than `pending`/`processing`). The `Location` response   header points at this poll resource. - `POST /v1/workflow-runs/{run_id}/start` returns `202`; poll   `GET /v1/workflow-runs/{run_id}` until `execution_state` is `COMPLETED` or   `FAILED`. The `Location` header points at the run resource. - `POST /v1/agent/ask` is **synchronous** — it blocks until the agent finishes   and returns the answer inline. Use a generous HTTP timeout.  **Pagination.** List endpoints accept `limit`/`offset` and return `{items, total, limit, offset}`.  **Errors.** Every non-2xx body is `{detail, code, request_id}`. `code` is a stable value from a closed set (see the `ErrorResponse` schema\'s `code` enum) — branch on it rather than parsing `detail`. Quota rejections return `429` with a `Retry-After` header; transient lock contention returns a retryable `503`. Quote `request_id` (also the `x-request-id` response header) to support.  **Idempotency.** `POST /v1/workflow-runs` accepts an `idempotency_key` to dedupe retried run creation. `agent/ask` charges one message *before* running and does not refund a client-cancelled call. 
  *
  * The version of the OpenAPI document: 0.1.0
  * 
@@ -26,11 +26,11 @@ export interface ErrorResponse {
      */
     detail: string;
     /**
-     * Stable, machine-readable error code (e.g. 'not_found').
-     * @type {string}
+     * Stable, machine-readable error code from a closed set. Branch on this instead of parsing 'detail'. 'quota_exceeded'/'too_many_requests' carry a Retry-After header; 'service_unavailable' is retryable.
+     * @type {ErrorResponseCodeEnum}
      * @memberof ErrorResponse
      */
-    code: string;
+    code: ErrorResponseCodeEnum;
     /**
      * Correlates to the x-request-id response header; quote it to support.
      * @type {string}
@@ -38,6 +38,30 @@ export interface ErrorResponse {
      */
     requestId?: string;
 }
+
+
+/**
+ * @export
+ */
+export const ErrorResponseCodeEnum = {
+    Error: 'error',
+    BadRequest: 'bad_request',
+    Unauthorized: 'unauthorized',
+    Forbidden: 'forbidden',
+    NotFound: 'not_found',
+    Conflict: 'conflict',
+    RunBusy: 'run_busy',
+    UnprocessableEntity: 'unprocessable_entity',
+    TooManyRequests: 'too_many_requests',
+    QuotaExceeded: 'quota_exceeded',
+    NotImplemented: 'not_implemented',
+    ServiceConfigurationError: 'service_configuration_error',
+    QuotaPeriodMissing: 'quota_period_missing',
+    InternalError: 'internal_error',
+    ServiceUnavailable: 'service_unavailable'
+} as const;
+export type ErrorResponseCodeEnum = typeof ErrorResponseCodeEnum[keyof typeof ErrorResponseCodeEnum];
+
 export const ErrorResponsePropertyValidationAttributesMap: {
     [property: string]: {
         maxLength?: number,

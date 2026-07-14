@@ -2,7 +2,7 @@
 /* eslint-disable */
 /**
  * Knowledge Stack API
- * Knowledge Stack backend API for authentication and knowledge management
+ * Knowledge Stack backend API for authentication and knowledge management.  ## Integrating (RPA / machine clients)  **Base URL.** Knowledge Stack is self-hosted — point at your own deployment host (see `servers`). The `localhost` entry is for local development only.  **Authentication.** Send `Authorization: Bearer <api-key>` on every request. Mint an API key once via `POST /v1/api-keys` from a signed-in browser session; the raw `sk-user-...` secret is returned **only** at creation, so store it then. A key inherits its owning user\'s live tenant role and path permissions — create RPA keys from a least-privilege user, and set `expires_at` for rotation. The `ks_uat` cookie scheme is browser-only and cannot be used by headless clients.  **Async work is polled, not pushed.** There are no outbound webhooks. - `POST /v1/documents/ingest` returns `201` immediately with a `workflow_id`;   poll `GET /v1/system-jobs/document_versions/{workflow_id}` until `status` is   terminal (anything other than `pending`/`processing`). The `Location` response   header points at this poll resource. - `POST /v1/workflow-runs/{run_id}/start` returns `202`; poll   `GET /v1/workflow-runs/{run_id}` until `execution_state` is `COMPLETED` or   `FAILED`. The `Location` header points at the run resource. - `POST /v1/agent/ask` is **synchronous** — it blocks until the agent finishes   and returns the answer inline. Use a generous HTTP timeout.  **Pagination.** List endpoints accept `limit`/`offset` and return `{items, total, limit, offset}`.  **Errors.** Every non-2xx body is `{detail, code, request_id}`. `code` is a stable value from a closed set (see the `ErrorResponse` schema\'s `code` enum) — branch on it rather than parsing `detail`. Quota rejections return `429` with a `Retry-After` header; transient lock contention returns a retryable `503`. Quote `request_id` (also the `x-request-id` response header) to support.  **Idempotency.** `POST /v1/workflow-runs` accepts an `idempotency_key` to dedupe retried run creation. `agent/ask` charges one message *before* running and does not refund a client-cancelled call. 
  *
  * The version of the OpenAPI document: 0.1.0
  * 
@@ -62,17 +62,17 @@ export interface ListDvWorkflowsRequest {
 }
 
 /**
- * WorkflowsApi - interface
+ * SystemJobsApi - interface
  * 
  * @export
- * @interface WorkflowsApiInterface
+ * @interface SystemJobsApiInterface
  */
-export interface WorkflowsApiInterface {
+export interface SystemJobsApiInterface {
     /**
      * Creates request options for cancelTemporalWorkflow without sending the request
      * @param {string} workflowId 
      * @throws {RequiredError}
-     * @memberof WorkflowsApiInterface
+     * @memberof SystemJobsApiInterface
      */
     cancelTemporalWorkflowRequestOpts(requestParameters: CancelTemporalWorkflowRequest): Promise<runtime.RequestOpts>;
 
@@ -82,7 +82,7 @@ export interface WorkflowsApiInterface {
      * @param {string} workflowId 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof WorkflowsApiInterface
+     * @memberof SystemJobsApiInterface
      */
     cancelTemporalWorkflowRaw(requestParameters: CancelTemporalWorkflowRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<WorkflowCancelResponse>>;
 
@@ -96,7 +96,7 @@ export interface WorkflowsApiInterface {
      * Creates request options for dvWorkflowRerun without sending the request
      * @param {string} workflowId 
      * @throws {RequiredError}
-     * @memberof WorkflowsApiInterface
+     * @memberof SystemJobsApiInterface
      */
     dvWorkflowRerunRequestOpts(requestParameters: DvWorkflowRerunRequest): Promise<runtime.RequestOpts>;
 
@@ -106,7 +106,7 @@ export interface WorkflowsApiInterface {
      * @param {string} workflowId 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof WorkflowsApiInterface
+     * @memberof SystemJobsApiInterface
      */
     dvWorkflowRerunRaw(requestParameters: DvWorkflowRerunRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<WorkflowActionResponse>>;
 
@@ -120,7 +120,7 @@ export interface WorkflowsApiInterface {
      * Creates request options for getDvWorkflow without sending the request
      * @param {string} workflowId 
      * @throws {RequiredError}
-     * @memberof WorkflowsApiInterface
+     * @memberof SystemJobsApiInterface
      */
     getDvWorkflowRequestOpts(requestParameters: GetDvWorkflowRequest): Promise<runtime.RequestOpts>;
 
@@ -130,7 +130,7 @@ export interface WorkflowsApiInterface {
      * @param {string} workflowId 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof WorkflowsApiInterface
+     * @memberof SystemJobsApiInterface
      */
     getDvWorkflowRaw(requestParameters: GetDvWorkflowRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<WorkflowDetailResponse>>;
 
@@ -144,7 +144,7 @@ export interface WorkflowsApiInterface {
      * Creates request options for getTemporalWorkflowStatus without sending the request
      * @param {string} workflowId 
      * @throws {RequiredError}
-     * @memberof WorkflowsApiInterface
+     * @memberof SystemJobsApiInterface
      */
     getTemporalWorkflowStatusRequestOpts(requestParameters: GetTemporalWorkflowStatusRequest): Promise<runtime.RequestOpts>;
 
@@ -154,7 +154,7 @@ export interface WorkflowsApiInterface {
      * @param {string} workflowId 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof WorkflowsApiInterface
+     * @memberof SystemJobsApiInterface
      */
     getTemporalWorkflowStatusRaw(requestParameters: GetTemporalWorkflowStatusRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TemporalWorkflowStatusResponse>>;
 
@@ -169,7 +169,7 @@ export interface WorkflowsApiInterface {
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
      * @throws {RequiredError}
-     * @memberof WorkflowsApiInterface
+     * @memberof SystemJobsApiInterface
      */
     listDvWorkflowsRequestOpts(requestParameters: ListDvWorkflowsRequest): Promise<runtime.RequestOpts>;
 
@@ -180,7 +180,7 @@ export interface WorkflowsApiInterface {
      * @param {number} [offset] Number of items to skip
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof WorkflowsApiInterface
+     * @memberof SystemJobsApiInterface
      */
     listDvWorkflowsRaw(requestParameters: ListDvWorkflowsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedResponseWorkflowSummaryResponse>>;
 
@@ -195,7 +195,7 @@ export interface WorkflowsApiInterface {
 /**
  * 
  */
-export class WorkflowsApi extends runtime.BaseAPI implements WorkflowsApiInterface {
+export class SystemJobsApi extends runtime.BaseAPI implements SystemJobsApiInterface {
 
     /**
      * Creates request options for cancelTemporalWorkflow without sending the request
@@ -221,7 +221,7 @@ export class WorkflowsApi extends runtime.BaseAPI implements WorkflowsApiInterfa
             }
         }
 
-        let urlPath = `/v1/workflows/{workflow_id}`;
+        let urlPath = `/v1/system-jobs/{workflow_id}`;
         urlPath = urlPath.replace(`{${"workflow_id"}}`, encodeURIComponent(String(requestParameters['workflowId'])));
 
         return {
@@ -276,7 +276,7 @@ export class WorkflowsApi extends runtime.BaseAPI implements WorkflowsApiInterfa
             }
         }
 
-        let urlPath = `/v1/workflows/document_versions/{workflow_id}`;
+        let urlPath = `/v1/system-jobs/document_versions/{workflow_id}`;
         urlPath = urlPath.replace(`{${"workflow_id"}}`, encodeURIComponent(String(requestParameters['workflowId'])));
 
         return {
@@ -331,7 +331,7 @@ export class WorkflowsApi extends runtime.BaseAPI implements WorkflowsApiInterfa
             }
         }
 
-        let urlPath = `/v1/workflows/document_versions/{workflow_id}`;
+        let urlPath = `/v1/system-jobs/document_versions/{workflow_id}`;
         urlPath = urlPath.replace(`{${"workflow_id"}}`, encodeURIComponent(String(requestParameters['workflowId'])));
 
         return {
@@ -386,7 +386,7 @@ export class WorkflowsApi extends runtime.BaseAPI implements WorkflowsApiInterfa
             }
         }
 
-        let urlPath = `/v1/workflows/{workflow_id}`;
+        let urlPath = `/v1/system-jobs/{workflow_id}`;
         urlPath = urlPath.replace(`{${"workflow_id"}}`, encodeURIComponent(String(requestParameters['workflowId'])));
 
         return {
@@ -442,7 +442,7 @@ export class WorkflowsApi extends runtime.BaseAPI implements WorkflowsApiInterfa
             }
         }
 
-        let urlPath = `/v1/workflows/document_versions`;
+        let urlPath = `/v1/system-jobs/document_versions`;
 
         return {
             path: urlPath,

@@ -7,6 +7,7 @@
 Name | Type
 ------------ | -------------
 `workflowId` | string
+`userMessageId` | string
 
 ## Example
 
@@ -16,6 +17,7 @@ import type { UserMessageResponse } from '@knowledge-stack/ksapi'
 // TODO: Update the object below with actual values
 const example = {
   "workflowId": null,
+  "userMessageId": null,
 } satisfies UserMessageResponse
 
 console.log(example)

@@ -2,7 +2,7 @@
 /* eslint-disable */
 /**
  * Knowledge Stack API
- * Knowledge Stack backend API for authentication and knowledge management
+ * Knowledge Stack backend API for authentication and knowledge management.  ## Integrating (RPA / machine clients)  **Base URL.** Knowledge Stack is self-hosted — point at your own deployment host (see `servers`). The `localhost` entry is for local development only.  **Authentication.** Send `Authorization: Bearer <api-key>` on every request. Mint an API key once via `POST /v1/api-keys` from a signed-in browser session; the raw `sk-user-...` secret is returned **only** at creation, so store it then. A key inherits its owning user\'s live tenant role and path permissions — create RPA keys from a least-privilege user, and set `expires_at` for rotation. The `ks_uat` cookie scheme is browser-only and cannot be used by headless clients.  **Async work is polled, not pushed.** There are no outbound webhooks. - `POST /v1/documents/ingest` returns `201` immediately with a `workflow_id`;   poll `GET /v1/system-jobs/document_versions/{workflow_id}` until `status` is   terminal (anything other than `pending`/`processing`). The `Location` response   header points at this poll resource. - `POST /v1/workflow-runs/{run_id}/start` returns `202`; poll   `GET /v1/workflow-runs/{run_id}` until `execution_state` is `COMPLETED` or   `FAILED`. The `Location` header points at the run resource. - `POST /v1/agent/ask` is **synchronous** — it blocks until the agent finishes   and returns the answer inline. Use a generous HTTP timeout.  **Pagination.** List endpoints accept `limit`/`offset` and return `{items, total, limit, offset}`.  **Errors.** Every non-2xx body is `{detail, code, request_id}`. `code` is a stable value from a closed set (see the `ErrorResponse` schema\'s `code` enum) — branch on it rather than parsing `detail`. Quota rejections return `429` with a `Retry-After` header; transient lock contention returns a retryable `503`. Quote `request_id` (also the `x-request-id` response header) to support.  **Idempotency.** `POST /v1/workflow-runs` accepts an `idempotency_key` to dedupe retried run creation. `agent/ask` charges one message *before* running and does not refund a client-cancelled call. 
  *
  * The version of the OpenAPI document: 0.1.0
  * 
@@ -248,7 +248,7 @@ export interface DocumentsApiInterface {
     ingestDocumentRequestOpts(requestParameters: IngestDocumentRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * Upload a file, create document + version, and trigger ingestion workflow.  Returns 201 with the Temporal workflow ID.
+     * Upload a file, create document + version, and trigger ingestion workflow.  Returns 201 immediately with the Temporal ``workflow_id``. Ingestion runs in the background — poll ``GET /v1/system-jobs/document_versions/{workflow_id}`` (also given in the ``Location`` header) until ``status`` is terminal (anything other than ``pending``/``processing``). There is no completion webhook.
      * @summary Ingest Document Handler
      * @param {Blob} file 
      * @param {string} pathPartId Parent path part ID (must be a FOLDER type)
@@ -266,7 +266,7 @@ export interface DocumentsApiInterface {
     ingestDocumentRaw(requestParameters: IngestDocumentRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<IngestDocumentResponse>>;
 
     /**
-     * Upload a file, create document + version, and trigger ingestion workflow.  Returns 201 with the Temporal workflow ID.
+     * Upload a file, create document + version, and trigger ingestion workflow.  Returns 201 immediately with the Temporal ``workflow_id``. Ingestion runs in the background — poll ``GET /v1/system-jobs/document_versions/{workflow_id}`` (also given in the ``Location`` header) until ``status`` is terminal (anything other than ``pending``/``processing``). There is no completion webhook.
      * Ingest Document Handler
      */
     ingestDocument(requestParameters: IngestDocumentRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<IngestDocumentResponse>;
@@ -287,7 +287,7 @@ export interface DocumentsApiInterface {
     ingestDocumentVersionRequestOpts(requestParameters: IngestDocumentVersionRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * Upload a new file for an existing document, creating a new version and triggering ingestion.  Creates a new document version (incrementing the highest version number), uploads the file to S3, and starts the ingestion workflow. Upon successful ingestion, the new version is automatically activated (set as the document\'s active_version) and the old version\'s Qdrant points are deactivated.  Returns 201 with the Temporal workflow ID.
+     * Upload a new file for an existing document, creating a new version and triggering ingestion.  Creates a new document version (incrementing the highest version number), uploads the file to S3, and starts the ingestion workflow. Upon successful ingestion, the new version is automatically activated (set as the document\'s active_version) and the old version\'s Qdrant points are deactivated.  Returns 201 immediately with the Temporal ``workflow_id``. Ingestion runs in the background — poll ``GET /v1/system-jobs/document_versions/{workflow_id}`` (also given in the ``Location`` header) until ``status`` is terminal.
      * @summary Ingest Document Version Handler
      * @param {string} documentId Document ID
      * @param {Blob} file 
@@ -304,7 +304,7 @@ export interface DocumentsApiInterface {
     ingestDocumentVersionRaw(requestParameters: IngestDocumentVersionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<IngestDocumentResponse>>;
 
     /**
-     * Upload a new file for an existing document, creating a new version and triggering ingestion.  Creates a new document version (incrementing the highest version number), uploads the file to S3, and starts the ingestion workflow. Upon successful ingestion, the new version is automatically activated (set as the document\'s active_version) and the old version\'s Qdrant points are deactivated.  Returns 201 with the Temporal workflow ID.
+     * Upload a new file for an existing document, creating a new version and triggering ingestion.  Creates a new document version (incrementing the highest version number), uploads the file to S3, and starts the ingestion workflow. Upon successful ingestion, the new version is automatically activated (set as the document\'s active_version) and the old version\'s Qdrant points are deactivated.  Returns 201 immediately with the Temporal ``workflow_id``. Ingestion runs in the background — poll ``GET /v1/system-jobs/document_versions/{workflow_id}`` (also given in the ``Location`` header) until ``status`` is terminal.
      * Ingest Document Version Handler
      */
     ingestDocumentVersion(requestParameters: IngestDocumentVersionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<IngestDocumentResponse>;
@@ -710,7 +710,7 @@ export class DocumentsApi extends runtime.BaseAPI implements DocumentsApiInterfa
     }
 
     /**
-     * Upload a file, create document + version, and trigger ingestion workflow.  Returns 201 with the Temporal workflow ID.
+     * Upload a file, create document + version, and trigger ingestion workflow.  Returns 201 immediately with the Temporal ``workflow_id``. Ingestion runs in the background — poll ``GET /v1/system-jobs/document_versions/{workflow_id}`` (also given in the ``Location`` header) until ``status`` is terminal (anything other than ``pending``/``processing``). There is no completion webhook.
      * Ingest Document Handler
      */
     async ingestDocumentRaw(requestParameters: IngestDocumentRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<IngestDocumentResponse>> {
@@ -721,7 +721,7 @@ export class DocumentsApi extends runtime.BaseAPI implements DocumentsApiInterfa
     }
 
     /**
-     * Upload a file, create document + version, and trigger ingestion workflow.  Returns 201 with the Temporal workflow ID.
+     * Upload a file, create document + version, and trigger ingestion workflow.  Returns 201 immediately with the Temporal ``workflow_id``. Ingestion runs in the background — poll ``GET /v1/system-jobs/document_versions/{workflow_id}`` (also given in the ``Location`` header) until ``status`` is terminal (anything other than ``pending``/``processing``). There is no completion webhook.
      * Ingest Document Handler
      */
     async ingestDocument(requestParameters: IngestDocumentRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<IngestDocumentResponse> {
@@ -817,7 +817,7 @@ export class DocumentsApi extends runtime.BaseAPI implements DocumentsApiInterfa
     }
 
     /**
-     * Upload a new file for an existing document, creating a new version and triggering ingestion.  Creates a new document version (incrementing the highest version number), uploads the file to S3, and starts the ingestion workflow. Upon successful ingestion, the new version is automatically activated (set as the document\'s active_version) and the old version\'s Qdrant points are deactivated.  Returns 201 with the Temporal workflow ID.
+     * Upload a new file for an existing document, creating a new version and triggering ingestion.  Creates a new document version (incrementing the highest version number), uploads the file to S3, and starts the ingestion workflow. Upon successful ingestion, the new version is automatically activated (set as the document\'s active_version) and the old version\'s Qdrant points are deactivated.  Returns 201 immediately with the Temporal ``workflow_id``. Ingestion runs in the background — poll ``GET /v1/system-jobs/document_versions/{workflow_id}`` (also given in the ``Location`` header) until ``status`` is terminal.
      * Ingest Document Version Handler
      */
     async ingestDocumentVersionRaw(requestParameters: IngestDocumentVersionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<IngestDocumentResponse>> {
@@ -828,7 +828,7 @@ export class DocumentsApi extends runtime.BaseAPI implements DocumentsApiInterfa
     }
 
     /**
-     * Upload a new file for an existing document, creating a new version and triggering ingestion.  Creates a new document version (incrementing the highest version number), uploads the file to S3, and starts the ingestion workflow. Upon successful ingestion, the new version is automatically activated (set as the document\'s active_version) and the old version\'s Qdrant points are deactivated.  Returns 201 with the Temporal workflow ID.
+     * Upload a new file for an existing document, creating a new version and triggering ingestion.  Creates a new document version (incrementing the highest version number), uploads the file to S3, and starts the ingestion workflow. Upon successful ingestion, the new version is automatically activated (set as the document\'s active_version) and the old version\'s Qdrant points are deactivated.  Returns 201 immediately with the Temporal ``workflow_id``. Ingestion runs in the background — poll ``GET /v1/system-jobs/document_versions/{workflow_id}`` (also given in the ``Location`` header) until ``status`` is terminal.
      * Ingest Document Version Handler
      */
     async ingestDocumentVersion(requestParameters: IngestDocumentVersionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<IngestDocumentResponse> {

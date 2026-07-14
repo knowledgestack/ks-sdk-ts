@@ -23,7 +23,7 @@ import type { CreateApiKeyResponse } from '@knowledge-stack/ksapi'
 const example = {
   "id": null,
   "name": null,
-  "key": null,
+  "key": sk-user-0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef,
   "keySuffix": null,
   "createdAt": null,
   "expiresAt": null,

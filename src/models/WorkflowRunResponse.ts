@@ -2,7 +2,7 @@
 /* eslint-disable */
 /**
  * Knowledge Stack API
- * Knowledge Stack backend API for authentication and knowledge management
+ * Knowledge Stack backend API for authentication and knowledge management.  ## Integrating (RPA / machine clients)  **Base URL.** Knowledge Stack is self-hosted — point at your own deployment host (see `servers`). The `localhost` entry is for local development only.  **Authentication.** Send `Authorization: Bearer <api-key>` on every request. Mint an API key once via `POST /v1/api-keys` from a signed-in browser session; the raw `sk-user-...` secret is returned **only** at creation, so store it then. A key inherits its owning user\'s live tenant role and path permissions — create RPA keys from a least-privilege user, and set `expires_at` for rotation. The `ks_uat` cookie scheme is browser-only and cannot be used by headless clients.  **Async work is polled, not pushed.** There are no outbound webhooks. - `POST /v1/documents/ingest` returns `201` immediately with a `workflow_id`;   poll `GET /v1/system-jobs/document_versions/{workflow_id}` until `status` is   terminal (anything other than `pending`/`processing`). The `Location` response   header points at this poll resource. - `POST /v1/workflow-runs/{run_id}/start` returns `202`; poll   `GET /v1/workflow-runs/{run_id}` until `execution_state` is `COMPLETED` or   `FAILED`. The `Location` header points at the run resource. - `POST /v1/agent/ask` is **synchronous** — it blocks until the agent finishes   and returns the answer inline. Use a generous HTTP timeout.  **Pagination.** List endpoints accept `limit`/`offset` and return `{items, total, limit, offset}`.  **Errors.** Every non-2xx body is `{detail, code, request_id}`. `code` is a stable value from a closed set (see the `ErrorResponse` schema\'s `code` enum) — branch on it rather than parsing `detail`. Quota rejections return `429` with a `Retry-After` header; transient lock contention returns a retryable `503`. Quote `request_id` (also the `x-request-id` response header) to support.  **Idempotency.** `POST /v1/workflow-runs` accepts an `idempotency_key` to dedupe retried run creation. `agent/ask` charges one message *before* running and does not refund a client-cancelled call. 
  *
  * The version of the OpenAPI document: 0.1.0
  * 
@@ -20,13 +20,13 @@ import {
     ItemPermissionsToJSON,
     ItemPermissionsToJSONTyped,
 } from './ItemPermissions';
-import type { WorkflowRunAsset } from './WorkflowRunAsset';
+import type { RunFolderRef } from './RunFolderRef';
 import {
-    WorkflowRunAssetFromJSON,
-    WorkflowRunAssetFromJSONTyped,
-    WorkflowRunAssetToJSON,
-    WorkflowRunAssetToJSONTyped,
-} from './WorkflowRunAsset';
+    RunFolderRefFromJSON,
+    RunFolderRefFromJSONTyped,
+    RunFolderRefToJSON,
+    RunFolderRefToJSONTyped,
+} from './RunFolderRef';
 import type { WorkflowRunSnapshot } from './WorkflowRunSnapshot';
 import {
     WorkflowRunSnapshotFromJSON,
@@ -62,6 +62,13 @@ import {
     UserInfoToJSON,
     UserInfoToJSONTyped,
 } from './UserInfo';
+import type { RunFolder } from './RunFolder';
+import {
+    RunFolderFromJSON,
+    RunFolderFromJSONTyped,
+    RunFolderToJSON,
+    RunFolderToJSONTyped,
+} from './RunFolder';
 
 /**
  * Workflow run response.
@@ -182,53 +189,23 @@ export interface WorkflowRunResponse {
      */
     autoStartUserMessage?: string | null;
     /**
-     * FOLDER path_part of the run's ``inputs/`` subfolder
-     * @type {string}
+     * 
+     * @type {RunFolder}
      * @memberof WorkflowRunResponse
      */
-    inputsPathPartId: string;
+    inputs: RunFolder;
     /**
-     * FOLDER path_part of the run's ``outputs/`` subfolder
-     * @type {string}
+     * 
+     * @type {RunFolder}
      * @memberof WorkflowRunResponse
      */
-    outputsPathPartId: string;
+    outputs: RunFolder;
     /**
-     * FOLDER path_part of the run's ``discussions/`` subfolder
-     * @type {string}
+     * 
+     * @type {RunFolderRef}
      * @memberof WorkflowRunResponse
      */
-    discussionsPathPartId: string;
-    /**
-     * Flat list of currently-pinned KB-reference path_part ids (DOCUMENT + FOLDER). On a NOT_STARTED run this is the only surface for KB refs (run_snapshot is NULL).
-     * @type {Array<string>}
-     * @memberof WorkflowRunResponse
-     */
-    inputPathPartIds?: Array<string>;
-    /**
-     * Generated files under ``outputs/`` (recursing nested folders), each carrying the DOCUMENT PDO ``id`` to feed straight to download / bulk-download. Empty until the run produces output.
-     * @type {Array<WorkflowRunAsset>}
-     * @memberof WorkflowRunResponse
-     */
-    outputAssets?: Array<WorkflowRunAsset>;
-    /**
-     * The run's input context: pinned KB references (``input_path_part_ids``) plus any files uploaded under ``inputs/``, each resolved to its PDO ``id`` + metadata.
-     * @type {Array<WorkflowRunAsset>}
-     * @memberof WorkflowRunResponse
-     */
-    inputAssets?: Array<WorkflowRunAsset>;
-    /**
-     * Full materialized path of the run's ``inputs/`` folder
-     * @type {string}
-     * @memberof WorkflowRunResponse
-     */
-    inputsPath: string;
-    /**
-     * Full materialized path of the run's ``outputs/`` folder
-     * @type {string}
-     * @memberof WorkflowRunResponse
-     */
-    outputsPath: string;
+    discussions: RunFolderRef;
     /**
      * Definition common files that were excluded from this run at Start (deleted or unreadable by the starter). Empty until Start builds the snapshot, and empty for the common happy path.
      * @type {Array<ExcludedCommonFile>}
@@ -313,11 +290,9 @@ export function instanceOfWorkflowRunResponse(value: object): value is WorkflowR
     if (!('runSnapshot' in value) || value['runSnapshot'] === undefined) return false;
     if (!('error' in value) || value['error'] === undefined) return false;
     if (!('autoStart' in value) || value['autoStart'] === undefined) return false;
-    if (!('inputsPathPartId' in value) || value['inputsPathPartId'] === undefined) return false;
-    if (!('outputsPathPartId' in value) || value['outputsPathPartId'] === undefined) return false;
-    if (!('discussionsPathPartId' in value) || value['discussionsPathPartId'] === undefined) return false;
-    if (!('inputsPath' in value) || value['inputsPath'] === undefined) return false;
-    if (!('outputsPath' in value) || value['outputsPath'] === undefined) return false;
+    if (!('inputs' in value) || value['inputs'] === undefined) return false;
+    if (!('outputs' in value) || value['outputs'] === undefined) return false;
+    if (!('discussions' in value) || value['discussions'] === undefined) return false;
     if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
     if (!('updatedAt' in value) || value['updatedAt'] === undefined) return false;
     return true;
@@ -350,14 +325,9 @@ export function WorkflowRunResponseFromJSONTyped(json: any, ignoreDiscriminator:
         'error': json['error'],
         'autoStart': json['auto_start'],
         'autoStartUserMessage': json['auto_start_user_message'] == null ? undefined : json['auto_start_user_message'],
-        'inputsPathPartId': json['inputs_path_part_id'],
-        'outputsPathPartId': json['outputs_path_part_id'],
-        'discussionsPathPartId': json['discussions_path_part_id'],
-        'inputPathPartIds': json['input_path_part_ids'] == null ? undefined : json['input_path_part_ids'],
-        'outputAssets': json['output_assets'] == null ? undefined : ((json['output_assets'] as Array<any>).map(WorkflowRunAssetFromJSON)),
-        'inputAssets': json['input_assets'] == null ? undefined : ((json['input_assets'] as Array<any>).map(WorkflowRunAssetFromJSON)),
-        'inputsPath': json['inputs_path'],
-        'outputsPath': json['outputs_path'],
+        'inputs': RunFolderFromJSON(json['inputs']),
+        'outputs': RunFolderFromJSON(json['outputs']),
+        'discussions': RunFolderRefFromJSON(json['discussions']),
         'excludedCommonFiles': json['excluded_common_files'] == null ? undefined : ((json['excluded_common_files'] as Array<any>).map(ExcludedCommonFileFromJSON)),
         'runThreadId': json['run_thread_id'] == null ? undefined : json['run_thread_id'],
         'owner': json['owner'] == null ? undefined : UserInfoFromJSON(json['owner']),
@@ -395,14 +365,9 @@ export function WorkflowRunResponseToJSONTyped(value?: WorkflowRunResponse | nul
         'error': value['error'],
         'auto_start': value['autoStart'],
         'auto_start_user_message': value['autoStartUserMessage'],
-        'inputs_path_part_id': value['inputsPathPartId'],
-        'outputs_path_part_id': value['outputsPathPartId'],
-        'discussions_path_part_id': value['discussionsPathPartId'],
-        'input_path_part_ids': value['inputPathPartIds'],
-        'output_assets': value['outputAssets'] == null ? undefined : ((value['outputAssets'] as Array<any>).map(WorkflowRunAssetToJSON)),
-        'input_assets': value['inputAssets'] == null ? undefined : ((value['inputAssets'] as Array<any>).map(WorkflowRunAssetToJSON)),
-        'inputs_path': value['inputsPath'],
-        'outputs_path': value['outputsPath'],
+        'inputs': RunFolderToJSON(value['inputs']),
+        'outputs': RunFolderToJSON(value['outputs']),
+        'discussions': RunFolderRefToJSON(value['discussions']),
         'excluded_common_files': value['excludedCommonFiles'] == null ? undefined : ((value['excludedCommonFiles'] as Array<any>).map(ExcludedCommonFileToJSON)),
         'run_thread_id': value['runThreadId'],
         'owner': UserInfoToJSON(value['owner']),

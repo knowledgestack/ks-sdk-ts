@@ -2,7 +2,7 @@
 /* eslint-disable */
 /**
  * Knowledge Stack API
- * Knowledge Stack backend API for authentication and knowledge management
+ * Knowledge Stack backend API for authentication and knowledge management.  ## Integrating (RPA / machine clients)  **Base URL.** Knowledge Stack is self-hosted — point at your own deployment host (see `servers`). The `localhost` entry is for local development only.  **Authentication.** Send `Authorization: Bearer <api-key>` on every request. Mint an API key once via `POST /v1/api-keys` from a signed-in browser session; the raw `sk-user-...` secret is returned **only** at creation, so store it then. A key inherits its owning user\'s live tenant role and path permissions — create RPA keys from a least-privilege user, and set `expires_at` for rotation. The `ks_uat` cookie scheme is browser-only and cannot be used by headless clients.  **Async work is polled, not pushed.** There are no outbound webhooks. - `POST /v1/documents/ingest` returns `201` immediately with a `workflow_id`;   poll `GET /v1/system-jobs/document_versions/{workflow_id}` until `status` is   terminal (anything other than `pending`/`processing`). The `Location` response   header points at this poll resource. - `POST /v1/workflow-runs/{run_id}/start` returns `202`; poll   `GET /v1/workflow-runs/{run_id}` until `execution_state` is `COMPLETED` or   `FAILED`. The `Location` header points at the run resource. - `POST /v1/agent/ask` is **synchronous** — it blocks until the agent finishes   and returns the answer inline. Use a generous HTTP timeout.  **Pagination.** List endpoints accept `limit`/`offset` and return `{items, total, limit, offset}`.  **Errors.** Every non-2xx body is `{detail, code, request_id}`. `code` is a stable value from a closed set (see the `ErrorResponse` schema\'s `code` enum) — branch on it rather than parsing `detail`. Quota rejections return `429` with a `Retry-After` header; transient lock contention returns a retryable `503`. Quote `request_id` (also the `x-request-id` response header) to support.  **Idempotency.** `POST /v1/workflow-runs` accepts an `idempotency_key` to dedupe retried run creation. `agent/ask` charges one message *before* running and does not refund a client-cancelled call. 
  *
  * The version of the OpenAPI document: 0.1.0
  * 
@@ -19,16 +19,21 @@ import type {
   BulkModelTablesResponse,
   CreateDataSourceRequest,
   DataSourceCatalogResponse,
-  DataSourceDescriptionResponse,
+  DataSourceDescribeResponse,
   DataSourceDetailResponse,
   DataSourceQueryRequest,
   DataSourceQueryResponse,
   DataSourceResponse,
   DataSourceSchemaListResponse,
+  DataSourceSyncResponse,
   DataSourceTableResponse,
   ErrorResponse,
   HTTPValidationError,
   ModelTableRequest,
+  SearchTablesRequest,
+  SearchTablesResponse,
+  TestConnectionRequest,
+  TestConnectionResponse,
   UpdateDataSourceRequest,
   UpdateTableRequest,
 } from '../models/index';
@@ -41,8 +46,8 @@ import {
     CreateDataSourceRequestToJSON,
     DataSourceCatalogResponseFromJSON,
     DataSourceCatalogResponseToJSON,
-    DataSourceDescriptionResponseFromJSON,
-    DataSourceDescriptionResponseToJSON,
+    DataSourceDescribeResponseFromJSON,
+    DataSourceDescribeResponseToJSON,
     DataSourceDetailResponseFromJSON,
     DataSourceDetailResponseToJSON,
     DataSourceQueryRequestFromJSON,
@@ -53,6 +58,8 @@ import {
     DataSourceResponseToJSON,
     DataSourceSchemaListResponseFromJSON,
     DataSourceSchemaListResponseToJSON,
+    DataSourceSyncResponseFromJSON,
+    DataSourceSyncResponseToJSON,
     DataSourceTableResponseFromJSON,
     DataSourceTableResponseToJSON,
     ErrorResponseFromJSON,
@@ -61,6 +68,14 @@ import {
     HTTPValidationErrorToJSON,
     ModelTableRequestFromJSON,
     ModelTableRequestToJSON,
+    SearchTablesRequestFromJSON,
+    SearchTablesRequestToJSON,
+    SearchTablesResponseFromJSON,
+    SearchTablesResponseToJSON,
+    TestConnectionRequestFromJSON,
+    TestConnectionRequestToJSON,
+    TestConnectionResponseFromJSON,
+    TestConnectionResponseToJSON,
     UpdateDataSourceRequestFromJSON,
     UpdateDataSourceRequestToJSON,
     UpdateTableRequestFromJSON,
@@ -85,7 +100,7 @@ export interface DeleteDataSourceTableRequest {
     tableId: string;
 }
 
-export interface GenerateDataSourceDescriptionRequest {
+export interface DescribeDataSourceTablesRequest {
     dataSourceId: string;
 }
 
@@ -117,8 +132,20 @@ export interface QueryDataSourceRequest {
     dataSourceQueryRequest: DataSourceQueryRequest;
 }
 
+export interface SearchDataSourceTablesRequest {
+    searchTablesRequest: SearchTablesRequest;
+}
+
+export interface SyncDataSourceRequest {
+    dataSourceId: string;
+}
+
 export interface TestDataSourceConnectionRequest {
     dataSourceId: string;
+}
+
+export interface TestDataSourceConnectionFreshRequest {
+    testConnectionRequest: TestConnectionRequest;
 }
 
 export interface UpdateDataSourceOperationRequest {
@@ -172,7 +199,7 @@ export interface DataSourcesApiInterface {
     deleteDataSourceRequestOpts(requestParameters: DeleteDataSourceRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * Move a connector and its schemas/tables to trash.  Soft-delete via the path_part subtree (schemas + tables are children, so they trash with it). The connector\'s generated ``.overview`` description Document IS ingested, so its Qdrant points are flipped to trashed via the set-trashed workflow (best-effort, mirrors the document delete path).
+     * Move a connector and its schemas/tables to trash.  Soft-delete via the path_part subtree (schemas + tables are children, so they trash with it). Each modeled table\'s summary Qdrant point carries that table\'s path_part, so the set-trashed workflow flips it to trashed too — keeping trashed tables out of the agent\'s table search (best-effort, mirrors the document delete path).
      * @summary Delete Data Source Handler
      * @param {string} dataSourceId 
      * @param {*} [options] Override http request option.
@@ -182,7 +209,7 @@ export interface DataSourcesApiInterface {
     deleteDataSourceRaw(requestParameters: DeleteDataSourceRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>>;
 
     /**
-     * Move a connector and its schemas/tables to trash.  Soft-delete via the path_part subtree (schemas + tables are children, so they trash with it). The connector\'s generated ``.overview`` description Document IS ingested, so its Qdrant points are flipped to trashed via the set-trashed workflow (best-effort, mirrors the document delete path).
+     * Move a connector and its schemas/tables to trash.  Soft-delete via the path_part subtree (schemas + tables are children, so they trash with it). Each modeled table\'s summary Qdrant point carries that table\'s path_part, so the set-trashed workflow flips it to trashed too — keeping trashed tables out of the agent\'s table search (best-effort, mirrors the document delete path).
      * Delete Data Source Handler
      */
     deleteDataSource(requestParameters: DeleteDataSourceRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void>;
@@ -223,7 +250,7 @@ export interface DataSourcesApiInterface {
     deleteDataSourceTableRequestOpts(requestParameters: DeleteDataSourceTableRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * Un-model a single table (hard-delete it from its schema).
+     * Un-model a single table (hard-delete it) and purge its summary point.
      * @summary Delete Data Source Table Handler
      * @param {string} dataSourceId 
      * @param {string} tableId 
@@ -234,34 +261,34 @@ export interface DataSourcesApiInterface {
     deleteDataSourceTableRaw(requestParameters: DeleteDataSourceTableRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>>;
 
     /**
-     * Un-model a single table (hard-delete it from its schema).
+     * Un-model a single table (hard-delete it) and purge its summary point.
      * Delete Data Source Table Handler
      */
     deleteDataSourceTable(requestParameters: DeleteDataSourceTableRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void>;
 
     /**
-     * Creates request options for generateDataSourceDescription without sending the request
+     * Creates request options for describeDataSourceTables without sending the request
      * @param {string} dataSourceId 
      * @throws {RequiredError}
      * @memberof DataSourcesApiInterface
      */
-    generateDataSourceDescriptionRequestOpts(requestParameters: GenerateDataSourceDescriptionRequest): Promise<runtime.RequestOpts>;
+    describeDataSourceTablesRequestOpts(requestParameters: DescribeDataSourceTablesRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * (Re)generate the connector\'s hidden, searchable \'Database overview\' Document.  Requires ``can_write`` on the connector. The structural overview is deterministic; an LLM prose summary is prepended best-effort. The document ingests through the normal pipeline so the agent\'s semantic search finds it.
-     * @summary Generate Data Source Description Handler
+     * Summarize + embed each modeled table so the agent can find it by meaning.  Requires ``can_write`` on the connector. Writes one dense Qdrant point per table (``object_kind=table_description``) so the agent\'s table search surfaces the right table across the corpus, while users never see the summaries in ordinary chunk search. Content-hash gated: a table whose summary + exposed columns are unchanged makes no LLM/embedding call, so a repeat call is cheap.
+     * @summary Describe Data Source Tables Handler
      * @param {string} dataSourceId 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DataSourcesApiInterface
      */
-    generateDataSourceDescriptionRaw(requestParameters: GenerateDataSourceDescriptionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<DataSourceDescriptionResponse>>;
+    describeDataSourceTablesRaw(requestParameters: DescribeDataSourceTablesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<DataSourceDescribeResponse>>;
 
     /**
-     * (Re)generate the connector\'s hidden, searchable \'Database overview\' Document.  Requires ``can_write`` on the connector. The structural overview is deterministic; an LLM prose summary is prepended best-effort. The document ingests through the normal pipeline so the agent\'s semantic search finds it.
-     * Generate Data Source Description Handler
+     * Summarize + embed each modeled table so the agent can find it by meaning.  Requires ``can_write`` on the connector. Writes one dense Qdrant point per table (``object_kind=table_description``) so the agent\'s table search surfaces the right table across the corpus, while users never see the summaries in ordinary chunk search. Content-hash gated: a table whose summary + exposed columns are unchanged makes no LLM/embedding call, so a repeat call is cheap.
+     * Describe Data Source Tables Handler
      */
-    generateDataSourceDescription(requestParameters: GenerateDataSourceDescriptionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DataSourceDescriptionResponse>;
+    describeDataSourceTables(requestParameters: DescribeDataSourceTablesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DataSourceDescribeResponse>;
 
     /**
      * Creates request options for getDataSource without sending the request
@@ -416,6 +443,54 @@ export interface DataSourcesApiInterface {
     queryDataSource(requestParameters: QueryDataSourceRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DataSourceQueryResponse>;
 
     /**
+     * Creates request options for searchDataSourceTables without sending the request
+     * @param {SearchTablesRequest} searchTablesRequest 
+     * @throws {RequiredError}
+     * @memberof DataSourcesApiInterface
+     */
+    searchDataSourceTablesRequestOpts(requestParameters: SearchDataSourceTablesRequest): Promise<runtime.RequestOpts>;
+
+    /**
+     * Find modeled tables by the meaning of their summaries (agent discovery).  Dense semantic search over each table\'s summary, scoped to the tenant (optionally one connector). Only tables the caller can read are returned; users never see these summaries in ordinary chunk search.
+     * @summary Search Data Source Tables Handler
+     * @param {SearchTablesRequest} searchTablesRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DataSourcesApiInterface
+     */
+    searchDataSourceTablesRaw(requestParameters: SearchDataSourceTablesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SearchTablesResponse>>;
+
+    /**
+     * Find modeled tables by the meaning of their summaries (agent discovery).  Dense semantic search over each table\'s summary, scoped to the tenant (optionally one connector). Only tables the caller can read are returned; users never see these summaries in ordinary chunk search.
+     * Search Data Source Tables Handler
+     */
+    searchDataSourceTables(requestParameters: SearchDataSourceTablesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SearchTablesResponse>;
+
+    /**
+     * Creates request options for syncDataSource without sending the request
+     * @param {string} dataSourceId 
+     * @throws {RequiredError}
+     * @memberof DataSourcesApiInterface
+     */
+    syncDataSourceRequestOpts(requestParameters: SyncDataSourceRequest): Promise<runtime.RequestOpts>;
+
+    /**
+     * Reconcile modeled tables against the live external catalog.  Requires ``can_write``. Re-introspects each modeled schema and, per table: a schema change (columns added/removed/retyped) refreshes ``column_config`` (preserving the admin\'s ``exposed``/``comment`` field-modeling) and re-summarizes + re-embeds; an unchanged table is a no-op; a table dropped from the source is soft-deleted (keeping the \"was modeled, now gone\" record) and its embedding purged. It never models tables that were not imported.
+     * @summary Sync Data Source Handler
+     * @param {string} dataSourceId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DataSourcesApiInterface
+     */
+    syncDataSourceRaw(requestParameters: SyncDataSourceRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<DataSourceSyncResponse>>;
+
+    /**
+     * Reconcile modeled tables against the live external catalog.  Requires ``can_write``. Re-introspects each modeled schema and, per table: a schema change (columns added/removed/retyped) refreshes ``column_config`` (preserving the admin\'s ``exposed``/``comment`` field-modeling) and re-summarizes + re-embeds; an unchanged table is a no-op; a table dropped from the source is soft-deleted (keeping the \"was modeled, now gone\" record) and its embedding purged. It never models tables that were not imported.
+     * Sync Data Source Handler
+     */
+    syncDataSource(requestParameters: SyncDataSourceRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DataSourceSyncResponse>;
+
+    /**
      * Creates request options for testDataSourceConnection without sending the request
      * @param {string} dataSourceId 
      * @throws {RequiredError}
@@ -440,6 +515,30 @@ export interface DataSourcesApiInterface {
     testDataSourceConnection(requestParameters: TestDataSourceConnectionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void>;
 
     /**
+     * Creates request options for testDataSourceConnectionFresh without sending the request
+     * @param {TestConnectionRequest} testConnectionRequest 
+     * @throws {RequiredError}
+     * @memberof DataSourcesApiInterface
+     */
+    testDataSourceConnectionFreshRequestOpts(requestParameters: TestDataSourceConnectionFreshRequest): Promise<runtime.RequestOpts>;
+
+    /**
+     * Probe fresh creds or a stored connector without persisting anything.  Returns a 200 body describing success/failure (vs the 400 the create/test routes raise) so the FE can render inline connection validation.
+     * @summary Test Data Source Connection Fresh Handler
+     * @param {TestConnectionRequest} testConnectionRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DataSourcesApiInterface
+     */
+    testDataSourceConnectionFreshRaw(requestParameters: TestDataSourceConnectionFreshRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TestConnectionResponse>>;
+
+    /**
+     * Probe fresh creds or a stored connector without persisting anything.  Returns a 200 body describing success/failure (vs the 400 the create/test routes raise) so the FE can render inline connection validation.
+     * Test Data Source Connection Fresh Handler
+     */
+    testDataSourceConnectionFresh(requestParameters: TestDataSourceConnectionFreshRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TestConnectionResponse>;
+
+    /**
      * Creates request options for updateDataSource without sending the request
      * @param {string} dataSourceId 
      * @param {UpdateDataSourceRequest} updateDataSourceRequest 
@@ -449,7 +548,7 @@ export interface DataSourcesApiInterface {
     updateDataSourceRequestOpts(requestParameters: UpdateDataSourceOperationRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * Rename and/or move a connector.  Requires ``can_write`` on the connector (and on the destination folder for a move).
+     * Rename, move, and/or re-credential a connector.  Requires ``can_write`` on the connector (and on the destination folder for a move). Fresh ``connection_config`` is re-validated against the DB before persisting (bad creds → 400, consistent with create); creds are never echoed back. ``engine`` is immutable.
      * @summary Update Data Source Handler
      * @param {string} dataSourceId 
      * @param {UpdateDataSourceRequest} updateDataSourceRequest 
@@ -460,7 +559,7 @@ export interface DataSourcesApiInterface {
     updateDataSourceRaw(requestParameters: UpdateDataSourceOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<DataSourceResponse>>;
 
     /**
-     * Rename and/or move a connector.  Requires ``can_write`` on the connector (and on the destination folder for a move).
+     * Rename, move, and/or re-credential a connector.  Requires ``can_write`` on the connector (and on the destination folder for a move). Fresh ``connection_config`` is re-validated against the DB before persisting (bad creds → 400, consistent with create); creds are never echoed back. ``engine`` is immutable.
      * Update Data Source Handler
      */
     updateDataSource(requestParameters: UpdateDataSourceOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DataSourceResponse>;
@@ -476,7 +575,7 @@ export interface DataSourcesApiInterface {
     updateDataSourceTableRequestOpts(requestParameters: UpdateDataSourceTableRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * Field-modeling: update the table\'s description / column allowlist.
+     * Field-modeling: update the table\'s column allowlist.
      * @summary Update Data Source Table Handler
      * @param {string} dataSourceId 
      * @param {string} tableId 
@@ -488,7 +587,7 @@ export interface DataSourcesApiInterface {
     updateDataSourceTableRaw(requestParameters: UpdateDataSourceTableRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<DataSourceTableResponse>>;
 
     /**
-     * Field-modeling: update the table\'s description / column allowlist.
+     * Field-modeling: update the table\'s column allowlist.
      * Update Data Source Table Handler
      */
     updateDataSourceTable(requestParameters: UpdateDataSourceTableRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DataSourceTableResponse>;
@@ -593,7 +692,7 @@ export class DataSourcesApi extends runtime.BaseAPI implements DataSourcesApiInt
     }
 
     /**
-     * Move a connector and its schemas/tables to trash.  Soft-delete via the path_part subtree (schemas + tables are children, so they trash with it). The connector\'s generated ``.overview`` description Document IS ingested, so its Qdrant points are flipped to trashed via the set-trashed workflow (best-effort, mirrors the document delete path).
+     * Move a connector and its schemas/tables to trash.  Soft-delete via the path_part subtree (schemas + tables are children, so they trash with it). Each modeled table\'s summary Qdrant point carries that table\'s path_part, so the set-trashed workflow flips it to trashed too — keeping trashed tables out of the agent\'s table search (best-effort, mirrors the document delete path).
      * Delete Data Source Handler
      */
     async deleteDataSourceRaw(requestParameters: DeleteDataSourceRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
@@ -604,7 +703,7 @@ export class DataSourcesApi extends runtime.BaseAPI implements DataSourcesApiInt
     }
 
     /**
-     * Move a connector and its schemas/tables to trash.  Soft-delete via the path_part subtree (schemas + tables are children, so they trash with it). The connector\'s generated ``.overview`` description Document IS ingested, so its Qdrant points are flipped to trashed via the set-trashed workflow (best-effort, mirrors the document delete path).
+     * Move a connector and its schemas/tables to trash.  Soft-delete via the path_part subtree (schemas + tables are children, so they trash with it). Each modeled table\'s summary Qdrant point carries that table\'s path_part, so the set-trashed workflow flips it to trashed too — keeping trashed tables out of the agent\'s table search (best-effort, mirrors the document delete path).
      * Delete Data Source Handler
      */
     async deleteDataSource(requestParameters: DeleteDataSourceRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
@@ -717,7 +816,7 @@ export class DataSourcesApi extends runtime.BaseAPI implements DataSourcesApiInt
     }
 
     /**
-     * Un-model a single table (hard-delete it from its schema).
+     * Un-model a single table (hard-delete it) and purge its summary point.
      * Delete Data Source Table Handler
      */
     async deleteDataSourceTableRaw(requestParameters: DeleteDataSourceTableRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
@@ -728,7 +827,7 @@ export class DataSourcesApi extends runtime.BaseAPI implements DataSourcesApiInt
     }
 
     /**
-     * Un-model a single table (hard-delete it from its schema).
+     * Un-model a single table (hard-delete it) and purge its summary point.
      * Delete Data Source Table Handler
      */
     async deleteDataSourceTable(requestParameters: DeleteDataSourceTableRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
@@ -736,13 +835,13 @@ export class DataSourcesApi extends runtime.BaseAPI implements DataSourcesApiInt
     }
 
     /**
-     * Creates request options for generateDataSourceDescription without sending the request
+     * Creates request options for describeDataSourceTables without sending the request
      */
-    async generateDataSourceDescriptionRequestOpts(requestParameters: GenerateDataSourceDescriptionRequest): Promise<runtime.RequestOpts> {
+    async describeDataSourceTablesRequestOpts(requestParameters: DescribeDataSourceTablesRequest): Promise<runtime.RequestOpts> {
         if (requestParameters['dataSourceId'] == null) {
             throw new runtime.RequiredError(
                 'dataSourceId',
-                'Required parameter "dataSourceId" was null or undefined when calling generateDataSourceDescription().'
+                'Required parameter "dataSourceId" was null or undefined when calling describeDataSourceTables().'
             );
         }
 
@@ -771,22 +870,22 @@ export class DataSourcesApi extends runtime.BaseAPI implements DataSourcesApiInt
     }
 
     /**
-     * (Re)generate the connector\'s hidden, searchable \'Database overview\' Document.  Requires ``can_write`` on the connector. The structural overview is deterministic; an LLM prose summary is prepended best-effort. The document ingests through the normal pipeline so the agent\'s semantic search finds it.
-     * Generate Data Source Description Handler
+     * Summarize + embed each modeled table so the agent can find it by meaning.  Requires ``can_write`` on the connector. Writes one dense Qdrant point per table (``object_kind=table_description``) so the agent\'s table search surfaces the right table across the corpus, while users never see the summaries in ordinary chunk search. Content-hash gated: a table whose summary + exposed columns are unchanged makes no LLM/embedding call, so a repeat call is cheap.
+     * Describe Data Source Tables Handler
      */
-    async generateDataSourceDescriptionRaw(requestParameters: GenerateDataSourceDescriptionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<DataSourceDescriptionResponse>> {
-        const requestOptions = await this.generateDataSourceDescriptionRequestOpts(requestParameters);
+    async describeDataSourceTablesRaw(requestParameters: DescribeDataSourceTablesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<DataSourceDescribeResponse>> {
+        const requestOptions = await this.describeDataSourceTablesRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => DataSourceDescriptionResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => DataSourceDescribeResponseFromJSON(jsonValue));
     }
 
     /**
-     * (Re)generate the connector\'s hidden, searchable \'Database overview\' Document.  Requires ``can_write`` on the connector. The structural overview is deterministic; an LLM prose summary is prepended best-effort. The document ingests through the normal pipeline so the agent\'s semantic search finds it.
-     * Generate Data Source Description Handler
+     * Summarize + embed each modeled table so the agent can find it by meaning.  Requires ``can_write`` on the connector. Writes one dense Qdrant point per table (``object_kind=table_description``) so the agent\'s table search surfaces the right table across the corpus, while users never see the summaries in ordinary chunk search. Content-hash gated: a table whose summary + exposed columns are unchanged makes no LLM/embedding call, so a repeat call is cheap.
+     * Describe Data Source Tables Handler
      */
-    async generateDataSourceDescription(requestParameters: GenerateDataSourceDescriptionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DataSourceDescriptionResponse> {
-        const response = await this.generateDataSourceDescriptionRaw(requestParameters, initOverrides);
+    async describeDataSourceTables(requestParameters: DescribeDataSourceTablesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DataSourceDescribeResponse> {
+        const response = await this.describeDataSourceTablesRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -1155,6 +1254,118 @@ export class DataSourcesApi extends runtime.BaseAPI implements DataSourcesApiInt
     }
 
     /**
+     * Creates request options for searchDataSourceTables without sending the request
+     */
+    async searchDataSourceTablesRequestOpts(requestParameters: SearchDataSourceTablesRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['searchTablesRequest'] == null) {
+            throw new runtime.RequiredError(
+                'searchTablesRequest',
+                'Required parameter "searchTablesRequest" was null or undefined when calling searchDataSourceTables().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/v1/data-sources/tables/search`;
+
+        return {
+            path: urlPath,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: SearchTablesRequestToJSON(requestParameters['searchTablesRequest']),
+        };
+    }
+
+    /**
+     * Find modeled tables by the meaning of their summaries (agent discovery).  Dense semantic search over each table\'s summary, scoped to the tenant (optionally one connector). Only tables the caller can read are returned; users never see these summaries in ordinary chunk search.
+     * Search Data Source Tables Handler
+     */
+    async searchDataSourceTablesRaw(requestParameters: SearchDataSourceTablesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SearchTablesResponse>> {
+        const requestOptions = await this.searchDataSourceTablesRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => SearchTablesResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * Find modeled tables by the meaning of their summaries (agent discovery).  Dense semantic search over each table\'s summary, scoped to the tenant (optionally one connector). Only tables the caller can read are returned; users never see these summaries in ordinary chunk search.
+     * Search Data Source Tables Handler
+     */
+    async searchDataSourceTables(requestParameters: SearchDataSourceTablesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SearchTablesResponse> {
+        const response = await this.searchDataSourceTablesRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for syncDataSource without sending the request
+     */
+    async syncDataSourceRequestOpts(requestParameters: SyncDataSourceRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['dataSourceId'] == null) {
+            throw new runtime.RequiredError(
+                'dataSourceId',
+                'Required parameter "dataSourceId" was null or undefined when calling syncDataSource().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/v1/data-sources/{data_source_id}/sync`;
+        urlPath = urlPath.replace(`{${"data_source_id"}}`, encodeURIComponent(String(requestParameters['dataSourceId'])));
+
+        return {
+            path: urlPath,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Reconcile modeled tables against the live external catalog.  Requires ``can_write``. Re-introspects each modeled schema and, per table: a schema change (columns added/removed/retyped) refreshes ``column_config`` (preserving the admin\'s ``exposed``/``comment`` field-modeling) and re-summarizes + re-embeds; an unchanged table is a no-op; a table dropped from the source is soft-deleted (keeping the \"was modeled, now gone\" record) and its embedding purged. It never models tables that were not imported.
+     * Sync Data Source Handler
+     */
+    async syncDataSourceRaw(requestParameters: SyncDataSourceRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<DataSourceSyncResponse>> {
+        const requestOptions = await this.syncDataSourceRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => DataSourceSyncResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * Reconcile modeled tables against the live external catalog.  Requires ``can_write``. Re-introspects each modeled schema and, per table: a schema change (columns added/removed/retyped) refreshes ``column_config`` (preserving the admin\'s ``exposed``/``comment`` field-modeling) and re-summarizes + re-embeds; an unchanged table is a no-op; a table dropped from the source is soft-deleted (keeping the \"was modeled, now gone\" record) and its embedding purged. It never models tables that were not imported.
+     * Sync Data Source Handler
+     */
+    async syncDataSource(requestParameters: SyncDataSourceRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DataSourceSyncResponse> {
+        const response = await this.syncDataSourceRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
      * Creates request options for testDataSourceConnection without sending the request
      */
     async testDataSourceConnectionRequestOpts(requestParameters: TestDataSourceConnectionRequest): Promise<runtime.RequestOpts> {
@@ -1209,6 +1420,63 @@ export class DataSourcesApi extends runtime.BaseAPI implements DataSourcesApiInt
     }
 
     /**
+     * Creates request options for testDataSourceConnectionFresh without sending the request
+     */
+    async testDataSourceConnectionFreshRequestOpts(requestParameters: TestDataSourceConnectionFreshRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['testConnectionRequest'] == null) {
+            throw new runtime.RequiredError(
+                'testConnectionRequest',
+                'Required parameter "testConnectionRequest" was null or undefined when calling testDataSourceConnectionFresh().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/v1/data-sources/test-connection`;
+
+        return {
+            path: urlPath,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: TestConnectionRequestToJSON(requestParameters['testConnectionRequest']),
+        };
+    }
+
+    /**
+     * Probe fresh creds or a stored connector without persisting anything.  Returns a 200 body describing success/failure (vs the 400 the create/test routes raise) so the FE can render inline connection validation.
+     * Test Data Source Connection Fresh Handler
+     */
+    async testDataSourceConnectionFreshRaw(requestParameters: TestDataSourceConnectionFreshRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TestConnectionResponse>> {
+        const requestOptions = await this.testDataSourceConnectionFreshRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => TestConnectionResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * Probe fresh creds or a stored connector without persisting anything.  Returns a 200 body describing success/failure (vs the 400 the create/test routes raise) so the FE can render inline connection validation.
+     * Test Data Source Connection Fresh Handler
+     */
+    async testDataSourceConnectionFresh(requestParameters: TestDataSourceConnectionFreshRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TestConnectionResponse> {
+        const response = await this.testDataSourceConnectionFreshRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
      * Creates request options for updateDataSource without sending the request
      */
     async updateDataSourceRequestOpts(requestParameters: UpdateDataSourceOperationRequest): Promise<runtime.RequestOpts> {
@@ -1254,7 +1522,7 @@ export class DataSourcesApi extends runtime.BaseAPI implements DataSourcesApiInt
     }
 
     /**
-     * Rename and/or move a connector.  Requires ``can_write`` on the connector (and on the destination folder for a move).
+     * Rename, move, and/or re-credential a connector.  Requires ``can_write`` on the connector (and on the destination folder for a move). Fresh ``connection_config`` is re-validated against the DB before persisting (bad creds → 400, consistent with create); creds are never echoed back. ``engine`` is immutable.
      * Update Data Source Handler
      */
     async updateDataSourceRaw(requestParameters: UpdateDataSourceOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<DataSourceResponse>> {
@@ -1265,7 +1533,7 @@ export class DataSourcesApi extends runtime.BaseAPI implements DataSourcesApiInt
     }
 
     /**
-     * Rename and/or move a connector.  Requires ``can_write`` on the connector (and on the destination folder for a move).
+     * Rename, move, and/or re-credential a connector.  Requires ``can_write`` on the connector (and on the destination folder for a move). Fresh ``connection_config`` is re-validated against the DB before persisting (bad creds → 400, consistent with create); creds are never echoed back. ``engine`` is immutable.
      * Update Data Source Handler
      */
     async updateDataSource(requestParameters: UpdateDataSourceOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DataSourceResponse> {
@@ -1327,7 +1595,7 @@ export class DataSourcesApi extends runtime.BaseAPI implements DataSourcesApiInt
     }
 
     /**
-     * Field-modeling: update the table\'s description / column allowlist.
+     * Field-modeling: update the table\'s column allowlist.
      * Update Data Source Table Handler
      */
     async updateDataSourceTableRaw(requestParameters: UpdateDataSourceTableRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<DataSourceTableResponse>> {
@@ -1338,7 +1606,7 @@ export class DataSourcesApi extends runtime.BaseAPI implements DataSourcesApiInt
     }
 
     /**
-     * Field-modeling: update the table\'s description / column allowlist.
+     * Field-modeling: update the table\'s column allowlist.
      * Update Data Source Table Handler
      */
     async updateDataSourceTable(requestParameters: UpdateDataSourceTableRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DataSourceTableResponse> {
