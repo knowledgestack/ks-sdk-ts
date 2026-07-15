@@ -5,6 +5,7 @@ README.md
 docs/AcceptDisclaimerRequest.md
 docs/AcceptInviteResponse.md
 docs/AccessCheckResponse.md
+docs/ActivateSkillVersionRequest.md
 docs/AddMemberRequest.md
 docs/AgentApi.md
 docs/AncestryResponse.md
@@ -74,6 +75,7 @@ docs/CreatePasswordUserRequest.md
 docs/CreatePermissionRequest.md
 docs/CreatePhonePasswordUserRequest.md
 docs/CreateSectionRequest.md
+docs/CreateSkillRequest.md
 docs/CreateTagRequest.md
 docs/CreateThreadMessageRequest.md
 docs/CreateThreadRequest.md
@@ -141,7 +143,7 @@ docs/FeedbackTargetType.md
 docs/FolderAction.md
 docs/FolderActionResponse.md
 docs/FolderResponse.md
-docs/FolderResponseOrDocumentResponseOrWorkflowDefinitionResponseOrWorkflowRunResponseOrDataSourceResponseOrDataSourceSchemaResponseOrDataSourceTableResponseOrApiConnectionResponse.md
+docs/FolderResponseOrDocumentResponseOrWorkflowDefinitionResponseOrWorkflowRunResponseOrDataSourceResponseOrDataSourceSchemaR.md
 docs/FoldersApi.md
 docs/GroupMemberOrder.md
 docs/GroupPermissionOrder.md
@@ -188,7 +190,7 @@ docs/NetworkClass.md
 docs/NonFilesystemReferenceType.md
 docs/OnboardingCompanyRequest.md
 docs/OnboardingProfileRequest.md
-docs/PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseWorkflowDefinitionResponseWorkflowRunResponseDataSourceResponseDataSourceSchemaResponseDataSourceTableResponseApiConnectionResponseDiscriminator.md
+docs/PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseWorkflowDefinitionResponseWorkflowRunResponseDat.md
 docs/PaginatedResponseAnnotatedUnionSectionContentItemChunkContentItemDiscriminator.md
 docs/PaginatedResponseDocumentResponse.md
 docs/PaginatedResponseDocumentVersionResponse.md
@@ -203,6 +205,7 @@ docs/PaginatedResponseMemoryChunkResponse.md
 docs/PaginatedResponsePathPartResponse.md
 docs/PaginatedResponsePendingMemoryChunkResponse.md
 docs/PaginatedResponsePermissionResponse.md
+docs/PaginatedResponseSkillResponse.md
 docs/PaginatedResponseTagResponse.md
 docs/PaginatedResponseTenantResponse.md
 docs/PaginatedResponseTenantUserResponse.md
@@ -250,6 +253,8 @@ docs/RunFolder.md
 docs/RunFolderRef.md
 docs/SSOInitiateResponse.md
 docs/ScoredChunkResponse.md
+docs/SearchSkillsRequest.md
+docs/SearchSkillsResponse.md
 docs/SearchSortOrder.md
 docs/SearchTablesRequest.md
 docs/SearchTablesResponse.md
@@ -266,6 +271,12 @@ docs/SetApprovalStateRequest.md
 docs/SetWorkflowRunApprovalRequest.md
 docs/SheetVisibilityChange.md
 docs/SignInRequest.md
+docs/SkillOrder.md
+docs/SkillResponse.md
+docs/SkillScriptFile.md
+docs/SkillSearchResult.md
+docs/SkillVersionResponse.md
+docs/SkillsApi.md
 docs/SortDirection.md
 docs/StartWorkflowRunRequest.md
 docs/Step.md
@@ -330,6 +341,7 @@ docs/UpdateGroupRequest.md
 docs/UpdateInviteRequest.md
 docs/UpdatePermissionRequest.md
 docs/UpdateSectionRequest.md
+docs/UpdateSkillRequest.md
 docs/UpdateTableRequest.md
 docs/UpdateTagRequest.md
 docs/UpdateTenantRequest.md
@@ -394,6 +406,7 @@ src/apis/PathPartApprovalsApi.ts
 src/apis/PathPartsApi.ts
 src/apis/PublicApi.ts
 src/apis/SectionsApi.ts
+src/apis/SkillsApi.ts
 src/apis/SubscriptionsApi.ts
 src/apis/SystemJobsApi.ts
 src/apis/TagsApi.ts
@@ -412,6 +425,7 @@ src/index.ts
 src/models/AcceptDisclaimerRequest.ts
 src/models/AcceptInviteResponse.ts
 src/models/AccessCheckResponse.ts
+src/models/ActivateSkillVersionRequest.ts
 src/models/AddMemberRequest.ts
 src/models/AncestryResponse.ts
 src/models/ApiAuthConfig.ts
@@ -473,6 +487,7 @@ src/models/CreatePasswordUserRequest.ts
 src/models/CreatePermissionRequest.ts
 src/models/CreatePhonePasswordUserRequest.ts
 src/models/CreateSectionRequest.ts
+src/models/CreateSkillRequest.ts
 src/models/CreateTagRequest.ts
 src/models/CreateThreadMessageRequest.ts
 src/models/CreateThreadRequest.ts
@@ -533,7 +548,7 @@ src/models/FeedbackTargetType.ts
 src/models/FolderAction.ts
 src/models/FolderActionResponse.ts
 src/models/FolderResponse.ts
-src/models/FolderResponseOrDocumentResponseOrWorkflowDefinitionResponseOrWorkflowRunResponseOrDataSourceResponseOrDataSourceSchemaResponseOrDataSourceTableResponseOrApiConnectionResponse.ts
+src/models/FolderResponseOrDocumentResponseOrWorkflowDefinitionResponseOrWorkflowRunResponseOrDataSourceResponseOrDataSourceSchemaR.ts
 src/models/GroupMemberOrder.ts
 src/models/GroupPermissionOrder.ts
 src/models/GroupPermissionResponse.ts
@@ -577,7 +592,7 @@ src/models/NetworkClass.ts
 src/models/NonFilesystemReferenceType.ts
 src/models/OnboardingCompanyRequest.ts
 src/models/OnboardingProfileRequest.ts
-src/models/PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseWorkflowDefinitionResponseWorkflowRunResponseDataSourceResponseDataSourceSchemaResponseDataSourceTableResponseApiConnectionResponseDiscriminator.ts
+src/models/PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseWorkflowDefinitionResponseWorkflowRunResponseDat.ts
 src/models/PaginatedResponseAnnotatedUnionSectionContentItemChunkContentItemDiscriminator.ts
 src/models/PaginatedResponseDocumentResponse.ts
 src/models/PaginatedResponseDocumentVersionResponse.ts
@@ -592,6 +607,7 @@ src/models/PaginatedResponseMemoryChunkResponse.ts
 src/models/PaginatedResponsePathPartResponse.ts
 src/models/PaginatedResponsePendingMemoryChunkResponse.ts
 src/models/PaginatedResponsePermissionResponse.ts
+src/models/PaginatedResponseSkillResponse.ts
 src/models/PaginatedResponseTagResponse.ts
 src/models/PaginatedResponseTenantResponse.ts
 src/models/PaginatedResponseTenantUserResponse.ts
@@ -636,6 +652,8 @@ src/models/RunFolder.ts
 src/models/RunFolderRef.ts
 src/models/SSOInitiateResponse.ts
 src/models/ScoredChunkResponse.ts
+src/models/SearchSkillsRequest.ts
+src/models/SearchSkillsResponse.ts
 src/models/SearchSortOrder.ts
 src/models/SearchTablesRequest.ts
 src/models/SearchTablesResponse.ts
@@ -651,6 +669,11 @@ src/models/SetApprovalStateRequest.ts
 src/models/SetWorkflowRunApprovalRequest.ts
 src/models/SheetVisibilityChange.ts
 src/models/SignInRequest.ts
+src/models/SkillOrder.ts
+src/models/SkillResponse.ts
+src/models/SkillScriptFile.ts
+src/models/SkillSearchResult.ts
+src/models/SkillVersionResponse.ts
 src/models/SortDirection.ts
 src/models/StartWorkflowRunRequest.ts
 src/models/Step.ts
@@ -707,6 +730,7 @@ src/models/UpdateGroupRequest.ts
 src/models/UpdateInviteRequest.ts
 src/models/UpdatePermissionRequest.ts
 src/models/UpdateSectionRequest.ts
+src/models/UpdateSkillRequest.ts
 src/models/UpdateTableRequest.ts
 src/models/UpdateTagRequest.ts
 src/models/UpdateTenantRequest.ts

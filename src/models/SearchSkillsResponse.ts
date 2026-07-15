@@ -12,58 +12,79 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
+import type { SkillSearchResult } from './SkillSearchResult';
+import {
+    SkillSearchResultFromJSON,
+    SkillSearchResultFromJSONTyped,
+    SkillSearchResultToJSON,
+    SkillSearchResultToJSONTyped,
+} from './SkillSearchResult';
 
 /**
  * 
  * @export
+ * @interface SearchSkillsResponse
  */
-export const ReferenceType = {
-    Folder: 'FOLDER',
-    Document: 'DOCUMENT',
-    DocumentVersion: 'DOCUMENT_VERSION',
-    Section: 'SECTION',
-    Chunk: 'CHUNK',
-    Thread: 'THREAD',
-    ThreadMessage: 'THREAD_MESSAGE',
-    WorkflowDefinition: 'WORKFLOW_DEFINITION',
-    WorkflowRun: 'WORKFLOW_RUN',
-    DataSource: 'DATA_SOURCE',
-    DataSourceSchema: 'DATA_SOURCE_SCHEMA',
-    DataSourceTable: 'DATA_SOURCE_TABLE',
-    ApiConnection: 'API_CONNECTION',
-    Skill: 'SKILL',
-    Image: 'image',
-    Memory: 'memory',
-    Tag: 'tag',
-    User: 'user'
-} as const;
-export type ReferenceType = typeof ReferenceType[keyof typeof ReferenceType];
-
-
-export function instanceOfReferenceType(value: any): boolean {
-    for (const key in ReferenceType) {
-        if (Object.prototype.hasOwnProperty.call(ReferenceType, key)) {
-            if (ReferenceType[key as keyof typeof ReferenceType] === value) {
-                return true;
-            }
-        }
+export interface SearchSkillsResponse {
+    /**
+     * 
+     * @type {Array<SkillSearchResult>}
+     * @memberof SearchSkillsResponse
+     */
+    results?: Array<SkillSearchResult>;
+}
+export const SearchSkillsResponsePropertyValidationAttributesMap: {
+    [property: string]: {
+        maxLength?: number,
+        minLength?: number,
+        pattern?: string,
+        maximum?: number,
+        exclusiveMaximum?: boolean,
+        minimum?: number,
+        exclusiveMinimum?: boolean,
+        multipleOf?: number,
+        maxItems?: number,
+        minItems?: number,
+        uniqueItems?: boolean
     }
-    return false;
+} = {
 }
 
-export function ReferenceTypeFromJSON(json: any): ReferenceType {
-    return ReferenceTypeFromJSONTyped(json, false);
+
+/**
+ * Check if a given object implements the SearchSkillsResponse interface.
+ */
+export function instanceOfSearchSkillsResponse(value: object): value is SearchSkillsResponse {
+    return true;
 }
 
-export function ReferenceTypeFromJSONTyped(json: any, ignoreDiscriminator: boolean): ReferenceType {
-    return json as ReferenceType;
+export function SearchSkillsResponseFromJSON(json: any): SearchSkillsResponse {
+    return SearchSkillsResponseFromJSONTyped(json, false);
 }
 
-export function ReferenceTypeToJSON(value?: ReferenceType | null): any {
-    return value as any;
+export function SearchSkillsResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): SearchSkillsResponse {
+    if (json == null) {
+        return json;
+    }
+    return {
+        
+        'results': json['results'] == null ? undefined : ((json['results'] as Array<any>).map(SkillSearchResultFromJSON)),
+    };
 }
 
-export function ReferenceTypeToJSONTyped(value: any, ignoreDiscriminator: boolean): ReferenceType {
-    return value as ReferenceType;
+export function SearchSkillsResponseToJSON(json: any): SearchSkillsResponse {
+    return SearchSkillsResponseToJSONTyped(json, false);
+}
+
+export function SearchSkillsResponseToJSONTyped(value?: SearchSkillsResponse | null, ignoreDiscriminator: boolean = false): any {
+    if (value == null) {
+        return value;
+    }
+
+    return {
+        
+        'results': value['results'] == null ? undefined : ((value['results'] as Array<any>).map(SkillSearchResultToJSON)),
+    };
 }
 

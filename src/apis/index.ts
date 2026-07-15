@@ -22,6 +22,7 @@ export * from './PathPartApprovalsApi';
 export * from './PathPartsApi';
 export * from './PublicApi';
 export * from './SectionsApi';
+export * from './SkillsApi';
 export * from './SubscriptionsApi';
 export * from './SystemJobsApi';
 export * from './TagsApi';

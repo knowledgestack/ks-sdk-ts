@@ -12,58 +12,84 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
+/**
+ * A single script bundled under a skill's ``scripts/`` folder.
+ * @export
+ * @interface SkillScriptFile
+ */
+export interface SkillScriptFile {
+    /**
+     * Script file name, e.g. inspect.py
+     * @type {string}
+     * @memberof SkillScriptFile
+     */
+    name: string;
+    /**
+     * Script file contents (UTF-8 text).
+     * @type {string}
+     * @memberof SkillScriptFile
+     */
+    content: string;
+}
+export const SkillScriptFilePropertyValidationAttributesMap: {
+    [property: string]: {
+        maxLength?: number,
+        minLength?: number,
+        pattern?: string,
+        maximum?: number,
+        exclusiveMaximum?: boolean,
+        minimum?: number,
+        exclusiveMinimum?: boolean,
+        multipleOf?: number,
+        maxItems?: number,
+        minItems?: number,
+        uniqueItems?: boolean
+    }
+} = {
+    name: {
+        maxLength: 255,
+    },
+}
+
 
 /**
- * 
- * @export
+ * Check if a given object implements the SkillScriptFile interface.
  */
-export const ReferenceType = {
-    Folder: 'FOLDER',
-    Document: 'DOCUMENT',
-    DocumentVersion: 'DOCUMENT_VERSION',
-    Section: 'SECTION',
-    Chunk: 'CHUNK',
-    Thread: 'THREAD',
-    ThreadMessage: 'THREAD_MESSAGE',
-    WorkflowDefinition: 'WORKFLOW_DEFINITION',
-    WorkflowRun: 'WORKFLOW_RUN',
-    DataSource: 'DATA_SOURCE',
-    DataSourceSchema: 'DATA_SOURCE_SCHEMA',
-    DataSourceTable: 'DATA_SOURCE_TABLE',
-    ApiConnection: 'API_CONNECTION',
-    Skill: 'SKILL',
-    Image: 'image',
-    Memory: 'memory',
-    Tag: 'tag',
-    User: 'user'
-} as const;
-export type ReferenceType = typeof ReferenceType[keyof typeof ReferenceType];
+export function instanceOfSkillScriptFile(value: object): value is SkillScriptFile {
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('content' in value) || value['content'] === undefined) return false;
+    return true;
+}
 
+export function SkillScriptFileFromJSON(json: any): SkillScriptFile {
+    return SkillScriptFileFromJSONTyped(json, false);
+}
 
-export function instanceOfReferenceType(value: any): boolean {
-    for (const key in ReferenceType) {
-        if (Object.prototype.hasOwnProperty.call(ReferenceType, key)) {
-            if (ReferenceType[key as keyof typeof ReferenceType] === value) {
-                return true;
-            }
-        }
+export function SkillScriptFileFromJSONTyped(json: any, ignoreDiscriminator: boolean): SkillScriptFile {
+    if (json == null) {
+        return json;
     }
-    return false;
+    return {
+        
+        'name': json['name'],
+        'content': json['content'],
+    };
 }
 
-export function ReferenceTypeFromJSON(json: any): ReferenceType {
-    return ReferenceTypeFromJSONTyped(json, false);
+export function SkillScriptFileToJSON(json: any): SkillScriptFile {
+    return SkillScriptFileToJSONTyped(json, false);
 }
 
-export function ReferenceTypeFromJSONTyped(json: any, ignoreDiscriminator: boolean): ReferenceType {
-    return json as ReferenceType;
-}
+export function SkillScriptFileToJSONTyped(value?: SkillScriptFile | null, ignoreDiscriminator: boolean = false): any {
+    if (value == null) {
+        return value;
+    }
 
-export function ReferenceTypeToJSON(value?: ReferenceType | null): any {
-    return value as any;
-}
-
-export function ReferenceTypeToJSONTyped(value: any, ignoreDiscriminator: boolean): ReferenceType {
-    return value as ReferenceType;
+    return {
+        
+        'name': value['name'],
+        'content': value['content'],
+    };
 }
 

@@ -62,6 +62,12 @@ export interface UpdateWorkflowDefinitionRequest {
      */
     approvalRequired: boolean;
     /**
+     * Skill PDO ids force-loaded into every run by default. Retain-on-None PUT semantics: null (or omit) keeps the stored list, [] clears, a list replaces. Each must be a readable SKILL.
+     * @type {Array<string>}
+     * @memberof UpdateWorkflowDefinitionRequest
+     */
+    selectedSkillIds?: Array<string> | null;
+    /**
      * Common files attached to every run (DOCUMENT / FOLDER / DATA_SOURCE / API_CONNECTION path_part ids). Like ``instruction_path_part_id``, this is the exception to PUT semantics: null (or omit) retains the stored list; pass [] to clear; pass a list to replace it wholesale. The caller must be able to read each one.
      * @type {Array<string>}
      * @memberof UpdateWorkflowDefinitionRequest
@@ -91,6 +97,10 @@ export const UpdateWorkflowDefinitionRequestPropertyValidationAttributesMap: {
         exclusiveMaximum: false,
         minimum: 60,
         exclusiveMinimum: false,
+    },
+    selectedSkillIds: {
+        maxItems: 20,
+        uniqueItems: false,
     },
     commonFilePathPartIds: {
         maxItems: 20,
@@ -126,6 +136,7 @@ export function UpdateWorkflowDefinitionRequestFromJSONTyped(json: any, ignoreDi
         'parentPathPartId': json['parent_path_part_id'] == null ? undefined : json['parent_path_part_id'],
         'isActive': json['is_active'],
         'approvalRequired': json['approval_required'],
+        'selectedSkillIds': json['selected_skill_ids'] == null ? undefined : json['selected_skill_ids'],
         'commonFilePathPartIds': json['common_file_path_part_ids'] == null ? undefined : json['common_file_path_part_ids'],
     };
 }
@@ -148,6 +159,7 @@ export function UpdateWorkflowDefinitionRequestToJSONTyped(value?: UpdateWorkflo
         'parent_path_part_id': value['parentPathPartId'],
         'is_active': value['isActive'],
         'approval_required': value['approvalRequired'],
+        'selected_skill_ids': value['selectedSkillIds'],
         'common_file_path_part_ids': value['commonFilePathPartIds'],
     };
 }

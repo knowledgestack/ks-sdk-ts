@@ -85,6 +85,12 @@ export interface WorkflowRunSnapshot {
      * @memberof WorkflowRunSnapshot
      */
     userMessage?: string | null;
+    /**
+     * Skill PDO ids to force-load into the run at turn 0, merged with the definition's prefill. Definition selections are validated readable + SKILL at write time; every id is re-checked fail-closed when the run materializes (a skill deleted or revoked after selection is dropped, never bricking the run). The runner materializes each skill's ACTIVE published version into the agent's skills dir; the agent can still discover others via search. Empty for the common case; pre-feature snapshots default to empty.
+     * @type {Array<string>}
+     * @memberof WorkflowRunSnapshot
+     */
+    selectedSkillIds?: Array<string>;
 }
 export const WorkflowRunSnapshotPropertyValidationAttributesMap: {
     [property: string]: {
@@ -134,6 +140,7 @@ export function WorkflowRunSnapshotFromJSONTyped(json: any, ignoreDiscriminator:
         'inputs': ((json['inputs'] as Array<any>).map(InputSnapshotFromJSON)),
         'excludedCommonFiles': json['excluded_common_files'] == null ? undefined : ((json['excluded_common_files'] as Array<any>).map(ExcludedCommonFileFromJSON)),
         'userMessage': json['user_message'] == null ? undefined : json['user_message'],
+        'selectedSkillIds': json['selected_skill_ids'] == null ? undefined : json['selected_skill_ids'],
     };
 }
 
@@ -154,6 +161,7 @@ export function WorkflowRunSnapshotToJSONTyped(value?: WorkflowRunSnapshot | nul
         'inputs': ((value['inputs'] as Array<any>).map(InputSnapshotToJSON)),
         'excluded_common_files': value['excludedCommonFiles'] == null ? undefined : ((value['excludedCommonFiles'] as Array<any>).map(ExcludedCommonFileToJSON)),
         'user_message': value['userMessage'],
+        'selected_skill_ids': value['selectedSkillIds'],
     };
 }
 

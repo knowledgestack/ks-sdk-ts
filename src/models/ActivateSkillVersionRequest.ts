@@ -12,58 +12,71 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
+/**
+ * Activate a specific published version.
+ * @export
+ * @interface ActivateSkillVersionRequest
+ */
+export interface ActivateSkillVersionRequest {
+    /**
+     * Required (true) to activate when the working copy has unpublished edits — activating overwrites them. Otherwise the request is a 409.
+     * @type {boolean}
+     * @memberof ActivateSkillVersionRequest
+     */
+    confirmDiscardUnpublished?: boolean;
+}
+export const ActivateSkillVersionRequestPropertyValidationAttributesMap: {
+    [property: string]: {
+        maxLength?: number,
+        minLength?: number,
+        pattern?: string,
+        maximum?: number,
+        exclusiveMaximum?: boolean,
+        minimum?: number,
+        exclusiveMinimum?: boolean,
+        multipleOf?: number,
+        maxItems?: number,
+        minItems?: number,
+        uniqueItems?: boolean
+    }
+} = {
+}
+
 
 /**
- * 
- * @export
+ * Check if a given object implements the ActivateSkillVersionRequest interface.
  */
-export const ReferenceType = {
-    Folder: 'FOLDER',
-    Document: 'DOCUMENT',
-    DocumentVersion: 'DOCUMENT_VERSION',
-    Section: 'SECTION',
-    Chunk: 'CHUNK',
-    Thread: 'THREAD',
-    ThreadMessage: 'THREAD_MESSAGE',
-    WorkflowDefinition: 'WORKFLOW_DEFINITION',
-    WorkflowRun: 'WORKFLOW_RUN',
-    DataSource: 'DATA_SOURCE',
-    DataSourceSchema: 'DATA_SOURCE_SCHEMA',
-    DataSourceTable: 'DATA_SOURCE_TABLE',
-    ApiConnection: 'API_CONNECTION',
-    Skill: 'SKILL',
-    Image: 'image',
-    Memory: 'memory',
-    Tag: 'tag',
-    User: 'user'
-} as const;
-export type ReferenceType = typeof ReferenceType[keyof typeof ReferenceType];
+export function instanceOfActivateSkillVersionRequest(value: object): value is ActivateSkillVersionRequest {
+    return true;
+}
 
+export function ActivateSkillVersionRequestFromJSON(json: any): ActivateSkillVersionRequest {
+    return ActivateSkillVersionRequestFromJSONTyped(json, false);
+}
 
-export function instanceOfReferenceType(value: any): boolean {
-    for (const key in ReferenceType) {
-        if (Object.prototype.hasOwnProperty.call(ReferenceType, key)) {
-            if (ReferenceType[key as keyof typeof ReferenceType] === value) {
-                return true;
-            }
-        }
+export function ActivateSkillVersionRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): ActivateSkillVersionRequest {
+    if (json == null) {
+        return json;
     }
-    return false;
+    return {
+        
+        'confirmDiscardUnpublished': json['confirm_discard_unpublished'] == null ? undefined : json['confirm_discard_unpublished'],
+    };
 }
 
-export function ReferenceTypeFromJSON(json: any): ReferenceType {
-    return ReferenceTypeFromJSONTyped(json, false);
+export function ActivateSkillVersionRequestToJSON(json: any): ActivateSkillVersionRequest {
+    return ActivateSkillVersionRequestToJSONTyped(json, false);
 }
 
-export function ReferenceTypeFromJSONTyped(json: any, ignoreDiscriminator: boolean): ReferenceType {
-    return json as ReferenceType;
-}
+export function ActivateSkillVersionRequestToJSONTyped(value?: ActivateSkillVersionRequest | null, ignoreDiscriminator: boolean = false): any {
+    if (value == null) {
+        return value;
+    }
 
-export function ReferenceTypeToJSON(value?: ReferenceType | null): any {
-    return value as any;
-}
-
-export function ReferenceTypeToJSONTyped(value: any, ignoreDiscriminator: boolean): ReferenceType {
-    return value as ReferenceType;
+    return {
+        
+        'confirm_discard_unpublished': value['confirmDiscardUnpublished'],
+    };
 }
 

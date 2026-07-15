@@ -36,147 +36,105 @@ import {
 } from './UserInfo';
 
 /**
- * Workflow definition response.
- * 
- * Doubles as a discriminated-union variant for folder-listing
- * responses. The ``part_type`` literal is the discriminator: when the
- * FE walks a folder tree it sees this shape mixed in with
- * ``FolderResponse`` / ``DocumentResponse`` and can route to the
- * dedicated workflow page based on ``part_type``.
+ * Skill response; ``part_type`` is the folder-listing discriminator.
  * @export
- * @interface WorkflowDefinitionResponse
+ * @interface SkillResponse
  */
-export interface WorkflowDefinitionResponse {
+export interface SkillResponse {
     /**
      * Path part type
-     * @type {WorkflowDefinitionResponsePartTypeEnum}
-     * @memberof WorkflowDefinitionResponse
+     * @type {SkillResponsePartTypeEnum}
+     * @memberof SkillResponse
      */
-    partType?: WorkflowDefinitionResponsePartTypeEnum;
+    partType?: SkillResponsePartTypeEnum;
     /**
      * 
      * @type {string}
-     * @memberof WorkflowDefinitionResponse
+     * @memberof SkillResponse
      */
     id: string;
     /**
-     * WORKFLOW_DEFINITION path_part of this definition
+     * SKILL path_part of this skill
      * @type {string}
-     * @memberof WorkflowDefinitionResponse
+     * @memberof SkillResponse
      */
     pathPartId: string;
     /**
      * FOLDER path_part of the containing folder
      * @type {string}
-     * @memberof WorkflowDefinitionResponse
+     * @memberof SkillResponse
      */
     parentPathPartId: string | null;
     /**
      * Full materialized path from root
      * @type {string}
-     * @memberof WorkflowDefinitionResponse
+     * @memberof SkillResponse
      */
     materializedPath: string;
     /**
      * 
      * @type {string}
-     * @memberof WorkflowDefinitionResponse
+     * @memberof SkillResponse
      */
     tenantId: string;
     /**
      * 
      * @type {string}
-     * @memberof WorkflowDefinitionResponse
+     * @memberof SkillResponse
      */
     name: string;
     /**
-     * 
+     * One-line 'use when…' routing signal, from the SKILL.md frontmatter.
      * @type {string}
-     * @memberof WorkflowDefinitionResponse
+     * @memberof SkillResponse
      */
-    description: string | null;
+    description: string;
     /**
-     * 
-     * @type {number}
-     * @memberof WorkflowDefinitionResponse
-     */
-    maxRunDurationSeconds: number;
-    /**
-     * DOCUMENT path_part of the instruction document
+     * Full SKILL.md content; populated on detail reads, null on list.
      * @type {string}
-     * @memberof WorkflowDefinitionResponse
+     * @memberof SkillResponse
      */
-    instructionPathPartId: string;
+    skillMd?: string | null;
     /**
-     * 
-     * @type {boolean}
-     * @memberof WorkflowDefinitionResponse
-     */
-    isActive: boolean;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof WorkflowDefinitionResponse
-     */
-    approvalRequired: boolean;
-    /**
-     * Whether this definition is a non-runnable template
-     * @type {boolean}
-     * @memberof WorkflowDefinitionResponse
-     */
-    isTemplate: boolean;
-    /**
-     * Skill PDO ids force-loaded into every run by default. The FE prefills these as the run's selected skills.
+     * Bundled script file names; populated on detail reads.
      * @type {Array<string>}
-     * @memberof WorkflowDefinitionResponse
+     * @memberof SkillResponse
      */
-    selectedSkillIds?: Array<string>;
+    scriptNames?: Array<string>;
     /**
-     * Common files attached to every run (path_part ids). The FE renders these as 'attached to every run' on the workflow page.
-     * @type {Array<string>}
-     * @memberof WorkflowDefinitionResponse
+     * Whether the working copy differs from the active published version. Always present (incl. list responses) so the UI can flag a skill with an unpublished draft.
+     * @type {boolean}
+     * @memberof SkillResponse
      */
-    commonFilePathPartIds?: Array<string>;
-    /**
-     * Source definition this workflow was copied from (a template or any other workflow); null if hand-authored.
-     * @type {string}
-     * @memberof WorkflowDefinitionResponse
-     */
-    createdFromId: string | null;
-    /**
-     * Number of workflows copied from this definition.
-     * @type {number}
-     * @memberof WorkflowDefinitionResponse
-     */
-    copyCount?: number;
+    hasUnpublishedChanges?: boolean;
     /**
      * 
      * @type {PathPartApprovalState}
-     * @memberof WorkflowDefinitionResponse
+     * @memberof SkillResponse
      */
     approvalState: PathPartApprovalState;
     /**
-     * Current owner (creator) of the workflow, or null if unowned.
+     * Creator, or null.
      * @type {UserInfo}
-     * @memberof WorkflowDefinitionResponse
+     * @memberof SkillResponse
      */
     owner?: UserInfo | null;
     /**
      * 
      * @type {Date}
-     * @memberof WorkflowDefinitionResponse
+     * @memberof SkillResponse
      */
     createdAt: Date;
     /**
      * 
      * @type {Date}
-     * @memberof WorkflowDefinitionResponse
+     * @memberof SkillResponse
      */
     updatedAt: Date;
     /**
      * Caller's effective rights; null on mutation responses.
      * @type {ItemPermissions}
-     * @memberof WorkflowDefinitionResponse
+     * @memberof SkillResponse
      */
     permissions?: ItemPermissions | null;
 }
@@ -185,12 +143,12 @@ export interface WorkflowDefinitionResponse {
 /**
  * @export
  */
-export const WorkflowDefinitionResponsePartTypeEnum = {
-    WorkflowDefinition: 'WORKFLOW_DEFINITION'
+export const SkillResponsePartTypeEnum = {
+    Skill: 'SKILL'
 } as const;
-export type WorkflowDefinitionResponsePartTypeEnum = typeof WorkflowDefinitionResponsePartTypeEnum[keyof typeof WorkflowDefinitionResponsePartTypeEnum];
+export type SkillResponsePartTypeEnum = typeof SkillResponsePartTypeEnum[keyof typeof SkillResponsePartTypeEnum];
 
-export const WorkflowDefinitionResponsePropertyValidationAttributesMap: {
+export const SkillResponsePropertyValidationAttributesMap: {
     [property: string]: {
         maxLength?: number,
         minLength?: number,
@@ -209,9 +167,9 @@ export const WorkflowDefinitionResponsePropertyValidationAttributesMap: {
 
 
 /**
- * Check if a given object implements the WorkflowDefinitionResponse interface.
+ * Check if a given object implements the SkillResponse interface.
  */
-export function instanceOfWorkflowDefinitionResponse(value: object): value is WorkflowDefinitionResponse {
+export function instanceOfSkillResponse(value: object): value is SkillResponse {
     if (!('id' in value) || value['id'] === undefined) return false;
     if (!('pathPartId' in value) || value['pathPartId'] === undefined) return false;
     if (!('parentPathPartId' in value) || value['parentPathPartId'] === undefined) return false;
@@ -219,23 +177,17 @@ export function instanceOfWorkflowDefinitionResponse(value: object): value is Wo
     if (!('tenantId' in value) || value['tenantId'] === undefined) return false;
     if (!('name' in value) || value['name'] === undefined) return false;
     if (!('description' in value) || value['description'] === undefined) return false;
-    if (!('maxRunDurationSeconds' in value) || value['maxRunDurationSeconds'] === undefined) return false;
-    if (!('instructionPathPartId' in value) || value['instructionPathPartId'] === undefined) return false;
-    if (!('isActive' in value) || value['isActive'] === undefined) return false;
-    if (!('approvalRequired' in value) || value['approvalRequired'] === undefined) return false;
-    if (!('isTemplate' in value) || value['isTemplate'] === undefined) return false;
-    if (!('createdFromId' in value) || value['createdFromId'] === undefined) return false;
     if (!('approvalState' in value) || value['approvalState'] === undefined) return false;
     if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
     if (!('updatedAt' in value) || value['updatedAt'] === undefined) return false;
     return true;
 }
 
-export function WorkflowDefinitionResponseFromJSON(json: any): WorkflowDefinitionResponse {
-    return WorkflowDefinitionResponseFromJSONTyped(json, false);
+export function SkillResponseFromJSON(json: any): SkillResponse {
+    return SkillResponseFromJSONTyped(json, false);
 }
 
-export function WorkflowDefinitionResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): WorkflowDefinitionResponse {
+export function SkillResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): SkillResponse {
     if (json == null) {
         return json;
     }
@@ -249,15 +201,9 @@ export function WorkflowDefinitionResponseFromJSONTyped(json: any, ignoreDiscrim
         'tenantId': json['tenant_id'],
         'name': json['name'],
         'description': json['description'],
-        'maxRunDurationSeconds': json['max_run_duration_seconds'],
-        'instructionPathPartId': json['instruction_path_part_id'],
-        'isActive': json['is_active'],
-        'approvalRequired': json['approval_required'],
-        'isTemplate': json['is_template'],
-        'selectedSkillIds': json['selected_skill_ids'] == null ? undefined : json['selected_skill_ids'],
-        'commonFilePathPartIds': json['common_file_path_part_ids'] == null ? undefined : json['common_file_path_part_ids'],
-        'createdFromId': json['created_from_id'],
-        'copyCount': json['copy_count'] == null ? undefined : json['copy_count'],
+        'skillMd': json['skill_md'] == null ? undefined : json['skill_md'],
+        'scriptNames': json['script_names'] == null ? undefined : json['script_names'],
+        'hasUnpublishedChanges': json['has_unpublished_changes'] == null ? undefined : json['has_unpublished_changes'],
         'approvalState': PathPartApprovalStateFromJSON(json['approval_state']),
         'owner': json['owner'] == null ? undefined : UserInfoFromJSON(json['owner']),
         'createdAt': (new Date(json['created_at'])),
@@ -266,11 +212,11 @@ export function WorkflowDefinitionResponseFromJSONTyped(json: any, ignoreDiscrim
     };
 }
 
-export function WorkflowDefinitionResponseToJSON(json: any): WorkflowDefinitionResponse {
-    return WorkflowDefinitionResponseToJSONTyped(json, false);
+export function SkillResponseToJSON(json: any): SkillResponse {
+    return SkillResponseToJSONTyped(json, false);
 }
 
-export function WorkflowDefinitionResponseToJSONTyped(value?: WorkflowDefinitionResponse | null, ignoreDiscriminator: boolean = false): any {
+export function SkillResponseToJSONTyped(value?: SkillResponse | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
@@ -285,15 +231,9 @@ export function WorkflowDefinitionResponseToJSONTyped(value?: WorkflowDefinition
         'tenant_id': value['tenantId'],
         'name': value['name'],
         'description': value['description'],
-        'max_run_duration_seconds': value['maxRunDurationSeconds'],
-        'instruction_path_part_id': value['instructionPathPartId'],
-        'is_active': value['isActive'],
-        'approval_required': value['approvalRequired'],
-        'is_template': value['isTemplate'],
-        'selected_skill_ids': value['selectedSkillIds'],
-        'common_file_path_part_ids': value['commonFilePathPartIds'],
-        'created_from_id': value['createdFromId'],
-        'copy_count': value['copyCount'],
+        'skill_md': value['skillMd'],
+        'script_names': value['scriptNames'],
+        'has_unpublished_changes': value['hasUnpublishedChanges'],
         'approval_state': PathPartApprovalStateToJSON(value['approvalState']),
         'owner': UserInfoToJSON(value['owner']),
         'created_at': value['createdAt'].toISOString(),

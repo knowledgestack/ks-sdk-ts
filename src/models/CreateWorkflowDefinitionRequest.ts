@@ -66,6 +66,12 @@ export interface CreateWorkflowDefinitionRequest {
      */
     isTemplate?: boolean;
     /**
+     * Skill PDO ids force-loaded into every run of this workflow by default (prefill). Each run inherits these and may add more; the agent can still discover others via search. Each must be a SKILL the caller can read.
+     * @type {Array<string>}
+     * @memberof CreateWorkflowDefinitionRequest
+     */
+    selectedSkillIds?: Array<string>;
+    /**
      * Optional path_part ids of common files (DOCUMENT / FOLDER / DATA_SOURCE / API_CONNECTION) attached to every run of this workflow — e.g. an output template. Merged with each run's own inputs at Start. The caller must be able to read each one.
      * @type {Array<string>}
      * @memberof CreateWorkflowDefinitionRequest
@@ -95,6 +101,10 @@ export const CreateWorkflowDefinitionRequestPropertyValidationAttributesMap: {
         exclusiveMaximum: false,
         minimum: 60,
         exclusiveMinimum: false,
+    },
+    selectedSkillIds: {
+        maxItems: 20,
+        uniqueItems: false,
     },
     commonFilePathPartIds: {
         maxItems: 20,
@@ -130,6 +140,7 @@ export function CreateWorkflowDefinitionRequestFromJSONTyped(json: any, ignoreDi
         'instructionPathPartId': json['instruction_path_part_id'] == null ? undefined : json['instruction_path_part_id'],
         'approvalRequired': json['approval_required'],
         'isTemplate': json['is_template'] == null ? undefined : json['is_template'],
+        'selectedSkillIds': json['selected_skill_ids'] == null ? undefined : json['selected_skill_ids'],
         'commonFilePathPartIds': json['common_file_path_part_ids'] == null ? undefined : json['common_file_path_part_ids'],
     };
 }
@@ -152,6 +163,7 @@ export function CreateWorkflowDefinitionRequestToJSONTyped(value?: CreateWorkflo
         'instruction_path_part_id': value['instructionPathPartId'],
         'approval_required': value['approvalRequired'],
         'is_template': value['isTemplate'],
+        'selected_skill_ids': value['selectedSkillIds'],
         'common_file_path_part_ids': value['commonFilePathPartIds'],
     };
 }

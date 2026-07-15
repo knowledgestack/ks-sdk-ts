@@ -54,6 +54,13 @@ import {
     FolderResponseFromJSONTyped,
     FolderResponseToJSON,
 } from './FolderResponse';
+import type { SkillResponse } from './SkillResponse';
+import {
+    instanceOfSkillResponse,
+    SkillResponseFromJSON,
+    SkillResponseFromJSONTyped,
+    SkillResponseToJSON,
+} from './SkillResponse';
 import type { WorkflowDefinitionResponse } from './WorkflowDefinitionResponse';
 import {
     instanceOfWorkflowDefinitionResponse,
@@ -70,17 +77,17 @@ import {
 } from './WorkflowRunResponse';
 
 /**
- * @type FolderResponseOrDocumentResponseOrWorkflowDefinitionResponseOrWorkflowRunResponseOrDataSourceResponseOrDataSourceSchemaResponseOrDataSourceTableResponseOrApiConnectionResponse
+ * @type FolderResponseOrDocumentResponseOrWorkflowDefinitionResponseOrWorkflowRunResponseOrDataSourceResponseOrDataSourceSchemaR
  * 
  * @export
  */
-export type FolderResponseOrDocumentResponseOrWorkflowDefinitionResponseOrWorkflowRunResponseOrDataSourceResponseOrDataSourceSchemaResponseOrDataSourceTableResponseOrApiConnectionResponse = { partType: 'API_CONNECTION' } & ApiConnectionResponse | { partType: 'DATA_SOURCE' } & DataSourceResponse | { partType: 'DATA_SOURCE_SCHEMA' } & DataSourceSchemaResponse | { partType: 'DATA_SOURCE_TABLE' } & DataSourceTableResponse | { partType: 'DOCUMENT' } & DocumentResponse | { partType: 'FOLDER' } & FolderResponse | { partType: 'WORKFLOW_DEFINITION' } & WorkflowDefinitionResponse | { partType: 'WORKFLOW_RUN' } & WorkflowRunResponse;
+export type FolderResponseOrDocumentResponseOrWorkflowDefinitionResponseOrWorkflowRunResponseOrDataSourceResponseOrDataSourceSchemaR = { partType: 'API_CONNECTION' } & ApiConnectionResponse | { partType: 'DATA_SOURCE' } & DataSourceResponse | { partType: 'DATA_SOURCE_SCHEMA' } & DataSourceSchemaResponse | { partType: 'DATA_SOURCE_TABLE' } & DataSourceTableResponse | { partType: 'DOCUMENT' } & DocumentResponse | { partType: 'FOLDER' } & FolderResponse | { partType: 'SKILL' } & SkillResponse | { partType: 'WORKFLOW_DEFINITION' } & WorkflowDefinitionResponse | { partType: 'WORKFLOW_RUN' } & WorkflowRunResponse;
 
-export function FolderResponseOrDocumentResponseOrWorkflowDefinitionResponseOrWorkflowRunResponseOrDataSourceResponseOrDataSourceSchemaResponseOrDataSourceTableResponseOrApiConnectionResponseFromJSON(json: any): FolderResponseOrDocumentResponseOrWorkflowDefinitionResponseOrWorkflowRunResponseOrDataSourceResponseOrDataSourceSchemaResponseOrDataSourceTableResponseOrApiConnectionResponse {
-    return FolderResponseOrDocumentResponseOrWorkflowDefinitionResponseOrWorkflowRunResponseOrDataSourceResponseOrDataSourceSchemaResponseOrDataSourceTableResponseOrApiConnectionResponseFromJSONTyped(json, false);
+export function FolderResponseOrDocumentResponseOrWorkflowDefinitionResponseOrWorkflowRunResponseOrDataSourceResponseOrDataSourceSchemaRFromJSON(json: any): FolderResponseOrDocumentResponseOrWorkflowDefinitionResponseOrWorkflowRunResponseOrDataSourceResponseOrDataSourceSchemaR {
+    return FolderResponseOrDocumentResponseOrWorkflowDefinitionResponseOrWorkflowRunResponseOrDataSourceResponseOrDataSourceSchemaRFromJSONTyped(json, false);
 }
 
-export function FolderResponseOrDocumentResponseOrWorkflowDefinitionResponseOrWorkflowRunResponseOrDataSourceResponseOrDataSourceSchemaResponseOrDataSourceTableResponseOrApiConnectionResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): FolderResponseOrDocumentResponseOrWorkflowDefinitionResponseOrWorkflowRunResponseOrDataSourceResponseOrDataSourceSchemaResponseOrDataSourceTableResponseOrApiConnectionResponse {
+export function FolderResponseOrDocumentResponseOrWorkflowDefinitionResponseOrWorkflowRunResponseOrDataSourceResponseOrDataSourceSchemaRFromJSONTyped(json: any, ignoreDiscriminator: boolean): FolderResponseOrDocumentResponseOrWorkflowDefinitionResponseOrWorkflowRunResponseOrDataSourceResponseOrDataSourceSchemaR {
     if (json == null) {
         return json;
     }
@@ -97,6 +104,8 @@ export function FolderResponseOrDocumentResponseOrWorkflowDefinitionResponseOrWo
             return Object.assign({}, DocumentResponseFromJSONTyped(json, true), { partType: 'DOCUMENT' } as const);
         case 'FOLDER':
             return Object.assign({}, FolderResponseFromJSONTyped(json, true), { partType: 'FOLDER' } as const);
+        case 'SKILL':
+            return Object.assign({}, SkillResponseFromJSONTyped(json, true), { partType: 'SKILL' } as const);
         case 'WORKFLOW_DEFINITION':
             return Object.assign({}, WorkflowDefinitionResponseFromJSONTyped(json, true), { partType: 'WORKFLOW_DEFINITION' } as const);
         case 'WORKFLOW_RUN':
@@ -106,11 +115,11 @@ export function FolderResponseOrDocumentResponseOrWorkflowDefinitionResponseOrWo
     }
 }
 
-export function FolderResponseOrDocumentResponseOrWorkflowDefinitionResponseOrWorkflowRunResponseOrDataSourceResponseOrDataSourceSchemaResponseOrDataSourceTableResponseOrApiConnectionResponseToJSON(json: any): any {
-    return FolderResponseOrDocumentResponseOrWorkflowDefinitionResponseOrWorkflowRunResponseOrDataSourceResponseOrDataSourceSchemaResponseOrDataSourceTableResponseOrApiConnectionResponseToJSONTyped(json, false);
+export function FolderResponseOrDocumentResponseOrWorkflowDefinitionResponseOrWorkflowRunResponseOrDataSourceResponseOrDataSourceSchemaRToJSON(json: any): any {
+    return FolderResponseOrDocumentResponseOrWorkflowDefinitionResponseOrWorkflowRunResponseOrDataSourceResponseOrDataSourceSchemaRToJSONTyped(json, false);
 }
 
-export function FolderResponseOrDocumentResponseOrWorkflowDefinitionResponseOrWorkflowRunResponseOrDataSourceResponseOrDataSourceSchemaResponseOrDataSourceTableResponseOrApiConnectionResponseToJSONTyped(value?: FolderResponseOrDocumentResponseOrWorkflowDefinitionResponseOrWorkflowRunResponseOrDataSourceResponseOrDataSourceSchemaResponseOrDataSourceTableResponseOrApiConnectionResponse | null, ignoreDiscriminator: boolean = false): any {
+export function FolderResponseOrDocumentResponseOrWorkflowDefinitionResponseOrWorkflowRunResponseOrDataSourceResponseOrDataSourceSchemaRToJSONTyped(value?: FolderResponseOrDocumentResponseOrWorkflowDefinitionResponseOrWorkflowRunResponseOrDataSourceResponseOrDataSourceSchemaR | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
@@ -127,6 +136,8 @@ export function FolderResponseOrDocumentResponseOrWorkflowDefinitionResponseOrWo
             return Object.assign({}, DocumentResponseToJSON(value), { partType: 'DOCUMENT' } as const);
         case 'FOLDER':
             return Object.assign({}, FolderResponseToJSON(value), { partType: 'FOLDER' } as const);
+        case 'SKILL':
+            return Object.assign({}, SkillResponseToJSON(value), { partType: 'SKILL' } as const);
         case 'WORKFLOW_DEFINITION':
             return Object.assign({}, WorkflowDefinitionResponseToJSON(value), { partType: 'WORKFLOW_DEFINITION' } as const);
         case 'WORKFLOW_RUN':

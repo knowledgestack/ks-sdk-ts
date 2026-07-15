@@ -14,36 +14,21 @@
 
 
 /**
- * 
+ * Sort fields for the skill list (sidebar/browse).
  * @export
  */
-export const ReferenceType = {
-    Folder: 'FOLDER',
-    Document: 'DOCUMENT',
-    DocumentVersion: 'DOCUMENT_VERSION',
-    Section: 'SECTION',
-    Chunk: 'CHUNK',
-    Thread: 'THREAD',
-    ThreadMessage: 'THREAD_MESSAGE',
-    WorkflowDefinition: 'WORKFLOW_DEFINITION',
-    WorkflowRun: 'WORKFLOW_RUN',
-    DataSource: 'DATA_SOURCE',
-    DataSourceSchema: 'DATA_SOURCE_SCHEMA',
-    DataSourceTable: 'DATA_SOURCE_TABLE',
-    ApiConnection: 'API_CONNECTION',
-    Skill: 'SKILL',
-    Image: 'image',
-    Memory: 'memory',
-    Tag: 'tag',
-    User: 'user'
+export const SkillOrder = {
+    Name: 'NAME',
+    CreatedAt: 'CREATED_AT',
+    UpdatedAt: 'UPDATED_AT'
 } as const;
-export type ReferenceType = typeof ReferenceType[keyof typeof ReferenceType];
+export type SkillOrder = typeof SkillOrder[keyof typeof SkillOrder];
 
 
-export function instanceOfReferenceType(value: any): boolean {
-    for (const key in ReferenceType) {
-        if (Object.prototype.hasOwnProperty.call(ReferenceType, key)) {
-            if (ReferenceType[key as keyof typeof ReferenceType] === value) {
+export function instanceOfSkillOrder(value: any): boolean {
+    for (const key in SkillOrder) {
+        if (Object.prototype.hasOwnProperty.call(SkillOrder, key)) {
+            if (SkillOrder[key as keyof typeof SkillOrder] === value) {
                 return true;
             }
         }
@@ -51,19 +36,19 @@ export function instanceOfReferenceType(value: any): boolean {
     return false;
 }
 
-export function ReferenceTypeFromJSON(json: any): ReferenceType {
-    return ReferenceTypeFromJSONTyped(json, false);
+export function SkillOrderFromJSON(json: any): SkillOrder {
+    return SkillOrderFromJSONTyped(json, false);
 }
 
-export function ReferenceTypeFromJSONTyped(json: any, ignoreDiscriminator: boolean): ReferenceType {
-    return json as ReferenceType;
+export function SkillOrderFromJSONTyped(json: any, ignoreDiscriminator: boolean): SkillOrder {
+    return json as SkillOrder;
 }
 
-export function ReferenceTypeToJSON(value?: ReferenceType | null): any {
+export function SkillOrderToJSON(value?: SkillOrder | null): any {
     return value as any;
 }
 
-export function ReferenceTypeToJSONTyped(value: any, ignoreDiscriminator: boolean): ReferenceType {
-    return value as ReferenceType;
+export function SkillOrderToJSONTyped(value: any, ignoreDiscriminator: boolean): SkillOrder {
+    return value as SkillOrder;
 }
 
