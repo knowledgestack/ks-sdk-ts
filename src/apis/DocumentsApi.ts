@@ -165,7 +165,7 @@ export interface DocumentsApiInterface {
     deleteDocumentRequestOpts(requestParameters: DeleteDocumentRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * Move a document and all its contents to trash.
+     * Move a document and all its contents to trash.  Requires an active document checkout held by the caller. Acquire one via ``POST /v1/documents/{id}/checkout`` first; otherwise this returns 409 Conflict (\"A document checkout is required to edit this document.\").
      * @summary Delete Document Handler
      * @param {string} documentId 
      * @param {*} [options] Override http request option.
@@ -175,7 +175,7 @@ export interface DocumentsApiInterface {
     deleteDocumentRaw(requestParameters: DeleteDocumentRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>>;
 
     /**
-     * Move a document and all its contents to trash.
+     * Move a document and all its contents to trash.  Requires an active document checkout held by the caller. Acquire one via ``POST /v1/documents/{id}/checkout`` first; otherwise this returns 409 Conflict (\"A document checkout is required to edit this document.\").
      * Delete Document Handler
      */
     deleteDocument(requestParameters: DeleteDocumentRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void>;
@@ -481,7 +481,7 @@ export class DocumentsApi extends runtime.BaseAPI implements DocumentsApiInterfa
     }
 
     /**
-     * Move a document and all its contents to trash.
+     * Move a document and all its contents to trash.  Requires an active document checkout held by the caller. Acquire one via ``POST /v1/documents/{id}/checkout`` first; otherwise this returns 409 Conflict (\"A document checkout is required to edit this document.\").
      * Delete Document Handler
      */
     async deleteDocumentRaw(requestParameters: DeleteDocumentRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
@@ -492,7 +492,7 @@ export class DocumentsApi extends runtime.BaseAPI implements DocumentsApiInterfa
     }
 
     /**
-     * Move a document and all its contents to trash.
+     * Move a document and all its contents to trash.  Requires an active document checkout held by the caller. Acquire one via ``POST /v1/documents/{id}/checkout`` first; otherwise this returns 409 Conflict (\"A document checkout is required to edit this document.\").
      * Delete Document Handler
      */
     async deleteDocument(requestParameters: DeleteDocumentRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
