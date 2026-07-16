@@ -27,6 +27,7 @@ export const DocumentType = {
     Pptx: 'PPTX',
     Json: 'JSON',
     Yaml: 'YAML',
+    Code: 'CODE',
     Unknown: 'UNKNOWN'
 } as const;
 export type DocumentType = typeof DocumentType[keyof typeof DocumentType];
