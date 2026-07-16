@@ -49,6 +49,12 @@ export interface ConnectionConfig {
      * @memberof ConnectionConfig
      */
     password: string;
+    /**
+     * Encrypt the connection with TLS. Enable for managed cloud databases that require it (e.g. Alibaba/Tencent RDS); leave off for trusted private-network databases. Encryption only — the server certificate is not verified.
+     * @type {boolean}
+     * @memberof ConnectionConfig
+     */
+    ssl?: boolean;
 }
 export const ConnectionConfigPropertyValidationAttributesMap: {
     [property: string]: {
@@ -94,6 +100,7 @@ export function ConnectionConfigFromJSONTyped(json: any, ignoreDiscriminator: bo
         'database': json['database'],
         'username': json['username'],
         'password': json['password'],
+        'ssl': json['ssl'] == null ? undefined : json['ssl'],
     };
 }
 
@@ -113,6 +120,7 @@ export function ConnectionConfigToJSONTyped(value?: ConnectionConfig | null, ign
         'database': value['database'],
         'username': value['username'],
         'password': value['password'],
+        'ssl': value['ssl'],
     };
 }
 
