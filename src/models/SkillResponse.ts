@@ -90,13 +90,13 @@ export interface SkillResponse {
      */
     description: string;
     /**
-     * Full SKILL.md content; populated on detail reads, null on list.
+     * Full SKILL.md content; populated on the detail read and on mutation responses, null on list.
      * @type {string}
      * @memberof SkillResponse
      */
     skillMd?: string | null;
     /**
-     * Bundled script file names; populated on detail reads.
+     * Bundled script file names; populated on the detail read and on mutation responses, empty on list.
      * @type {Array<string>}
      * @memberof SkillResponse
      */
@@ -132,7 +132,7 @@ export interface SkillResponse {
      */
     updatedAt: Date;
     /**
-     * Caller's effective rights; null on mutation responses.
+     * Caller's effective rights; populated on the list, detail read, and mutation responses.
      * @type {ItemPermissions}
      * @memberof SkillResponse
      */
