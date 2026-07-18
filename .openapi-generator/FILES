@@ -7,6 +7,8 @@ docs/AcceptInviteResponse.md
 docs/AccessCheckResponse.md
 docs/ActivateSkillVersionRequest.md
 docs/AddMemberRequest.md
+docs/AdminKbApi.md
+docs/AdminWorkflowsApi.md
 docs/AgentApi.md
 docs/AncestryResponse.md
 docs/ApiAuthConfig.md
@@ -94,6 +96,7 @@ docs/DataSourceSyncResponse.md
 docs/DataSourceTableResponse.md
 docs/DataSourcesApi.md
 docs/DefaultApi.md
+docs/DefinitionOutputStat.md
 docs/DiffFormat.md
 docs/DiffRow.md
 docs/DiffRowType.md
@@ -151,6 +154,7 @@ docs/GroupPermissionResponse.md
 docs/GroupResponse.md
 docs/HTTPValidationError.md
 docs/HealthCheckResponse.md
+docs/HourHistogramResponse.md
 docs/HybridSearchProfile.md
 docs/IdpConfig.md
 docs/IdpType.md
@@ -171,6 +175,11 @@ docs/InviteStatus.md
 docs/InviteUserRequest.md
 docs/InvitesApi.md
 docs/ItemPermissions.md
+docs/KbMetric.md
+docs/KbSummaryResponse.md
+docs/KbTimeseriesResponse.md
+docs/LabeledSeries.md
+docs/LeaderboardEntry.md
 docs/LineageEdgeResponse.md
 docs/LineageGraphResponse.md
 docs/LineageNodeResponse.md
@@ -251,6 +260,7 @@ docs/RevisionEdit.md
 docs/RootResponse.md
 docs/RunFolder.md
 docs/RunFolderRef.md
+docs/RunTimeseriesResponse.md
 docs/SSOInitiateResponse.md
 docs/ScoredChunkResponse.md
 docs/SearchSkillsRequest.md
@@ -323,6 +333,8 @@ docs/ThreadMessagesApi.md
 docs/ThreadOrder.md
 docs/ThreadResponse.md
 docs/ThreadsApi.md
+docs/TimeBucket.md
+docs/TimeseriesPoint.md
 docs/ToolDisplayType.md
 docs/ToolPart.md
 docs/ToolStatus.md
@@ -370,7 +382,9 @@ docs/WorkflowDefinitionResponse.md
 docs/WorkflowDefinitionsApi.md
 docs/WorkflowDetailResponse.md
 docs/WorkflowExecutionState.md
+docs/WorkflowLeaderboardResponse.md
 docs/WorkflowMemoryApi.md
+docs/WorkflowOutputStatsResponse.md
 docs/WorkflowRunAsset.md
 docs/WorkflowRunCallbackRequest.md
 docs/WorkflowRunOrder.md
@@ -384,6 +398,8 @@ docs/XlsxCellAnchorInputOrDocxParagraphAnchorInput.md
 docs/XlsxCellAnchorOutput.md
 docs/XlsxCellAnchorOutputOrDocxParagraphAnchorOutput.md
 package.json
+src/apis/AdminKbApi.ts
+src/apis/AdminWorkflowsApi.ts
 src/apis/AgentApi.ts
 src/apis/ApiConnectionsApi.ts
 src/apis/ApiKeysApi.ts
@@ -504,6 +520,7 @@ src/models/DataSourceSchemaListResponse.ts
 src/models/DataSourceSchemaResponse.ts
 src/models/DataSourceSyncResponse.ts
 src/models/DataSourceTableResponse.ts
+src/models/DefinitionOutputStat.ts
 src/models/DiffFormat.ts
 src/models/DiffRow.ts
 src/models/DiffRowType.ts
@@ -555,6 +572,7 @@ src/models/GroupPermissionResponse.ts
 src/models/GroupResponse.ts
 src/models/HTTPValidationError.ts
 src/models/HealthCheckResponse.ts
+src/models/HourHistogramResponse.ts
 src/models/HybridSearchProfile.ts
 src/models/IdpConfig.ts
 src/models/IdpType.ts
@@ -574,6 +592,11 @@ src/models/InviteResponse.ts
 src/models/InviteStatus.ts
 src/models/InviteUserRequest.ts
 src/models/ItemPermissions.ts
+src/models/KbMetric.ts
+src/models/KbSummaryResponse.ts
+src/models/KbTimeseriesResponse.ts
+src/models/LabeledSeries.ts
+src/models/LeaderboardEntry.ts
 src/models/LineageEdgeResponse.ts
 src/models/LineageGraphResponse.ts
 src/models/LineageNodeResponse.ts
@@ -650,6 +673,7 @@ src/models/RevisionEdit.ts
 src/models/RootResponse.ts
 src/models/RunFolder.ts
 src/models/RunFolderRef.ts
+src/models/RunTimeseriesResponse.ts
 src/models/SSOInitiateResponse.ts
 src/models/ScoredChunkResponse.ts
 src/models/SearchSkillsRequest.ts
@@ -713,6 +737,8 @@ src/models/ThreadMessageDetails.ts
 src/models/ThreadMessageResponse.ts
 src/models/ThreadOrder.ts
 src/models/ThreadResponse.ts
+src/models/TimeBucket.ts
+src/models/TimeseriesPoint.ts
 src/models/ToolDisplayType.ts
 src/models/ToolPart.ts
 src/models/ToolStatus.ts
@@ -756,6 +782,8 @@ src/models/WorkflowDefinitionOrder.ts
 src/models/WorkflowDefinitionResponse.ts
 src/models/WorkflowDetailResponse.ts
 src/models/WorkflowExecutionState.ts
+src/models/WorkflowLeaderboardResponse.ts
+src/models/WorkflowOutputStatsResponse.ts
 src/models/WorkflowRunAsset.ts
 src/models/WorkflowRunCallbackRequest.ts
 src/models/WorkflowRunOrder.ts

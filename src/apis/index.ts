@@ -1,5 +1,7 @@
 /* tslint:disable */
 /* eslint-disable */
+export * from './AdminKbApi';
+export * from './AdminWorkflowsApi';
 export * from './AgentApi';
 export * from './ApiConnectionsApi';
 export * from './ApiKeysApi';
