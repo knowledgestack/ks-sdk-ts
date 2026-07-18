@@ -20,6 +20,13 @@ import {
     ItemPermissionsToJSON,
     ItemPermissionsToJSONTyped,
 } from './ItemPermissions';
+import type { SkillScriptFile } from './SkillScriptFile';
+import {
+    SkillScriptFileFromJSON,
+    SkillScriptFileFromJSONTyped,
+    SkillScriptFileToJSON,
+    SkillScriptFileToJSONTyped,
+} from './SkillScriptFile';
 import type { PathPartApprovalState } from './PathPartApprovalState';
 import {
     PathPartApprovalStateFromJSON,
@@ -101,6 +108,12 @@ export interface SkillResponse {
      * @memberof SkillResponse
      */
     scriptNames?: Array<string>;
+    /**
+     * Bundled scripts with their contents; populated only on the detail read (GET /skills/{id}), null on list. Lets the editor read the current script set so a PATCH can safely resubmit the whole set.
+     * @type {Array<SkillScriptFile>}
+     * @memberof SkillResponse
+     */
+    scripts?: Array<SkillScriptFile> | null;
     /**
      * Whether the working copy differs from the active published version. Always present (incl. list responses) so the UI can flag a skill with an unpublished draft.
      * @type {boolean}
@@ -203,6 +216,7 @@ export function SkillResponseFromJSONTyped(json: any, ignoreDiscriminator: boole
         'description': json['description'],
         'skillMd': json['skill_md'] == null ? undefined : json['skill_md'],
         'scriptNames': json['script_names'] == null ? undefined : json['script_names'],
+        'scripts': json['scripts'] == null ? undefined : ((json['scripts'] as Array<any>).map(SkillScriptFileFromJSON)),
         'hasUnpublishedChanges': json['has_unpublished_changes'] == null ? undefined : json['has_unpublished_changes'],
         'approvalState': PathPartApprovalStateFromJSON(json['approval_state']),
         'owner': json['owner'] == null ? undefined : UserInfoFromJSON(json['owner']),
@@ -233,6 +247,7 @@ export function SkillResponseToJSONTyped(value?: SkillResponse | null, ignoreDis
         'description': value['description'],
         'skill_md': value['skillMd'],
         'script_names': value['scriptNames'],
+        'scripts': value['scripts'] == null ? undefined : ((value['scripts'] as Array<any>).map(SkillScriptFileToJSON)),
         'has_unpublished_changes': value['hasUnpublishedChanges'],
         'approval_state': PathPartApprovalStateToJSON(value['approvalState']),
         'owner': UserInfoToJSON(value['owner']),

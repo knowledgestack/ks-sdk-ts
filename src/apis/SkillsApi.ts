@@ -306,7 +306,7 @@ export interface SkillsApiInterface {
     getSkillRequestOpts(requestParameters: GetSkillRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * Skill detail: SKILL.md, scripts, has_unpublished_changes, permissions.
+     * Skill detail: SKILL.md, script contents, has_unpublished_changes, perms.
      * @summary Get Skill Handler
      * @param {string} skillId 
      * @param {*} [options] Override http request option.
@@ -316,7 +316,7 @@ export interface SkillsApiInterface {
     getSkillRaw(requestParameters: GetSkillRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SkillResponse>>;
 
     /**
-     * Skill detail: SKILL.md, scripts, has_unpublished_changes, permissions.
+     * Skill detail: SKILL.md, script contents, has_unpublished_changes, perms.
      * Get Skill Handler
      */
     getSkill(requestParameters: GetSkillRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SkillResponse>;
@@ -925,7 +925,7 @@ export class SkillsApi extends runtime.BaseAPI implements SkillsApiInterface {
     }
 
     /**
-     * Skill detail: SKILL.md, scripts, has_unpublished_changes, permissions.
+     * Skill detail: SKILL.md, script contents, has_unpublished_changes, perms.
      * Get Skill Handler
      */
     async getSkillRaw(requestParameters: GetSkillRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SkillResponse>> {
@@ -936,7 +936,7 @@ export class SkillsApi extends runtime.BaseAPI implements SkillsApiInterface {
     }
 
     /**
-     * Skill detail: SKILL.md, scripts, has_unpublished_changes, permissions.
+     * Skill detail: SKILL.md, script contents, has_unpublished_changes, perms.
      * Get Skill Handler
      */
     async getSkill(requestParameters: GetSkillRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SkillResponse> {
