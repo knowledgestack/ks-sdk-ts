@@ -69,6 +69,12 @@ export interface DocumentVersionMetadata {
      */
     preconversionSourceS3?: string | null;
     /**
+     * S3 URL to the agent's cited copy of the source (KS Citation comments intact); null unless the agent uploaded a file carrying citations. Read only for the agent edit round-trip so a follow-up chat re-extracts citation anchors instead of losing them; source_s3 stays the clean artifact served to chunking, the FE viewer, and downloads.
+     * @type {string}
+     * @memberof DocumentVersionMetadata
+     */
+    citedSourceS3?: string | null;
+    /**
      * S3 URL to the fast plaintext export of the document
      * @type {string}
      * @memberof DocumentVersionMetadata
@@ -203,6 +209,7 @@ export function DocumentVersionMetadataFromJSONTyped(json: any, ignoreDiscrimina
         'sourceS3': json['source_s3'] == null ? undefined : json['source_s3'],
         'cleanedSourceS3': json['cleaned_source_s3'] == null ? undefined : json['cleaned_source_s3'],
         'preconversionSourceS3': json['preconversion_source_s3'] == null ? undefined : json['preconversion_source_s3'],
+        'citedSourceS3': json['cited_source_s3'] == null ? undefined : json['cited_source_s3'],
         'fastPlaintextS3': json['fast_plaintext_s3'] == null ? undefined : json['fast_plaintext_s3'],
         'hash': json['hash'] == null ? undefined : json['hash'],
         'pipelineState': json['pipeline_state'] == null ? undefined : PipelineStateFromJSON(json['pipeline_state']),
@@ -236,6 +243,7 @@ export function DocumentVersionMetadataToJSONTyped(value?: DocumentVersionMetada
         'source_s3': value['sourceS3'],
         'cleaned_source_s3': value['cleanedSourceS3'],
         'preconversion_source_s3': value['preconversionSourceS3'],
+        'cited_source_s3': value['citedSourceS3'],
         'fast_plaintext_s3': value['fastPlaintextS3'],
         'hash': value['hash'],
         'pipeline_state': PipelineStateToJSON(value['pipelineState']),

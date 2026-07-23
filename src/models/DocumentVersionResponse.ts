@@ -110,6 +110,12 @@ export interface DocumentVersionResponse {
      */
     assetS3Url?: string | null;
     /**
+     * Presigned URL (6-hour validity) to the agent's cited copy of the source, with KS Citation comments intact; null unless one was stored. For the agent edit round-trip only — human downloads and the FE viewer use asset_s3_url (clean) and render citations from citation_anchors.
+     * @type {string}
+     * @memberof DocumentVersionResponse
+     */
+    citedAssetS3Url?: string | null;
+    /**
      * Presigned URL to download the fast plaintext export (6-hour validity)
      * @type {string}
      * @memberof DocumentVersionResponse
@@ -186,6 +192,7 @@ export function DocumentVersionResponseFromJSONTyped(json: any, ignoreDiscrimina
         'createdAt': (new Date(json['created_at'])),
         'updatedAt': (new Date(json['updated_at'])),
         'assetS3Url': json['asset_s3_url'] == null ? undefined : json['asset_s3_url'],
+        'citedAssetS3Url': json['cited_asset_s3_url'] == null ? undefined : json['cited_asset_s3_url'],
         'fastPlaintextUrl': json['fast_plaintext_url'] == null ? undefined : json['fast_plaintext_url'],
         'pageScreenshotUrls': json['page_screenshot_urls'] == null ? undefined : json['page_screenshot_urls'],
         'systemMetadata': json['system_metadata'] == null ? undefined : DocumentVersionMetadataFromJSON(json['system_metadata']),
@@ -215,6 +222,7 @@ export function DocumentVersionResponseToJSONTyped(value?: DocumentVersionRespon
         'created_at': value['createdAt'].toISOString(),
         'updated_at': value['updatedAt'].toISOString(),
         'asset_s3_url': value['assetS3Url'],
+        'cited_asset_s3_url': value['citedAssetS3Url'],
         'fast_plaintext_url': value['fastPlaintextUrl'],
         'page_screenshot_urls': value['pageScreenshotUrls'],
         'system_metadata': DocumentVersionMetadataToJSON(value['systemMetadata']),

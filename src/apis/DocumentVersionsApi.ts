@@ -64,6 +64,11 @@ import {
     VersionDiffResponseToJSON,
 } from '../models/index';
 
+export interface AttachCitedAssetRequest {
+    versionId: string;
+    file: Blob;
+}
+
 export interface ClearDocumentVersionContentsRequest {
     versionId: string;
 }
@@ -129,6 +134,32 @@ export interface UpdateDocumentVersionMetadataRequest {
  * @interface DocumentVersionsApiInterface
  */
 export interface DocumentVersionsApiInterface {
+    /**
+     * Creates request options for attachCitedAsset without sending the request
+     * @param {string} versionId DocumentVersion ID
+     * @param {Blob} file 
+     * @throws {RequiredError}
+     * @memberof DocumentVersionsApiInterface
+     */
+    attachCitedAssetRequestOpts(requestParameters: AttachCitedAssetRequest): Promise<runtime.RequestOpts>;
+
+    /**
+     * Store the agent\'s cited copy of a version\'s source as its cited_source_s3 sibling.  The clean ``source_s3`` is untouched — chunking, the FE viewer, and downloads keep using it and render citations from ``citation_anchors``. The cited copy (KS Citation comments intact) is read only by the agent edit round-trip (``ks_download_to_sandbox``) so a follow-up chat re-extracts anchors instead of losing them. Requires write access to the version.
+     * @summary Attach Cited Asset Handler
+     * @param {string} versionId DocumentVersion ID
+     * @param {Blob} file 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DocumentVersionsApiInterface
+     */
+    attachCitedAssetRaw(requestParameters: AttachCitedAssetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>>;
+
+    /**
+     * Store the agent\'s cited copy of a version\'s source as its cited_source_s3 sibling.  The clean ``source_s3`` is untouched — chunking, the FE viewer, and downloads keep using it and render citations from ``citation_anchors``. The cited copy (KS Citation comments intact) is read only by the agent edit round-trip (``ks_download_to_sandbox``) so a follow-up chat re-extracts anchors instead of losing them. Requires write access to the version.
+     * Attach Cited Asset Handler
+     */
+    attachCitedAsset(requestParameters: AttachCitedAssetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void>;
+
     /**
      * Creates request options for clearDocumentVersionContents without sending the request
      * @param {string} versionId DocumentVersion ID
@@ -410,6 +441,88 @@ export interface DocumentVersionsApiInterface {
  * 
  */
 export class DocumentVersionsApi extends runtime.BaseAPI implements DocumentVersionsApiInterface {
+
+    /**
+     * Creates request options for attachCitedAsset without sending the request
+     */
+    async attachCitedAssetRequestOpts(requestParameters: AttachCitedAssetRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['versionId'] == null) {
+            throw new runtime.RequiredError(
+                'versionId',
+                'Required parameter "versionId" was null or undefined when calling attachCitedAsset().'
+            );
+        }
+
+        if (requestParameters['file'] == null) {
+            throw new runtime.RequiredError(
+                'file',
+                'Required parameter "file" was null or undefined when calling attachCitedAsset().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const consumes: runtime.Consume[] = [
+            { contentType: 'multipart/form-data' },
+        ];
+        // @ts-ignore: canConsumeForm may be unused
+        const canConsumeForm = runtime.canConsumeForm(consumes);
+
+        let formParams: { append(param: string, value: any): any };
+        let useForm = false;
+        // use FormData to transmit files using content-type "multipart/form-data"
+        useForm = canConsumeForm;
+        if (useForm) {
+            formParams = new FormData();
+        } else {
+            formParams = new URLSearchParams();
+        }
+
+        if (requestParameters['file'] != null) {
+            formParams.append('file', requestParameters['file'] as any);
+        }
+
+
+        let urlPath = `/v1/document_versions/{version_id}/cited-asset`;
+        urlPath = urlPath.replace(`{${"version_id"}}`, encodeURIComponent(String(requestParameters['versionId'])));
+
+        return {
+            path: urlPath,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: formParams,
+        };
+    }
+
+    /**
+     * Store the agent\'s cited copy of a version\'s source as its cited_source_s3 sibling.  The clean ``source_s3`` is untouched — chunking, the FE viewer, and downloads keep using it and render citations from ``citation_anchors``. The cited copy (KS Citation comments intact) is read only by the agent edit round-trip (``ks_download_to_sandbox``) so a follow-up chat re-extracts anchors instead of losing them. Requires write access to the version.
+     * Attach Cited Asset Handler
+     */
+    async attachCitedAssetRaw(requestParameters: AttachCitedAssetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        const requestOptions = await this.attachCitedAssetRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * Store the agent\'s cited copy of a version\'s source as its cited_source_s3 sibling.  The clean ``source_s3`` is untouched — chunking, the FE viewer, and downloads keep using it and render citations from ``citation_anchors``. The cited copy (KS Citation comments intact) is read only by the agent edit round-trip (``ks_download_to_sandbox``) so a follow-up chat re-extracts anchors instead of losing them. Requires write access to the version.
+     * Attach Cited Asset Handler
+     */
+    async attachCitedAsset(requestParameters: AttachCitedAssetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.attachCitedAssetRaw(requestParameters, initOverrides);
+    }
 
     /**
      * Creates request options for clearDocumentVersionContents without sending the request
