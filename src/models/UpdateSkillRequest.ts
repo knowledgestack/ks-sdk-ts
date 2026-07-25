@@ -13,13 +13,13 @@
  */
 
 import { mapValues } from '../runtime';
-import type { SkillScriptFile } from './SkillScriptFile';
+import type { SkillFile } from './SkillFile';
 import {
-    SkillScriptFileFromJSON,
-    SkillScriptFileFromJSONTyped,
-    SkillScriptFileToJSON,
-    SkillScriptFileToJSONTyped,
-} from './SkillScriptFile';
+    SkillFileFromJSON,
+    SkillFileFromJSONTyped,
+    SkillFileToJSON,
+    SkillFileToJSONTyped,
+} from './SkillFile';
 
 /**
  * Edit working-copy files in place (does NOT cut a version).
@@ -34,11 +34,11 @@ export interface UpdateSkillRequest {
      */
     skillMd?: string | null;
     /**
-     * Replace the working-copy scripts set (add/overwrite/remove to match); null leaves scripts unchanged, [] removes them all.
-     * @type {Array<SkillScriptFile>}
+     * Replace the whole bundle below SKILL.md (add/overwrite/remove to match); null leaves the tree unchanged, [] removes every file.
+     * @type {Array<SkillFile>}
      * @memberof UpdateSkillRequest
      */
-    scripts?: Array<SkillScriptFile> | null;
+    files?: Array<SkillFile> | null;
 }
 export const UpdateSkillRequestPropertyValidationAttributesMap: {
     [property: string]: {
@@ -55,8 +55,8 @@ export const UpdateSkillRequestPropertyValidationAttributesMap: {
         uniqueItems?: boolean
     }
 } = {
-    scripts: {
-        maxItems: 50,
+    files: {
+        maxItems: 2000,
         uniqueItems: false,
     },
 }
@@ -80,7 +80,7 @@ export function UpdateSkillRequestFromJSONTyped(json: any, ignoreDiscriminator: 
     return {
         
         'skillMd': json['skill_md'] == null ? undefined : json['skill_md'],
-        'scripts': json['scripts'] == null ? undefined : ((json['scripts'] as Array<any>).map(SkillScriptFileFromJSON)),
+        'files': json['files'] == null ? undefined : ((json['files'] as Array<any>).map(SkillFileFromJSON)),
     };
 }
 
@@ -96,7 +96,7 @@ export function UpdateSkillRequestToJSONTyped(value?: UpdateSkillRequest | null,
     return {
         
         'skill_md': value['skillMd'],
-        'scripts': value['scripts'] == null ? undefined : ((value['scripts'] as Array<any>).map(SkillScriptFileToJSON)),
+        'files': value['files'] == null ? undefined : ((value['files'] as Array<any>).map(SkillFileToJSON)),
     };
 }
 

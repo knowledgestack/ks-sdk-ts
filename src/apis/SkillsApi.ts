@@ -87,6 +87,7 @@ export interface ExportSkillRequest {
 
 export interface GetSkillRequest {
     skillId: string;
+    includeFileContents?: boolean;
 }
 
 export interface ImportSkillRequest {
@@ -300,15 +301,17 @@ export interface SkillsApiInterface {
     /**
      * Creates request options for getSkill without sending the request
      * @param {string} skillId 
+     * @param {boolean} [includeFileContents] Include every bundle file\&#39;s contents (base64 for binary). Off by default — the editor opts in; a large skill\&#39;s contents can be many MB and one S3 read per file.
      * @throws {RequiredError}
      * @memberof SkillsApiInterface
      */
     getSkillRequestOpts(requestParameters: GetSkillRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * Skill detail: SKILL.md, script contents, has_unpublished_changes, perms.
+     * Skill detail: SKILL.md, file paths (+ contents on request), perms.
      * @summary Get Skill Handler
      * @param {string} skillId 
+     * @param {boolean} [includeFileContents] Include every bundle file\&#39;s contents (base64 for binary). Off by default — the editor opts in; a large skill\&#39;s contents can be many MB and one S3 read per file.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof SkillsApiInterface
@@ -316,7 +319,7 @@ export interface SkillsApiInterface {
     getSkillRaw(requestParameters: GetSkillRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SkillResponse>>;
 
     /**
-     * Skill detail: SKILL.md, script contents, has_unpublished_changes, perms.
+     * Skill detail: SKILL.md, file paths (+ contents on request), perms.
      * Get Skill Handler
      */
     getSkill(requestParameters: GetSkillRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SkillResponse>;
@@ -330,7 +333,7 @@ export interface SkillsApiInterface {
     importSkillRequestOpts(requestParameters: ImportSkillRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * Create a skill by importing a redistributable ZIP (works across tenants).
+     * Create a skill from an uploaded ZIP or tarball (works across tenants).
      * @summary Import Skill Handler
      * @param {Blob} file 
      * @param {*} [options] Override http request option.
@@ -340,7 +343,7 @@ export interface SkillsApiInterface {
     importSkillRaw(requestParameters: ImportSkillRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SkillResponse>>;
 
     /**
-     * Create a skill by importing a redistributable ZIP (works across tenants).
+     * Create a skill from an uploaded ZIP or tarball (works across tenants).
      * Import Skill Handler
      */
     importSkill(requestParameters: ImportSkillRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SkillResponse>;
@@ -902,6 +905,10 @@ export class SkillsApi extends runtime.BaseAPI implements SkillsApiInterface {
 
         const queryParameters: any = {};
 
+        if (requestParameters['includeFileContents'] != null) {
+            queryParameters['include_file_contents'] = requestParameters['includeFileContents'];
+        }
+
         const headerParameters: runtime.HTTPHeaders = {};
 
         if (this.configuration && this.configuration.accessToken) {
@@ -925,7 +932,7 @@ export class SkillsApi extends runtime.BaseAPI implements SkillsApiInterface {
     }
 
     /**
-     * Skill detail: SKILL.md, script contents, has_unpublished_changes, perms.
+     * Skill detail: SKILL.md, file paths (+ contents on request), perms.
      * Get Skill Handler
      */
     async getSkillRaw(requestParameters: GetSkillRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SkillResponse>> {
@@ -936,7 +943,7 @@ export class SkillsApi extends runtime.BaseAPI implements SkillsApiInterface {
     }
 
     /**
-     * Skill detail: SKILL.md, script contents, has_unpublished_changes, perms.
+     * Skill detail: SKILL.md, file paths (+ contents on request), perms.
      * Get Skill Handler
      */
     async getSkill(requestParameters: GetSkillRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SkillResponse> {
@@ -1000,7 +1007,7 @@ export class SkillsApi extends runtime.BaseAPI implements SkillsApiInterface {
     }
 
     /**
-     * Create a skill by importing a redistributable ZIP (works across tenants).
+     * Create a skill from an uploaded ZIP or tarball (works across tenants).
      * Import Skill Handler
      */
     async importSkillRaw(requestParameters: ImportSkillRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SkillResponse>> {
@@ -1011,7 +1018,7 @@ export class SkillsApi extends runtime.BaseAPI implements SkillsApiInterface {
     }
 
     /**
-     * Create a skill by importing a redistributable ZIP (works across tenants).
+     * Create a skill from an uploaded ZIP or tarball (works across tenants).
      * Import Skill Handler
      */
     async importSkill(requestParameters: ImportSkillRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SkillResponse> {

@@ -283,9 +283,9 @@ docs/SetApprovalStateRequest.md
 docs/SetWorkflowRunApprovalRequest.md
 docs/SheetVisibilityChange.md
 docs/SignInRequest.md
+docs/SkillFile.md
 docs/SkillOrder.md
 docs/SkillResponse.md
-docs/SkillScriptFile.md
 docs/SkillSearchResult.md
 docs/SkillVersionResponse.md
 docs/SkillsApi.md
@@ -697,9 +697,9 @@ src/models/SetApprovalStateRequest.ts
 src/models/SetWorkflowRunApprovalRequest.ts
 src/models/SheetVisibilityChange.ts
 src/models/SignInRequest.ts
+src/models/SkillFile.ts
 src/models/SkillOrder.ts
 src/models/SkillResponse.ts
-src/models/SkillScriptFile.ts
 src/models/SkillSearchResult.ts
 src/models/SkillVersionResponse.ts
 src/models/SortDirection.ts

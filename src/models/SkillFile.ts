@@ -14,25 +14,46 @@
 
 import { mapValues } from '../runtime';
 /**
- * A single script bundled under a skill's ``scripts/`` folder.
+ * One file in a skill bundle, at a path relative to the skill root.
+ * 
+ * Skills carry arbitrary trees (``scripts/office/validate.py``,
+ * ``references/guide.md``, ``assets/logo.png``), so binary files are carried
+ * base64-encoded rather than excluded.
  * @export
- * @interface SkillScriptFile
+ * @interface SkillFile
  */
-export interface SkillScriptFile {
+export interface SkillFile {
     /**
-     * Script file name, e.g. inspect.py
+     * Path relative to the skill root, e.g. scripts/office/run.py
      * @type {string}
-     * @memberof SkillScriptFile
+     * @memberof SkillFile
      */
-    name: string;
+    path: string;
     /**
-     * Script file contents (UTF-8 text).
+     * UTF-8 text, or base64-encoded bytes when encoding=base64.
      * @type {string}
-     * @memberof SkillScriptFile
+     * @memberof SkillFile
      */
     content: string;
+    /**
+     * How `content` is encoded.
+     * @type {SkillFileEncodingEnum}
+     * @memberof SkillFile
+     */
+    encoding?: SkillFileEncodingEnum;
 }
-export const SkillScriptFilePropertyValidationAttributesMap: {
+
+
+/**
+ * @export
+ */
+export const SkillFileEncodingEnum = {
+    Utf8: 'utf-8',
+    Base64: 'base64'
+} as const;
+export type SkillFileEncodingEnum = typeof SkillFileEncodingEnum[keyof typeof SkillFileEncodingEnum];
+
+export const SkillFilePropertyValidationAttributesMap: {
     [property: string]: {
         maxLength?: number,
         minLength?: number,
@@ -47,49 +68,51 @@ export const SkillScriptFilePropertyValidationAttributesMap: {
         uniqueItems?: boolean
     }
 } = {
-    name: {
-        maxLength: 255,
+    path: {
+        maxLength: 1024,
     },
 }
 
 
 /**
- * Check if a given object implements the SkillScriptFile interface.
+ * Check if a given object implements the SkillFile interface.
  */
-export function instanceOfSkillScriptFile(value: object): value is SkillScriptFile {
-    if (!('name' in value) || value['name'] === undefined) return false;
+export function instanceOfSkillFile(value: object): value is SkillFile {
+    if (!('path' in value) || value['path'] === undefined) return false;
     if (!('content' in value) || value['content'] === undefined) return false;
     return true;
 }
 
-export function SkillScriptFileFromJSON(json: any): SkillScriptFile {
-    return SkillScriptFileFromJSONTyped(json, false);
+export function SkillFileFromJSON(json: any): SkillFile {
+    return SkillFileFromJSONTyped(json, false);
 }
 
-export function SkillScriptFileFromJSONTyped(json: any, ignoreDiscriminator: boolean): SkillScriptFile {
+export function SkillFileFromJSONTyped(json: any, ignoreDiscriminator: boolean): SkillFile {
     if (json == null) {
         return json;
     }
     return {
         
-        'name': json['name'],
+        'path': json['path'],
         'content': json['content'],
+        'encoding': json['encoding'] == null ? undefined : json['encoding'],
     };
 }
 
-export function SkillScriptFileToJSON(json: any): SkillScriptFile {
-    return SkillScriptFileToJSONTyped(json, false);
+export function SkillFileToJSON(json: any): SkillFile {
+    return SkillFileToJSONTyped(json, false);
 }
 
-export function SkillScriptFileToJSONTyped(value?: SkillScriptFile | null, ignoreDiscriminator: boolean = false): any {
+export function SkillFileToJSONTyped(value?: SkillFile | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
         
-        'name': value['name'],
+        'path': value['path'],
         'content': value['content'],
+        'encoding': value['encoding'],
     };
 }
 

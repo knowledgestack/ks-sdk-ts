@@ -13,13 +13,13 @@
  */
 
 import { mapValues } from '../runtime';
-import type { SkillScriptFile } from './SkillScriptFile';
+import type { SkillFile } from './SkillFile';
 import {
-    SkillScriptFileFromJSON,
-    SkillScriptFileFromJSONTyped,
-    SkillScriptFileToJSON,
-    SkillScriptFileToJSONTyped,
-} from './SkillScriptFile';
+    SkillFileFromJSON,
+    SkillFileFromJSONTyped,
+    SkillFileToJSON,
+    SkillFileToJSONTyped,
+} from './SkillFile';
 
 /**
  * Author a skill from a SKILL.md bundle.
@@ -40,11 +40,11 @@ export interface CreateSkillRequest {
      */
     skillMd: string;
     /**
-     * Optional scripts bundled under the skill's scripts/ folder.
-     * @type {Array<SkillScriptFile>}
+     * Optional bundle files at paths relative to the skill root (scripts/, references/, assets/, …). SKILL.md is supplied separately and must not be repeated here.
+     * @type {Array<SkillFile>}
      * @memberof CreateSkillRequest
      */
-    scripts?: Array<SkillScriptFile>;
+    files?: Array<SkillFile>;
 }
 export const CreateSkillRequestPropertyValidationAttributesMap: {
     [property: string]: {
@@ -64,8 +64,8 @@ export const CreateSkillRequestPropertyValidationAttributesMap: {
     name: {
         maxLength: 255,
     },
-    scripts: {
-        maxItems: 50,
+    files: {
+        maxItems: 2000,
         uniqueItems: false,
     },
 }
@@ -92,7 +92,7 @@ export function CreateSkillRequestFromJSONTyped(json: any, ignoreDiscriminator: 
         
         'name': json['name'],
         'skillMd': json['skill_md'],
-        'scripts': json['scripts'] == null ? undefined : ((json['scripts'] as Array<any>).map(SkillScriptFileFromJSON)),
+        'files': json['files'] == null ? undefined : ((json['files'] as Array<any>).map(SkillFileFromJSON)),
     };
 }
 
@@ -109,7 +109,7 @@ export function CreateSkillRequestToJSONTyped(value?: CreateSkillRequest | null,
         
         'name': value['name'],
         'skill_md': value['skillMd'],
-        'scripts': value['scripts'] == null ? undefined : ((value['scripts'] as Array<any>).map(SkillScriptFileToJSON)),
+        'files': value['files'] == null ? undefined : ((value['files'] as Array<any>).map(SkillFileToJSON)),
     };
 }
 

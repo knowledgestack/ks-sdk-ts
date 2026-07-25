@@ -20,13 +20,13 @@ import {
     ItemPermissionsToJSON,
     ItemPermissionsToJSONTyped,
 } from './ItemPermissions';
-import type { SkillScriptFile } from './SkillScriptFile';
+import type { SkillFile } from './SkillFile';
 import {
-    SkillScriptFileFromJSON,
-    SkillScriptFileFromJSONTyped,
-    SkillScriptFileToJSON,
-    SkillScriptFileToJSONTyped,
-} from './SkillScriptFile';
+    SkillFileFromJSON,
+    SkillFileFromJSONTyped,
+    SkillFileToJSON,
+    SkillFileToJSONTyped,
+} from './SkillFile';
 import type { PathPartApprovalState } from './PathPartApprovalState';
 import {
     PathPartApprovalStateFromJSON,
@@ -103,17 +103,17 @@ export interface SkillResponse {
      */
     skillMd?: string | null;
     /**
-     * Bundled script file names; populated on the detail read and on mutation responses, empty on list.
+     * Bundle file paths relative to the skill root (SKILL.md excluded); populated on the detail read and on mutation responses, empty on list.
      * @type {Array<string>}
      * @memberof SkillResponse
      */
-    scriptNames?: Array<string>;
+    filePaths?: Array<string>;
     /**
-     * Bundled scripts with their contents; populated only on the detail read (GET /skills/{id}), null on list. Lets the editor read the current script set so a PATCH can safely resubmit the whole set.
-     * @type {Array<SkillScriptFile>}
+     * Bundle files with their contents; populated only on the detail read (GET /skills/{id}), null on list. Lets the editor read the current file set so a PATCH can safely resubmit the whole set.
+     * @type {Array<SkillFile>}
      * @memberof SkillResponse
      */
-    scripts?: Array<SkillScriptFile> | null;
+    files?: Array<SkillFile> | null;
     /**
      * Whether the working copy differs from the active published version. Always present (incl. list responses) so the UI can flag a skill with an unpublished draft.
      * @type {boolean}
@@ -215,8 +215,8 @@ export function SkillResponseFromJSONTyped(json: any, ignoreDiscriminator: boole
         'name': json['name'],
         'description': json['description'],
         'skillMd': json['skill_md'] == null ? undefined : json['skill_md'],
-        'scriptNames': json['script_names'] == null ? undefined : json['script_names'],
-        'scripts': json['scripts'] == null ? undefined : ((json['scripts'] as Array<any>).map(SkillScriptFileFromJSON)),
+        'filePaths': json['file_paths'] == null ? undefined : json['file_paths'],
+        'files': json['files'] == null ? undefined : ((json['files'] as Array<any>).map(SkillFileFromJSON)),
         'hasUnpublishedChanges': json['has_unpublished_changes'] == null ? undefined : json['has_unpublished_changes'],
         'approvalState': PathPartApprovalStateFromJSON(json['approval_state']),
         'owner': json['owner'] == null ? undefined : UserInfoFromJSON(json['owner']),
@@ -246,8 +246,8 @@ export function SkillResponseToJSONTyped(value?: SkillResponse | null, ignoreDis
         'name': value['name'],
         'description': value['description'],
         'skill_md': value['skillMd'],
-        'script_names': value['scriptNames'],
-        'scripts': value['scripts'] == null ? undefined : ((value['scripts'] as Array<any>).map(SkillScriptFileToJSON)),
+        'file_paths': value['filePaths'],
+        'files': value['files'] == null ? undefined : ((value['files'] as Array<any>).map(SkillFileToJSON)),
         'has_unpublished_changes': value['hasUnpublishedChanges'],
         'approval_state': PathPartApprovalStateToJSON(value['approvalState']),
         'owner': UserInfoToJSON(value['owner']),
