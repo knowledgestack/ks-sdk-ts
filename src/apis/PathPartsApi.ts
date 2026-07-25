@@ -28,6 +28,7 @@ import type {
   PathPartResponse,
   PathPartTagsResponse,
   PermissionCapability,
+  ReorderPathPartRequest,
   SortDirection,
   SubtreeChunksResponse,
   TransferOwnerRequest,
@@ -60,6 +61,8 @@ import {
     PathPartTagsResponseToJSON,
     PermissionCapabilityFromJSON,
     PermissionCapabilityToJSON,
+    ReorderPathPartRequestFromJSON,
+    ReorderPathPartRequestToJSON,
     SortDirectionFromJSON,
     SortDirectionToJSON,
     SubtreeChunksResponseFromJSON,
@@ -124,6 +127,11 @@ export interface ListPathPartsRequest {
     createdBefore?: Date | null;
     updatedAfter?: Date | null;
     updatedBefore?: Date | null;
+}
+
+export interface ReorderPathPartOperationRequest {
+    pathPartId: string;
+    reorderPathPartRequest: ReorderPathPartRequest;
 }
 
 export interface SetPathPartTagsRequest {
@@ -398,6 +406,32 @@ export interface PathPartsApiInterface {
      * List Path Parts Handler
      */
     listPathParts(requestParameters: ListPathPartsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedResponsePathPartResponse>;
+
+    /**
+     * Creates request options for reorderPathPart without sending the request
+     * @param {string} pathPartId 
+     * @param {ReorderPathPartRequest} reorderPathPartRequest 
+     * @throws {RequiredError}
+     * @memberof PathPartsApiInterface
+     */
+    reorderPathPartRequestOpts(requestParameters: ReorderPathPartOperationRequest): Promise<runtime.RequestOpts>;
+
+    /**
+     * Reorder a path part within its sibling list.  The left-nav order follows the path_part sibling linked list: one per-parent chain shared by everyone in the tenant. Moving is confined to the node\'s current parent; use the folder/document move endpoints to change parents.
+     * @summary Reorder Path Part Handler
+     * @param {string} pathPartId 
+     * @param {ReorderPathPartRequest} reorderPathPartRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof PathPartsApiInterface
+     */
+    reorderPathPartRaw(requestParameters: ReorderPathPartOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PathPartResponse>>;
+
+    /**
+     * Reorder a path part within its sibling list.  The left-nav order follows the path_part sibling linked list: one per-parent chain shared by everyone in the tenant. Moving is confined to the node\'s current parent; use the folder/document move endpoints to change parents.
+     * Reorder Path Part Handler
+     */
+    reorderPathPart(requestParameters: ReorderPathPartOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PathPartResponse>;
 
     /**
      * Creates request options for setPathPartTags without sending the request
@@ -1045,6 +1079,71 @@ export class PathPartsApi extends runtime.BaseAPI implements PathPartsApiInterfa
      */
     async listPathParts(requestParameters: ListPathPartsRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedResponsePathPartResponse> {
         const response = await this.listPathPartsRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for reorderPathPart without sending the request
+     */
+    async reorderPathPartRequestOpts(requestParameters: ReorderPathPartOperationRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['pathPartId'] == null) {
+            throw new runtime.RequiredError(
+                'pathPartId',
+                'Required parameter "pathPartId" was null or undefined when calling reorderPathPart().'
+            );
+        }
+
+        if (requestParameters['reorderPathPartRequest'] == null) {
+            throw new runtime.RequiredError(
+                'reorderPathPartRequest',
+                'Required parameter "reorderPathPartRequest" was null or undefined when calling reorderPathPart().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/v1/path-parts/{path_part_id}/reorder`;
+        urlPath = urlPath.replace(`{${"path_part_id"}}`, encodeURIComponent(String(requestParameters['pathPartId'])));
+
+        return {
+            path: urlPath,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: ReorderPathPartRequestToJSON(requestParameters['reorderPathPartRequest']),
+        };
+    }
+
+    /**
+     * Reorder a path part within its sibling list.  The left-nav order follows the path_part sibling linked list: one per-parent chain shared by everyone in the tenant. Moving is confined to the node\'s current parent; use the folder/document move endpoints to change parents.
+     * Reorder Path Part Handler
+     */
+    async reorderPathPartRaw(requestParameters: ReorderPathPartOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PathPartResponse>> {
+        const requestOptions = await this.reorderPathPartRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => PathPartResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * Reorder a path part within its sibling list.  The left-nav order follows the path_part sibling linked list: one per-parent chain shared by everyone in the tenant. Moving is confined to the node\'s current parent; use the folder/document move endpoints to change parents.
+     * Reorder Path Part Handler
+     */
+    async reorderPathPart(requestParameters: ReorderPathPartOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PathPartResponse> {
+        const response = await this.reorderPathPartRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

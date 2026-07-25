@@ -20,13 +20,21 @@ import {
     UserInfoToJSON,
     UserInfoToJSONTyped,
 } from './UserInfo';
+import type { ResolvedRef } from './ResolvedRef';
+import {
+    ResolvedRefFromJSON,
+    ResolvedRefFromJSONTyped,
+    ResolvedRefToJSON,
+    ResolvedRefToJSONTyped,
+} from './ResolvedRef';
 
 /**
  * One event row, anchored to a path_part subject.
  * 
  * ``kind`` is namespaced ``domain.action`` (e.g. ``workflow.approval``,
  * ``document.created``). ``payload`` is the domain-specific structured
- * JSON associated with the event.
+ * JSON associated with the event, stored verbatim and never rewritten —
+ * the human-readable resolution lives alongside it in ``references``.
  * @export
  * @interface EventResponse
  */
@@ -73,6 +81,36 @@ export interface EventResponse {
      * @memberof EventResponse
      */
     actor?: UserInfo | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof EventResponse
+     */
+    subjectName?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof EventResponse
+     */
+    subjectPath?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof EventResponse
+     */
+    subjectObjectId?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof EventResponse
+     */
+    subjectPartType?: string | null;
+    /**
+     * 
+     * @type {{ [key: string]: ResolvedRef; }}
+     * @memberof EventResponse
+     */
+    references?: { [key: string]: ResolvedRef; };
 }
 export const EventResponsePropertyValidationAttributesMap: {
     [property: string]: {
@@ -122,6 +160,11 @@ export function EventResponseFromJSONTyped(json: any, ignoreDiscriminator: boole
         'actorUserId': json['actor_user_id'],
         'payload': json['payload'],
         'actor': json['actor'] == null ? undefined : UserInfoFromJSON(json['actor']),
+        'subjectName': json['subject_name'] == null ? undefined : json['subject_name'],
+        'subjectPath': json['subject_path'] == null ? undefined : json['subject_path'],
+        'subjectObjectId': json['subject_object_id'] == null ? undefined : json['subject_object_id'],
+        'subjectPartType': json['subject_part_type'] == null ? undefined : json['subject_part_type'],
+        'references': json['references'] == null ? undefined : (mapValues(json['references'], ResolvedRefFromJSON)),
     };
 }
 
@@ -143,6 +186,11 @@ export function EventResponseToJSONTyped(value?: EventResponse | null, ignoreDis
         'actor_user_id': value['actorUserId'],
         'payload': value['payload'],
         'actor': UserInfoToJSON(value['actor']),
+        'subject_name': value['subjectName'],
+        'subject_path': value['subjectPath'],
+        'subject_object_id': value['subjectObjectId'],
+        'subject_part_type': value['subjectPartType'],
+        'references': value['references'] == null ? undefined : (mapValues(value['references'], ResolvedRefToJSON)),
     };
 }
 

@@ -252,7 +252,9 @@ docs/ProposedMemoryChunkResponse.md
 docs/PublicApi.md
 docs/ReasoningPart.md
 docs/ReferenceType.md
+docs/ReorderPathPartRequest.md
 docs/RequestPhoneChangeRequest.md
+docs/ResolvedRef.md
 docs/ResolvedReferenceInput.md
 docs/ResolvedReferenceOutput.md
 docs/ResponseSendPwResetEmail.md
@@ -665,7 +667,9 @@ src/models/ProposeMemoryChunkRequest.ts
 src/models/ProposedMemoryChunkResponse.ts
 src/models/ReasoningPart.ts
 src/models/ReferenceType.ts
+src/models/ReorderPathPartRequest.ts
 src/models/RequestPhoneChangeRequest.ts
+src/models/ResolvedRef.ts
 src/models/ResolvedReferenceInput.ts
 src/models/ResolvedReferenceOutput.ts
 src/models/ResponseSendPwResetEmail.ts
