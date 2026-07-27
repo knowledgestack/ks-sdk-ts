@@ -64,6 +64,18 @@ export interface SectionContentItem {
      */
     depth: number;
     /**
+     * 0-based ordinal of the first chunk in this section's subtree, counting CHUNK rows in DFS order from the traversal root. Null when the section has no chunk anywhere below it, and on endpoints that do not compute traversal ordinals.
+     * @type {number}
+     * @memberof SectionContentItem
+     */
+    chunkStartIndex?: number | null;
+    /**
+     * 0-based ordinal of the last chunk in this section's subtree, inclusive. Chunks outside the section — a later sibling, or a chunk attached to an ancestor — are excluded, so the span covers only this section's own content. Null under the same conditions as chunk_start_index.
+     * @type {number}
+     * @memberof SectionContentItem
+     */
+    chunkEndIndex?: number | null;
+    /**
      * Section page number
      * @type {number}
      * @memberof SectionContentItem
@@ -162,6 +174,8 @@ export function SectionContentItemFromJSONTyped(json: any, ignoreDiscriminator: 
         'parentPathId': json['parent_path_id'],
         'metadataObjId': json['metadata_obj_id'],
         'depth': json['depth'],
+        'chunkStartIndex': json['chunk_start_index'] == null ? undefined : json['chunk_start_index'],
+        'chunkEndIndex': json['chunk_end_index'] == null ? undefined : json['chunk_end_index'],
         'pageNumber': json['page_number'] == null ? undefined : json['page_number'],
         'materializedPath': json['materialized_path'],
         'systemManaged': json['system_managed'],
@@ -188,6 +202,8 @@ export function SectionContentItemToJSONTyped(value?: SectionContentItem | null,
         'parent_path_id': value['parentPathId'],
         'metadata_obj_id': value['metadataObjId'],
         'depth': value['depth'],
+        'chunk_start_index': value['chunkStartIndex'],
+        'chunk_end_index': value['chunkEndIndex'],
         'page_number': value['pageNumber'],
         'materialized_path': value['materializedPath'],
         'system_managed': value['systemManaged'],

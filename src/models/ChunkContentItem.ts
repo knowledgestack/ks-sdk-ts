@@ -78,6 +78,12 @@ export interface ChunkContentItem {
      */
     depth: number;
     /**
+     * 0-based ordinal of this chunk, counting CHUNK rows in DFS order from the traversal root. Usable directly as a read start/end coordinate. Null on endpoints that do not compute traversal ordinals.
+     * @type {number}
+     * @memberof ChunkContentItem
+     */
+    chunkStartIndex?: number | null;
+    /**
      * Chunk content
      * @type {string}
      * @memberof ChunkContentItem
@@ -188,6 +194,7 @@ export function ChunkContentItemFromJSONTyped(json: any, ignoreDiscriminator: bo
         'parentPathId': json['parent_path_id'],
         'metadataObjId': json['metadata_obj_id'],
         'depth': json['depth'],
+        'chunkStartIndex': json['chunk_start_index'] == null ? undefined : json['chunk_start_index'],
         'content': json['content'] == null ? undefined : json['content'],
         'chunkType': json['chunk_type'] == null ? undefined : ChunkTypeFromJSON(json['chunk_type']),
         'chunkMetadata': json['chunk_metadata'] == null ? undefined : ChunkMetadataFromJSON(json['chunk_metadata']),
@@ -216,6 +223,7 @@ export function ChunkContentItemToJSONTyped(value?: ChunkContentItem | null, ign
         'parent_path_id': value['parentPathId'],
         'metadata_obj_id': value['metadataObjId'],
         'depth': value['depth'],
+        'chunk_start_index': value['chunkStartIndex'],
         'content': value['content'],
         'chunk_type': ChunkTypeToJSON(value['chunkType']),
         'chunk_metadata': ChunkMetadataToJSON(value['chunkMetadata']),
