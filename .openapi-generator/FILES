@@ -161,6 +161,7 @@ docs/IdpType.md
 docs/ImageTaxonomy.md
 docs/InformationStatistics.md
 docs/IngestDocumentResponse.md
+docs/IngestZipResponse.md
 docs/IngestionMode.md
 docs/Input.md
 docs/InputOrigin.md
@@ -399,6 +400,7 @@ docs/XlsxCellAnchorInput.md
 docs/XlsxCellAnchorInputOrDocxParagraphAnchorInput.md
 docs/XlsxCellAnchorOutput.md
 docs/XlsxCellAnchorOutputOrDocxParagraphAnchorOutput.md
+docs/ZipFileResult.md
 package.json
 src/apis/AdminKbApi.ts
 src/apis/AdminWorkflowsApi.ts
@@ -581,6 +583,7 @@ src/models/IdpType.ts
 src/models/ImageTaxonomy.ts
 src/models/InformationStatistics.ts
 src/models/IngestDocumentResponse.ts
+src/models/IngestZipResponse.ts
 src/models/IngestionMode.ts
 src/models/Input.ts
 src/models/InputOrigin.ts
@@ -799,6 +802,7 @@ src/models/XlsxCellAnchorInput.ts
 src/models/XlsxCellAnchorInputOrDocxParagraphAnchorInput.ts
 src/models/XlsxCellAnchorOutput.ts
 src/models/XlsxCellAnchorOutputOrDocxParagraphAnchorOutput.ts
+src/models/ZipFileResult.ts
 src/models/index.ts
 src/runtime.ts
 tsconfig.esm.json

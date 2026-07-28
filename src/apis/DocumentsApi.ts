@@ -25,6 +25,7 @@ import type {
   HTTPValidationError,
   ImageTaxonomy,
   IngestDocumentResponse,
+  IngestZipResponse,
   IngestionMode,
   PaginatedResponseDocumentResponse,
   PathOrder,
@@ -52,6 +53,8 @@ import {
     ImageTaxonomyToJSON,
     IngestDocumentResponseFromJSON,
     IngestDocumentResponseToJSON,
+    IngestZipResponseFromJSON,
+    IngestZipResponseToJSON,
     IngestionModeFromJSON,
     IngestionModeToJSON,
     PaginatedResponseDocumentResponseFromJSON,
@@ -103,6 +106,12 @@ export interface IngestDocumentVersionRequest {
     pageDpi?: number;
     workflowRunId?: string | null;
     workflowDefinitionId?: string | null;
+}
+
+export interface IngestZipRequest {
+    file: Blob;
+    pathPartId: string;
+    ingestionMode?: IngestionMode;
 }
 
 export interface ListDocumentsRequest {
@@ -308,6 +317,34 @@ export interface DocumentsApiInterface {
      * Ingest Document Version Handler
      */
     ingestDocumentVersion(requestParameters: IngestDocumentVersionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<IngestDocumentResponse>;
+
+    /**
+     * Creates request options for ingestZip without sending the request
+     * @param {Blob} file 
+     * @param {string} pathPartId Parent path part ID (must be a FOLDER type)
+     * @param {IngestionMode} [ingestionMode] 
+     * @throws {RequiredError}
+     * @memberof DocumentsApiInterface
+     */
+    ingestZipRequestOpts(requestParameters: IngestZipRequest): Promise<runtime.RequestOpts>;
+
+    /**
+     * Upload a ZIP archive and ingest each member file individually.  Directory structure inside the ZIP is preserved as FOLDER PathParts under the target folder. Returns 202 with per-file outcomes — each file that ingests successfully has its own Temporal workflow ID to poll for status.  Whole-archive failures (not a ZIP, zip-bomb, >500 files) return 400 before any DB writes. Per-file failures (unsupported type, oversized) are included in the response with ``error`` set; other files continue processing.
+     * @summary Ingest Zip Handler
+     * @param {Blob} file 
+     * @param {string} pathPartId Parent path part ID (must be a FOLDER type)
+     * @param {IngestionMode} [ingestionMode] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DocumentsApiInterface
+     */
+    ingestZipRaw(requestParameters: IngestZipRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<IngestZipResponse>>;
+
+    /**
+     * Upload a ZIP archive and ingest each member file individually.  Directory structure inside the ZIP is preserved as FOLDER PathParts under the target folder. Returns 202 with per-file outcomes — each file that ingests successfully has its own Temporal workflow ID to poll for status.  Whole-archive failures (not a ZIP, zip-bomb, >500 files) return 400 before any DB writes. Per-file failures (unsupported type, oversized) are included in the response with ``error`` set; other files continue processing.
+     * Ingest Zip Handler
+     */
+    ingestZip(requestParameters: IngestZipRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<IngestZipResponse>;
 
     /**
      * Creates request options for listDocuments without sending the request
@@ -833,6 +870,96 @@ export class DocumentsApi extends runtime.BaseAPI implements DocumentsApiInterfa
      */
     async ingestDocumentVersion(requestParameters: IngestDocumentVersionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<IngestDocumentResponse> {
         const response = await this.ingestDocumentVersionRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for ingestZip without sending the request
+     */
+    async ingestZipRequestOpts(requestParameters: IngestZipRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['file'] == null) {
+            throw new runtime.RequiredError(
+                'file',
+                'Required parameter "file" was null or undefined when calling ingestZip().'
+            );
+        }
+
+        if (requestParameters['pathPartId'] == null) {
+            throw new runtime.RequiredError(
+                'pathPartId',
+                'Required parameter "pathPartId" was null or undefined when calling ingestZip().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const consumes: runtime.Consume[] = [
+            { contentType: 'multipart/form-data' },
+        ];
+        // @ts-ignore: canConsumeForm may be unused
+        const canConsumeForm = runtime.canConsumeForm(consumes);
+
+        let formParams: { append(param: string, value: any): any };
+        let useForm = false;
+        // use FormData to transmit files using content-type "multipart/form-data"
+        useForm = canConsumeForm;
+        if (useForm) {
+            formParams = new FormData();
+        } else {
+            formParams = new URLSearchParams();
+        }
+
+        if (requestParameters['file'] != null) {
+            formParams.append('file', requestParameters['file'] as any);
+        }
+
+        if (requestParameters['pathPartId'] != null) {
+            formParams.append('path_part_id', requestParameters['pathPartId'] as any);
+        }
+
+        if (requestParameters['ingestionMode'] != null) {
+            formParams.append('ingestion_mode', requestParameters['ingestionMode'] as any);
+        }
+
+
+        let urlPath = `/v1/documents/ingest-zip`;
+
+        return {
+            path: urlPath,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: formParams,
+        };
+    }
+
+    /**
+     * Upload a ZIP archive and ingest each member file individually.  Directory structure inside the ZIP is preserved as FOLDER PathParts under the target folder. Returns 202 with per-file outcomes — each file that ingests successfully has its own Temporal workflow ID to poll for status.  Whole-archive failures (not a ZIP, zip-bomb, >500 files) return 400 before any DB writes. Per-file failures (unsupported type, oversized) are included in the response with ``error`` set; other files continue processing.
+     * Ingest Zip Handler
+     */
+    async ingestZipRaw(requestParameters: IngestZipRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<IngestZipResponse>> {
+        const requestOptions = await this.ingestZipRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => IngestZipResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * Upload a ZIP archive and ingest each member file individually.  Directory structure inside the ZIP is preserved as FOLDER PathParts under the target folder. Returns 202 with per-file outcomes — each file that ingests successfully has its own Temporal workflow ID to poll for status.  Whole-archive failures (not a ZIP, zip-bomb, >500 files) return 400 before any DB writes. Per-file failures (unsupported type, oversized) are included in the response with ``error`` set; other files continue processing.
+     * Ingest Zip Handler
+     */
+    async ingestZip(requestParameters: IngestZipRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<IngestZipResponse> {
+        const response = await this.ingestZipRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
