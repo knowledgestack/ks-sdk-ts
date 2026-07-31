@@ -13,65 +13,26 @@
  */
 
 import { mapValues } from '../runtime';
-import type { KbMetric } from './KbMetric';
-import {
-    KbMetricFromJSON,
-    KbMetricFromJSONTyped,
-    KbMetricToJSON,
-    KbMetricToJSONTyped,
-} from './KbMetric';
-import type { TimeBucket } from './TimeBucket';
-import {
-    TimeBucketFromJSON,
-    TimeBucketFromJSONTyped,
-    TimeBucketToJSON,
-    TimeBucketToJSONTyped,
-} from './TimeBucket';
-import type { LabeledSeries } from './LabeledSeries';
-import {
-    LabeledSeriesFromJSON,
-    LabeledSeriesFromJSONTyped,
-    LabeledSeriesToJSON,
-    LabeledSeriesToJSONTyped,
-} from './LabeledSeries';
-
 /**
- * A knowledge-base metric bucketed over time.
  * 
- * ``series`` carries one entry per split — two (SOURCE / GENERATED) for
- * ``document_uploads``, one for the ingestion, message, and search metrics.
  * @export
- * @interface KbTimeseriesResponse
+ * @interface UploadFormat
  */
-export interface KbTimeseriesResponse {
-    /**
-     * 
-     * @type {KbMetric}
-     * @memberof KbTimeseriesResponse
-     */
-    metric: KbMetric;
+export interface UploadFormat {
     /**
      * 
      * @type {string}
-     * @memberof KbTimeseriesResponse
+     * @memberof UploadFormat
      */
-    timezone: string;
+    extension: string;
     /**
      * 
-     * @type {TimeBucket}
-     * @memberof KbTimeseriesResponse
+     * @type {string}
+     * @memberof UploadFormat
      */
-    bucket: TimeBucket;
-    /**
-     * 
-     * @type {Array<LabeledSeries>}
-     * @memberof KbTimeseriesResponse
-     */
-    series?: Array<LabeledSeries>;
+    contentType: string;
 }
-
-
-export const KbTimeseriesResponsePropertyValidationAttributesMap: {
+export const UploadFormatPropertyValidationAttributesMap: {
     [property: string]: {
         maxLength?: number,
         minLength?: number,
@@ -90,47 +51,42 @@ export const KbTimeseriesResponsePropertyValidationAttributesMap: {
 
 
 /**
- * Check if a given object implements the KbTimeseriesResponse interface.
+ * Check if a given object implements the UploadFormat interface.
  */
-export function instanceOfKbTimeseriesResponse(value: object): value is KbTimeseriesResponse {
-    if (!('metric' in value) || value['metric'] === undefined) return false;
-    if (!('timezone' in value) || value['timezone'] === undefined) return false;
-    if (!('bucket' in value) || value['bucket'] === undefined) return false;
+export function instanceOfUploadFormat(value: object): value is UploadFormat {
+    if (!('extension' in value) || value['extension'] === undefined) return false;
+    if (!('contentType' in value) || value['contentType'] === undefined) return false;
     return true;
 }
 
-export function KbTimeseriesResponseFromJSON(json: any): KbTimeseriesResponse {
-    return KbTimeseriesResponseFromJSONTyped(json, false);
+export function UploadFormatFromJSON(json: any): UploadFormat {
+    return UploadFormatFromJSONTyped(json, false);
 }
 
-export function KbTimeseriesResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): KbTimeseriesResponse {
+export function UploadFormatFromJSONTyped(json: any, ignoreDiscriminator: boolean): UploadFormat {
     if (json == null) {
         return json;
     }
     return {
         
-        'metric': KbMetricFromJSON(json['metric']),
-        'timezone': json['timezone'],
-        'bucket': TimeBucketFromJSON(json['bucket']),
-        'series': json['series'] == null ? undefined : ((json['series'] as Array<any>).map(LabeledSeriesFromJSON)),
+        'extension': json['extension'],
+        'contentType': json['content_type'],
     };
 }
 
-export function KbTimeseriesResponseToJSON(json: any): KbTimeseriesResponse {
-    return KbTimeseriesResponseToJSONTyped(json, false);
+export function UploadFormatToJSON(json: any): UploadFormat {
+    return UploadFormatToJSONTyped(json, false);
 }
 
-export function KbTimeseriesResponseToJSONTyped(value?: KbTimeseriesResponse | null, ignoreDiscriminator: boolean = false): any {
+export function UploadFormatToJSONTyped(value?: UploadFormat | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
         
-        'metric': KbMetricToJSON(value['metric']),
-        'timezone': value['timezone'],
-        'bucket': TimeBucketToJSON(value['bucket']),
-        'series': value['series'] == null ? undefined : ((value['series'] as Array<any>).map(LabeledSeriesToJSON)),
+        'extension': value['extension'],
+        'content_type': value['contentType'],
     };
 }
 

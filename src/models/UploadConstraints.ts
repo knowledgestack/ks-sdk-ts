@@ -13,65 +13,40 @@
  */
 
 import { mapValues } from '../runtime';
-import type { KbMetric } from './KbMetric';
+import type { UploadFormat } from './UploadFormat';
 import {
-    KbMetricFromJSON,
-    KbMetricFromJSONTyped,
-    KbMetricToJSON,
-    KbMetricToJSONTyped,
-} from './KbMetric';
-import type { TimeBucket } from './TimeBucket';
-import {
-    TimeBucketFromJSON,
-    TimeBucketFromJSONTyped,
-    TimeBucketToJSON,
-    TimeBucketToJSONTyped,
-} from './TimeBucket';
-import type { LabeledSeries } from './LabeledSeries';
-import {
-    LabeledSeriesFromJSON,
-    LabeledSeriesFromJSONTyped,
-    LabeledSeriesToJSON,
-    LabeledSeriesToJSONTyped,
-} from './LabeledSeries';
+    UploadFormatFromJSON,
+    UploadFormatFromJSONTyped,
+    UploadFormatToJSON,
+    UploadFormatToJSONTyped,
+} from './UploadFormat';
 
 /**
- * A knowledge-base metric bucketed over time.
  * 
- * ``series`` carries one entry per split — two (SOURCE / GENERATED) for
- * ``document_uploads``, one for the ingestion, message, and search metrics.
  * @export
- * @interface KbTimeseriesResponse
+ * @interface UploadConstraints
  */
-export interface KbTimeseriesResponse {
+export interface UploadConstraints {
     /**
      * 
-     * @type {KbMetric}
-     * @memberof KbTimeseriesResponse
+     * @type {Array<UploadFormat>}
+     * @memberof UploadConstraints
      */
-    metric: KbMetric;
+    formats: Array<UploadFormat>;
     /**
      * 
-     * @type {string}
-     * @memberof KbTimeseriesResponse
+     * @type {number}
+     * @memberof UploadConstraints
      */
-    timezone: string;
+    maxBytes: number;
     /**
      * 
-     * @type {TimeBucket}
-     * @memberof KbTimeseriesResponse
+     * @type {number}
+     * @memberof UploadConstraints
      */
-    bucket: TimeBucket;
-    /**
-     * 
-     * @type {Array<LabeledSeries>}
-     * @memberof KbTimeseriesResponse
-     */
-    series?: Array<LabeledSeries>;
+    maxImageBytes: number;
 }
-
-
-export const KbTimeseriesResponsePropertyValidationAttributesMap: {
+export const UploadConstraintsPropertyValidationAttributesMap: {
     [property: string]: {
         maxLength?: number,
         minLength?: number,
@@ -90,47 +65,45 @@ export const KbTimeseriesResponsePropertyValidationAttributesMap: {
 
 
 /**
- * Check if a given object implements the KbTimeseriesResponse interface.
+ * Check if a given object implements the UploadConstraints interface.
  */
-export function instanceOfKbTimeseriesResponse(value: object): value is KbTimeseriesResponse {
-    if (!('metric' in value) || value['metric'] === undefined) return false;
-    if (!('timezone' in value) || value['timezone'] === undefined) return false;
-    if (!('bucket' in value) || value['bucket'] === undefined) return false;
+export function instanceOfUploadConstraints(value: object): value is UploadConstraints {
+    if (!('formats' in value) || value['formats'] === undefined) return false;
+    if (!('maxBytes' in value) || value['maxBytes'] === undefined) return false;
+    if (!('maxImageBytes' in value) || value['maxImageBytes'] === undefined) return false;
     return true;
 }
 
-export function KbTimeseriesResponseFromJSON(json: any): KbTimeseriesResponse {
-    return KbTimeseriesResponseFromJSONTyped(json, false);
+export function UploadConstraintsFromJSON(json: any): UploadConstraints {
+    return UploadConstraintsFromJSONTyped(json, false);
 }
 
-export function KbTimeseriesResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): KbTimeseriesResponse {
+export function UploadConstraintsFromJSONTyped(json: any, ignoreDiscriminator: boolean): UploadConstraints {
     if (json == null) {
         return json;
     }
     return {
         
-        'metric': KbMetricFromJSON(json['metric']),
-        'timezone': json['timezone'],
-        'bucket': TimeBucketFromJSON(json['bucket']),
-        'series': json['series'] == null ? undefined : ((json['series'] as Array<any>).map(LabeledSeriesFromJSON)),
+        'formats': ((json['formats'] as Array<any>).map(UploadFormatFromJSON)),
+        'maxBytes': json['max_bytes'],
+        'maxImageBytes': json['max_image_bytes'],
     };
 }
 
-export function KbTimeseriesResponseToJSON(json: any): KbTimeseriesResponse {
-    return KbTimeseriesResponseToJSONTyped(json, false);
+export function UploadConstraintsToJSON(json: any): UploadConstraints {
+    return UploadConstraintsToJSONTyped(json, false);
 }
 
-export function KbTimeseriesResponseToJSONTyped(value?: KbTimeseriesResponse | null, ignoreDiscriminator: boolean = false): any {
+export function UploadConstraintsToJSONTyped(value?: UploadConstraints | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
         
-        'metric': KbMetricToJSON(value['metric']),
-        'timezone': value['timezone'],
-        'bucket': TimeBucketToJSON(value['bucket']),
-        'series': value['series'] == null ? undefined : ((value['series'] as Array<any>).map(LabeledSeriesToJSON)),
+        'formats': ((value['formats'] as Array<any>).map(UploadFormatToJSON)),
+        'max_bytes': value['maxBytes'],
+        'max_image_bytes': value['maxImageBytes'],
     };
 }
 

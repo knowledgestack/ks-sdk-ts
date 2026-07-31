@@ -364,6 +364,8 @@ docs/UpdateThreadRequest.md
 docs/UpdateUserRequest.md
 docs/UpdateWorkflowDefinitionRequest.md
 docs/UpdateWorkflowRunRequest.md
+docs/UploadConstraints.md
+docs/UploadFormat.md
 docs/UsageMetric.md
 docs/UserInfo.md
 docs/UserMessageRequest.md
@@ -771,6 +773,8 @@ src/models/UpdateThreadRequest.ts
 src/models/UpdateUserRequest.ts
 src/models/UpdateWorkflowDefinitionRequest.ts
 src/models/UpdateWorkflowRunRequest.ts
+src/models/UploadConstraints.ts
+src/models/UploadFormat.ts
 src/models/UsageMetric.ts
 src/models/UserInfo.ts
 src/models/UserMessageRequest.ts

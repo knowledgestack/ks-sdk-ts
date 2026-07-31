@@ -20,6 +20,13 @@ import {
     SupportedLanguageToJSON,
     SupportedLanguageToJSONTyped,
 } from './SupportedLanguage';
+import type { UploadConstraints } from './UploadConstraints';
+import {
+    UploadConstraintsFromJSON,
+    UploadConstraintsFromJSONTyped,
+    UploadConstraintsToJSON,
+    UploadConstraintsToJSONTyped,
+} from './UploadConstraints';
 
 /**
  * 
@@ -57,6 +64,12 @@ export interface FeaturesResponse {
      * @memberof FeaturesResponse
      */
     defaultFrontendLanguage: SupportedLanguage;
+    /**
+     * 
+     * @type {UploadConstraints}
+     * @memberof FeaturesResponse
+     */
+    upload: UploadConstraints;
 }
 
 
@@ -87,6 +100,7 @@ export function instanceOfFeaturesResponse(value: object): value is FeaturesResp
     if (!('githubLoginEnabled' in value) || value['githubLoginEnabled'] === undefined) return false;
     if (!('smsLoginEnabled' in value) || value['smsLoginEnabled'] === undefined) return false;
     if (!('defaultFrontendLanguage' in value) || value['defaultFrontendLanguage'] === undefined) return false;
+    if (!('upload' in value) || value['upload'] === undefined) return false;
     return true;
 }
 
@@ -105,6 +119,7 @@ export function FeaturesResponseFromJSONTyped(json: any, ignoreDiscriminator: bo
         'githubLoginEnabled': json['github_login_enabled'],
         'smsLoginEnabled': json['sms_login_enabled'],
         'defaultFrontendLanguage': SupportedLanguageFromJSON(json['default_frontend_language']),
+        'upload': UploadConstraintsFromJSON(json['upload']),
     };
 }
 
@@ -124,6 +139,7 @@ export function FeaturesResponseToJSONTyped(value?: FeaturesResponse | null, ign
         'github_login_enabled': value['githubLoginEnabled'],
         'sms_login_enabled': value['smsLoginEnabled'],
         'default_frontend_language': SupportedLanguageToJSON(value['defaultFrontendLanguage']),
+        'upload': UploadConstraintsToJSON(value['upload']),
     };
 }
 

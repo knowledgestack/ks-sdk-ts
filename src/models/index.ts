@@ -329,6 +329,8 @@ export * from './UpdateThreadRequest';
 export * from './UpdateUserRequest';
 export * from './UpdateWorkflowDefinitionRequest';
 export * from './UpdateWorkflowRunRequest';
+export * from './UploadConstraints';
+export * from './UploadFormat';
 export * from './UsageMetric';
 export * from './UserInfo';
 export * from './UserMessageRequest';

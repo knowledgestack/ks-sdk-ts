@@ -20,7 +20,9 @@
 export const KbMetric = {
     DocumentUploads: 'document_uploads',
     IngestionCompleted: 'ingestion_completed',
-    IngestionFailed: 'ingestion_failed'
+    IngestionFailed: 'ingestion_failed',
+    Message: 'message',
+    Search: 'search'
 } as const;
 export type KbMetric = typeof KbMetric[keyof typeof KbMetric];
 
