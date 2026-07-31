@@ -65,7 +65,7 @@ export const UpdateWorkflowRunRequestPropertyValidationAttributesMap: {
     }
 } = {
     inputScope: {
-        maxItems: 50,
+        maxItems: 200,
         uniqueItems: false,
     },
     name: {
