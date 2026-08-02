@@ -363,3 +363,5 @@ export * from './XlsxCellAnchorInputOrDocxParagraphAnchorInput';
 export * from './XlsxCellAnchorOutput';
 export * from './XlsxCellAnchorOutputOrDocxParagraphAnchorOutput';
 export * from './ZipFileResult';
+export * from './ZipIngestionStatusResponse';
+export * from './ZipMemberStatusResponse';

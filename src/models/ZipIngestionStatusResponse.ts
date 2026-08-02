@@ -13,39 +13,44 @@
  */
 
 import { mapValues } from '../runtime';
-import type { ZipFileResult } from './ZipFileResult';
+import type { ZipMemberStatusResponse } from './ZipMemberStatusResponse';
 import {
-    ZipFileResultFromJSON,
-    ZipFileResultFromJSONTyped,
-    ZipFileResultToJSON,
-    ZipFileResultToJSONTyped,
-} from './ZipFileResult';
+    ZipMemberStatusResponseFromJSON,
+    ZipMemberStatusResponseFromJSONTyped,
+    ZipMemberStatusResponseToJSON,
+    ZipMemberStatusResponseToJSONTyped,
+} from './ZipMemberStatusResponse';
 
 /**
- * Response from dispatching a ZIP archive to async ingestion.
+ * Status of a ZIP fan-out: live Temporal state + per-member outcomes.
  * 
- * ``workflow_id`` is the fan-out workflow to poll at
- * ``GET /v1/system-jobs/zip-ingestions/{workflow_id}`` for per-member outcomes;
- * it is None when the archive held no ingestible members. ``skipped`` are the
- * artifact/error entries resolved synchronously during classification.
+ * ``files`` reflects progress so far — members that have been dispatched
+ * (``workflow_id`` set), failed to dispatch (``error`` set), or were skipped as
+ * artifacts. Poll until ``temporal_status`` is terminal (e.g. ``COMPLETED``).
  * @export
- * @interface IngestZipResponse
+ * @interface ZipIngestionStatusResponse
  */
-export interface IngestZipResponse {
+export interface ZipIngestionStatusResponse {
     /**
      * 
      * @type {string}
-     * @memberof IngestZipResponse
+     * @memberof ZipIngestionStatusResponse
      */
-    workflowId: string | null;
+    workflowId: string;
     /**
      * 
-     * @type {Array<ZipFileResult>}
-     * @memberof IngestZipResponse
+     * @type {string}
+     * @memberof ZipIngestionStatusResponse
      */
-    skipped: Array<ZipFileResult>;
+    temporalStatus: string;
+    /**
+     * 
+     * @type {Array<ZipMemberStatusResponse>}
+     * @memberof ZipIngestionStatusResponse
+     */
+    files: Array<ZipMemberStatusResponse>;
 }
-export const IngestZipResponsePropertyValidationAttributesMap: {
+export const ZipIngestionStatusResponsePropertyValidationAttributesMap: {
     [property: string]: {
         maxLength?: number,
         minLength?: number,
@@ -64,34 +69,36 @@ export const IngestZipResponsePropertyValidationAttributesMap: {
 
 
 /**
- * Check if a given object implements the IngestZipResponse interface.
+ * Check if a given object implements the ZipIngestionStatusResponse interface.
  */
-export function instanceOfIngestZipResponse(value: object): value is IngestZipResponse {
+export function instanceOfZipIngestionStatusResponse(value: object): value is ZipIngestionStatusResponse {
     if (!('workflowId' in value) || value['workflowId'] === undefined) return false;
-    if (!('skipped' in value) || value['skipped'] === undefined) return false;
+    if (!('temporalStatus' in value) || value['temporalStatus'] === undefined) return false;
+    if (!('files' in value) || value['files'] === undefined) return false;
     return true;
 }
 
-export function IngestZipResponseFromJSON(json: any): IngestZipResponse {
-    return IngestZipResponseFromJSONTyped(json, false);
+export function ZipIngestionStatusResponseFromJSON(json: any): ZipIngestionStatusResponse {
+    return ZipIngestionStatusResponseFromJSONTyped(json, false);
 }
 
-export function IngestZipResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): IngestZipResponse {
+export function ZipIngestionStatusResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): ZipIngestionStatusResponse {
     if (json == null) {
         return json;
     }
     return {
         
         'workflowId': json['workflow_id'],
-        'skipped': ((json['skipped'] as Array<any>).map(ZipFileResultFromJSON)),
+        'temporalStatus': json['temporal_status'],
+        'files': ((json['files'] as Array<any>).map(ZipMemberStatusResponseFromJSON)),
     };
 }
 
-export function IngestZipResponseToJSON(json: any): IngestZipResponse {
-    return IngestZipResponseToJSONTyped(json, false);
+export function ZipIngestionStatusResponseToJSON(json: any): ZipIngestionStatusResponse {
+    return ZipIngestionStatusResponseToJSONTyped(json, false);
 }
 
-export function IngestZipResponseToJSONTyped(value?: IngestZipResponse | null, ignoreDiscriminator: boolean = false): any {
+export function ZipIngestionStatusResponseToJSONTyped(value?: ZipIngestionStatusResponse | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
@@ -99,7 +106,8 @@ export function IngestZipResponseToJSONTyped(value?: IngestZipResponse | null, i
     return {
         
         'workflow_id': value['workflowId'],
-        'skipped': ((value['skipped'] as Array<any>).map(ZipFileResultToJSON)),
+        'temporal_status': value['temporalStatus'],
+        'files': ((value['files'] as Array<any>).map(ZipMemberStatusResponseToJSON)),
     };
 }
 

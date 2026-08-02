@@ -403,6 +403,8 @@ docs/XlsxCellAnchorInputOrDocxParagraphAnchorInput.md
 docs/XlsxCellAnchorOutput.md
 docs/XlsxCellAnchorOutputOrDocxParagraphAnchorOutput.md
 docs/ZipFileResult.md
+docs/ZipIngestionStatusResponse.md
+docs/ZipMemberStatusResponse.md
 package.json
 src/apis/AdminKbApi.ts
 src/apis/AdminWorkflowsApi.ts
@@ -807,6 +809,8 @@ src/models/XlsxCellAnchorInputOrDocxParagraphAnchorInput.ts
 src/models/XlsxCellAnchorOutput.ts
 src/models/XlsxCellAnchorOutputOrDocxParagraphAnchorOutput.ts
 src/models/ZipFileResult.ts
+src/models/ZipIngestionStatusResponse.ts
+src/models/ZipMemberStatusResponse.ts
 src/models/index.ts
 src/runtime.ts
 tsconfig.esm.json

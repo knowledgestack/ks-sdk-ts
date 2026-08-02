@@ -13,39 +13,50 @@
  */
 
 import { mapValues } from '../runtime';
-import type { ZipFileResult } from './ZipFileResult';
-import {
-    ZipFileResultFromJSON,
-    ZipFileResultFromJSONTyped,
-    ZipFileResultToJSON,
-    ZipFileResultToJSONTyped,
-} from './ZipFileResult';
-
 /**
- * Response from dispatching a ZIP archive to async ingestion.
- * 
- * ``workflow_id`` is the fan-out workflow to poll at
- * ``GET /v1/system-jobs/zip-ingestions/{workflow_id}`` for per-member outcomes;
- * it is None when the archive held no ingestible members. ``skipped`` are the
- * artifact/error entries resolved synchronously during classification.
+ * One member's outcome within a ZIP fan-out (from the workflow query).
  * @export
- * @interface IngestZipResponse
+ * @interface ZipMemberStatusResponse
  */
-export interface IngestZipResponse {
+export interface ZipMemberStatusResponse {
     /**
      * 
      * @type {string}
-     * @memberof IngestZipResponse
+     * @memberof ZipMemberStatusResponse
      */
-    workflowId: string | null;
+    zipPath: string;
     /**
      * 
-     * @type {Array<ZipFileResult>}
-     * @memberof IngestZipResponse
+     * @type {string}
+     * @memberof ZipMemberStatusResponse
      */
-    skipped: Array<ZipFileResult>;
+    documentId?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof ZipMemberStatusResponse
+     */
+    documentVersionId?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof ZipMemberStatusResponse
+     */
+    workflowId?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof ZipMemberStatusResponse
+     */
+    error?: string | null;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof ZipMemberStatusResponse
+     */
+    skipped?: boolean;
 }
-export const IngestZipResponsePropertyValidationAttributesMap: {
+export const ZipMemberStatusResponsePropertyValidationAttributesMap: {
     [property: string]: {
         maxLength?: number,
         minLength?: number,
@@ -64,42 +75,49 @@ export const IngestZipResponsePropertyValidationAttributesMap: {
 
 
 /**
- * Check if a given object implements the IngestZipResponse interface.
+ * Check if a given object implements the ZipMemberStatusResponse interface.
  */
-export function instanceOfIngestZipResponse(value: object): value is IngestZipResponse {
-    if (!('workflowId' in value) || value['workflowId'] === undefined) return false;
-    if (!('skipped' in value) || value['skipped'] === undefined) return false;
+export function instanceOfZipMemberStatusResponse(value: object): value is ZipMemberStatusResponse {
+    if (!('zipPath' in value) || value['zipPath'] === undefined) return false;
     return true;
 }
 
-export function IngestZipResponseFromJSON(json: any): IngestZipResponse {
-    return IngestZipResponseFromJSONTyped(json, false);
+export function ZipMemberStatusResponseFromJSON(json: any): ZipMemberStatusResponse {
+    return ZipMemberStatusResponseFromJSONTyped(json, false);
 }
 
-export function IngestZipResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): IngestZipResponse {
+export function ZipMemberStatusResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): ZipMemberStatusResponse {
     if (json == null) {
         return json;
     }
     return {
         
-        'workflowId': json['workflow_id'],
-        'skipped': ((json['skipped'] as Array<any>).map(ZipFileResultFromJSON)),
+        'zipPath': json['zip_path'],
+        'documentId': json['document_id'] == null ? undefined : json['document_id'],
+        'documentVersionId': json['document_version_id'] == null ? undefined : json['document_version_id'],
+        'workflowId': json['workflow_id'] == null ? undefined : json['workflow_id'],
+        'error': json['error'] == null ? undefined : json['error'],
+        'skipped': json['skipped'] == null ? undefined : json['skipped'],
     };
 }
 
-export function IngestZipResponseToJSON(json: any): IngestZipResponse {
-    return IngestZipResponseToJSONTyped(json, false);
+export function ZipMemberStatusResponseToJSON(json: any): ZipMemberStatusResponse {
+    return ZipMemberStatusResponseToJSONTyped(json, false);
 }
 
-export function IngestZipResponseToJSONTyped(value?: IngestZipResponse | null, ignoreDiscriminator: boolean = false): any {
+export function ZipMemberStatusResponseToJSONTyped(value?: ZipMemberStatusResponse | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
         
+        'zip_path': value['zipPath'],
+        'document_id': value['documentId'],
+        'document_version_id': value['documentVersionId'],
         'workflow_id': value['workflowId'],
-        'skipped': ((value['skipped'] as Array<any>).map(ZipFileResultToJSON)),
+        'error': value['error'],
+        'skipped': value['skipped'],
     };
 }
 

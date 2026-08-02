@@ -94,6 +94,8 @@ export interface IngestDocumentRequest {
     secondaryTaxonomy?: ImageTaxonomy;
     pageDpi?: number;
     workflowRunId?: string | null;
+    tagIds?: Array<string>;
+    idempotencyKey?: string | null;
     workflowDefinitionId?: string | null;
 }
 
@@ -112,6 +114,7 @@ export interface IngestZipRequest {
     file: Blob;
     pathPartId: string;
     ingestionMode?: IngestionMode;
+    tagIds?: Array<string>;
 }
 
 export interface ListDocumentsRequest {
@@ -250,6 +253,8 @@ export interface DocumentsApiInterface {
      * @param {ImageTaxonomy} [secondaryTaxonomy] 
      * @param {number} [pageDpi] DPI for PDF page screenshots (default 72, min 36, max 216).
      * @param {string} [workflowRunId] Workflow run context for assumed agent uploads.
+     * @param {Array<string>} [tagIds] Tag IDs applied to the created document.
+     * @param {string} [idempotencyKey] Opt-in key: a repeat with the same key at the same (parent, name) replays the existing document instead of a 409.
      * @param {string} [workflowDefinitionId] Workflow definition context for assumed agent uploads.
      * @throws {RequiredError}
      * @memberof DocumentsApiInterface
@@ -267,6 +272,8 @@ export interface DocumentsApiInterface {
      * @param {ImageTaxonomy} [secondaryTaxonomy] 
      * @param {number} [pageDpi] DPI for PDF page screenshots (default 72, min 36, max 216).
      * @param {string} [workflowRunId] Workflow run context for assumed agent uploads.
+     * @param {Array<string>} [tagIds] Tag IDs applied to the created document.
+     * @param {string} [idempotencyKey] Opt-in key: a repeat with the same key at the same (parent, name) replays the existing document instead of a 409.
      * @param {string} [workflowDefinitionId] Workflow definition context for assumed agent uploads.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -323,17 +330,19 @@ export interface DocumentsApiInterface {
      * @param {Blob} file 
      * @param {string} pathPartId Parent path part ID (must be a FOLDER type)
      * @param {IngestionMode} [ingestionMode] 
+     * @param {Array<string>} [tagIds] Tag IDs applied to every ingested member document.
      * @throws {RequiredError}
      * @memberof DocumentsApiInterface
      */
     ingestZipRequestOpts(requestParameters: IngestZipRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * Upload a ZIP archive and ingest each member file individually.  Directory structure inside the ZIP is preserved as FOLDER PathParts under the target folder. Returns 202 with per-file outcomes — each file that ingests successfully has its own Temporal workflow ID to poll for status.  Whole-archive failures (not a ZIP, zip-bomb, >500 files) return 400 before any DB writes. Per-file failures (unsupported type, oversized) are included in the response with ``error`` set; other files continue processing.
+     * Upload a ZIP archive; ingest each member asynchronously via a fan-out.  The whole archive nests under a single FOLDER named after the ZIP file (``report.zip`` -> ``report/``), with the ZIP\'s directory structure mirrored beneath it as FOLDER PathParts — all created synchronously. Returns 202 with the fan-out ``workflow_id`` (poll ``GET /v1/system-jobs/zip-ingestions/{workflow_id}`` for per-member outcomes) plus the artifacts ``skipped`` during classification.  Whole-archive failures (not a ZIP, zip-bomb, >500 files) return 400 before any DB writes; a re-upload whose ZIP-named folder already exists returns 409. Per-member failures (unsupported type, oversized) surface in the polled workflow results, not in this response. Each member reuses the single-file ingest path, so run-enrollment and completion events fire per member there.
      * @summary Ingest Zip Handler
      * @param {Blob} file 
      * @param {string} pathPartId Parent path part ID (must be a FOLDER type)
      * @param {IngestionMode} [ingestionMode] 
+     * @param {Array<string>} [tagIds] Tag IDs applied to every ingested member document.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DocumentsApiInterface
@@ -341,7 +350,7 @@ export interface DocumentsApiInterface {
     ingestZipRaw(requestParameters: IngestZipRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<IngestZipResponse>>;
 
     /**
-     * Upload a ZIP archive and ingest each member file individually.  Directory structure inside the ZIP is preserved as FOLDER PathParts under the target folder. Returns 202 with per-file outcomes — each file that ingests successfully has its own Temporal workflow ID to poll for status.  Whole-archive failures (not a ZIP, zip-bomb, >500 files) return 400 before any DB writes. Per-file failures (unsupported type, oversized) are included in the response with ``error`` set; other files continue processing.
+     * Upload a ZIP archive; ingest each member asynchronously via a fan-out.  The whole archive nests under a single FOLDER named after the ZIP file (``report.zip`` -> ``report/``), with the ZIP\'s directory structure mirrored beneath it as FOLDER PathParts — all created synchronously. Returns 202 with the fan-out ``workflow_id`` (poll ``GET /v1/system-jobs/zip-ingestions/{workflow_id}`` for per-member outcomes) plus the artifacts ``skipped`` during classification.  Whole-archive failures (not a ZIP, zip-bomb, >500 files) return 400 before any DB writes; a re-upload whose ZIP-named folder already exists returns 409. Per-member failures (unsupported type, oversized) surface in the polled workflow results, not in this response. Each member reuses the single-file ingest path, so run-enrollment and completion events fire per member there.
      * Ingest Zip Handler
      */
     ingestZip(requestParameters: IngestZipRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<IngestZipResponse>;
@@ -730,6 +739,14 @@ export class DocumentsApi extends runtime.BaseAPI implements DocumentsApiInterfa
             formParams.append('workflow_run_id', requestParameters['workflowRunId'] as any);
         }
 
+        if (requestParameters['tagIds'] != null) {
+            formParams.append('tag_ids', requestParameters['tagIds']!.join(runtime.COLLECTION_FORMATS["csv"]));
+        }
+
+        if (requestParameters['idempotencyKey'] != null) {
+            formParams.append('idempotency_key', requestParameters['idempotencyKey'] as any);
+        }
+
         if (requestParameters['workflowDefinitionId'] != null) {
             formParams.append('workflow_definition_id', requestParameters['workflowDefinitionId'] as any);
         }
@@ -931,6 +948,10 @@ export class DocumentsApi extends runtime.BaseAPI implements DocumentsApiInterfa
             formParams.append('ingestion_mode', requestParameters['ingestionMode'] as any);
         }
 
+        if (requestParameters['tagIds'] != null) {
+            formParams.append('tag_ids', requestParameters['tagIds']!.join(runtime.COLLECTION_FORMATS["csv"]));
+        }
+
 
         let urlPath = `/v1/documents/ingest-zip`;
 
@@ -944,7 +965,7 @@ export class DocumentsApi extends runtime.BaseAPI implements DocumentsApiInterfa
     }
 
     /**
-     * Upload a ZIP archive and ingest each member file individually.  Directory structure inside the ZIP is preserved as FOLDER PathParts under the target folder. Returns 202 with per-file outcomes — each file that ingests successfully has its own Temporal workflow ID to poll for status.  Whole-archive failures (not a ZIP, zip-bomb, >500 files) return 400 before any DB writes. Per-file failures (unsupported type, oversized) are included in the response with ``error`` set; other files continue processing.
+     * Upload a ZIP archive; ingest each member asynchronously via a fan-out.  The whole archive nests under a single FOLDER named after the ZIP file (``report.zip`` -> ``report/``), with the ZIP\'s directory structure mirrored beneath it as FOLDER PathParts — all created synchronously. Returns 202 with the fan-out ``workflow_id`` (poll ``GET /v1/system-jobs/zip-ingestions/{workflow_id}`` for per-member outcomes) plus the artifacts ``skipped`` during classification.  Whole-archive failures (not a ZIP, zip-bomb, >500 files) return 400 before any DB writes; a re-upload whose ZIP-named folder already exists returns 409. Per-member failures (unsupported type, oversized) surface in the polled workflow results, not in this response. Each member reuses the single-file ingest path, so run-enrollment and completion events fire per member there.
      * Ingest Zip Handler
      */
     async ingestZipRaw(requestParameters: IngestZipRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<IngestZipResponse>> {
@@ -955,7 +976,7 @@ export class DocumentsApi extends runtime.BaseAPI implements DocumentsApiInterfa
     }
 
     /**
-     * Upload a ZIP archive and ingest each member file individually.  Directory structure inside the ZIP is preserved as FOLDER PathParts under the target folder. Returns 202 with per-file outcomes — each file that ingests successfully has its own Temporal workflow ID to poll for status.  Whole-archive failures (not a ZIP, zip-bomb, >500 files) return 400 before any DB writes. Per-file failures (unsupported type, oversized) are included in the response with ``error`` set; other files continue processing.
+     * Upload a ZIP archive; ingest each member asynchronously via a fan-out.  The whole archive nests under a single FOLDER named after the ZIP file (``report.zip`` -> ``report/``), with the ZIP\'s directory structure mirrored beneath it as FOLDER PathParts — all created synchronously. Returns 202 with the fan-out ``workflow_id`` (poll ``GET /v1/system-jobs/zip-ingestions/{workflow_id}`` for per-member outcomes) plus the artifacts ``skipped`` during classification.  Whole-archive failures (not a ZIP, zip-bomb, >500 files) return 400 before any DB writes; a re-upload whose ZIP-named folder already exists returns 409. Per-member failures (unsupported type, oversized) surface in the polled workflow results, not in this response. Each member reuses the single-file ingest path, so run-enrollment and completion events fire per member there.
      * Ingest Zip Handler
      */
     async ingestZip(requestParameters: IngestZipRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<IngestZipResponse> {

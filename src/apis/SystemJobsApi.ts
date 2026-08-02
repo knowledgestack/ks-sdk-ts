@@ -22,6 +22,7 @@ import type {
   WorkflowActionResponse,
   WorkflowCancelResponse,
   WorkflowDetailResponse,
+  ZipIngestionStatusResponse,
 } from '../models/index';
 import {
     ErrorResponseFromJSON,
@@ -38,6 +39,8 @@ import {
     WorkflowCancelResponseToJSON,
     WorkflowDetailResponseFromJSON,
     WorkflowDetailResponseToJSON,
+    ZipIngestionStatusResponseFromJSON,
+    ZipIngestionStatusResponseToJSON,
 } from '../models/index';
 
 export interface CancelTemporalWorkflowRequest {
@@ -53,6 +56,10 @@ export interface GetDvWorkflowRequest {
 }
 
 export interface GetTemporalWorkflowStatusRequest {
+    workflowId: string;
+}
+
+export interface GetZipIngestionStatusRequest {
     workflowId: string;
 }
 
@@ -163,6 +170,30 @@ export interface SystemJobsApiInterface {
      * Get Temporal Workflow Status Handler
      */
     getTemporalWorkflowStatus(requestParameters: GetTemporalWorkflowStatusRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TemporalWorkflowStatusResponse>;
+
+    /**
+     * Creates request options for getZipIngestionStatus without sending the request
+     * @param {string} workflowId 
+     * @throws {RequiredError}
+     * @memberof SystemJobsApiInterface
+     */
+    getZipIngestionStatusRequestOpts(requestParameters: GetZipIngestionStatusRequest): Promise<runtime.RequestOpts>;
+
+    /**
+     * Get a ZIP fan-out\'s live status + per-member outcomes.  Tenant-scoped via the TenantId search attribute. The per-member results come from the workflow\'s ``results`` query (served from retained history), so once Temporal retention expires this returns 404.
+     * @summary Get Zip Ingestion Status Handler
+     * @param {string} workflowId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof SystemJobsApiInterface
+     */
+    getZipIngestionStatusRaw(requestParameters: GetZipIngestionStatusRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ZipIngestionStatusResponse>>;
+
+    /**
+     * Get a ZIP fan-out\'s live status + per-member outcomes.  Tenant-scoped via the TenantId search attribute. The per-member results come from the workflow\'s ``results`` query (served from retained history), so once Temporal retention expires this returns 404.
+     * Get Zip Ingestion Status Handler
+     */
+    getZipIngestionStatus(requestParameters: GetZipIngestionStatusRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ZipIngestionStatusResponse>;
 
     /**
      * Creates request options for listDvWorkflows without sending the request
@@ -414,6 +445,61 @@ export class SystemJobsApi extends runtime.BaseAPI implements SystemJobsApiInter
      */
     async getTemporalWorkflowStatus(requestParameters: GetTemporalWorkflowStatusRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TemporalWorkflowStatusResponse> {
         const response = await this.getTemporalWorkflowStatusRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for getZipIngestionStatus without sending the request
+     */
+    async getZipIngestionStatusRequestOpts(requestParameters: GetZipIngestionStatusRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['workflowId'] == null) {
+            throw new runtime.RequiredError(
+                'workflowId',
+                'Required parameter "workflowId" was null or undefined when calling getZipIngestionStatus().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/v1/system-jobs/zip-ingestions/{workflow_id}`;
+        urlPath = urlPath.replace(`{${"workflow_id"}}`, encodeURIComponent(String(requestParameters['workflowId'])));
+
+        return {
+            path: urlPath,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Get a ZIP fan-out\'s live status + per-member outcomes.  Tenant-scoped via the TenantId search attribute. The per-member results come from the workflow\'s ``results`` query (served from retained history), so once Temporal retention expires this returns 404.
+     * Get Zip Ingestion Status Handler
+     */
+    async getZipIngestionStatusRaw(requestParameters: GetZipIngestionStatusRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ZipIngestionStatusResponse>> {
+        const requestOptions = await this.getZipIngestionStatusRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => ZipIngestionStatusResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * Get a ZIP fan-out\'s live status + per-member outcomes.  Tenant-scoped via the TenantId search attribute. The per-member results come from the workflow\'s ``results`` query (served from retained history), so once Temporal retention expires this returns 404.
+     * Get Zip Ingestion Status Handler
+     */
+    async getZipIngestionStatus(requestParameters: GetZipIngestionStatusRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ZipIngestionStatusResponse> {
+        const response = await this.getZipIngestionStatusRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

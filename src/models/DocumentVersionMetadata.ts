@@ -170,6 +170,12 @@ export interface DocumentVersionMetadata {
      * @memberof DocumentVersionMetadata
      */
     fileMd5?: string;
+    /**
+     * Opt-in create key. A repeat ingest with the same key at the same (parent, name) replays this document instead of colliding — makes a ZIP fan-out member retry idempotent.
+     * @type {string}
+     * @memberof DocumentVersionMetadata
+     */
+    idempotencyKey?: string | null;
 }
 export const DocumentVersionMetadataPropertyValidationAttributesMap: {
     [property: string]: {
@@ -226,6 +232,7 @@ export function DocumentVersionMetadataFromJSONTyped(json: any, ignoreDiscrimina
         'quotaPageCount': json['quota_page_count'] == null ? undefined : json['quota_page_count'],
         'quotaIdempotencyKey': json['quota_idempotency_key'] == null ? undefined : json['quota_idempotency_key'],
         'fileMd5': json['file_md5'] == null ? undefined : json['file_md5'],
+        'idempotencyKey': json['idempotency_key'] == null ? undefined : json['idempotency_key'],
     };
 }
 
@@ -260,6 +267,7 @@ export function DocumentVersionMetadataToJSONTyped(value?: DocumentVersionMetada
         'quota_page_count': value['quotaPageCount'],
         'quota_idempotency_key': value['quotaIdempotencyKey'],
         'file_md5': value['fileMd5'],
+        'idempotency_key': value['idempotencyKey'],
     };
 }
 
