@@ -225,7 +225,6 @@ export * from './PixelRegion';
 export * from './Polygon';
 export * from './PolygonReference';
 export * from './ProposeMemoryChunkRequest';
-export * from './ProposedMemoryChunkResponse';
 export * from './ReasoningPart';
 export * from './ReferenceType';
 export * from './ReorderPathPartRequest';

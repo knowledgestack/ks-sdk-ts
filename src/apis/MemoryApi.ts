@@ -21,8 +21,8 @@ import type {
   MemoryChunkResponse,
   MemoryScope,
   PaginatedResponsePendingMemoryChunkResponse,
+  PendingMemoryChunkResponse,
   ProposeMemoryChunkRequest,
-  ProposedMemoryChunkResponse,
 } from '../models/index';
 import {
     ErrorResponseFromJSON,
@@ -37,10 +37,10 @@ import {
     MemoryScopeToJSON,
     PaginatedResponsePendingMemoryChunkResponseFromJSON,
     PaginatedResponsePendingMemoryChunkResponseToJSON,
+    PendingMemoryChunkResponseFromJSON,
+    PendingMemoryChunkResponseToJSON,
     ProposeMemoryChunkRequestFromJSON,
     ProposeMemoryChunkRequestToJSON,
-    ProposedMemoryChunkResponseFromJSON,
-    ProposedMemoryChunkResponseToJSON,
 } from '../models/index';
 
 export interface ApproveMemoryProposalRequest {
@@ -161,12 +161,12 @@ export interface MemoryApiInterface {
      * @throws {RequiredError}
      * @memberof MemoryApiInterface
      */
-    proposeMemoryChunkRaw(requestParameters: ProposeMemoryChunkOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ProposedMemoryChunkResponse>>;
+    proposeMemoryChunkRaw(requestParameters: ProposeMemoryChunkOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PendingMemoryChunkResponse>>;
 
     /**
      * Propose Memory Chunk Handler
      */
-    proposeMemoryChunk(requestParameters: ProposeMemoryChunkOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ProposedMemoryChunkResponse>;
+    proposeMemoryChunk(requestParameters: ProposeMemoryChunkOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PendingMemoryChunkResponse>;
 
     /**
      * Creates request options for rejectMemoryProposal without sending the request
@@ -411,17 +411,17 @@ export class MemoryApi extends runtime.BaseAPI implements MemoryApiInterface {
     /**
      * Propose Memory Chunk Handler
      */
-    async proposeMemoryChunkRaw(requestParameters: ProposeMemoryChunkOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ProposedMemoryChunkResponse>> {
+    async proposeMemoryChunkRaw(requestParameters: ProposeMemoryChunkOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PendingMemoryChunkResponse>> {
         const requestOptions = await this.proposeMemoryChunkRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => ProposedMemoryChunkResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => PendingMemoryChunkResponseFromJSON(jsonValue));
     }
 
     /**
      * Propose Memory Chunk Handler
      */
-    async proposeMemoryChunk(requestParameters: ProposeMemoryChunkOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ProposedMemoryChunkResponse> {
+    async proposeMemoryChunk(requestParameters: ProposeMemoryChunkOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PendingMemoryChunkResponse> {
         const response = await this.proposeMemoryChunkRaw(requestParameters, initOverrides);
         return await response.value();
     }

@@ -249,7 +249,6 @@ docs/PixelRegion.md
 docs/Polygon.md
 docs/PolygonReference.md
 docs/ProposeMemoryChunkRequest.md
-docs/ProposedMemoryChunkResponse.md
 docs/PublicApi.md
 docs/ReasoningPart.md
 docs/ReferenceType.md
@@ -671,7 +670,6 @@ src/models/PixelRegion.ts
 src/models/Polygon.ts
 src/models/PolygonReference.ts
 src/models/ProposeMemoryChunkRequest.ts
-src/models/ProposedMemoryChunkResponse.ts
 src/models/ReasoningPart.ts
 src/models/ReferenceType.ts
 src/models/ReorderPathPartRequest.ts
