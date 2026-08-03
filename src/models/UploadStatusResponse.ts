@@ -12,53 +12,89 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
+import type { UploadPartResponse } from './UploadPartResponse';
+import {
+    UploadPartResponseFromJSON,
+    UploadPartResponseFromJSONTyped,
+    UploadPartResponseToJSON,
+    UploadPartResponseToJSONTyped,
+} from './UploadPartResponse';
 
 /**
- * Type of document.
+ * Parts S3 already holds — resume by re-sending the rest.
  * @export
+ * @interface UploadStatusResponse
  */
-export const DocumentType = {
-    Pdf: 'PDF',
-    Docx: 'DOCX',
-    Plaintext: 'PLAINTEXT',
-    Image: 'IMAGE',
-    Xlsx: 'XLSX',
-    Csv: 'CSV',
-    Pptx: 'PPTX',
-    Json: 'JSON',
-    Yaml: 'YAML',
-    Code: 'CODE',
-    Audio: 'AUDIO',
-    Video: 'VIDEO',
-    Unknown: 'UNKNOWN'
-} as const;
-export type DocumentType = typeof DocumentType[keyof typeof DocumentType];
-
-
-export function instanceOfDocumentType(value: any): boolean {
-    for (const key in DocumentType) {
-        if (Object.prototype.hasOwnProperty.call(DocumentType, key)) {
-            if (DocumentType[key as keyof typeof DocumentType] === value) {
-                return true;
-            }
-        }
+export interface UploadStatusResponse {
+    /**
+     * 
+     * @type {Array<UploadPartResponse>}
+     * @memberof UploadStatusResponse
+     */
+    parts: Array<UploadPartResponse>;
+    /**
+     * 
+     * @type {number}
+     * @memberof UploadStatusResponse
+     */
+    uploadedBytes: number;
+}
+export const UploadStatusResponsePropertyValidationAttributesMap: {
+    [property: string]: {
+        maxLength?: number,
+        minLength?: number,
+        pattern?: string,
+        maximum?: number,
+        exclusiveMaximum?: boolean,
+        minimum?: number,
+        exclusiveMinimum?: boolean,
+        multipleOf?: number,
+        maxItems?: number,
+        minItems?: number,
+        uniqueItems?: boolean
     }
-    return false;
+} = {
 }
 
-export function DocumentTypeFromJSON(json: any): DocumentType {
-    return DocumentTypeFromJSONTyped(json, false);
+
+/**
+ * Check if a given object implements the UploadStatusResponse interface.
+ */
+export function instanceOfUploadStatusResponse(value: object): value is UploadStatusResponse {
+    if (!('parts' in value) || value['parts'] === undefined) return false;
+    if (!('uploadedBytes' in value) || value['uploadedBytes'] === undefined) return false;
+    return true;
 }
 
-export function DocumentTypeFromJSONTyped(json: any, ignoreDiscriminator: boolean): DocumentType {
-    return json as DocumentType;
+export function UploadStatusResponseFromJSON(json: any): UploadStatusResponse {
+    return UploadStatusResponseFromJSONTyped(json, false);
 }
 
-export function DocumentTypeToJSON(value?: DocumentType | null): any {
-    return value as any;
+export function UploadStatusResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): UploadStatusResponse {
+    if (json == null) {
+        return json;
+    }
+    return {
+        
+        'parts': ((json['parts'] as Array<any>).map(UploadPartResponseFromJSON)),
+        'uploadedBytes': json['uploaded_bytes'],
+    };
 }
 
-export function DocumentTypeToJSONTyped(value: any, ignoreDiscriminator: boolean): DocumentType {
-    return value as DocumentType;
+export function UploadStatusResponseToJSON(json: any): UploadStatusResponse {
+    return UploadStatusResponseToJSONTyped(json, false);
+}
+
+export function UploadStatusResponseToJSONTyped(value?: UploadStatusResponse | null, ignoreDiscriminator: boolean = false): any {
+    if (value == null) {
+        return value;
+    }
+
+    return {
+        
+        'parts': ((value['parts'] as Array<any>).map(UploadPartResponseToJSON)),
+        'uploaded_bytes': value['uploadedBytes'],
+    };
 }
 

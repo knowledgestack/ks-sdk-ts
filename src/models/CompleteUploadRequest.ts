@@ -12,53 +12,72 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
+/**
+ * Finalize a resumable upload and start ingestion.
+ * @export
+ * @interface CompleteUploadRequest
+ */
+export interface CompleteUploadRequest {
+    /**
+     * Token from create-upload
+     * @type {string}
+     * @memberof CompleteUploadRequest
+     */
+    uploadToken: string;
+}
+export const CompleteUploadRequestPropertyValidationAttributesMap: {
+    [property: string]: {
+        maxLength?: number,
+        minLength?: number,
+        pattern?: string,
+        maximum?: number,
+        exclusiveMaximum?: boolean,
+        minimum?: number,
+        exclusiveMinimum?: boolean,
+        multipleOf?: number,
+        maxItems?: number,
+        minItems?: number,
+        uniqueItems?: boolean
+    }
+} = {
+}
+
 
 /**
- * Type of document.
- * @export
+ * Check if a given object implements the CompleteUploadRequest interface.
  */
-export const DocumentType = {
-    Pdf: 'PDF',
-    Docx: 'DOCX',
-    Plaintext: 'PLAINTEXT',
-    Image: 'IMAGE',
-    Xlsx: 'XLSX',
-    Csv: 'CSV',
-    Pptx: 'PPTX',
-    Json: 'JSON',
-    Yaml: 'YAML',
-    Code: 'CODE',
-    Audio: 'AUDIO',
-    Video: 'VIDEO',
-    Unknown: 'UNKNOWN'
-} as const;
-export type DocumentType = typeof DocumentType[keyof typeof DocumentType];
+export function instanceOfCompleteUploadRequest(value: object): value is CompleteUploadRequest {
+    if (!('uploadToken' in value) || value['uploadToken'] === undefined) return false;
+    return true;
+}
 
+export function CompleteUploadRequestFromJSON(json: any): CompleteUploadRequest {
+    return CompleteUploadRequestFromJSONTyped(json, false);
+}
 
-export function instanceOfDocumentType(value: any): boolean {
-    for (const key in DocumentType) {
-        if (Object.prototype.hasOwnProperty.call(DocumentType, key)) {
-            if (DocumentType[key as keyof typeof DocumentType] === value) {
-                return true;
-            }
-        }
+export function CompleteUploadRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): CompleteUploadRequest {
+    if (json == null) {
+        return json;
     }
-    return false;
+    return {
+        
+        'uploadToken': json['upload_token'],
+    };
 }
 
-export function DocumentTypeFromJSON(json: any): DocumentType {
-    return DocumentTypeFromJSONTyped(json, false);
+export function CompleteUploadRequestToJSON(json: any): CompleteUploadRequest {
+    return CompleteUploadRequestToJSONTyped(json, false);
 }
 
-export function DocumentTypeFromJSONTyped(json: any, ignoreDiscriminator: boolean): DocumentType {
-    return json as DocumentType;
-}
+export function CompleteUploadRequestToJSONTyped(value?: CompleteUploadRequest | null, ignoreDiscriminator: boolean = false): any {
+    if (value == null) {
+        return value;
+    }
 
-export function DocumentTypeToJSON(value?: DocumentType | null): any {
-    return value as any;
-}
-
-export function DocumentTypeToJSONTyped(value: any, ignoreDiscriminator: boolean): DocumentType {
-    return value as DocumentType;
+    return {
+        
+        'upload_token': value['uploadToken'],
+    };
 }
 

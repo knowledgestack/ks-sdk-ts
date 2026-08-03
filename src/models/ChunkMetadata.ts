@@ -71,6 +71,18 @@ export interface ChunkMetadata {
      */
     secondaryTaxonomy?: ImageTaxonomy;
     /**
+     * Start time of this chunk in the source media (ms from start).
+     * @type {number}
+     * @memberof ChunkMetadata
+     */
+    startMs?: number | null;
+    /**
+     * End time of this chunk in the source media (ms from start).
+     * @type {number}
+     * @memberof ChunkMetadata
+     */
+    endMs?: number | null;
+    /**
      * Worksheet name this chunk was extracted from (XLSX only)
      * @type {string}
      * @memberof ChunkMetadata
@@ -168,6 +180,8 @@ export function ChunkMetadataFromJSONTyped(json: any, ignoreDiscriminator: boole
         'summarizeForEmbedding': json['summarize_for_embedding'] == null ? undefined : json['summarize_for_embedding'],
         'extractedTextS3Uri': json['extracted_text_s3_uri'] == null ? undefined : json['extracted_text_s3_uri'],
         'secondaryTaxonomy': json['secondary_taxonomy'] == null ? undefined : ImageTaxonomyFromJSON(json['secondary_taxonomy']),
+        'startMs': json['start_ms'] == null ? undefined : json['start_ms'],
+        'endMs': json['end_ms'] == null ? undefined : json['end_ms'],
         'sheetName': json['sheet_name'] == null ? undefined : json['sheet_name'],
         'blockType': json['block_type'] == null ? undefined : json['block_type'],
         'sourceUri': json['source_uri'] == null ? undefined : json['source_uri'],
@@ -197,6 +211,8 @@ export function ChunkMetadataToJSONTyped(value?: ChunkMetadata | null, ignoreDis
         'summarize_for_embedding': value['summarizeForEmbedding'],
         'extracted_text_s3_uri': value['extractedTextS3Uri'],
         'secondary_taxonomy': ImageTaxonomyToJSON(value['secondaryTaxonomy']),
+        'start_ms': value['startMs'],
+        'end_ms': value['endMs'],
         'sheet_name': value['sheetName'],
         'block_type': value['blockType'],
         'source_uri': value['sourceUri'],

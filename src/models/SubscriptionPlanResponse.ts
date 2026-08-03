@@ -56,6 +56,12 @@ export interface SubscriptionPlanResponse {
      */
     searches: number;
     /**
+     * Per-period cap on transcribed media minutes (MEDIA_MINUTE).
+     * @type {number}
+     * @memberof SubscriptionPlanResponse
+     */
+    mediaMinutes: number;
+    /**
      * Upper bound on num_seats accepted by the upgrade endpoint. Admin PATCH may set tenant.seats above this value.
      * @type {number}
      * @memberof SubscriptionPlanResponse
@@ -107,6 +113,7 @@ export function instanceOfSubscriptionPlanResponse(value: object): value is Subs
     if (!('ingestedPages' in value) || value['ingestedPages'] === undefined) return false;
     if (!('messages' in value) || value['messages'] === undefined) return false;
     if (!('searches' in value) || value['searches'] === undefined) return false;
+    if (!('mediaMinutes' in value) || value['mediaMinutes'] === undefined) return false;
     if (!('maxSeats' in value) || value['maxSeats'] === undefined) return false;
     if (!('_public' in value) || value['_public'] === undefined) return false;
     if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
@@ -129,6 +136,7 @@ export function SubscriptionPlanResponseFromJSONTyped(json: any, ignoreDiscrimin
         'ingestedPages': json['ingested_pages'],
         'messages': json['messages'],
         'searches': json['searches'],
+        'mediaMinutes': json['media_minutes'],
         'maxSeats': json['max_seats'],
         '_public': json['public'],
         'createdAt': (new Date(json['created_at'])),
@@ -152,6 +160,7 @@ export function SubscriptionPlanResponseToJSONTyped(value?: SubscriptionPlanResp
         'ingested_pages': value['ingestedPages'],
         'messages': value['messages'],
         'searches': value['searches'],
+        'media_minutes': value['mediaMinutes'],
         'max_seats': value['maxSeats'],
         'public': value['_public'],
         'created_at': value['createdAt'].toISOString(),

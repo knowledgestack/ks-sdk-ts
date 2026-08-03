@@ -61,6 +61,7 @@ docs/CloneWorkflowRunRequest.md
 docs/ColumnConfig.md
 docs/ColumnReference.md
 docs/CommonFileExclusionReason.md
+docs/CompleteUploadRequest.md
 docs/ConnectionConfig.md
 docs/ContentsSortOrder.md
 docs/CreateApiConnectionRequest.md
@@ -81,6 +82,8 @@ docs/CreateSkillRequest.md
 docs/CreateTagRequest.md
 docs/CreateThreadMessageRequest.md
 docs/CreateThreadRequest.md
+docs/CreateUploadRequest.md
+docs/CreateUploadResponse.md
 docs/CreateWorkflowDefinitionRequest.md
 docs/DataSourceCatalogResponse.md
 docs/DataSourceDescribeResponse.md
@@ -365,6 +368,8 @@ docs/UpdateWorkflowDefinitionRequest.md
 docs/UpdateWorkflowRunRequest.md
 docs/UploadConstraints.md
 docs/UploadFormat.md
+docs/UploadPartResponse.md
+docs/UploadStatusResponse.md
 docs/UsageMetric.md
 docs/UserInfo.md
 docs/UserMessageRequest.md
@@ -494,6 +499,7 @@ src/models/CloneWorkflowRunRequest.ts
 src/models/ColumnConfig.ts
 src/models/ColumnReference.ts
 src/models/CommonFileExclusionReason.ts
+src/models/CompleteUploadRequest.ts
 src/models/ConnectionConfig.ts
 src/models/ContentsSortOrder.ts
 src/models/CreateApiConnectionRequest.ts
@@ -514,6 +520,8 @@ src/models/CreateSkillRequest.ts
 src/models/CreateTagRequest.ts
 src/models/CreateThreadMessageRequest.ts
 src/models/CreateThreadRequest.ts
+src/models/CreateUploadRequest.ts
+src/models/CreateUploadResponse.ts
 src/models/CreateWorkflowDefinitionRequest.ts
 src/models/DataSourceCatalogResponse.ts
 src/models/DataSourceDescribeResponse.ts
@@ -775,6 +783,8 @@ src/models/UpdateWorkflowDefinitionRequest.ts
 src/models/UpdateWorkflowRunRequest.ts
 src/models/UploadConstraints.ts
 src/models/UploadFormat.ts
+src/models/UploadPartResponse.ts
+src/models/UploadStatusResponse.ts
 src/models/UsageMetric.ts
 src/models/UserInfo.ts
 src/models/UserMessageRequest.ts

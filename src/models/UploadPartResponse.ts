@@ -12,53 +12,90 @@
  * Do not edit the class manually.
  */
 
+import { mapValues } from '../runtime';
+/**
+ * Acknowledgement of one stored part.
+ * @export
+ * @interface UploadPartResponse
+ */
+export interface UploadPartResponse {
+    /**
+     * 
+     * @type {number}
+     * @memberof UploadPartResponse
+     */
+    partNumber: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof UploadPartResponse
+     */
+    etag: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof UploadPartResponse
+     */
+    size: number;
+}
+export const UploadPartResponsePropertyValidationAttributesMap: {
+    [property: string]: {
+        maxLength?: number,
+        minLength?: number,
+        pattern?: string,
+        maximum?: number,
+        exclusiveMaximum?: boolean,
+        minimum?: number,
+        exclusiveMinimum?: boolean,
+        multipleOf?: number,
+        maxItems?: number,
+        minItems?: number,
+        uniqueItems?: boolean
+    }
+} = {
+}
+
 
 /**
- * Type of document.
- * @export
+ * Check if a given object implements the UploadPartResponse interface.
  */
-export const DocumentType = {
-    Pdf: 'PDF',
-    Docx: 'DOCX',
-    Plaintext: 'PLAINTEXT',
-    Image: 'IMAGE',
-    Xlsx: 'XLSX',
-    Csv: 'CSV',
-    Pptx: 'PPTX',
-    Json: 'JSON',
-    Yaml: 'YAML',
-    Code: 'CODE',
-    Audio: 'AUDIO',
-    Video: 'VIDEO',
-    Unknown: 'UNKNOWN'
-} as const;
-export type DocumentType = typeof DocumentType[keyof typeof DocumentType];
+export function instanceOfUploadPartResponse(value: object): value is UploadPartResponse {
+    if (!('partNumber' in value) || value['partNumber'] === undefined) return false;
+    if (!('etag' in value) || value['etag'] === undefined) return false;
+    if (!('size' in value) || value['size'] === undefined) return false;
+    return true;
+}
 
+export function UploadPartResponseFromJSON(json: any): UploadPartResponse {
+    return UploadPartResponseFromJSONTyped(json, false);
+}
 
-export function instanceOfDocumentType(value: any): boolean {
-    for (const key in DocumentType) {
-        if (Object.prototype.hasOwnProperty.call(DocumentType, key)) {
-            if (DocumentType[key as keyof typeof DocumentType] === value) {
-                return true;
-            }
-        }
+export function UploadPartResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): UploadPartResponse {
+    if (json == null) {
+        return json;
     }
-    return false;
+    return {
+        
+        'partNumber': json['part_number'],
+        'etag': json['etag'],
+        'size': json['size'],
+    };
 }
 
-export function DocumentTypeFromJSON(json: any): DocumentType {
-    return DocumentTypeFromJSONTyped(json, false);
+export function UploadPartResponseToJSON(json: any): UploadPartResponse {
+    return UploadPartResponseToJSONTyped(json, false);
 }
 
-export function DocumentTypeFromJSONTyped(json: any, ignoreDiscriminator: boolean): DocumentType {
-    return json as DocumentType;
-}
+export function UploadPartResponseToJSONTyped(value?: UploadPartResponse | null, ignoreDiscriminator: boolean = false): any {
+    if (value == null) {
+        return value;
+    }
 
-export function DocumentTypeToJSON(value?: DocumentType | null): any {
-    return value as any;
-}
-
-export function DocumentTypeToJSONTyped(value: any, ignoreDiscriminator: boolean): DocumentType {
-    return value as DocumentType;
+    return {
+        
+        'part_number': value['partNumber'],
+        'etag': value['etag'],
+        'size': value['size'],
+    };
 }
 

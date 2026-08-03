@@ -14,49 +14,37 @@
 
 import { mapValues } from '../runtime';
 /**
- * 
+ * Handles for a started resumable upload.
  * @export
- * @interface Citation
+ * @interface CreateUploadResponse
  */
-export interface Citation {
+export interface CreateUploadResponse {
     /**
      * 
      * @type {string}
-     * @memberof Citation
+     * @memberof CreateUploadResponse
      */
-    chunkId: string;
+    documentId: string;
     /**
-     * The quote from the chunk
+     * 
      * @type {string}
-     * @memberof Citation
+     * @memberof CreateUploadResponse
      */
-    quote: string;
+    documentVersionId: string;
     /**
-     * The 0-based start character of the quote in the chunk
-     * @type {number}
-     * @memberof Citation
+     * Opaque token; return it on every part/status/complete/abort
+     * @type {string}
+     * @memberof CreateUploadResponse
      */
-    startChar: number;
+    uploadToken: string;
     /**
-     * The length of the quote
+     * Recommended part size in bytes; every part except the last must be at least 5 MiB
      * @type {number}
-     * @memberof Citation
+     * @memberof CreateUploadResponse
      */
-    length: number;
-    /**
-     * Start time (ms) of the cited chunk in the source media, for AUDIO/VIDEO — lets the client deep-link playback to the moment. None for non-media chunks.
-     * @type {number}
-     * @memberof Citation
-     */
-    startMs?: number | null;
-    /**
-     * End time (ms) of the cited chunk in the source media (AUDIO/VIDEO); None for non-media chunks.
-     * @type {number}
-     * @memberof Citation
-     */
-    endMs?: number | null;
+    partSize: number;
 }
-export const CitationPropertyValidationAttributesMap: {
+export const CreateUploadResponsePropertyValidationAttributesMap: {
     [property: string]: {
         maxLength?: number,
         minLength?: number,
@@ -71,60 +59,52 @@ export const CitationPropertyValidationAttributesMap: {
         uniqueItems?: boolean
     }
 } = {
-    startChar: {
-        minimum: 0,
-        exclusiveMinimum: false,
-    },
 }
 
 
 /**
- * Check if a given object implements the Citation interface.
+ * Check if a given object implements the CreateUploadResponse interface.
  */
-export function instanceOfCitation(value: object): value is Citation {
-    if (!('chunkId' in value) || value['chunkId'] === undefined) return false;
-    if (!('quote' in value) || value['quote'] === undefined) return false;
-    if (!('startChar' in value) || value['startChar'] === undefined) return false;
-    if (!('length' in value) || value['length'] === undefined) return false;
+export function instanceOfCreateUploadResponse(value: object): value is CreateUploadResponse {
+    if (!('documentId' in value) || value['documentId'] === undefined) return false;
+    if (!('documentVersionId' in value) || value['documentVersionId'] === undefined) return false;
+    if (!('uploadToken' in value) || value['uploadToken'] === undefined) return false;
+    if (!('partSize' in value) || value['partSize'] === undefined) return false;
     return true;
 }
 
-export function CitationFromJSON(json: any): Citation {
-    return CitationFromJSONTyped(json, false);
+export function CreateUploadResponseFromJSON(json: any): CreateUploadResponse {
+    return CreateUploadResponseFromJSONTyped(json, false);
 }
 
-export function CitationFromJSONTyped(json: any, ignoreDiscriminator: boolean): Citation {
+export function CreateUploadResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): CreateUploadResponse {
     if (json == null) {
         return json;
     }
     return {
         
-        'chunkId': json['chunk_id'],
-        'quote': json['quote'],
-        'startChar': json['start_char'],
-        'length': json['length'],
-        'startMs': json['start_ms'] == null ? undefined : json['start_ms'],
-        'endMs': json['end_ms'] == null ? undefined : json['end_ms'],
+        'documentId': json['document_id'],
+        'documentVersionId': json['document_version_id'],
+        'uploadToken': json['upload_token'],
+        'partSize': json['part_size'],
     };
 }
 
-export function CitationToJSON(json: any): Citation {
-    return CitationToJSONTyped(json, false);
+export function CreateUploadResponseToJSON(json: any): CreateUploadResponse {
+    return CreateUploadResponseToJSONTyped(json, false);
 }
 
-export function CitationToJSONTyped(value?: Citation | null, ignoreDiscriminator: boolean = false): any {
+export function CreateUploadResponseToJSONTyped(value?: CreateUploadResponse | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
         
-        'chunk_id': value['chunkId'],
-        'quote': value['quote'],
-        'start_char': value['startChar'],
-        'length': value['length'],
-        'start_ms': value['startMs'],
-        'end_ms': value['endMs'],
+        'document_id': value['documentId'],
+        'document_version_id': value['documentVersionId'],
+        'upload_token': value['uploadToken'],
+        'part_size': value['partSize'],
     };
 }
 

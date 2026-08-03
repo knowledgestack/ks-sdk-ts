@@ -14,49 +14,37 @@
 
 import { mapValues } from '../runtime';
 /**
- * 
+ * Begin a resumable upload.
  * @export
- * @interface Citation
+ * @interface CreateUploadRequest
  */
-export interface Citation {
+export interface CreateUploadRequest {
     /**
-     * 
+     * Parent folder path part ID (FOLDER)
      * @type {string}
-     * @memberof Citation
+     * @memberof CreateUploadRequest
      */
-    chunkId: string;
+    parentPathId: string;
     /**
-     * The quote from the chunk
+     * Document name
      * @type {string}
-     * @memberof Citation
+     * @memberof CreateUploadRequest
      */
-    quote: string;
+    name: string;
     /**
-     * The 0-based start character of the quote in the chunk
-     * @type {number}
-     * @memberof Citation
+     * Original filename; its extension selects the type + size cap
+     * @type {string}
+     * @memberof CreateUploadRequest
      */
-    startChar: number;
+    filename: string;
     /**
-     * The length of the quote
+     * Declared total size; fast-rejected against the type cap
      * @type {number}
-     * @memberof Citation
+     * @memberof CreateUploadRequest
      */
-    length: number;
-    /**
-     * Start time (ms) of the cited chunk in the source media, for AUDIO/VIDEO — lets the client deep-link playback to the moment. None for non-media chunks.
-     * @type {number}
-     * @memberof Citation
-     */
-    startMs?: number | null;
-    /**
-     * End time (ms) of the cited chunk in the source media (AUDIO/VIDEO); None for non-media chunks.
-     * @type {number}
-     * @memberof Citation
-     */
-    endMs?: number | null;
+    sizeBytes: number;
 }
-export const CitationPropertyValidationAttributesMap: {
+export const CreateUploadRequestPropertyValidationAttributesMap: {
     [property: string]: {
         maxLength?: number,
         minLength?: number,
@@ -71,60 +59,52 @@ export const CitationPropertyValidationAttributesMap: {
         uniqueItems?: boolean
     }
 } = {
-    startChar: {
-        minimum: 0,
-        exclusiveMinimum: false,
-    },
 }
 
 
 /**
- * Check if a given object implements the Citation interface.
+ * Check if a given object implements the CreateUploadRequest interface.
  */
-export function instanceOfCitation(value: object): value is Citation {
-    if (!('chunkId' in value) || value['chunkId'] === undefined) return false;
-    if (!('quote' in value) || value['quote'] === undefined) return false;
-    if (!('startChar' in value) || value['startChar'] === undefined) return false;
-    if (!('length' in value) || value['length'] === undefined) return false;
+export function instanceOfCreateUploadRequest(value: object): value is CreateUploadRequest {
+    if (!('parentPathId' in value) || value['parentPathId'] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('filename' in value) || value['filename'] === undefined) return false;
+    if (!('sizeBytes' in value) || value['sizeBytes'] === undefined) return false;
     return true;
 }
 
-export function CitationFromJSON(json: any): Citation {
-    return CitationFromJSONTyped(json, false);
+export function CreateUploadRequestFromJSON(json: any): CreateUploadRequest {
+    return CreateUploadRequestFromJSONTyped(json, false);
 }
 
-export function CitationFromJSONTyped(json: any, ignoreDiscriminator: boolean): Citation {
+export function CreateUploadRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): CreateUploadRequest {
     if (json == null) {
         return json;
     }
     return {
         
-        'chunkId': json['chunk_id'],
-        'quote': json['quote'],
-        'startChar': json['start_char'],
-        'length': json['length'],
-        'startMs': json['start_ms'] == null ? undefined : json['start_ms'],
-        'endMs': json['end_ms'] == null ? undefined : json['end_ms'],
+        'parentPathId': json['parent_path_id'],
+        'name': json['name'],
+        'filename': json['filename'],
+        'sizeBytes': json['size_bytes'],
     };
 }
 
-export function CitationToJSON(json: any): Citation {
-    return CitationToJSONTyped(json, false);
+export function CreateUploadRequestToJSON(json: any): CreateUploadRequest {
+    return CreateUploadRequestToJSONTyped(json, false);
 }
 
-export function CitationToJSONTyped(value?: Citation | null, ignoreDiscriminator: boolean = false): any {
+export function CreateUploadRequestToJSONTyped(value?: CreateUploadRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
         
-        'chunk_id': value['chunkId'],
-        'quote': value['quote'],
-        'start_char': value['startChar'],
-        'length': value['length'],
-        'start_ms': value['startMs'],
-        'end_ms': value['endMs'],
+        'parent_path_id': value['parentPathId'],
+        'name': value['name'],
+        'filename': value['filename'],
+        'size_bytes': value['sizeBytes'],
     };
 }
 

@@ -44,6 +44,18 @@ export interface EnrichedCitation {
      */
     length: number;
     /**
+     * Start time (ms) of the cited chunk in the source media, for AUDIO/VIDEO — lets the client deep-link playback to the moment. None for non-media chunks.
+     * @type {number}
+     * @memberof EnrichedCitation
+     */
+    startMs?: number | null;
+    /**
+     * End time (ms) of the cited chunk in the source media (AUDIO/VIDEO); None for non-media chunks.
+     * @type {number}
+     * @memberof EnrichedCitation
+     */
+    endMs?: number | null;
+    /**
      * 
      * @type {string}
      * @memberof EnrichedCitation
@@ -127,6 +139,8 @@ export function EnrichedCitationFromJSONTyped(json: any, ignoreDiscriminator: bo
         'quote': json['quote'],
         'startChar': json['start_char'],
         'length': json['length'],
+        'startMs': json['start_ms'] == null ? undefined : json['start_ms'],
+        'endMs': json['end_ms'] == null ? undefined : json['end_ms'],
         'documentId': json['document_id'] == null ? undefined : json['document_id'],
         'documentVersionId': json['document_version_id'] == null ? undefined : json['document_version_id'],
         'documentName': json['document_name'] == null ? undefined : json['document_name'],
@@ -151,6 +165,8 @@ export function EnrichedCitationToJSONTyped(value?: EnrichedCitation | null, ign
         'quote': value['quote'],
         'start_char': value['startChar'],
         'length': value['length'],
+        'start_ms': value['startMs'],
+        'end_ms': value['endMs'],
         'document_id': value['documentId'],
         'document_version_id': value['documentVersionId'],
         'document_name': value['documentName'],

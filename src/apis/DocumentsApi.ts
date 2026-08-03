@@ -16,7 +16,10 @@
 import * as runtime from '../runtime';
 import type {
   ChunkType,
+  CompleteUploadRequest,
   CreateDocumentRequest,
+  CreateUploadRequest,
+  CreateUploadResponse,
   DocumentDownloadResponse,
   DocumentResponse,
   DocumentType,
@@ -31,12 +34,20 @@ import type {
   PathOrder,
   SortDirection,
   UpdateDocumentRequest,
+  UploadPartResponse,
+  UploadStatusResponse,
 } from '../models/index';
 import {
     ChunkTypeFromJSON,
     ChunkTypeToJSON,
+    CompleteUploadRequestFromJSON,
+    CompleteUploadRequestToJSON,
     CreateDocumentRequestFromJSON,
     CreateDocumentRequestToJSON,
+    CreateUploadRequestFromJSON,
+    CreateUploadRequestToJSON,
+    CreateUploadResponseFromJSON,
+    CreateUploadResponseToJSON,
     DocumentDownloadResponseFromJSON,
     DocumentDownloadResponseToJSON,
     DocumentResponseFromJSON,
@@ -65,10 +76,26 @@ import {
     SortDirectionToJSON,
     UpdateDocumentRequestFromJSON,
     UpdateDocumentRequestToJSON,
+    UploadPartResponseFromJSON,
+    UploadPartResponseToJSON,
+    UploadStatusResponseFromJSON,
+    UploadStatusResponseToJSON,
 } from '../models/index';
+
+export interface AbortDocumentUploadRequest {
+    xUploadToken: string;
+}
+
+export interface CompleteDocumentUploadRequest {
+    completeUploadRequest: CompleteUploadRequest;
+}
 
 export interface CreateDocumentOperationRequest {
     createDocumentRequest: CreateDocumentRequest;
+}
+
+export interface CreateDocumentUploadRequest {
+    createUploadRequest: CreateUploadRequest;
 }
 
 export interface DeleteDocumentRequest {
@@ -83,6 +110,10 @@ export interface DownloadDocumentRequest {
 export interface GetDocumentRequest {
     documentId: string;
     withTags?: boolean;
+}
+
+export interface GetDocumentUploadStatusRequest {
+    xUploadToken: string;
 }
 
 export interface IngestDocumentRequest {
@@ -137,6 +168,12 @@ export interface UpdateDocumentOperationRequest {
     updateDocumentRequest: UpdateDocumentRequest;
 }
 
+export interface UploadDocumentPartRequest {
+    partNumber: number;
+    xUploadToken: string;
+    body: Blob;
+}
+
 /**
  * DocumentsApi - interface
  * 
@@ -144,6 +181,54 @@ export interface UpdateDocumentOperationRequest {
  * @interface DocumentsApiInterface
  */
 export interface DocumentsApiInterface {
+    /**
+     * Creates request options for abortDocumentUpload without sending the request
+     * @param {string} xUploadToken 
+     * @throws {RequiredError}
+     * @memberof DocumentsApiInterface
+     */
+    abortDocumentUploadRequestOpts(requestParameters: AbortDocumentUploadRequest): Promise<runtime.RequestOpts>;
+
+    /**
+     * Discard an in-progress resumable upload and its parts.
+     * @summary Abort Document Upload Handler
+     * @param {string} xUploadToken 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DocumentsApiInterface
+     */
+    abortDocumentUploadRaw(requestParameters: AbortDocumentUploadRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>>;
+
+    /**
+     * Discard an in-progress resumable upload and its parts.
+     * Abort Document Upload Handler
+     */
+    abortDocumentUpload(requestParameters: AbortDocumentUploadRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void>;
+
+    /**
+     * Creates request options for completeDocumentUpload without sending the request
+     * @param {CompleteUploadRequest} completeUploadRequest 
+     * @throws {RequiredError}
+     * @memberof DocumentsApiInterface
+     */
+    completeDocumentUploadRequestOpts(requestParameters: CompleteDocumentUploadRequest): Promise<runtime.RequestOpts>;
+
+    /**
+     * Assemble the uploaded parts, create the document, and start ingestion.
+     * @summary Complete Document Upload Handler
+     * @param {CompleteUploadRequest} completeUploadRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DocumentsApiInterface
+     */
+    completeDocumentUploadRaw(requestParameters: CompleteDocumentUploadRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<IngestDocumentResponse>>;
+
+    /**
+     * Assemble the uploaded parts, create the document, and start ingestion.
+     * Complete Document Upload Handler
+     */
+    completeDocumentUpload(requestParameters: CompleteDocumentUploadRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<IngestDocumentResponse>;
+
     /**
      * Creates request options for createDocument without sending the request
      * @param {CreateDocumentRequest} createDocumentRequest 
@@ -167,6 +252,30 @@ export interface DocumentsApiInterface {
      * Create Document Handler
      */
     createDocument(requestParameters: CreateDocumentOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DocumentResponse>;
+
+    /**
+     * Creates request options for createDocumentUpload without sending the request
+     * @param {CreateUploadRequest} createUploadRequest 
+     * @throws {RequiredError}
+     * @memberof DocumentsApiInterface
+     */
+    createDocumentUploadRequestOpts(requestParameters: CreateDocumentUploadRequest): Promise<runtime.RequestOpts>;
+
+    /**
+     * Begin a resumable multipart upload for a large file (audio/video/…).  Returns an opaque ``upload_token``. Stream the file as parts to ``PUT /v1/documents/uploads/parts/{part_number}`` (every part except the last at least 5 MiB), then ``POST /v1/documents/uploads/complete``. A dropped part is re-sent alone — ``GET /v1/documents/uploads/parts`` reports what landed.
+     * @summary Create Document Upload Handler
+     * @param {CreateUploadRequest} createUploadRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DocumentsApiInterface
+     */
+    createDocumentUploadRaw(requestParameters: CreateDocumentUploadRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<CreateUploadResponse>>;
+
+    /**
+     * Begin a resumable multipart upload for a large file (audio/video/…).  Returns an opaque ``upload_token``. Stream the file as parts to ``PUT /v1/documents/uploads/parts/{part_number}`` (every part except the last at least 5 MiB), then ``POST /v1/documents/uploads/complete``. A dropped part is re-sent alone — ``GET /v1/documents/uploads/parts`` reports what landed.
+     * Create Document Upload Handler
+     */
+    createDocumentUpload(requestParameters: CreateDocumentUploadRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CreateUploadResponse>;
 
     /**
      * Creates request options for deleteDocument without sending the request
@@ -242,6 +351,30 @@ export interface DocumentsApiInterface {
      * Get Document Handler
      */
     getDocument(requestParameters: GetDocumentRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DocumentResponse>;
+
+    /**
+     * Creates request options for getDocumentUploadStatus without sending the request
+     * @param {string} xUploadToken 
+     * @throws {RequiredError}
+     * @memberof DocumentsApiInterface
+     */
+    getDocumentUploadStatusRequestOpts(requestParameters: GetDocumentUploadStatusRequest): Promise<runtime.RequestOpts>;
+
+    /**
+     * Report which parts S3 already holds so the client resumes the rest.
+     * @summary Get Document Upload Status Handler
+     * @param {string} xUploadToken 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DocumentsApiInterface
+     */
+    getDocumentUploadStatusRaw(requestParameters: GetDocumentUploadStatusRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UploadStatusResponse>>;
+
+    /**
+     * Report which parts S3 already holds so the client resumes the rest.
+     * Get Document Upload Status Handler
+     */
+    getDocumentUploadStatus(requestParameters: GetDocumentUploadStatusRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UploadStatusResponse>;
 
     /**
      * Creates request options for ingestDocument without sending the request
@@ -427,12 +560,154 @@ export interface DocumentsApiInterface {
      */
     updateDocument(requestParameters: UpdateDocumentOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DocumentResponse>;
 
+    /**
+     * Creates request options for uploadDocumentPart without sending the request
+     * @param {number} partNumber 
+     * @param {string} xUploadToken 
+     * @param {Blob} body 
+     * @throws {RequiredError}
+     * @memberof DocumentsApiInterface
+     */
+    uploadDocumentPartRequestOpts(requestParameters: UploadDocumentPartRequest): Promise<runtime.RequestOpts>;
+
+    /**
+     * Upload one part (raw octet-stream body) of a resumable upload.
+     * @summary Upload Document Part Handler
+     * @param {number} partNumber 
+     * @param {string} xUploadToken 
+     * @param {Blob} body 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DocumentsApiInterface
+     */
+    uploadDocumentPartRaw(requestParameters: UploadDocumentPartRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UploadPartResponse>>;
+
+    /**
+     * Upload one part (raw octet-stream body) of a resumable upload.
+     * Upload Document Part Handler
+     */
+    uploadDocumentPart(requestParameters: UploadDocumentPartRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UploadPartResponse>;
+
 }
 
 /**
  * 
  */
 export class DocumentsApi extends runtime.BaseAPI implements DocumentsApiInterface {
+
+    /**
+     * Creates request options for abortDocumentUpload without sending the request
+     */
+    async abortDocumentUploadRequestOpts(requestParameters: AbortDocumentUploadRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['xUploadToken'] == null) {
+            throw new runtime.RequiredError(
+                'xUploadToken',
+                'Required parameter "xUploadToken" was null or undefined when calling abortDocumentUpload().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (requestParameters['xUploadToken'] != null) {
+            headerParameters['X-Upload-Token'] = String(requestParameters['xUploadToken']);
+        }
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/v1/documents/uploads`;
+
+        return {
+            path: urlPath,
+            method: 'DELETE',
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Discard an in-progress resumable upload and its parts.
+     * Abort Document Upload Handler
+     */
+    async abortDocumentUploadRaw(requestParameters: AbortDocumentUploadRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        const requestOptions = await this.abortDocumentUploadRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * Discard an in-progress resumable upload and its parts.
+     * Abort Document Upload Handler
+     */
+    async abortDocumentUpload(requestParameters: AbortDocumentUploadRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.abortDocumentUploadRaw(requestParameters, initOverrides);
+    }
+
+    /**
+     * Creates request options for completeDocumentUpload without sending the request
+     */
+    async completeDocumentUploadRequestOpts(requestParameters: CompleteDocumentUploadRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['completeUploadRequest'] == null) {
+            throw new runtime.RequiredError(
+                'completeUploadRequest',
+                'Required parameter "completeUploadRequest" was null or undefined when calling completeDocumentUpload().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/v1/documents/uploads/complete`;
+
+        return {
+            path: urlPath,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: CompleteUploadRequestToJSON(requestParameters['completeUploadRequest']),
+        };
+    }
+
+    /**
+     * Assemble the uploaded parts, create the document, and start ingestion.
+     * Complete Document Upload Handler
+     */
+    async completeDocumentUploadRaw(requestParameters: CompleteDocumentUploadRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<IngestDocumentResponse>> {
+        const requestOptions = await this.completeDocumentUploadRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => IngestDocumentResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * Assemble the uploaded parts, create the document, and start ingestion.
+     * Complete Document Upload Handler
+     */
+    async completeDocumentUpload(requestParameters: CompleteDocumentUploadRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<IngestDocumentResponse> {
+        const response = await this.completeDocumentUploadRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
 
     /**
      * Creates request options for createDocument without sending the request
@@ -488,6 +763,63 @@ export class DocumentsApi extends runtime.BaseAPI implements DocumentsApiInterfa
      */
     async createDocument(requestParameters: CreateDocumentOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DocumentResponse> {
         const response = await this.createDocumentRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for createDocumentUpload without sending the request
+     */
+    async createDocumentUploadRequestOpts(requestParameters: CreateDocumentUploadRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['createUploadRequest'] == null) {
+            throw new runtime.RequiredError(
+                'createUploadRequest',
+                'Required parameter "createUploadRequest" was null or undefined when calling createDocumentUpload().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/v1/documents/uploads`;
+
+        return {
+            path: urlPath,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: CreateUploadRequestToJSON(requestParameters['createUploadRequest']),
+        };
+    }
+
+    /**
+     * Begin a resumable multipart upload for a large file (audio/video/…).  Returns an opaque ``upload_token``. Stream the file as parts to ``PUT /v1/documents/uploads/parts/{part_number}`` (every part except the last at least 5 MiB), then ``POST /v1/documents/uploads/complete``. A dropped part is re-sent alone — ``GET /v1/documents/uploads/parts`` reports what landed.
+     * Create Document Upload Handler
+     */
+    async createDocumentUploadRaw(requestParameters: CreateDocumentUploadRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<CreateUploadResponse>> {
+        const requestOptions = await this.createDocumentUploadRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => CreateUploadResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * Begin a resumable multipart upload for a large file (audio/video/…).  Returns an opaque ``upload_token``. Stream the file as parts to ``PUT /v1/documents/uploads/parts/{part_number}`` (every part except the last at least 5 MiB), then ``POST /v1/documents/uploads/complete``. A dropped part is re-sent alone — ``GET /v1/documents/uploads/parts`` reports what landed.
+     * Create Document Upload Handler
+     */
+    async createDocumentUpload(requestParameters: CreateDocumentUploadRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CreateUploadResponse> {
+        const response = await this.createDocumentUploadRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -658,6 +990,64 @@ export class DocumentsApi extends runtime.BaseAPI implements DocumentsApiInterfa
      */
     async getDocument(requestParameters: GetDocumentRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DocumentResponse> {
         const response = await this.getDocumentRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for getDocumentUploadStatus without sending the request
+     */
+    async getDocumentUploadStatusRequestOpts(requestParameters: GetDocumentUploadStatusRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['xUploadToken'] == null) {
+            throw new runtime.RequiredError(
+                'xUploadToken',
+                'Required parameter "xUploadToken" was null or undefined when calling getDocumentUploadStatus().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (requestParameters['xUploadToken'] != null) {
+            headerParameters['X-Upload-Token'] = String(requestParameters['xUploadToken']);
+        }
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/v1/documents/uploads/parts`;
+
+        return {
+            path: urlPath,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Report which parts S3 already holds so the client resumes the rest.
+     * Get Document Upload Status Handler
+     */
+    async getDocumentUploadStatusRaw(requestParameters: GetDocumentUploadStatusRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UploadStatusResponse>> {
+        const requestOptions = await this.getDocumentUploadStatusRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => UploadStatusResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * Report which parts S3 already holds so the client resumes the rest.
+     * Get Document Upload Status Handler
+     */
+    async getDocumentUploadStatus(requestParameters: GetDocumentUploadStatusRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UploadStatusResponse> {
+        const response = await this.getDocumentUploadStatusRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -1141,6 +1531,82 @@ export class DocumentsApi extends runtime.BaseAPI implements DocumentsApiInterfa
      */
     async updateDocument(requestParameters: UpdateDocumentOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DocumentResponse> {
         const response = await this.updateDocumentRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for uploadDocumentPart without sending the request
+     */
+    async uploadDocumentPartRequestOpts(requestParameters: UploadDocumentPartRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['partNumber'] == null) {
+            throw new runtime.RequiredError(
+                'partNumber',
+                'Required parameter "partNumber" was null or undefined when calling uploadDocumentPart().'
+            );
+        }
+
+        if (requestParameters['xUploadToken'] == null) {
+            throw new runtime.RequiredError(
+                'xUploadToken',
+                'Required parameter "xUploadToken" was null or undefined when calling uploadDocumentPart().'
+            );
+        }
+
+        if (requestParameters['body'] == null) {
+            throw new runtime.RequiredError(
+                'body',
+                'Required parameter "body" was null or undefined when calling uploadDocumentPart().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/octet-stream';
+
+        if (requestParameters['xUploadToken'] != null) {
+            headerParameters['X-Upload-Token'] = String(requestParameters['xUploadToken']);
+        }
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/v1/documents/uploads/parts/{part_number}`;
+        urlPath = urlPath.replace(`{${"part_number"}}`, encodeURIComponent(String(requestParameters['partNumber'])));
+
+        return {
+            path: urlPath,
+            method: 'PUT',
+            headers: headerParameters,
+            query: queryParameters,
+            body: requestParameters['body'] as any,
+        };
+    }
+
+    /**
+     * Upload one part (raw octet-stream body) of a resumable upload.
+     * Upload Document Part Handler
+     */
+    async uploadDocumentPartRaw(requestParameters: UploadDocumentPartRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UploadPartResponse>> {
+        const requestOptions = await this.uploadDocumentPartRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => UploadPartResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * Upload one part (raw octet-stream body) of a resumable upload.
+     * Upload Document Part Handler
+     */
+    async uploadDocumentPart(requestParameters: UploadDocumentPartRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UploadPartResponse> {
+        const response = await this.uploadDocumentPartRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
