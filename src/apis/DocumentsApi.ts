@@ -120,13 +120,13 @@ export interface IngestDocumentRequest {
     file: Blob;
     pathPartId: string;
     name?: string | null;
+    tagIds?: Array<string>;
+    idempotencyKey?: string | null;
     ingestionMode?: IngestionMode;
     chunkType?: ChunkType;
     secondaryTaxonomy?: ImageTaxonomy;
     pageDpi?: number;
     workflowRunId?: string | null;
-    tagIds?: Array<string>;
-    idempotencyKey?: string | null;
     workflowDefinitionId?: string | null;
 }
 
@@ -381,13 +381,13 @@ export interface DocumentsApiInterface {
      * @param {Blob} file 
      * @param {string} pathPartId Parent path part ID (must be a FOLDER type)
      * @param {string} [name] Document name (defaults to filename)
+     * @param {Array<string>} [tagIds] Tag IDs applied to the created document.
+     * @param {string} [idempotencyKey] Opt-in key: a repeat with the same key at the same (parent, name) replays the existing document instead of a 409.
      * @param {IngestionMode} [ingestionMode] 
      * @param {ChunkType} [chunkType] 
      * @param {ImageTaxonomy} [secondaryTaxonomy] 
      * @param {number} [pageDpi] DPI for PDF page screenshots (default 72, min 36, max 216).
      * @param {string} [workflowRunId] Workflow run context for assumed agent uploads.
-     * @param {Array<string>} [tagIds] Tag IDs applied to the created document.
-     * @param {string} [idempotencyKey] Opt-in key: a repeat with the same key at the same (parent, name) replays the existing document instead of a 409.
      * @param {string} [workflowDefinitionId] Workflow definition context for assumed agent uploads.
      * @throws {RequiredError}
      * @memberof DocumentsApiInterface
@@ -400,13 +400,13 @@ export interface DocumentsApiInterface {
      * @param {Blob} file 
      * @param {string} pathPartId Parent path part ID (must be a FOLDER type)
      * @param {string} [name] Document name (defaults to filename)
+     * @param {Array<string>} [tagIds] Tag IDs applied to the created document.
+     * @param {string} [idempotencyKey] Opt-in key: a repeat with the same key at the same (parent, name) replays the existing document instead of a 409.
      * @param {IngestionMode} [ingestionMode] 
      * @param {ChunkType} [chunkType] 
      * @param {ImageTaxonomy} [secondaryTaxonomy] 
      * @param {number} [pageDpi] DPI for PDF page screenshots (default 72, min 36, max 216).
      * @param {string} [workflowRunId] Workflow run context for assumed agent uploads.
-     * @param {Array<string>} [tagIds] Tag IDs applied to the created document.
-     * @param {string} [idempotencyKey] Opt-in key: a repeat with the same key at the same (parent, name) replays the existing document instead of a 409.
      * @param {string} [workflowDefinitionId] Workflow definition context for assumed agent uploads.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -1109,6 +1109,14 @@ export class DocumentsApi extends runtime.BaseAPI implements DocumentsApiInterfa
             formParams.append('name', requestParameters['name'] as any);
         }
 
+        if (requestParameters['tagIds'] != null) {
+            formParams.append('tag_ids', requestParameters['tagIds']!.join(runtime.COLLECTION_FORMATS["csv"]));
+        }
+
+        if (requestParameters['idempotencyKey'] != null) {
+            formParams.append('idempotency_key', requestParameters['idempotencyKey'] as any);
+        }
+
         if (requestParameters['ingestionMode'] != null) {
             formParams.append('ingestion_mode', requestParameters['ingestionMode'] as any);
         }
@@ -1127,14 +1135,6 @@ export class DocumentsApi extends runtime.BaseAPI implements DocumentsApiInterfa
 
         if (requestParameters['workflowRunId'] != null) {
             formParams.append('workflow_run_id', requestParameters['workflowRunId'] as any);
-        }
-
-        if (requestParameters['tagIds'] != null) {
-            formParams.append('tag_ids', requestParameters['tagIds']!.join(runtime.COLLECTION_FORMATS["csv"]));
-        }
-
-        if (requestParameters['idempotencyKey'] != null) {
-            formParams.append('idempotency_key', requestParameters['idempotencyKey'] as any);
         }
 
         if (requestParameters['workflowDefinitionId'] != null) {
