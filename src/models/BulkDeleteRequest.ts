@@ -14,56 +14,25 @@
 
 import { mapValues } from '../runtime';
 /**
- * Standard error body returned for every non-2xx response.
+ * Soft-delete the selected folders and documents to Trash.
  * @export
- * @interface ErrorResponse
+ * @interface BulkDeleteRequest
  */
-export interface ErrorResponse {
+export interface BulkDeleteRequest {
     /**
-     * Human-readable explanation of the error.
-     * @type {string}
-     * @memberof ErrorResponse
+     * 
+     * @type {Array<string>}
+     * @memberof BulkDeleteRequest
      */
-    detail: string;
+    folderIds?: Array<string>;
     /**
-     * Stable, machine-readable error code from a closed set. Branch on this instead of parsing 'detail'. 'quota_exceeded'/'too_many_requests' carry a Retry-After header; 'service_unavailable' is retryable.
-     * @type {ErrorResponseCodeEnum}
-     * @memberof ErrorResponse
+     * 
+     * @type {Array<string>}
+     * @memberof BulkDeleteRequest
      */
-    code: ErrorResponseCodeEnum;
-    /**
-     * Correlates to the x-request-id response header; quote it to support.
-     * @type {string}
-     * @memberof ErrorResponse
-     */
-    requestId?: string;
+    documentIds?: Array<string>;
 }
-
-
-/**
- * @export
- */
-export const ErrorResponseCodeEnum = {
-    Error: 'error',
-    BadRequest: 'bad_request',
-    PermissionLimit: 'permission_limit',
-    Unauthorized: 'unauthorized',
-    Forbidden: 'forbidden',
-    NotFound: 'not_found',
-    Conflict: 'conflict',
-    RunBusy: 'run_busy',
-    UnprocessableEntity: 'unprocessable_entity',
-    TooManyRequests: 'too_many_requests',
-    QuotaExceeded: 'quota_exceeded',
-    NotImplemented: 'not_implemented',
-    ServiceConfigurationError: 'service_configuration_error',
-    QuotaPeriodMissing: 'quota_period_missing',
-    InternalError: 'internal_error',
-    ServiceUnavailable: 'service_unavailable'
-} as const;
-export type ErrorResponseCodeEnum = typeof ErrorResponseCodeEnum[keyof typeof ErrorResponseCodeEnum];
-
-export const ErrorResponsePropertyValidationAttributesMap: {
+export const BulkDeleteRequestPropertyValidationAttributesMap: {
     [property: string]: {
         maxLength?: number,
         minLength?: number,
@@ -82,44 +51,40 @@ export const ErrorResponsePropertyValidationAttributesMap: {
 
 
 /**
- * Check if a given object implements the ErrorResponse interface.
+ * Check if a given object implements the BulkDeleteRequest interface.
  */
-export function instanceOfErrorResponse(value: object): value is ErrorResponse {
-    if (!('detail' in value) || value['detail'] === undefined) return false;
-    if (!('code' in value) || value['code'] === undefined) return false;
+export function instanceOfBulkDeleteRequest(value: object): value is BulkDeleteRequest {
     return true;
 }
 
-export function ErrorResponseFromJSON(json: any): ErrorResponse {
-    return ErrorResponseFromJSONTyped(json, false);
+export function BulkDeleteRequestFromJSON(json: any): BulkDeleteRequest {
+    return BulkDeleteRequestFromJSONTyped(json, false);
 }
 
-export function ErrorResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): ErrorResponse {
+export function BulkDeleteRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): BulkDeleteRequest {
     if (json == null) {
         return json;
     }
     return {
         
-        'detail': json['detail'],
-        'code': json['code'],
-        'requestId': json['request_id'] == null ? undefined : json['request_id'],
+        'folderIds': json['folder_ids'] == null ? undefined : json['folder_ids'],
+        'documentIds': json['document_ids'] == null ? undefined : json['document_ids'],
     };
 }
 
-export function ErrorResponseToJSON(json: any): ErrorResponse {
-    return ErrorResponseToJSONTyped(json, false);
+export function BulkDeleteRequestToJSON(json: any): BulkDeleteRequest {
+    return BulkDeleteRequestToJSONTyped(json, false);
 }
 
-export function ErrorResponseToJSONTyped(value?: ErrorResponse | null, ignoreDiscriminator: boolean = false): any {
+export function BulkDeleteRequestToJSONTyped(value?: BulkDeleteRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
         
-        'detail': value['detail'],
-        'code': value['code'],
-        'request_id': value['requestId'],
+        'folder_ids': value['folderIds'],
+        'document_ids': value['documentIds'],
     };
 }
 

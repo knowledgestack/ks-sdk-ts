@@ -13,57 +13,34 @@
  */
 
 import { mapValues } from '../runtime';
+import type { BulkGrantItem } from './BulkGrantItem';
+import {
+    BulkGrantItemFromJSON,
+    BulkGrantItemFromJSONTyped,
+    BulkGrantItemToJSON,
+    BulkGrantItemToJSONTyped,
+} from './BulkGrantItem';
+
 /**
- * Standard error body returned for every non-2xx response.
+ * Grant many (user, object, capability) permissions in one request.
  * @export
- * @interface ErrorResponse
+ * @interface BulkGrantRequest
  */
-export interface ErrorResponse {
+export interface BulkGrantRequest {
     /**
-     * Human-readable explanation of the error.
+     * 
      * @type {string}
-     * @memberof ErrorResponse
+     * @memberof BulkGrantRequest
      */
-    detail: string;
+    tenantId: string;
     /**
-     * Stable, machine-readable error code from a closed set. Branch on this instead of parsing 'detail'. 'quota_exceeded'/'too_many_requests' carry a Retry-After header; 'service_unavailable' is retryable.
-     * @type {ErrorResponseCodeEnum}
-     * @memberof ErrorResponse
+     * 
+     * @type {Array<BulkGrantItem>}
+     * @memberof BulkGrantRequest
      */
-    code: ErrorResponseCodeEnum;
-    /**
-     * Correlates to the x-request-id response header; quote it to support.
-     * @type {string}
-     * @memberof ErrorResponse
-     */
-    requestId?: string;
+    grants?: Array<BulkGrantItem>;
 }
-
-
-/**
- * @export
- */
-export const ErrorResponseCodeEnum = {
-    Error: 'error',
-    BadRequest: 'bad_request',
-    PermissionLimit: 'permission_limit',
-    Unauthorized: 'unauthorized',
-    Forbidden: 'forbidden',
-    NotFound: 'not_found',
-    Conflict: 'conflict',
-    RunBusy: 'run_busy',
-    UnprocessableEntity: 'unprocessable_entity',
-    TooManyRequests: 'too_many_requests',
-    QuotaExceeded: 'quota_exceeded',
-    NotImplemented: 'not_implemented',
-    ServiceConfigurationError: 'service_configuration_error',
-    QuotaPeriodMissing: 'quota_period_missing',
-    InternalError: 'internal_error',
-    ServiceUnavailable: 'service_unavailable'
-} as const;
-export type ErrorResponseCodeEnum = typeof ErrorResponseCodeEnum[keyof typeof ErrorResponseCodeEnum];
-
-export const ErrorResponsePropertyValidationAttributesMap: {
+export const BulkGrantRequestPropertyValidationAttributesMap: {
     [property: string]: {
         maxLength?: number,
         minLength?: number,
@@ -82,44 +59,41 @@ export const ErrorResponsePropertyValidationAttributesMap: {
 
 
 /**
- * Check if a given object implements the ErrorResponse interface.
+ * Check if a given object implements the BulkGrantRequest interface.
  */
-export function instanceOfErrorResponse(value: object): value is ErrorResponse {
-    if (!('detail' in value) || value['detail'] === undefined) return false;
-    if (!('code' in value) || value['code'] === undefined) return false;
+export function instanceOfBulkGrantRequest(value: object): value is BulkGrantRequest {
+    if (!('tenantId' in value) || value['tenantId'] === undefined) return false;
     return true;
 }
 
-export function ErrorResponseFromJSON(json: any): ErrorResponse {
-    return ErrorResponseFromJSONTyped(json, false);
+export function BulkGrantRequestFromJSON(json: any): BulkGrantRequest {
+    return BulkGrantRequestFromJSONTyped(json, false);
 }
 
-export function ErrorResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): ErrorResponse {
+export function BulkGrantRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): BulkGrantRequest {
     if (json == null) {
         return json;
     }
     return {
         
-        'detail': json['detail'],
-        'code': json['code'],
-        'requestId': json['request_id'] == null ? undefined : json['request_id'],
+        'tenantId': json['tenant_id'],
+        'grants': json['grants'] == null ? undefined : ((json['grants'] as Array<any>).map(BulkGrantItemFromJSON)),
     };
 }
 
-export function ErrorResponseToJSON(json: any): ErrorResponse {
-    return ErrorResponseToJSONTyped(json, false);
+export function BulkGrantRequestToJSON(json: any): BulkGrantRequest {
+    return BulkGrantRequestToJSONTyped(json, false);
 }
 
-export function ErrorResponseToJSONTyped(value?: ErrorResponse | null, ignoreDiscriminator: boolean = false): any {
+export function BulkGrantRequestToJSONTyped(value?: BulkGrantRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
         
-        'detail': value['detail'],
-        'code': value['code'],
-        'request_id': value['requestId'],
+        'tenant_id': value['tenantId'],
+        'grants': value['grants'] == null ? undefined : ((value['grants'] as Array<any>).map(BulkGrantItemToJSON)),
     };
 }
 

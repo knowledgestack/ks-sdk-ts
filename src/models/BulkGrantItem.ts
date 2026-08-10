@@ -13,57 +13,48 @@
  */
 
 import { mapValues } from '../runtime';
+import type { PermissionCapability } from './PermissionCapability';
+import {
+    PermissionCapabilityFromJSON,
+    PermissionCapabilityFromJSONTyped,
+    PermissionCapabilityToJSON,
+    PermissionCapabilityToJSONTyped,
+} from './PermissionCapability';
+
 /**
- * Standard error body returned for every non-2xx response.
+ * One requested grant: a capability on an object (PDO id) for a user.
  * @export
- * @interface ErrorResponse
+ * @interface BulkGrantItem
  */
-export interface ErrorResponse {
+export interface BulkGrantItem {
     /**
-     * Human-readable explanation of the error.
+     * 
      * @type {string}
-     * @memberof ErrorResponse
+     * @memberof BulkGrantItem
      */
-    detail: string;
+    userId: string;
     /**
-     * Stable, machine-readable error code from a closed set. Branch on this instead of parsing 'detail'. 'quota_exceeded'/'too_many_requests' carry a Retry-After header; 'service_unavailable' is retryable.
-     * @type {ErrorResponseCodeEnum}
-     * @memberof ErrorResponse
-     */
-    code: ErrorResponseCodeEnum;
-    /**
-     * Correlates to the x-request-id response header; quote it to support.
+     * 
      * @type {string}
-     * @memberof ErrorResponse
+     * @memberof BulkGrantItem
      */
-    requestId?: string;
+    objectId: string;
+    /**
+     * 
+     * @type {PermissionCapability}
+     * @memberof BulkGrantItem
+     */
+    capability: PermissionCapability;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof BulkGrantItem
+     */
+    canApprove?: boolean;
 }
 
 
-/**
- * @export
- */
-export const ErrorResponseCodeEnum = {
-    Error: 'error',
-    BadRequest: 'bad_request',
-    PermissionLimit: 'permission_limit',
-    Unauthorized: 'unauthorized',
-    Forbidden: 'forbidden',
-    NotFound: 'not_found',
-    Conflict: 'conflict',
-    RunBusy: 'run_busy',
-    UnprocessableEntity: 'unprocessable_entity',
-    TooManyRequests: 'too_many_requests',
-    QuotaExceeded: 'quota_exceeded',
-    NotImplemented: 'not_implemented',
-    ServiceConfigurationError: 'service_configuration_error',
-    QuotaPeriodMissing: 'quota_period_missing',
-    InternalError: 'internal_error',
-    ServiceUnavailable: 'service_unavailable'
-} as const;
-export type ErrorResponseCodeEnum = typeof ErrorResponseCodeEnum[keyof typeof ErrorResponseCodeEnum];
-
-export const ErrorResponsePropertyValidationAttributesMap: {
+export const BulkGrantItemPropertyValidationAttributesMap: {
     [property: string]: {
         maxLength?: number,
         minLength?: number,
@@ -82,44 +73,47 @@ export const ErrorResponsePropertyValidationAttributesMap: {
 
 
 /**
- * Check if a given object implements the ErrorResponse interface.
+ * Check if a given object implements the BulkGrantItem interface.
  */
-export function instanceOfErrorResponse(value: object): value is ErrorResponse {
-    if (!('detail' in value) || value['detail'] === undefined) return false;
-    if (!('code' in value) || value['code'] === undefined) return false;
+export function instanceOfBulkGrantItem(value: object): value is BulkGrantItem {
+    if (!('userId' in value) || value['userId'] === undefined) return false;
+    if (!('objectId' in value) || value['objectId'] === undefined) return false;
+    if (!('capability' in value) || value['capability'] === undefined) return false;
     return true;
 }
 
-export function ErrorResponseFromJSON(json: any): ErrorResponse {
-    return ErrorResponseFromJSONTyped(json, false);
+export function BulkGrantItemFromJSON(json: any): BulkGrantItem {
+    return BulkGrantItemFromJSONTyped(json, false);
 }
 
-export function ErrorResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): ErrorResponse {
+export function BulkGrantItemFromJSONTyped(json: any, ignoreDiscriminator: boolean): BulkGrantItem {
     if (json == null) {
         return json;
     }
     return {
         
-        'detail': json['detail'],
-        'code': json['code'],
-        'requestId': json['request_id'] == null ? undefined : json['request_id'],
+        'userId': json['user_id'],
+        'objectId': json['object_id'],
+        'capability': PermissionCapabilityFromJSON(json['capability']),
+        'canApprove': json['can_approve'] == null ? undefined : json['can_approve'],
     };
 }
 
-export function ErrorResponseToJSON(json: any): ErrorResponse {
-    return ErrorResponseToJSONTyped(json, false);
+export function BulkGrantItemToJSON(json: any): BulkGrantItem {
+    return BulkGrantItemToJSONTyped(json, false);
 }
 
-export function ErrorResponseToJSONTyped(value?: ErrorResponse | null, ignoreDiscriminator: boolean = false): any {
+export function BulkGrantItemToJSONTyped(value?: BulkGrantItem | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
         
-        'detail': value['detail'],
-        'code': value['code'],
-        'request_id': value['requestId'],
+        'user_id': value['userId'],
+        'object_id': value['objectId'],
+        'capability': PermissionCapabilityToJSON(value['capability']),
+        'can_approve': value['canApprove'],
     };
 }
 

@@ -15,6 +15,8 @@
 
 import * as runtime from '../runtime';
 import type {
+  BulkOperationResponse,
+  BulkTrashRequest,
   ErrorResponse,
   HTTPValidationError,
   PaginatedResponseTrashItemResponse,
@@ -23,6 +25,10 @@ import type {
   SortDirection,
 } from '../models/index';
 import {
+    BulkOperationResponseFromJSON,
+    BulkOperationResponseToJSON,
+    BulkTrashRequestFromJSON,
+    BulkTrashRequestToJSON,
     ErrorResponseFromJSON,
     ErrorResponseToJSON,
     HTTPValidationErrorFromJSON,
@@ -36,6 +42,14 @@ import {
     SortDirectionFromJSON,
     SortDirectionToJSON,
 } from '../models/index';
+
+export interface BulkPermanentlyDeleteTrashRequest {
+    bulkTrashRequest: BulkTrashRequest;
+}
+
+export interface BulkRestoreTrashRequest {
+    bulkTrashRequest: BulkTrashRequest;
+}
 
 export interface ListTrashRequest {
     sortOrder?: PathOrder;
@@ -66,6 +80,54 @@ export interface RestoreTrashItemRequest {
  * @interface TrashApiInterface
  */
 export interface TrashApiInterface {
+    /**
+     * Creates request options for bulkPermanentlyDeleteTrash without sending the request
+     * @param {BulkTrashRequest} bulkTrashRequest 
+     * @throws {RequiredError}
+     * @memberof TrashApiInterface
+     */
+    bulkPermanentlyDeleteTrashRequestOpts(requestParameters: BulkPermanentlyDeleteTrashRequest): Promise<runtime.RequestOpts>;
+
+    /**
+     * Permanently delete the selected trashed objects (by PDO id), per item.  An object not visible in the caller\'s trash scope lands in ``failed`` as ``not_found``; the rest are hard-deleted and their Qdrant points purged.
+     * @summary Bulk Permanently Delete Trash Handler
+     * @param {BulkTrashRequest} bulkTrashRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof TrashApiInterface
+     */
+    bulkPermanentlyDeleteTrashRaw(requestParameters: BulkPermanentlyDeleteTrashRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<BulkOperationResponse>>;
+
+    /**
+     * Permanently delete the selected trashed objects (by PDO id), per item.  An object not visible in the caller\'s trash scope lands in ``failed`` as ``not_found``; the rest are hard-deleted and their Qdrant points purged.
+     * Bulk Permanently Delete Trash Handler
+     */
+    bulkPermanentlyDeleteTrash(requestParameters: BulkPermanentlyDeleteTrashRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<BulkOperationResponse>;
+
+    /**
+     * Creates request options for bulkRestoreTrash without sending the request
+     * @param {BulkTrashRequest} bulkTrashRequest 
+     * @throws {RequiredError}
+     * @memberof TrashApiInterface
+     */
+    bulkRestoreTrashRequestOpts(requestParameters: BulkRestoreTrashRequest): Promise<runtime.RequestOpts>;
+
+    /**
+     * Restore the selected trashed objects (by PDO id), reporting per item.  An object not visible in the caller\'s trash scope lands in ``failed`` as ``not_found``; a live name collision at the original location that auto-rename cannot resolve lands as ``name_conflict``.
+     * @summary Bulk Restore Trash Handler
+     * @param {BulkTrashRequest} bulkTrashRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof TrashApiInterface
+     */
+    bulkRestoreTrashRaw(requestParameters: BulkRestoreTrashRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<BulkOperationResponse>>;
+
+    /**
+     * Restore the selected trashed objects (by PDO id), reporting per item.  An object not visible in the caller\'s trash scope lands in ``failed`` as ``not_found``; a live name collision at the original location that auto-rename cannot resolve lands as ``name_conflict``.
+     * Bulk Restore Trash Handler
+     */
+    bulkRestoreTrash(requestParameters: BulkRestoreTrashRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<BulkOperationResponse>;
+
     /**
      * Creates request options for listTrash without sending the request
      * @param {PathOrder} [sortOrder] Sort order (default: LOGICAL &#x3D; deletion recency)
@@ -164,6 +226,120 @@ export interface TrashApiInterface {
  * 
  */
 export class TrashApi extends runtime.BaseAPI implements TrashApiInterface {
+
+    /**
+     * Creates request options for bulkPermanentlyDeleteTrash without sending the request
+     */
+    async bulkPermanentlyDeleteTrashRequestOpts(requestParameters: BulkPermanentlyDeleteTrashRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['bulkTrashRequest'] == null) {
+            throw new runtime.RequiredError(
+                'bulkTrashRequest',
+                'Required parameter "bulkTrashRequest" was null or undefined when calling bulkPermanentlyDeleteTrash().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/v1/trash/bulk-delete`;
+
+        return {
+            path: urlPath,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: BulkTrashRequestToJSON(requestParameters['bulkTrashRequest']),
+        };
+    }
+
+    /**
+     * Permanently delete the selected trashed objects (by PDO id), per item.  An object not visible in the caller\'s trash scope lands in ``failed`` as ``not_found``; the rest are hard-deleted and their Qdrant points purged.
+     * Bulk Permanently Delete Trash Handler
+     */
+    async bulkPermanentlyDeleteTrashRaw(requestParameters: BulkPermanentlyDeleteTrashRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<BulkOperationResponse>> {
+        const requestOptions = await this.bulkPermanentlyDeleteTrashRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => BulkOperationResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * Permanently delete the selected trashed objects (by PDO id), per item.  An object not visible in the caller\'s trash scope lands in ``failed`` as ``not_found``; the rest are hard-deleted and their Qdrant points purged.
+     * Bulk Permanently Delete Trash Handler
+     */
+    async bulkPermanentlyDeleteTrash(requestParameters: BulkPermanentlyDeleteTrashRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<BulkOperationResponse> {
+        const response = await this.bulkPermanentlyDeleteTrashRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for bulkRestoreTrash without sending the request
+     */
+    async bulkRestoreTrashRequestOpts(requestParameters: BulkRestoreTrashRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['bulkTrashRequest'] == null) {
+            throw new runtime.RequiredError(
+                'bulkTrashRequest',
+                'Required parameter "bulkTrashRequest" was null or undefined when calling bulkRestoreTrash().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/v1/trash/bulk-restore`;
+
+        return {
+            path: urlPath,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: BulkTrashRequestToJSON(requestParameters['bulkTrashRequest']),
+        };
+    }
+
+    /**
+     * Restore the selected trashed objects (by PDO id), reporting per item.  An object not visible in the caller\'s trash scope lands in ``failed`` as ``not_found``; a live name collision at the original location that auto-rename cannot resolve lands as ``name_conflict``.
+     * Bulk Restore Trash Handler
+     */
+    async bulkRestoreTrashRaw(requestParameters: BulkRestoreTrashRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<BulkOperationResponse>> {
+        const requestOptions = await this.bulkRestoreTrashRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => BulkOperationResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * Restore the selected trashed objects (by PDO id), reporting per item.  An object not visible in the caller\'s trash scope lands in ``failed`` as ``not_found``; a live name collision at the original location that auto-rename cannot resolve lands as ``name_conflict``.
+     * Bulk Restore Trash Handler
+     */
+    async bulkRestoreTrash(requestParameters: BulkRestoreTrashRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<BulkOperationResponse> {
+        const response = await this.bulkRestoreTrashRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
 
     /**
      * Creates request options for listTrash without sending the request

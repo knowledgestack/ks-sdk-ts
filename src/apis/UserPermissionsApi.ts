@@ -15,6 +15,10 @@
 
 import * as runtime from '../runtime';
 import type {
+  BulkGrantRequest,
+  BulkGrantResponse,
+  BulkOperationResponse,
+  BulkRevokeRequest,
   CreatePermissionRequest,
   ErrorResponse,
   HTTPValidationError,
@@ -26,6 +30,14 @@ import type {
   UserPermissionOrder,
 } from '../models/index';
 import {
+    BulkGrantRequestFromJSON,
+    BulkGrantRequestToJSON,
+    BulkGrantResponseFromJSON,
+    BulkGrantResponseToJSON,
+    BulkOperationResponseFromJSON,
+    BulkOperationResponseToJSON,
+    BulkRevokeRequestFromJSON,
+    BulkRevokeRequestToJSON,
     CreatePermissionRequestFromJSON,
     CreatePermissionRequestToJSON,
     ErrorResponseFromJSON,
@@ -45,6 +57,14 @@ import {
     UserPermissionOrderFromJSON,
     UserPermissionOrderToJSON,
 } from '../models/index';
+
+export interface BulkGrantUserPermissionsRequest {
+    bulkGrantRequest: BulkGrantRequest;
+}
+
+export interface BulkRevokeUserPermissionsRequest {
+    bulkRevokeRequest: BulkRevokeRequest;
+}
 
 export interface CreateUserPermissionRequest {
     createPermissionRequest: CreatePermissionRequest;
@@ -78,6 +98,54 @@ export interface UpdateUserPermissionRequest {
  * @interface UserPermissionsApiInterface
  */
 export interface UserPermissionsApiInterface {
+    /**
+     * Creates request options for bulkGrantUserPermissions without sending the request
+     * @param {BulkGrantRequest} bulkGrantRequest 
+     * @throws {RequiredError}
+     * @memberof UserPermissionsApiInterface
+     */
+    bulkGrantUserPermissionsRequestOpts(requestParameters: BulkGrantUserPermissionsRequest): Promise<runtime.RequestOpts>;
+
+    /**
+     * Grant many (user, object, capability) permissions (admin/owner only).  Each grant is applied in its own transaction, reporting a per-item outcome keyed on the (user_id, object_id) pair: a missing/trashed object or a user not in the tenant is ``not_found``, hitting the per-user cap is ``permission_limit``, and an already-covered grant is ``subsumed``.
+     * @summary Bulk Grant User Permissions Handler
+     * @param {BulkGrantRequest} bulkGrantRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UserPermissionsApiInterface
+     */
+    bulkGrantUserPermissionsRaw(requestParameters: BulkGrantUserPermissionsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<BulkGrantResponse>>;
+
+    /**
+     * Grant many (user, object, capability) permissions (admin/owner only).  Each grant is applied in its own transaction, reporting a per-item outcome keyed on the (user_id, object_id) pair: a missing/trashed object or a user not in the tenant is ``not_found``, hitting the per-user cap is ``permission_limit``, and an already-covered grant is ``subsumed``.
+     * Bulk Grant User Permissions Handler
+     */
+    bulkGrantUserPermissions(requestParameters: BulkGrantUserPermissionsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<BulkGrantResponse>;
+
+    /**
+     * Creates request options for bulkRevokeUserPermissions without sending the request
+     * @param {BulkRevokeRequest} bulkRevokeRequest 
+     * @throws {RequiredError}
+     * @memberof UserPermissionsApiInterface
+     */
+    bulkRevokeUserPermissionsRequestOpts(requestParameters: BulkRevokeUserPermissionsRequest): Promise<runtime.RequestOpts>;
+
+    /**
+     * Revoke many permissions by their ids (admin/owner only), per item.  A permission id not found in the tenant lands in ``failed`` as ``not_found``.
+     * @summary Bulk Revoke User Permissions Handler
+     * @param {BulkRevokeRequest} bulkRevokeRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UserPermissionsApiInterface
+     */
+    bulkRevokeUserPermissionsRaw(requestParameters: BulkRevokeUserPermissionsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<BulkOperationResponse>>;
+
+    /**
+     * Revoke many permissions by their ids (admin/owner only), per item.  A permission id not found in the tenant lands in ``failed`` as ``not_found``.
+     * Bulk Revoke User Permissions Handler
+     */
+    bulkRevokeUserPermissions(requestParameters: BulkRevokeUserPermissionsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<BulkOperationResponse>;
+
     /**
      * Creates request options for createUserPermission without sending the request
      * @param {CreatePermissionRequest} createPermissionRequest 
@@ -198,6 +266,120 @@ export interface UserPermissionsApiInterface {
  * 
  */
 export class UserPermissionsApi extends runtime.BaseAPI implements UserPermissionsApiInterface {
+
+    /**
+     * Creates request options for bulkGrantUserPermissions without sending the request
+     */
+    async bulkGrantUserPermissionsRequestOpts(requestParameters: BulkGrantUserPermissionsRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['bulkGrantRequest'] == null) {
+            throw new runtime.RequiredError(
+                'bulkGrantRequest',
+                'Required parameter "bulkGrantRequest" was null or undefined when calling bulkGrantUserPermissions().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/v1/user-permissions/bulk`;
+
+        return {
+            path: urlPath,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: BulkGrantRequestToJSON(requestParameters['bulkGrantRequest']),
+        };
+    }
+
+    /**
+     * Grant many (user, object, capability) permissions (admin/owner only).  Each grant is applied in its own transaction, reporting a per-item outcome keyed on the (user_id, object_id) pair: a missing/trashed object or a user not in the tenant is ``not_found``, hitting the per-user cap is ``permission_limit``, and an already-covered grant is ``subsumed``.
+     * Bulk Grant User Permissions Handler
+     */
+    async bulkGrantUserPermissionsRaw(requestParameters: BulkGrantUserPermissionsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<BulkGrantResponse>> {
+        const requestOptions = await this.bulkGrantUserPermissionsRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => BulkGrantResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * Grant many (user, object, capability) permissions (admin/owner only).  Each grant is applied in its own transaction, reporting a per-item outcome keyed on the (user_id, object_id) pair: a missing/trashed object or a user not in the tenant is ``not_found``, hitting the per-user cap is ``permission_limit``, and an already-covered grant is ``subsumed``.
+     * Bulk Grant User Permissions Handler
+     */
+    async bulkGrantUserPermissions(requestParameters: BulkGrantUserPermissionsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<BulkGrantResponse> {
+        const response = await this.bulkGrantUserPermissionsRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for bulkRevokeUserPermissions without sending the request
+     */
+    async bulkRevokeUserPermissionsRequestOpts(requestParameters: BulkRevokeUserPermissionsRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['bulkRevokeRequest'] == null) {
+            throw new runtime.RequiredError(
+                'bulkRevokeRequest',
+                'Required parameter "bulkRevokeRequest" was null or undefined when calling bulkRevokeUserPermissions().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/v1/user-permissions/bulk-delete`;
+
+        return {
+            path: urlPath,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: BulkRevokeRequestToJSON(requestParameters['bulkRevokeRequest']),
+        };
+    }
+
+    /**
+     * Revoke many permissions by their ids (admin/owner only), per item.  A permission id not found in the tenant lands in ``failed`` as ``not_found``.
+     * Bulk Revoke User Permissions Handler
+     */
+    async bulkRevokeUserPermissionsRaw(requestParameters: BulkRevokeUserPermissionsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<BulkOperationResponse>> {
+        const requestOptions = await this.bulkRevokeUserPermissionsRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => BulkOperationResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * Revoke many permissions by their ids (admin/owner only), per item.  A permission id not found in the tenant lands in ``failed`` as ``not_found``.
+     * Bulk Revoke User Permissions Handler
+     */
+    async bulkRevokeUserPermissions(requestParameters: BulkRevokeUserPermissionsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<BulkOperationResponse> {
+        const response = await this.bulkRevokeUserPermissionsRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
 
     /**
      * Creates request options for createUserPermission without sending the request

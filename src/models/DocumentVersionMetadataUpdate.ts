@@ -127,6 +127,24 @@ export interface DocumentVersionMetadataUpdate {
      * @type {number}
      * @memberof DocumentVersionMetadataUpdate
      */
+    durationMs?: number | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof DocumentVersionMetadataUpdate
+     */
+    language?: string | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof DocumentVersionMetadataUpdate
+     */
+    segmentCount?: number | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof DocumentVersionMetadataUpdate
+     */
     totalFormulas?: number | null;
     /**
      * 
@@ -231,6 +249,9 @@ export function DocumentVersionMetadataUpdateFromJSONTyped(json: any, ignoreDisc
         'totalPages': json['total_pages'] == null ? undefined : json['total_pages'],
         'totalSections': json['total_sections'] == null ? undefined : json['total_sections'],
         'totalChunks': json['total_chunks'] == null ? undefined : json['total_chunks'],
+        'durationMs': json['duration_ms'] == null ? undefined : json['duration_ms'],
+        'language': json['language'] == null ? undefined : json['language'],
+        'segmentCount': json['segment_count'] == null ? undefined : json['segment_count'],
         'totalFormulas': json['total_formulas'] == null ? undefined : json['total_formulas'],
         'xlsxParseResultS3': json['xlsx_parse_result_s3'] == null ? undefined : json['xlsx_parse_result_s3'],
         'xlsxNamedRanges': json['xlsx_named_ranges'] == null ? undefined : json['xlsx_named_ranges'],
@@ -268,6 +289,9 @@ export function DocumentVersionMetadataUpdateToJSONTyped(value?: DocumentVersion
         'total_pages': value['totalPages'],
         'total_sections': value['totalSections'],
         'total_chunks': value['totalChunks'],
+        'duration_ms': value['durationMs'],
+        'language': value['language'],
+        'segment_count': value['segmentCount'],
         'total_formulas': value['totalFormulas'],
         'xlsx_parse_result_s3': value['xlsxParseResultS3'],
         'xlsx_named_ranges': value['xlsxNamedRanges'],

@@ -13,57 +13,36 @@
  */
 
 import { mapValues } from '../runtime';
+import type { BulkFailureReason } from './BulkFailureReason';
+import {
+    BulkFailureReasonFromJSON,
+    BulkFailureReasonFromJSONTyped,
+    BulkFailureReasonToJSON,
+    BulkFailureReasonToJSONTyped,
+} from './BulkFailureReason';
+
 /**
- * Standard error body returned for every non-2xx response.
+ * A single id that could not be applied, and why.
  * @export
- * @interface ErrorResponse
+ * @interface BulkItemFailure
  */
-export interface ErrorResponse {
+export interface BulkItemFailure {
     /**
-     * Human-readable explanation of the error.
+     * 
      * @type {string}
-     * @memberof ErrorResponse
+     * @memberof BulkItemFailure
      */
-    detail: string;
+    id: string;
     /**
-     * Stable, machine-readable error code from a closed set. Branch on this instead of parsing 'detail'. 'quota_exceeded'/'too_many_requests' carry a Retry-After header; 'service_unavailable' is retryable.
-     * @type {ErrorResponseCodeEnum}
-     * @memberof ErrorResponse
+     * 
+     * @type {BulkFailureReason}
+     * @memberof BulkItemFailure
      */
-    code: ErrorResponseCodeEnum;
-    /**
-     * Correlates to the x-request-id response header; quote it to support.
-     * @type {string}
-     * @memberof ErrorResponse
-     */
-    requestId?: string;
+    reason: BulkFailureReason;
 }
 
 
-/**
- * @export
- */
-export const ErrorResponseCodeEnum = {
-    Error: 'error',
-    BadRequest: 'bad_request',
-    PermissionLimit: 'permission_limit',
-    Unauthorized: 'unauthorized',
-    Forbidden: 'forbidden',
-    NotFound: 'not_found',
-    Conflict: 'conflict',
-    RunBusy: 'run_busy',
-    UnprocessableEntity: 'unprocessable_entity',
-    TooManyRequests: 'too_many_requests',
-    QuotaExceeded: 'quota_exceeded',
-    NotImplemented: 'not_implemented',
-    ServiceConfigurationError: 'service_configuration_error',
-    QuotaPeriodMissing: 'quota_period_missing',
-    InternalError: 'internal_error',
-    ServiceUnavailable: 'service_unavailable'
-} as const;
-export type ErrorResponseCodeEnum = typeof ErrorResponseCodeEnum[keyof typeof ErrorResponseCodeEnum];
-
-export const ErrorResponsePropertyValidationAttributesMap: {
+export const BulkItemFailurePropertyValidationAttributesMap: {
     [property: string]: {
         maxLength?: number,
         minLength?: number,
@@ -82,44 +61,42 @@ export const ErrorResponsePropertyValidationAttributesMap: {
 
 
 /**
- * Check if a given object implements the ErrorResponse interface.
+ * Check if a given object implements the BulkItemFailure interface.
  */
-export function instanceOfErrorResponse(value: object): value is ErrorResponse {
-    if (!('detail' in value) || value['detail'] === undefined) return false;
-    if (!('code' in value) || value['code'] === undefined) return false;
+export function instanceOfBulkItemFailure(value: object): value is BulkItemFailure {
+    if (!('id' in value) || value['id'] === undefined) return false;
+    if (!('reason' in value) || value['reason'] === undefined) return false;
     return true;
 }
 
-export function ErrorResponseFromJSON(json: any): ErrorResponse {
-    return ErrorResponseFromJSONTyped(json, false);
+export function BulkItemFailureFromJSON(json: any): BulkItemFailure {
+    return BulkItemFailureFromJSONTyped(json, false);
 }
 
-export function ErrorResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): ErrorResponse {
+export function BulkItemFailureFromJSONTyped(json: any, ignoreDiscriminator: boolean): BulkItemFailure {
     if (json == null) {
         return json;
     }
     return {
         
-        'detail': json['detail'],
-        'code': json['code'],
-        'requestId': json['request_id'] == null ? undefined : json['request_id'],
+        'id': json['id'],
+        'reason': BulkFailureReasonFromJSON(json['reason']),
     };
 }
 
-export function ErrorResponseToJSON(json: any): ErrorResponse {
-    return ErrorResponseToJSONTyped(json, false);
+export function BulkItemFailureToJSON(json: any): BulkItemFailure {
+    return BulkItemFailureToJSONTyped(json, false);
 }
 
-export function ErrorResponseToJSONTyped(value?: ErrorResponse | null, ignoreDiscriminator: boolean = false): any {
+export function BulkItemFailureToJSONTyped(value?: BulkItemFailure | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
         
-        'detail': value['detail'],
-        'code': value['code'],
-        'request_id': value['requestId'],
+        'id': value['id'],
+        'reason': BulkFailureReasonToJSON(value['reason']),
     };
 }
 

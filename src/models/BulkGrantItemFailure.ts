@@ -13,57 +13,42 @@
  */
 
 import { mapValues } from '../runtime';
+import type { BulkFailureReason } from './BulkFailureReason';
+import {
+    BulkFailureReasonFromJSON,
+    BulkFailureReasonFromJSONTyped,
+    BulkFailureReasonToJSON,
+    BulkFailureReasonToJSONTyped,
+} from './BulkFailureReason';
+
 /**
- * Standard error body returned for every non-2xx response.
+ * A grant that could not be created, keyed on its (user, object) pair.
  * @export
- * @interface ErrorResponse
+ * @interface BulkGrantItemFailure
  */
-export interface ErrorResponse {
+export interface BulkGrantItemFailure {
     /**
-     * Human-readable explanation of the error.
+     * 
      * @type {string}
-     * @memberof ErrorResponse
+     * @memberof BulkGrantItemFailure
      */
-    detail: string;
+    userId: string;
     /**
-     * Stable, machine-readable error code from a closed set. Branch on this instead of parsing 'detail'. 'quota_exceeded'/'too_many_requests' carry a Retry-After header; 'service_unavailable' is retryable.
-     * @type {ErrorResponseCodeEnum}
-     * @memberof ErrorResponse
-     */
-    code: ErrorResponseCodeEnum;
-    /**
-     * Correlates to the x-request-id response header; quote it to support.
+     * 
      * @type {string}
-     * @memberof ErrorResponse
+     * @memberof BulkGrantItemFailure
      */
-    requestId?: string;
+    objectId: string;
+    /**
+     * 
+     * @type {BulkFailureReason}
+     * @memberof BulkGrantItemFailure
+     */
+    reason: BulkFailureReason;
 }
 
 
-/**
- * @export
- */
-export const ErrorResponseCodeEnum = {
-    Error: 'error',
-    BadRequest: 'bad_request',
-    PermissionLimit: 'permission_limit',
-    Unauthorized: 'unauthorized',
-    Forbidden: 'forbidden',
-    NotFound: 'not_found',
-    Conflict: 'conflict',
-    RunBusy: 'run_busy',
-    UnprocessableEntity: 'unprocessable_entity',
-    TooManyRequests: 'too_many_requests',
-    QuotaExceeded: 'quota_exceeded',
-    NotImplemented: 'not_implemented',
-    ServiceConfigurationError: 'service_configuration_error',
-    QuotaPeriodMissing: 'quota_period_missing',
-    InternalError: 'internal_error',
-    ServiceUnavailable: 'service_unavailable'
-} as const;
-export type ErrorResponseCodeEnum = typeof ErrorResponseCodeEnum[keyof typeof ErrorResponseCodeEnum];
-
-export const ErrorResponsePropertyValidationAttributesMap: {
+export const BulkGrantItemFailurePropertyValidationAttributesMap: {
     [property: string]: {
         maxLength?: number,
         minLength?: number,
@@ -82,44 +67,45 @@ export const ErrorResponsePropertyValidationAttributesMap: {
 
 
 /**
- * Check if a given object implements the ErrorResponse interface.
+ * Check if a given object implements the BulkGrantItemFailure interface.
  */
-export function instanceOfErrorResponse(value: object): value is ErrorResponse {
-    if (!('detail' in value) || value['detail'] === undefined) return false;
-    if (!('code' in value) || value['code'] === undefined) return false;
+export function instanceOfBulkGrantItemFailure(value: object): value is BulkGrantItemFailure {
+    if (!('userId' in value) || value['userId'] === undefined) return false;
+    if (!('objectId' in value) || value['objectId'] === undefined) return false;
+    if (!('reason' in value) || value['reason'] === undefined) return false;
     return true;
 }
 
-export function ErrorResponseFromJSON(json: any): ErrorResponse {
-    return ErrorResponseFromJSONTyped(json, false);
+export function BulkGrantItemFailureFromJSON(json: any): BulkGrantItemFailure {
+    return BulkGrantItemFailureFromJSONTyped(json, false);
 }
 
-export function ErrorResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): ErrorResponse {
+export function BulkGrantItemFailureFromJSONTyped(json: any, ignoreDiscriminator: boolean): BulkGrantItemFailure {
     if (json == null) {
         return json;
     }
     return {
         
-        'detail': json['detail'],
-        'code': json['code'],
-        'requestId': json['request_id'] == null ? undefined : json['request_id'],
+        'userId': json['user_id'],
+        'objectId': json['object_id'],
+        'reason': BulkFailureReasonFromJSON(json['reason']),
     };
 }
 
-export function ErrorResponseToJSON(json: any): ErrorResponse {
-    return ErrorResponseToJSONTyped(json, false);
+export function BulkGrantItemFailureToJSON(json: any): BulkGrantItemFailure {
+    return BulkGrantItemFailureToJSONTyped(json, false);
 }
 
-export function ErrorResponseToJSONTyped(value?: ErrorResponse | null, ignoreDiscriminator: boolean = false): any {
+export function BulkGrantItemFailureToJSONTyped(value?: BulkGrantItemFailure | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
         
-        'detail': value['detail'],
-        'code': value['code'],
-        'request_id': value['requestId'],
+        'user_id': value['userId'],
+        'object_id': value['objectId'],
+        'reason': BulkFailureReasonToJSON(value['reason']),
     };
 }
 

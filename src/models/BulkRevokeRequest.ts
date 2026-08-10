@@ -14,56 +14,25 @@
 
 import { mapValues } from '../runtime';
 /**
- * Standard error body returned for every non-2xx response.
+ * Revoke many permissions by their own permission-row ids.
  * @export
- * @interface ErrorResponse
+ * @interface BulkRevokeRequest
  */
-export interface ErrorResponse {
+export interface BulkRevokeRequest {
     /**
-     * Human-readable explanation of the error.
+     * 
      * @type {string}
-     * @memberof ErrorResponse
+     * @memberof BulkRevokeRequest
      */
-    detail: string;
+    tenantId: string;
     /**
-     * Stable, machine-readable error code from a closed set. Branch on this instead of parsing 'detail'. 'quota_exceeded'/'too_many_requests' carry a Retry-After header; 'service_unavailable' is retryable.
-     * @type {ErrorResponseCodeEnum}
-     * @memberof ErrorResponse
+     * 
+     * @type {Array<string>}
+     * @memberof BulkRevokeRequest
      */
-    code: ErrorResponseCodeEnum;
-    /**
-     * Correlates to the x-request-id response header; quote it to support.
-     * @type {string}
-     * @memberof ErrorResponse
-     */
-    requestId?: string;
+    permissionIds?: Array<string>;
 }
-
-
-/**
- * @export
- */
-export const ErrorResponseCodeEnum = {
-    Error: 'error',
-    BadRequest: 'bad_request',
-    PermissionLimit: 'permission_limit',
-    Unauthorized: 'unauthorized',
-    Forbidden: 'forbidden',
-    NotFound: 'not_found',
-    Conflict: 'conflict',
-    RunBusy: 'run_busy',
-    UnprocessableEntity: 'unprocessable_entity',
-    TooManyRequests: 'too_many_requests',
-    QuotaExceeded: 'quota_exceeded',
-    NotImplemented: 'not_implemented',
-    ServiceConfigurationError: 'service_configuration_error',
-    QuotaPeriodMissing: 'quota_period_missing',
-    InternalError: 'internal_error',
-    ServiceUnavailable: 'service_unavailable'
-} as const;
-export type ErrorResponseCodeEnum = typeof ErrorResponseCodeEnum[keyof typeof ErrorResponseCodeEnum];
-
-export const ErrorResponsePropertyValidationAttributesMap: {
+export const BulkRevokeRequestPropertyValidationAttributesMap: {
     [property: string]: {
         maxLength?: number,
         minLength?: number,
@@ -82,44 +51,41 @@ export const ErrorResponsePropertyValidationAttributesMap: {
 
 
 /**
- * Check if a given object implements the ErrorResponse interface.
+ * Check if a given object implements the BulkRevokeRequest interface.
  */
-export function instanceOfErrorResponse(value: object): value is ErrorResponse {
-    if (!('detail' in value) || value['detail'] === undefined) return false;
-    if (!('code' in value) || value['code'] === undefined) return false;
+export function instanceOfBulkRevokeRequest(value: object): value is BulkRevokeRequest {
+    if (!('tenantId' in value) || value['tenantId'] === undefined) return false;
     return true;
 }
 
-export function ErrorResponseFromJSON(json: any): ErrorResponse {
-    return ErrorResponseFromJSONTyped(json, false);
+export function BulkRevokeRequestFromJSON(json: any): BulkRevokeRequest {
+    return BulkRevokeRequestFromJSONTyped(json, false);
 }
 
-export function ErrorResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): ErrorResponse {
+export function BulkRevokeRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): BulkRevokeRequest {
     if (json == null) {
         return json;
     }
     return {
         
-        'detail': json['detail'],
-        'code': json['code'],
-        'requestId': json['request_id'] == null ? undefined : json['request_id'],
+        'tenantId': json['tenant_id'],
+        'permissionIds': json['permission_ids'] == null ? undefined : json['permission_ids'],
     };
 }
 
-export function ErrorResponseToJSON(json: any): ErrorResponse {
-    return ErrorResponseToJSONTyped(json, false);
+export function BulkRevokeRequestToJSON(json: any): BulkRevokeRequest {
+    return BulkRevokeRequestToJSONTyped(json, false);
 }
 
-export function ErrorResponseToJSONTyped(value?: ErrorResponse | null, ignoreDiscriminator: boolean = false): any {
+export function BulkRevokeRequestToJSONTyped(value?: BulkRevokeRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
         
-        'detail': value['detail'],
-        'code': value['code'],
-        'request_id': value['requestId'],
+        'tenant_id': value['tenantId'],
+        'permission_ids': value['permissionIds'],
     };
 }
 

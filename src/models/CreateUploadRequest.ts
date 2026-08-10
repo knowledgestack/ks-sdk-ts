@@ -43,6 +43,12 @@ export interface CreateUploadRequest {
      * @memberof CreateUploadRequest
      */
     sizeBytes: number;
+    /**
+     * Tags applied to the document on completion (mirrors the buffered ingest endpoints so a mixed submit tags recordings too)
+     * @type {Array<string>}
+     * @memberof CreateUploadRequest
+     */
+    tagIds?: Array<string>;
 }
 export const CreateUploadRequestPropertyValidationAttributesMap: {
     [property: string]: {
@@ -87,6 +93,7 @@ export function CreateUploadRequestFromJSONTyped(json: any, ignoreDiscriminator:
         'name': json['name'],
         'filename': json['filename'],
         'sizeBytes': json['size_bytes'],
+        'tagIds': json['tag_ids'] == null ? undefined : json['tag_ids'],
     };
 }
 
@@ -105,6 +112,7 @@ export function CreateUploadRequestToJSONTyped(value?: CreateUploadRequest | nul
         'name': value['name'],
         'filename': value['filename'],
         'size_bytes': value['sizeBytes'],
+        'tag_ids': value['tagIds'],
     };
 }
 
