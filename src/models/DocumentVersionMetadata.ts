@@ -171,7 +171,7 @@ export interface DocumentVersionMetadata {
      */
     informationStatistics?: InformationStatistics | null;
     /**
-     * True once the conversion activity successfully consumed PAGE quota
+     * Diagnostics only — nothing reads it and nothing refunds. Kept for pre-existing rows that carry it.
      * @type {boolean}
      * @memberof DocumentVersionMetadata
      */
@@ -189,7 +189,7 @@ export interface DocumentVersionMetadata {
      */
     quotaMediaMinutes?: number;
     /**
-     * Stable consume key (matches workflow_id); 'UNSET' for pre-Phase-2 docs so refund logic short-circuits
+     * Stable consume key (matches workflow_id) written for diagnostics/audit; 'UNSET' when no consume was committed
      * @type {string}
      * @memberof DocumentVersionMetadata
      */
