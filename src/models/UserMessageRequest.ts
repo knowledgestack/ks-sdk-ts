@@ -26,11 +26,11 @@ export interface UserMessageRequest {
      */
     inputText?: string;
     /**
-     * Answer with the faster, lower-cost chat profile. Ignored when the tenant pins a chat profile and on workflow-run threads.
+     * Answer with the faster, lower-cost chat profile. Omit to use the tenant's default_fast_mode; true/false overrides it for this message. Ignored when the tenant pins a chat profile and on workflow-run threads.
      * @type {boolean}
      * @memberof UserMessageRequest
      */
-    fastMode?: boolean;
+    fastMode?: boolean | null;
 }
 export const UserMessageRequestPropertyValidationAttributesMap: {
     [property: string]: {
