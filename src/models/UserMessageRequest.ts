@@ -25,6 +25,12 @@ export interface UserMessageRequest {
      * @memberof UserMessageRequest
      */
     inputText?: string;
+    /**
+     * Answer with the faster, lower-cost chat profile. Ignored when the tenant pins a chat profile and on workflow-run threads.
+     * @type {boolean}
+     * @memberof UserMessageRequest
+     */
+    fastMode?: boolean;
 }
 export const UserMessageRequestPropertyValidationAttributesMap: {
     [property: string]: {
@@ -62,6 +68,7 @@ export function UserMessageRequestFromJSONTyped(json: any, ignoreDiscriminator: 
     return {
         
         'inputText': json['input_text'] == null ? undefined : json['input_text'],
+        'fastMode': json['fast_mode'] == null ? undefined : json['fast_mode'],
     };
 }
 
@@ -77,6 +84,7 @@ export function UserMessageRequestToJSONTyped(value?: UserMessageRequest | null,
     return {
         
         'input_text': value['inputText'],
+        'fast_mode': value['fastMode'],
     };
 }
 
