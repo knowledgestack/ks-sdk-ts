@@ -267,6 +267,7 @@ export * from './SectionContentItem';
 export * from './SectionContentItemOrChunkContentItem';
 export * from './SectionResponse';
 export * from './SectionSystemMetadata';
+export * from './SegmentSpan';
 export * from './SendPasswordResetRequest';
 export * from './SetApprovalStateRequest';
 export * from './SetWorkflowRunApprovalRequest';

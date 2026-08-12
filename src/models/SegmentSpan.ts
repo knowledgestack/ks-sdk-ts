@@ -13,52 +13,35 @@
  */
 
 import { mapValues } from '../runtime';
-import type { UploadFormat } from './UploadFormat';
-import {
-    UploadFormatFromJSON,
-    UploadFormatFromJSONTyped,
-    UploadFormatToJSON,
-    UploadFormatToJSONTyped,
-} from './UploadFormat';
-
 /**
+ * One ASR segment's span inside a media chunk (media chunks only).
  * 
+ * Field names are deliberately compact — a media document stores hundreds
+ * of chunks x up to ~15 spans each in ``chunk_metadata`` JSONB.
  * @export
- * @interface UploadConstraints
+ * @interface SegmentSpan
  */
-export interface UploadConstraints {
+export interface SegmentSpan {
     /**
-     * 
-     * @type {Array<UploadFormat>}
-     * @memberof UploadConstraints
-     */
-    formats: Array<UploadFormat>;
-    /**
-     * 
+     * Segment start in the media, ms from start.
      * @type {number}
-     * @memberof UploadConstraints
+     * @memberof SegmentSpan
      */
-    maxBytes: number;
+    s: number;
     /**
-     * 
+     * Segment end in the media, ms from start.
      * @type {number}
-     * @memberof UploadConstraints
+     * @memberof SegmentSpan
      */
-    maxImageBytes: number;
+    e: number;
     /**
-     * 
+     * Character offset of this segment's text within the chunk's joined content — maps a position in the chunk text back to a moment in the recording.
      * @type {number}
-     * @memberof UploadConstraints
+     * @memberof SegmentSpan
      */
-    maxMediaBytes: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof UploadConstraints
-     */
-    maxVideoBytes: number;
+    c: number;
 }
-export const UploadConstraintsPropertyValidationAttributesMap: {
+export const SegmentSpanPropertyValidationAttributesMap: {
     [property: string]: {
         maxLength?: number,
         minLength?: number,
@@ -77,51 +60,45 @@ export const UploadConstraintsPropertyValidationAttributesMap: {
 
 
 /**
- * Check if a given object implements the UploadConstraints interface.
+ * Check if a given object implements the SegmentSpan interface.
  */
-export function instanceOfUploadConstraints(value: object): value is UploadConstraints {
-    if (!('formats' in value) || value['formats'] === undefined) return false;
-    if (!('maxBytes' in value) || value['maxBytes'] === undefined) return false;
-    if (!('maxImageBytes' in value) || value['maxImageBytes'] === undefined) return false;
-    if (!('maxMediaBytes' in value) || value['maxMediaBytes'] === undefined) return false;
-    if (!('maxVideoBytes' in value) || value['maxVideoBytes'] === undefined) return false;
+export function instanceOfSegmentSpan(value: object): value is SegmentSpan {
+    if (!('s' in value) || value['s'] === undefined) return false;
+    if (!('e' in value) || value['e'] === undefined) return false;
+    if (!('c' in value) || value['c'] === undefined) return false;
     return true;
 }
 
-export function UploadConstraintsFromJSON(json: any): UploadConstraints {
-    return UploadConstraintsFromJSONTyped(json, false);
+export function SegmentSpanFromJSON(json: any): SegmentSpan {
+    return SegmentSpanFromJSONTyped(json, false);
 }
 
-export function UploadConstraintsFromJSONTyped(json: any, ignoreDiscriminator: boolean): UploadConstraints {
+export function SegmentSpanFromJSONTyped(json: any, ignoreDiscriminator: boolean): SegmentSpan {
     if (json == null) {
         return json;
     }
     return {
         
-        'formats': ((json['formats'] as Array<any>).map(UploadFormatFromJSON)),
-        'maxBytes': json['max_bytes'],
-        'maxImageBytes': json['max_image_bytes'],
-        'maxMediaBytes': json['max_media_bytes'],
-        'maxVideoBytes': json['max_video_bytes'],
+        's': json['s'],
+        'e': json['e'],
+        'c': json['c'],
     };
 }
 
-export function UploadConstraintsToJSON(json: any): UploadConstraints {
-    return UploadConstraintsToJSONTyped(json, false);
+export function SegmentSpanToJSON(json: any): SegmentSpan {
+    return SegmentSpanToJSONTyped(json, false);
 }
 
-export function UploadConstraintsToJSONTyped(value?: UploadConstraints | null, ignoreDiscriminator: boolean = false): any {
+export function SegmentSpanToJSONTyped(value?: SegmentSpan | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
         
-        'formats': ((value['formats'] as Array<any>).map(UploadFormatToJSON)),
-        'max_bytes': value['maxBytes'],
-        'max_image_bytes': value['maxImageBytes'],
-        'max_media_bytes': value['maxMediaBytes'],
-        'max_video_bytes': value['maxVideoBytes'],
+        's': value['s'],
+        'e': value['e'],
+        'c': value['c'],
     };
 }
 

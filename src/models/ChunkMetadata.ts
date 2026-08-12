@@ -13,6 +13,13 @@
  */
 
 import { mapValues } from '../runtime';
+import type { SegmentSpan } from './SegmentSpan';
+import {
+    SegmentSpanFromJSON,
+    SegmentSpanFromJSONTyped,
+    SegmentSpanToJSON,
+    SegmentSpanToJSONTyped,
+} from './SegmentSpan';
 import type { ImageTaxonomy } from './ImageTaxonomy';
 import {
     ImageTaxonomyFromJSON,
@@ -82,6 +89,12 @@ export interface ChunkMetadata {
      * @memberof ChunkMetadata
      */
     endMs?: number | null;
+    /**
+     * Per-ASR-segment spans inside this media chunk, in order, each carrying its char offset in the chunk content. Lets citation resolution narrow a chunk-level timeframe to the enclosing segment. None for non-media chunks and media ingested before this field existed.
+     * @type {Array<SegmentSpan>}
+     * @memberof ChunkMetadata
+     */
+    segments?: Array<SegmentSpan> | null;
     /**
      * Worksheet name this chunk was extracted from (XLSX only)
      * @type {string}
@@ -182,6 +195,7 @@ export function ChunkMetadataFromJSONTyped(json: any, ignoreDiscriminator: boole
         'secondaryTaxonomy': json['secondary_taxonomy'] == null ? undefined : ImageTaxonomyFromJSON(json['secondary_taxonomy']),
         'startMs': json['start_ms'] == null ? undefined : json['start_ms'],
         'endMs': json['end_ms'] == null ? undefined : json['end_ms'],
+        'segments': json['segments'] == null ? undefined : ((json['segments'] as Array<any>).map(SegmentSpanFromJSON)),
         'sheetName': json['sheet_name'] == null ? undefined : json['sheet_name'],
         'blockType': json['block_type'] == null ? undefined : json['block_type'],
         'sourceUri': json['source_uri'] == null ? undefined : json['source_uri'],
@@ -213,6 +227,7 @@ export function ChunkMetadataToJSONTyped(value?: ChunkMetadata | null, ignoreDis
         'secondary_taxonomy': ImageTaxonomyToJSON(value['secondaryTaxonomy']),
         'start_ms': value['startMs'],
         'end_ms': value['endMs'],
+        'segments': value['segments'] == null ? undefined : ((value['segments'] as Array<any>).map(SegmentSpanToJSON)),
         'sheet_name': value['sheetName'],
         'block_type': value['blockType'],
         'source_uri': value['sourceUri'],

@@ -183,6 +183,12 @@ export interface DocumentVersionMetadata {
      */
     quotaPageCount?: number;
     /**
+     * MEDIA_MINUTE quantity charged at media preparation; 0 if not yet charged
+     * @type {number}
+     * @memberof DocumentVersionMetadata
+     */
+    quotaMediaMinutes?: number;
+    /**
      * Stable consume key (matches workflow_id); 'UNSET' for pre-Phase-2 docs so refund logic short-circuits
      * @type {string}
      * @memberof DocumentVersionMetadata
@@ -258,6 +264,7 @@ export function DocumentVersionMetadataFromJSONTyped(json: any, ignoreDiscrimina
         'informationStatistics': json['information_statistics'] == null ? undefined : InformationStatisticsFromJSON(json['information_statistics']),
         'quotaCharged': json['quota_charged'] == null ? undefined : json['quota_charged'],
         'quotaPageCount': json['quota_page_count'] == null ? undefined : json['quota_page_count'],
+        'quotaMediaMinutes': json['quota_media_minutes'] == null ? undefined : json['quota_media_minutes'],
         'quotaIdempotencyKey': json['quota_idempotency_key'] == null ? undefined : json['quota_idempotency_key'],
         'fileMd5': json['file_md5'] == null ? undefined : json['file_md5'],
         'idempotencyKey': json['idempotency_key'] == null ? undefined : json['idempotency_key'],
@@ -297,6 +304,7 @@ export function DocumentVersionMetadataToJSONTyped(value?: DocumentVersionMetada
         'information_statistics': InformationStatisticsToJSON(value['informationStatistics']),
         'quota_charged': value['quotaCharged'],
         'quota_page_count': value['quotaPageCount'],
+        'quota_media_minutes': value['quotaMediaMinutes'],
         'quota_idempotency_key': value['quotaIdempotencyKey'],
         'file_md5': value['fileMd5'],
         'idempotency_key': value['idempotencyKey'],

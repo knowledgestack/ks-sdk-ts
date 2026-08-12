@@ -295,6 +295,7 @@ docs/SectionContentItemOrChunkContentItem.md
 docs/SectionResponse.md
 docs/SectionSystemMetadata.md
 docs/SectionsApi.md
+docs/SegmentSpan.md
 docs/SendPasswordResetRequest.md
 docs/SetApprovalStateRequest.md
 docs/SetWorkflowRunApprovalRequest.md
@@ -733,6 +734,7 @@ src/models/SectionContentItem.ts
 src/models/SectionContentItemOrChunkContentItem.ts
 src/models/SectionResponse.ts
 src/models/SectionSystemMetadata.ts
+src/models/SegmentSpan.ts
 src/models/SendPasswordResetRequest.ts
 src/models/SetApprovalStateRequest.ts
 src/models/SetWorkflowRunApprovalRequest.ts

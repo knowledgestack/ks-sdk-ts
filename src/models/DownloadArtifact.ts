@@ -19,7 +19,8 @@
  */
 export const DownloadArtifact = {
     Source: 'source',
-    FastPlaintext: 'fast_plaintext'
+    FastPlaintext: 'fast_plaintext',
+    Transcript: 'transcript'
 } as const;
 export type DownloadArtifact = typeof DownloadArtifact[keyof typeof DownloadArtifact];
 

@@ -261,7 +261,7 @@ export interface DocumentVersionsApiInterface {
     /**
      * Creates request options for downloadDocumentVersion without sending the request
      * @param {string} versionId DocumentVersion ID
-     * @param {DownloadArtifact} [artifact] Artifact to download: source or fast_plaintext
+     * @param {DownloadArtifact} [artifact] Artifact to download: source, fast_plaintext, or transcript (media only)
      * @throws {RequiredError}
      * @memberof DocumentVersionsApiInterface
      */
@@ -271,7 +271,7 @@ export interface DocumentVersionsApiInterface {
      * Issue a short-lived, audited download link for a specific version.  Records a ``document.downloaded`` audit event anchored to the document so the customer audit log captures who downloaded which version and when.
      * @summary Download Document Version Handler
      * @param {string} versionId DocumentVersion ID
-     * @param {DownloadArtifact} [artifact] Artifact to download: source or fast_plaintext
+     * @param {DownloadArtifact} [artifact] Artifact to download: source, fast_plaintext, or transcript (media only)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DocumentVersionsApiInterface
