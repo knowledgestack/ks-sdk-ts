@@ -81,6 +81,12 @@ export interface DocumentVersionMetadata {
      */
     fastPlaintextS3?: string | null;
     /**
+     * S3 URI of the ASR transcript JSON (per-segment start_ms/end_ms/text); null for non-media. Chunks carry timings too, but at merged-chunk granularity, so this is the only per-segment source.
+     * @type {string}
+     * @memberof DocumentVersionMetadata
+     */
+    transcriptS3?: string | null;
+    /**
      * Base64-encoded SHA256 hash of the uploaded source file
      * @type {string}
      * @memberof DocumentVersionMetadata
@@ -235,6 +241,7 @@ export function DocumentVersionMetadataFromJSONTyped(json: any, ignoreDiscrimina
         'preconversionSourceS3': json['preconversion_source_s3'] == null ? undefined : json['preconversion_source_s3'],
         'citedSourceS3': json['cited_source_s3'] == null ? undefined : json['cited_source_s3'],
         'fastPlaintextS3': json['fast_plaintext_s3'] == null ? undefined : json['fast_plaintext_s3'],
+        'transcriptS3': json['transcript_s3'] == null ? undefined : json['transcript_s3'],
         'hash': json['hash'] == null ? undefined : json['hash'],
         'pipelineState': json['pipeline_state'] == null ? undefined : PipelineStateFromJSON(json['pipeline_state']),
         'totalPages': json['total_pages'] == null ? undefined : json['total_pages'],
@@ -273,6 +280,7 @@ export function DocumentVersionMetadataToJSONTyped(value?: DocumentVersionMetada
         'preconversion_source_s3': value['preconversionSourceS3'],
         'cited_source_s3': value['citedSourceS3'],
         'fast_plaintext_s3': value['fastPlaintextS3'],
+        'transcript_s3': value['transcriptS3'],
         'hash': value['hash'],
         'pipeline_state': PipelineStateToJSON(value['pipelineState']),
         'total_pages': value['totalPages'],

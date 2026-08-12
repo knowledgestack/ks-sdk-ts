@@ -122,6 +122,12 @@ export interface DocumentVersionResponse {
      */
     fastPlaintextUrl?: string | null;
     /**
+     * Presigned URL (6-hour validity) to the ASR transcript JSON with per-segment start_ms/end_ms/text; null for non-media. Chunks pack many segments into one, so this is what a client reads to follow a recording line by line.
+     * @type {string}
+     * @memberof DocumentVersionResponse
+     */
+    transcriptUrl?: string | null;
+    /**
      * Presigned URLs (6-hour validity) to per-page WEBP screenshots in page order: index 0 is page 1, index N-1 is page N. Populated only when the request includes include_page_screenshots=true; null otherwise.
      * @type {Array<string>}
      * @memberof DocumentVersionResponse
@@ -194,6 +200,7 @@ export function DocumentVersionResponseFromJSONTyped(json: any, ignoreDiscrimina
         'assetS3Url': json['asset_s3_url'] == null ? undefined : json['asset_s3_url'],
         'citedAssetS3Url': json['cited_asset_s3_url'] == null ? undefined : json['cited_asset_s3_url'],
         'fastPlaintextUrl': json['fast_plaintext_url'] == null ? undefined : json['fast_plaintext_url'],
+        'transcriptUrl': json['transcript_url'] == null ? undefined : json['transcript_url'],
         'pageScreenshotUrls': json['page_screenshot_urls'] == null ? undefined : json['page_screenshot_urls'],
         'systemMetadata': json['system_metadata'] == null ? undefined : DocumentVersionMetadataFromJSON(json['system_metadata']),
     };
@@ -224,6 +231,7 @@ export function DocumentVersionResponseToJSONTyped(value?: DocumentVersionRespon
         'asset_s3_url': value['assetS3Url'],
         'cited_asset_s3_url': value['citedAssetS3Url'],
         'fast_plaintext_url': value['fastPlaintextUrl'],
+        'transcript_url': value['transcriptUrl'],
         'page_screenshot_urls': value['pageScreenshotUrls'],
         'system_metadata': DocumentVersionMetadataToJSON(value['systemMetadata']),
     };
