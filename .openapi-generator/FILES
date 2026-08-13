@@ -197,6 +197,7 @@ docs/KbMetric.md
 docs/KbSummaryResponse.md
 docs/KbTimeseriesResponse.md
 docs/LabeledSeries.md
+docs/LastRunSummary.md
 docs/LeaderboardEntry.md
 docs/LineageEdgeResponse.md
 docs/LineageGraphResponse.md
@@ -641,6 +642,7 @@ src/models/KbMetric.ts
 src/models/KbSummaryResponse.ts
 src/models/KbTimeseriesResponse.ts
 src/models/LabeledSeries.ts
+src/models/LastRunSummary.ts
 src/models/LeaderboardEntry.ts
 src/models/LineageEdgeResponse.ts
 src/models/LineageGraphResponse.ts

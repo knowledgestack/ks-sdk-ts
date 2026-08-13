@@ -85,6 +85,7 @@ export interface InstantiateWorkflowTemplateOperationRequest {
 
 export interface ListWorkflowDefinitionsRequest {
     mine?: boolean;
+    search?: string | null;
     sortBy?: WorkflowDefinitionOrder;
     sortDir?: SortDirection;
     isTemplate?: boolean;
@@ -94,6 +95,8 @@ export interface ListWorkflowDefinitionsRequest {
     createdBefore?: Date | null;
     updatedAfter?: Date | null;
     updatedBefore?: Date | null;
+    includeTagIds?: Array<string> | null;
+    excludeTagIds?: Array<string> | null;
 }
 
 export interface ListWorkflowRunsRequest {
@@ -255,6 +258,7 @@ export interface WorkflowDefinitionsApiInterface {
     /**
      * Creates request options for listWorkflowDefinitions without sending the request
      * @param {boolean} [mine] Only definitions the caller created (owner).
+     * @param {string} [search] Case-insensitive substring over name and description.
      * @param {WorkflowDefinitionOrder} [sortBy] Field to sort definitions by (default: CREATED_AT)
      * @param {SortDirection} [sortDir] Sort direction; overrides the field\&#39;s natural default
      * @param {boolean} [isTemplate] 
@@ -264,6 +268,8 @@ export interface WorkflowDefinitionsApiInterface {
      * @param {Date} [createdBefore] Only items created strictly before this timestamp
      * @param {Date} [updatedAfter] Only items updated at or after this timestamp (inclusive)
      * @param {Date} [updatedBefore] Only items updated strictly before this timestamp
+     * @param {Array<string>} [includeTagIds] Keep only items that carry at least one of these tags on the item itself or any ancestor folder (repeatable, OR / tag inheritance).
+     * @param {Array<string>} [excludeTagIds] Drop items that carry any of these tags on the item itself or any ancestor folder (repeatable). Takes precedence over include_tag_ids.
      * @throws {RequiredError}
      * @memberof WorkflowDefinitionsApiInterface
      */
@@ -273,6 +279,7 @@ export interface WorkflowDefinitionsApiInterface {
      * 
      * @summary List Workflow Definitions Handler
      * @param {boolean} [mine] Only definitions the caller created (owner).
+     * @param {string} [search] Case-insensitive substring over name and description.
      * @param {WorkflowDefinitionOrder} [sortBy] Field to sort definitions by (default: CREATED_AT)
      * @param {SortDirection} [sortDir] Sort direction; overrides the field\&#39;s natural default
      * @param {boolean} [isTemplate] 
@@ -282,6 +289,8 @@ export interface WorkflowDefinitionsApiInterface {
      * @param {Date} [createdBefore] Only items created strictly before this timestamp
      * @param {Date} [updatedAfter] Only items updated at or after this timestamp (inclusive)
      * @param {Date} [updatedBefore] Only items updated strictly before this timestamp
+     * @param {Array<string>} [includeTagIds] Keep only items that carry at least one of these tags on the item itself or any ancestor folder (repeatable, OR / tag inheritance).
+     * @param {Array<string>} [excludeTagIds] Drop items that carry any of these tags on the item itself or any ancestor folder (repeatable). Takes precedence over include_tag_ids.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof WorkflowDefinitionsApiInterface
@@ -700,6 +709,10 @@ export class WorkflowDefinitionsApi extends runtime.BaseAPI implements WorkflowD
             queryParameters['mine'] = requestParameters['mine'];
         }
 
+        if (requestParameters['search'] != null) {
+            queryParameters['search'] = requestParameters['search'];
+        }
+
         if (requestParameters['sortBy'] != null) {
             queryParameters['sort_by'] = requestParameters['sortBy'];
         }
@@ -734,6 +747,14 @@ export class WorkflowDefinitionsApi extends runtime.BaseAPI implements WorkflowD
 
         if (requestParameters['updatedBefore'] != null) {
             queryParameters['updated_before'] = (requestParameters['updatedBefore'] as any).toISOString();
+        }
+
+        if (requestParameters['includeTagIds'] != null) {
+            queryParameters['include_tag_ids'] = requestParameters['includeTagIds'];
+        }
+
+        if (requestParameters['excludeTagIds'] != null) {
+            queryParameters['exclude_tag_ids'] = requestParameters['excludeTagIds'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};

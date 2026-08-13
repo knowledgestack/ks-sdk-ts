@@ -174,6 +174,7 @@ export * from './KbMetric';
 export * from './KbSummaryResponse';
 export * from './KbTimeseriesResponse';
 export * from './LabeledSeries';
+export * from './LastRunSummary';
 export * from './LeaderboardEntry';
 export * from './LineageEdgeResponse';
 export * from './LineageGraphResponse';

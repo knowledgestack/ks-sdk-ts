@@ -14,12 +14,13 @@
 
 
 /**
- * Sortable fields for workflow-definition listings (time only for now).
+ * Sortable fields for workflow-definition listings.
  * @export
  */
 export const WorkflowDefinitionOrder = {
     CreatedAt: 'CREATED_AT',
-    UpdatedAt: 'UPDATED_AT'
+    UpdatedAt: 'UPDATED_AT',
+    Name: 'NAME'
 } as const;
 export type WorkflowDefinitionOrder = typeof WorkflowDefinitionOrder[keyof typeof WorkflowDefinitionOrder];
 

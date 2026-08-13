@@ -20,6 +20,13 @@ import {
     ItemPermissionsToJSON,
     ItemPermissionsToJSONTyped,
 } from './ItemPermissions';
+import type { LastRunSummary } from './LastRunSummary';
+import {
+    LastRunSummaryFromJSON,
+    LastRunSummaryFromJSONTyped,
+    LastRunSummaryToJSON,
+    LastRunSummaryToJSONTyped,
+} from './LastRunSummary';
 import type { PathPartApprovalState } from './PathPartApprovalState';
 import {
     PathPartApprovalStateFromJSON,
@@ -150,6 +157,18 @@ export interface WorkflowDefinitionResponse {
      */
     copyCount?: number;
     /**
+     * The definition's most recent run, or null if never run.
+     * @type {LastRunSummary}
+     * @memberof WorkflowDefinitionResponse
+     */
+    lastRun?: LastRunSummary | null;
+    /**
+     * Number of this definition's runs awaiting approval.
+     * @type {number}
+     * @memberof WorkflowDefinitionResponse
+     */
+    pendingApprovalCount?: number;
+    /**
      * 
      * @type {PathPartApprovalState}
      * @memberof WorkflowDefinitionResponse
@@ -258,6 +277,8 @@ export function WorkflowDefinitionResponseFromJSONTyped(json: any, ignoreDiscrim
         'commonFilePathPartIds': json['common_file_path_part_ids'] == null ? undefined : json['common_file_path_part_ids'],
         'createdFromId': json['created_from_id'],
         'copyCount': json['copy_count'] == null ? undefined : json['copy_count'],
+        'lastRun': json['last_run'] == null ? undefined : LastRunSummaryFromJSON(json['last_run']),
+        'pendingApprovalCount': json['pending_approval_count'] == null ? undefined : json['pending_approval_count'],
         'approvalState': PathPartApprovalStateFromJSON(json['approval_state']),
         'owner': json['owner'] == null ? undefined : UserInfoFromJSON(json['owner']),
         'createdAt': (new Date(json['created_at'])),
@@ -294,6 +315,8 @@ export function WorkflowDefinitionResponseToJSONTyped(value?: WorkflowDefinition
         'common_file_path_part_ids': value['commonFilePathPartIds'],
         'created_from_id': value['createdFromId'],
         'copy_count': value['copyCount'],
+        'last_run': LastRunSummaryToJSON(value['lastRun']),
+        'pending_approval_count': value['pendingApprovalCount'],
         'approval_state': PathPartApprovalStateToJSON(value['approvalState']),
         'owner': UserInfoToJSON(value['owner']),
         'created_at': value['createdAt'].toISOString(),
