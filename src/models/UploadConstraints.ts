@@ -57,6 +57,18 @@ export interface UploadConstraints {
      * @memberof UploadConstraints
      */
     maxVideoBytes: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof UploadConstraints
+     */
+    maxMediaDurationMs: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof UploadConstraints
+     */
+    resumablePartSize: number;
 }
 export const UploadConstraintsPropertyValidationAttributesMap: {
     [property: string]: {
@@ -85,6 +97,8 @@ export function instanceOfUploadConstraints(value: object): value is UploadConst
     if (!('maxImageBytes' in value) || value['maxImageBytes'] === undefined) return false;
     if (!('maxMediaBytes' in value) || value['maxMediaBytes'] === undefined) return false;
     if (!('maxVideoBytes' in value) || value['maxVideoBytes'] === undefined) return false;
+    if (!('maxMediaDurationMs' in value) || value['maxMediaDurationMs'] === undefined) return false;
+    if (!('resumablePartSize' in value) || value['resumablePartSize'] === undefined) return false;
     return true;
 }
 
@@ -103,6 +117,8 @@ export function UploadConstraintsFromJSONTyped(json: any, ignoreDiscriminator: b
         'maxImageBytes': json['max_image_bytes'],
         'maxMediaBytes': json['max_media_bytes'],
         'maxVideoBytes': json['max_video_bytes'],
+        'maxMediaDurationMs': json['max_media_duration_ms'],
+        'resumablePartSize': json['resumable_part_size'],
     };
 }
 
@@ -122,6 +138,8 @@ export function UploadConstraintsToJSONTyped(value?: UploadConstraints | null, i
         'max_image_bytes': value['maxImageBytes'],
         'max_media_bytes': value['maxMediaBytes'],
         'max_video_bytes': value['maxVideoBytes'],
+        'max_media_duration_ms': value['maxMediaDurationMs'],
+        'resumable_part_size': value['resumablePartSize'],
     };
 }
 
