@@ -112,6 +112,7 @@ export interface ListPathPartEventsRequest {
     since?: Date | null;
     until?: Date | null;
     recursive?: boolean;
+    includeChurn?: boolean;
     limit?: number;
     offset?: number;
 }
@@ -336,6 +337,7 @@ export interface PathPartsApiInterface {
      * @param {Date} [since] Only events at or after this timestamp
      * @param {Date} [until] Only events strictly before this timestamp
      * @param {boolean} [recursive] Include events from descendant path_parts as well as the subject itself
+     * @param {boolean} [includeChurn] Include intra-document churn hidden by default (raw chunk/section edits, version-metadata updates, and the v0 version-created row). Off by default so one upload / one logical edit shows as one event; ignored when an explicit kind is set.
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
      * @throws {RequiredError}
@@ -344,13 +346,14 @@ export interface PathPartsApiInterface {
     listPathPartEventsRequestOpts(requestParameters: ListPathPartEventsRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * List events anchored to a specific path_part subject.  Subject permission is enforced via the existing ``PathPermissionService`` — caller must have ``can_read`` on the subject\'s materialized_path (OWNER/ADMIN bypass). Events are ordered newest-first by ``ts`` and paginated.  When ``recursive=True``, events on any descendant of the subject are included — useful for \"all events under this folder\" or \"all events under this workflow definition\".
+     * List events anchored to a specific path_part subject.  Subject permission is enforced via the existing ``PathPermissionService`` — caller must have ``can_read`` on the subject\'s materialized_path (OWNER/ADMIN bypass). Events are ordered newest-first by ``ts`` and paginated.  When ``recursive=True``, events on any descendant of the subject are included — useful for \"all events under this folder\" or \"all events under this workflow definition\".  By default the feed collapses intra-document churn to match the tenant-wide admin view; pass ``include_churn=True`` for the complete forensic feed (the agent\'s ``list_events`` tool does this).
      * @summary List Path Part Events Handler
      * @param {string} pathPartId 
      * @param {string} [kind] Filter to a single event kind
      * @param {Date} [since] Only events at or after this timestamp
      * @param {Date} [until] Only events strictly before this timestamp
      * @param {boolean} [recursive] Include events from descendant path_parts as well as the subject itself
+     * @param {boolean} [includeChurn] Include intra-document churn hidden by default (raw chunk/section edits, version-metadata updates, and the v0 version-created row). Off by default so one upload / one logical edit shows as one event; ignored when an explicit kind is set.
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
      * @param {*} [options] Override http request option.
@@ -360,7 +363,7 @@ export interface PathPartsApiInterface {
     listPathPartEventsRaw(requestParameters: ListPathPartEventsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedResponseEventResponse>>;
 
     /**
-     * List events anchored to a specific path_part subject.  Subject permission is enforced via the existing ``PathPermissionService`` — caller must have ``can_read`` on the subject\'s materialized_path (OWNER/ADMIN bypass). Events are ordered newest-first by ``ts`` and paginated.  When ``recursive=True``, events on any descendant of the subject are included — useful for \"all events under this folder\" or \"all events under this workflow definition\".
+     * List events anchored to a specific path_part subject.  Subject permission is enforced via the existing ``PathPermissionService`` — caller must have ``can_read`` on the subject\'s materialized_path (OWNER/ADMIN bypass). Events are ordered newest-first by ``ts`` and paginated.  When ``recursive=True``, events on any descendant of the subject are included — useful for \"all events under this folder\" or \"all events under this workflow definition\".  By default the feed collapses intra-document churn to match the tenant-wide admin view; pass ``include_churn=True`` for the complete forensic feed (the agent\'s ``list_events`` tool does this).
      * List Path Part Events Handler
      */
     listPathPartEvents(requestParameters: ListPathPartEventsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedResponseEventResponse>;
@@ -945,6 +948,10 @@ export class PathPartsApi extends runtime.BaseAPI implements PathPartsApiInterfa
             queryParameters['recursive'] = requestParameters['recursive'];
         }
 
+        if (requestParameters['includeChurn'] != null) {
+            queryParameters['include_churn'] = requestParameters['includeChurn'];
+        }
+
         if (requestParameters['limit'] != null) {
             queryParameters['limit'] = requestParameters['limit'];
         }
@@ -976,7 +983,7 @@ export class PathPartsApi extends runtime.BaseAPI implements PathPartsApiInterfa
     }
 
     /**
-     * List events anchored to a specific path_part subject.  Subject permission is enforced via the existing ``PathPermissionService`` — caller must have ``can_read`` on the subject\'s materialized_path (OWNER/ADMIN bypass). Events are ordered newest-first by ``ts`` and paginated.  When ``recursive=True``, events on any descendant of the subject are included — useful for \"all events under this folder\" or \"all events under this workflow definition\".
+     * List events anchored to a specific path_part subject.  Subject permission is enforced via the existing ``PathPermissionService`` — caller must have ``can_read`` on the subject\'s materialized_path (OWNER/ADMIN bypass). Events are ordered newest-first by ``ts`` and paginated.  When ``recursive=True``, events on any descendant of the subject are included — useful for \"all events under this folder\" or \"all events under this workflow definition\".  By default the feed collapses intra-document churn to match the tenant-wide admin view; pass ``include_churn=True`` for the complete forensic feed (the agent\'s ``list_events`` tool does this).
      * List Path Part Events Handler
      */
     async listPathPartEventsRaw(requestParameters: ListPathPartEventsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedResponseEventResponse>> {
@@ -987,7 +994,7 @@ export class PathPartsApi extends runtime.BaseAPI implements PathPartsApiInterfa
     }
 
     /**
-     * List events anchored to a specific path_part subject.  Subject permission is enforced via the existing ``PathPermissionService`` — caller must have ``can_read`` on the subject\'s materialized_path (OWNER/ADMIN bypass). Events are ordered newest-first by ``ts`` and paginated.  When ``recursive=True``, events on any descendant of the subject are included — useful for \"all events under this folder\" or \"all events under this workflow definition\".
+     * List events anchored to a specific path_part subject.  Subject permission is enforced via the existing ``PathPermissionService`` — caller must have ``can_read`` on the subject\'s materialized_path (OWNER/ADMIN bypass). Events are ordered newest-first by ``ts`` and paginated.  When ``recursive=True``, events on any descendant of the subject are included — useful for \"all events under this folder\" or \"all events under this workflow definition\".  By default the feed collapses intra-document churn to match the tenant-wide admin view; pass ``include_churn=True`` for the complete forensic feed (the agent\'s ``list_events`` tool does this).
      * List Path Part Events Handler
      */
     async listPathPartEvents(requestParameters: ListPathPartEventsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedResponseEventResponse> {
