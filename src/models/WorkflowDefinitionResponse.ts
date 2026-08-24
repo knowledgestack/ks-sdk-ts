@@ -20,6 +20,13 @@ import {
     ItemPermissionsToJSON,
     ItemPermissionsToJSONTyped,
 } from './ItemPermissions';
+import type { ScheduleCadence } from './ScheduleCadence';
+import {
+    ScheduleCadenceFromJSON,
+    ScheduleCadenceFromJSONTyped,
+    ScheduleCadenceToJSON,
+    ScheduleCadenceToJSONTyped,
+} from './ScheduleCadence';
 import type { LastRunSummary } from './LastRunSummary';
 import {
     LastRunSummaryFromJSON,
@@ -182,6 +189,24 @@ export interface WorkflowDefinitionResponse {
     owner?: UserInfo | null;
     /**
      * 
+     * @type {ScheduleCadence}
+     * @memberof WorkflowDefinitionResponse
+     */
+    scheduleCadence?: ScheduleCadence;
+    /**
+     * First occurrence, read in ``schedule_timezone``.
+     * @type {Date}
+     * @memberof WorkflowDefinitionResponse
+     */
+    scheduleStartAt?: Date | null;
+    /**
+     * IANA zone the schedule fires in, e.g. ``Asia/Shanghai``. Resolved at arm time: the tenant timezone unless the caller overrode it. Null only when unscheduled.
+     * @type {string}
+     * @memberof WorkflowDefinitionResponse
+     */
+    scheduleTimezone?: string | null;
+    /**
+     * 
      * @type {Date}
      * @memberof WorkflowDefinitionResponse
      */
@@ -281,6 +306,9 @@ export function WorkflowDefinitionResponseFromJSONTyped(json: any, ignoreDiscrim
         'pendingApprovalCount': json['pending_approval_count'] == null ? undefined : json['pending_approval_count'],
         'approvalState': PathPartApprovalStateFromJSON(json['approval_state']),
         'owner': json['owner'] == null ? undefined : UserInfoFromJSON(json['owner']),
+        'scheduleCadence': json['schedule_cadence'] == null ? undefined : ScheduleCadenceFromJSON(json['schedule_cadence']),
+        'scheduleStartAt': json['schedule_start_at'] == null ? undefined : (new Date(json['schedule_start_at'])),
+        'scheduleTimezone': json['schedule_timezone'] == null ? undefined : json['schedule_timezone'],
         'createdAt': (new Date(json['created_at'])),
         'updatedAt': (new Date(json['updated_at'])),
         'permissions': json['permissions'] == null ? undefined : ItemPermissionsFromJSON(json['permissions']),
@@ -319,6 +347,9 @@ export function WorkflowDefinitionResponseToJSONTyped(value?: WorkflowDefinition
         'pending_approval_count': value['pendingApprovalCount'],
         'approval_state': PathPartApprovalStateToJSON(value['approvalState']),
         'owner': UserInfoToJSON(value['owner']),
+        'schedule_cadence': ScheduleCadenceToJSON(value['scheduleCadence']),
+        'schedule_start_at': value['scheduleStartAt'] == null ? value['scheduleStartAt'] : value['scheduleStartAt'].toISOString(),
+        'schedule_timezone': value['scheduleTimezone'],
         'created_at': value['createdAt'].toISOString(),
         'updated_at': value['updatedAt'].toISOString(),
         'permissions': ItemPermissionsToJSON(value['permissions']),

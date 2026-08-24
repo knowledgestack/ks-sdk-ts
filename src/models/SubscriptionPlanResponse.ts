@@ -74,6 +74,30 @@ export interface SubscriptionPlanResponse {
      */
     _public: boolean;
     /**
+     * Per-seat monthly price in USD cents (Stripe / NA). NULL = not self-serve purchasable in this currency/interval.
+     * @type {number}
+     * @memberof SubscriptionPlanResponse
+     */
+    priceMonthlyUsdCents?: number | null;
+    /**
+     * Per-seat annual price in USD cents (Stripe / NA).
+     * @type {number}
+     * @memberof SubscriptionPlanResponse
+     */
+    priceAnnualUsdCents?: number | null;
+    /**
+     * Per-seat monthly price in CNY fen (Ping++ / CN).
+     * @type {number}
+     * @memberof SubscriptionPlanResponse
+     */
+    priceMonthlyCnyFen?: number | null;
+    /**
+     * Per-seat annual price in CNY fen (Ping++ / CN).
+     * @type {number}
+     * @memberof SubscriptionPlanResponse
+     */
+    priceAnnualCnyFen?: number | null;
+    /**
      * Plan creation timestamp.
      * @type {Date}
      * @memberof SubscriptionPlanResponse
@@ -139,6 +163,10 @@ export function SubscriptionPlanResponseFromJSONTyped(json: any, ignoreDiscrimin
         'mediaMinutes': json['media_minutes'],
         'maxSeats': json['max_seats'],
         '_public': json['public'],
+        'priceMonthlyUsdCents': json['price_monthly_usd_cents'] == null ? undefined : json['price_monthly_usd_cents'],
+        'priceAnnualUsdCents': json['price_annual_usd_cents'] == null ? undefined : json['price_annual_usd_cents'],
+        'priceMonthlyCnyFen': json['price_monthly_cny_fen'] == null ? undefined : json['price_monthly_cny_fen'],
+        'priceAnnualCnyFen': json['price_annual_cny_fen'] == null ? undefined : json['price_annual_cny_fen'],
         'createdAt': (new Date(json['created_at'])),
         'updatedAt': (new Date(json['updated_at'])),
     };
@@ -163,6 +191,10 @@ export function SubscriptionPlanResponseToJSONTyped(value?: SubscriptionPlanResp
         'media_minutes': value['mediaMinutes'],
         'max_seats': value['maxSeats'],
         'public': value['_public'],
+        'price_monthly_usd_cents': value['priceMonthlyUsdCents'],
+        'price_annual_usd_cents': value['priceAnnualUsdCents'],
+        'price_monthly_cny_fen': value['priceMonthlyCnyFen'],
+        'price_annual_cny_fen': value['priceAnnualCnyFen'],
         'created_at': value['createdAt'].toISOString(),
         'updated_at': value['updatedAt'].toISOString(),
     };

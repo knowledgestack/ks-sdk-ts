@@ -25,6 +25,10 @@ docs/AskRequest.md
 docs/AskResponse.md
 docs/AuditEventsApi.md
 docs/AuthApi.md
+docs/BillingApi.md
+docs/BillingInterval.md
+docs/BillingPaymentResponse.md
+docs/BillingSystem.md
 docs/BlockChangeType.md
 docs/BlockKind.md
 docs/BrandingLogoType.md
@@ -55,6 +59,8 @@ docs/CellDiff.md
 docs/ChangeClass.md
 docs/ChangePhoneNumberRequest.md
 docs/ChangeSubscriptionRequest.md
+docs/CheckoutAction.md
+docs/CheckoutResponse.md
 docs/CheckpointDetails.md
 docs/ChunkBulkResponse.md
 docs/ChunkContentItem.md
@@ -220,6 +226,7 @@ docs/OnboardingCompanyRequest.md
 docs/OnboardingProfileRequest.md
 docs/PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseWorkflowDefinitionResponseWorkflowRunResponseDat.md
 docs/PaginatedResponseAnnotatedUnionSectionContentItemChunkContentItemDiscriminator.md
+docs/PaginatedResponseBillingPaymentResponse.md
 docs/PaginatedResponseDocumentResponse.md
 docs/PaginatedResponseDocumentVersionResponse.md
 docs/PaginatedResponseEventResponse.md
@@ -282,6 +289,7 @@ docs/RunFolder.md
 docs/RunFolderRef.md
 docs/RunTimeseriesResponse.md
 docs/SSOInitiateResponse.md
+docs/ScheduleCadence.md
 docs/ScoredChunkResponse.md
 docs/SearchSkillsRequest.md
 docs/SearchSkillsResponse.md
@@ -316,7 +324,6 @@ docs/StructuredChange.md
 docs/StructuredChangeType.md
 docs/StructuredDiff.md
 docs/SubmitFeedbackRequest.md
-docs/SubmitSubscriptionResponse.md
 docs/SubscriptionPlanResponse.md
 docs/SubscriptionsApi.md
 docs/SubtreeChunkGroup.md
@@ -337,6 +344,7 @@ docs/TenantQuotaStateResponse.md
 docs/TenantResponse.md
 docs/TenantSettingsResponse.md
 docs/TenantSettingsUpdate.md
+docs/TenantSubscriptionResponse.md
 docs/TenantUserEditRequest.md
 docs/TenantUserOrder.md
 docs/TenantUserResponse.md
@@ -362,6 +370,7 @@ docs/ToolStatus.md
 docs/TransferOwnerRequest.md
 docs/TransferOwnerResponse.md
 docs/TrashApi.md
+docs/TrashItemDetailResponse.md
 docs/TrashItemResponse.md
 docs/UpdateApiConnectionRequest.md
 docs/UpdateChunkContentRequest.md
@@ -433,6 +442,7 @@ src/apis/ApiConnectionsApi.ts
 src/apis/ApiKeysApi.ts
 src/apis/AuditEventsApi.ts
 src/apis/AuthApi.ts
+src/apis/BillingApi.ts
 src/apis/BulkDeleteApi.ts
 src/apis/BulkDownloadApi.ts
 src/apis/BulkMoveApi.ts
@@ -484,6 +494,9 @@ src/models/AppendMemoryChunkRequest.ts
 src/models/Args.ts
 src/models/AskRequest.ts
 src/models/AskResponse.ts
+src/models/BillingInterval.ts
+src/models/BillingPaymentResponse.ts
+src/models/BillingSystem.ts
 src/models/BlockChangeType.ts
 src/models/BlockKind.ts
 src/models/BrandingLogoType.ts
@@ -511,6 +524,8 @@ src/models/CellDiff.ts
 src/models/ChangeClass.ts
 src/models/ChangePhoneNumberRequest.ts
 src/models/ChangeSubscriptionRequest.ts
+src/models/CheckoutAction.ts
+src/models/CheckoutResponse.ts
 src/models/CheckpointDetails.ts
 src/models/ChunkBulkResponse.ts
 src/models/ChunkContentItem.ts
@@ -664,6 +679,7 @@ src/models/OnboardingCompanyRequest.ts
 src/models/OnboardingProfileRequest.ts
 src/models/PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseWorkflowDefinitionResponseWorkflowRunResponseDat.ts
 src/models/PaginatedResponseAnnotatedUnionSectionContentItemChunkContentItemDiscriminator.ts
+src/models/PaginatedResponseBillingPaymentResponse.ts
 src/models/PaginatedResponseDocumentResponse.ts
 src/models/PaginatedResponseDocumentVersionResponse.ts
 src/models/PaginatedResponseEventResponse.ts
@@ -723,6 +739,7 @@ src/models/RunFolder.ts
 src/models/RunFolderRef.ts
 src/models/RunTimeseriesResponse.ts
 src/models/SSOInitiateResponse.ts
+src/models/ScheduleCadence.ts
 src/models/ScoredChunkResponse.ts
 src/models/SearchSkillsRequest.ts
 src/models/SearchSkillsResponse.ts
@@ -755,7 +772,6 @@ src/models/StructuredChange.ts
 src/models/StructuredChangeType.ts
 src/models/StructuredDiff.ts
 src/models/SubmitFeedbackRequest.ts
-src/models/SubmitSubscriptionResponse.ts
 src/models/SubscriptionPlanResponse.ts
 src/models/SubtreeChunkGroup.ts
 src/models/SubtreeChunksResponse.ts
@@ -772,6 +788,7 @@ src/models/TenantQuotaStateResponse.ts
 src/models/TenantResponse.ts
 src/models/TenantSettingsResponse.ts
 src/models/TenantSettingsUpdate.ts
+src/models/TenantSubscriptionResponse.ts
 src/models/TenantUserEditRequest.ts
 src/models/TenantUserOrder.ts
 src/models/TenantUserResponse.ts
@@ -793,6 +810,7 @@ src/models/ToolPart.ts
 src/models/ToolStatus.ts
 src/models/TransferOwnerRequest.ts
 src/models/TransferOwnerResponse.ts
+src/models/TrashItemDetailResponse.ts
 src/models/TrashItemResponse.ts
 src/models/UpdateApiConnectionRequest.ts
 src/models/UpdateChunkContentRequest.ts

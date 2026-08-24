@@ -13,13 +13,6 @@
  */
 
 import { mapValues } from '../runtime';
-import type { BillingInterval } from './BillingInterval';
-import {
-    BillingIntervalFromJSON,
-    BillingIntervalFromJSONTyped,
-    BillingIntervalToJSON,
-    BillingIntervalToJSONTyped,
-} from './BillingInterval';
 import type { BillingSystem } from './BillingSystem';
 import {
     BillingSystemFromJSON,
@@ -29,57 +22,73 @@ import {
 } from './BillingSystem';
 
 /**
- * Body for ``POST /v1/tenants/{tenant_id}/subscriptions``.
+ * One confirmed payment, as shown in the tenant's billing history.
  * 
- * For a priced plan, ``interval`` and ``billing_system`` are required
- * (``channel`` too for Ping++); the response carries the provider
- * checkout to complete. For the free plan they are ignored — the
- * downgrade is applied immediately (unbilled tenants) or scheduled
- * for period end (billed tenants).
+ * Backs in-app receipts: CN payments have no provider-hosted invoice
+ * (``invoice_url`` is NULL) — the frontend renders a receipt from
+ * these fields. Stripe payments link the hosted invoice.
  * @export
- * @interface ChangeSubscriptionRequest
+ * @interface BillingPaymentResponse
  */
-export interface ChangeSubscriptionRequest {
+export interface BillingPaymentResponse {
     /**
-     * Target plan to switch to.
+     * Payment id.
      * @type {string}
-     * @memberof ChangeSubscriptionRequest
+     * @memberof BillingPaymentResponse
      */
-    subscriptionId: string;
-    /**
-     * Desired seat cap. Must be <= plan.max_seats and >= the count of active TenantUser rows.
-     * @type {number}
-     * @memberof ChangeSubscriptionRequest
-     */
-    numSeats: number;
-    /**
-     * 
-     * @type {BillingInterval}
-     * @memberof ChangeSubscriptionRequest
-     */
-    interval?: BillingInterval;
+    id: string;
     /**
      * 
      * @type {BillingSystem}
-     * @memberof ChangeSubscriptionRequest
+     * @memberof BillingPaymentResponse
      */
-    billingSystem?: BillingSystem;
+    billingSystem: BillingSystem;
     /**
-     * Ping++ payment channel chosen in the UI (e.g. 'alipay_pc_direct', 'wx_pub_qr'). Required when billing_system=PING_PP.
+     * Plan purchased.
      * @type {string}
-     * @memberof ChangeSubscriptionRequest
+     * @memberof BillingPaymentResponse
      */
-    channel?: string | null;
+    planId: string;
     /**
-     * Channel-specific Ping++ charge `extra` parameters (success_url, product ids, ... — see the Ping++ charge API for the chosen channel). Passed through verbatim; amounts are always resolved server-side.
-     * @type {{ [key: string]: any; }}
-     * @memberof ChangeSubscriptionRequest
+     * Billing period purchased.
+     * @type {string}
+     * @memberof BillingPaymentResponse
      */
-    channelExtra?: { [key: string]: any; } | null;
+    interval: string;
+    /**
+     * Seats purchased.
+     * @type {number}
+     * @memberof BillingPaymentResponse
+     */
+    numSeats: number;
+    /**
+     * Total charged, in the currency's minor unit.
+     * @type {number}
+     * @memberof BillingPaymentResponse
+     */
+    amount: number;
+    /**
+     * USD (cents) or CNY (fen).
+     * @type {string}
+     * @memberof BillingPaymentResponse
+     */
+    currency: string;
+    /**
+     * Provider-hosted invoice/receipt, when available.
+     * @type {string}
+     * @memberof BillingPaymentResponse
+     */
+    invoiceUrl?: string | null;
+    /**
+     * When the payment confirmed.
+     * @type {Date}
+     * @memberof BillingPaymentResponse
+     */
+    createdAt: Date;
 }
 
 
-export const ChangeSubscriptionRequestPropertyValidationAttributesMap: {
+export const BillingPaymentResponsePropertyValidationAttributesMap: {
     [property: string]: {
         maxLength?: number,
         minLength?: number,
@@ -94,58 +103,66 @@ export const ChangeSubscriptionRequestPropertyValidationAttributesMap: {
         uniqueItems?: boolean
     }
 } = {
-    numSeats: {
-        minimum: 1,
-        exclusiveMinimum: false,
-    },
 }
 
 
 /**
- * Check if a given object implements the ChangeSubscriptionRequest interface.
+ * Check if a given object implements the BillingPaymentResponse interface.
  */
-export function instanceOfChangeSubscriptionRequest(value: object): value is ChangeSubscriptionRequest {
-    if (!('subscriptionId' in value) || value['subscriptionId'] === undefined) return false;
+export function instanceOfBillingPaymentResponse(value: object): value is BillingPaymentResponse {
+    if (!('id' in value) || value['id'] === undefined) return false;
+    if (!('billingSystem' in value) || value['billingSystem'] === undefined) return false;
+    if (!('planId' in value) || value['planId'] === undefined) return false;
+    if (!('interval' in value) || value['interval'] === undefined) return false;
     if (!('numSeats' in value) || value['numSeats'] === undefined) return false;
+    if (!('amount' in value) || value['amount'] === undefined) return false;
+    if (!('currency' in value) || value['currency'] === undefined) return false;
+    if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
     return true;
 }
 
-export function ChangeSubscriptionRequestFromJSON(json: any): ChangeSubscriptionRequest {
-    return ChangeSubscriptionRequestFromJSONTyped(json, false);
+export function BillingPaymentResponseFromJSON(json: any): BillingPaymentResponse {
+    return BillingPaymentResponseFromJSONTyped(json, false);
 }
 
-export function ChangeSubscriptionRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): ChangeSubscriptionRequest {
+export function BillingPaymentResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): BillingPaymentResponse {
     if (json == null) {
         return json;
     }
     return {
         
-        'subscriptionId': json['subscription_id'],
+        'id': json['id'],
+        'billingSystem': BillingSystemFromJSON(json['billing_system']),
+        'planId': json['plan_id'],
+        'interval': json['interval'],
         'numSeats': json['num_seats'],
-        'interval': json['interval'] == null ? undefined : BillingIntervalFromJSON(json['interval']),
-        'billingSystem': json['billing_system'] == null ? undefined : BillingSystemFromJSON(json['billing_system']),
-        'channel': json['channel'] == null ? undefined : json['channel'],
-        'channelExtra': json['channel_extra'] == null ? undefined : json['channel_extra'],
+        'amount': json['amount'],
+        'currency': json['currency'],
+        'invoiceUrl': json['invoice_url'] == null ? undefined : json['invoice_url'],
+        'createdAt': (new Date(json['created_at'])),
     };
 }
 
-export function ChangeSubscriptionRequestToJSON(json: any): ChangeSubscriptionRequest {
-    return ChangeSubscriptionRequestToJSONTyped(json, false);
+export function BillingPaymentResponseToJSON(json: any): BillingPaymentResponse {
+    return BillingPaymentResponseToJSONTyped(json, false);
 }
 
-export function ChangeSubscriptionRequestToJSONTyped(value?: ChangeSubscriptionRequest | null, ignoreDiscriminator: boolean = false): any {
+export function BillingPaymentResponseToJSONTyped(value?: BillingPaymentResponse | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
         
-        'subscription_id': value['subscriptionId'],
-        'num_seats': value['numSeats'],
-        'interval': BillingIntervalToJSON(value['interval']),
+        'id': value['id'],
         'billing_system': BillingSystemToJSON(value['billingSystem']),
-        'channel': value['channel'],
-        'channel_extra': value['channelExtra'],
+        'plan_id': value['planId'],
+        'interval': value['interval'],
+        'num_seats': value['numSeats'],
+        'amount': value['amount'],
+        'currency': value['currency'],
+        'invoice_url': value['invoiceUrl'],
+        'created_at': value['createdAt'].toISOString(),
     };
 }
 

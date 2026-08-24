@@ -13,46 +13,62 @@
  */
 
 import { mapValues } from '../runtime';
-import type { SupportedIdP } from './SupportedIdP';
+import type { CheckoutAction } from './CheckoutAction';
 import {
-    SupportedIdPFromJSON,
-    SupportedIdPFromJSONTyped,
-    SupportedIdPToJSON,
-    SupportedIdPToJSONTyped,
-} from './SupportedIdP';
+    CheckoutActionFromJSON,
+    CheckoutActionFromJSONTyped,
+    CheckoutActionToJSON,
+    CheckoutActionToJSONTyped,
+} from './CheckoutAction';
+import type { BillingSystem } from './BillingSystem';
+import {
+    BillingSystemFromJSON,
+    BillingSystemFromJSONTyped,
+    BillingSystemToJSON,
+    BillingSystemToJSONTyped,
+} from './BillingSystem';
 
 /**
- * Polymorphic IdP configuration for a tenant.
+ * Result of ``POST /v1/tenants/{tenant_id}/subscriptions``.
  * 
- * Stored as JSONB in tenant.idp_config. The ``provider`` field
- * determines which typed config class to use when parsing
- * ``configuration``.
+ * ``REDIRECT`` → send the browser to ``url`` (Stripe Checkout).
+ * ``CREDENTIAL`` → feed ``credential`` to the Ping++ JS SDK to invoke
+ * the chosen channel. ``SCHEDULED`` → nothing to pay; the current
+ * billed subscription will not renew and expires at period end.
+ * ``APPLIED`` → the change is already in effect (free-plan downgrade
+ * of an unbilled tenant, or a no-op request).
  * @export
- * @interface IdpConfig
+ * @interface CheckoutResponse
  */
-export interface IdpConfig {
+export interface CheckoutResponse {
     /**
      * 
-     * @type {SupportedIdP}
-     * @memberof IdpConfig
+     * @type {CheckoutAction}
+     * @memberof CheckoutResponse
      */
-    provider: SupportedIdP;
+    action: CheckoutAction;
     /**
-     * Provider-specific configuration
-     * @type {{ [key: string]: any; }}
-     * @memberof IdpConfig
+     * 
+     * @type {BillingSystem}
+     * @memberof CheckoutResponse
      */
-    _configuration: { [key: string]: any; };
+    billingSystem?: BillingSystem;
     /**
-     * Crontab string for directory sync
+     * Stripe Checkout URL (action=REDIRECT).
      * @type {string}
-     * @memberof IdpConfig
+     * @memberof CheckoutResponse
      */
-    syncCrontab?: string | null;
+    url?: string | null;
+    /**
+     * Ping++ charge credential (action=CREDENTIAL).
+     * @type {{ [key: string]: any; }}
+     * @memberof CheckoutResponse
+     */
+    credential?: { [key: string]: any; } | null;
 }
 
 
-export const IdpConfigPropertyValidationAttributesMap: {
+export const CheckoutResponsePropertyValidationAttributesMap: {
     [property: string]: {
         maxLength?: number,
         minLength?: number,
@@ -67,54 +83,49 @@ export const IdpConfigPropertyValidationAttributesMap: {
         uniqueItems?: boolean
     }
 } = {
-    _configuration: {
-        minItems: 1,
-    },
-    syncCrontab: {
-        minLength: 9,
-    },
 }
 
 
 /**
- * Check if a given object implements the IdpConfig interface.
+ * Check if a given object implements the CheckoutResponse interface.
  */
-export function instanceOfIdpConfig(value: object): value is IdpConfig {
-    if (!('provider' in value) || value['provider'] === undefined) return false;
-    if (!('_configuration' in value) || value['_configuration'] === undefined) return false;
+export function instanceOfCheckoutResponse(value: object): value is CheckoutResponse {
+    if (!('action' in value) || value['action'] === undefined) return false;
     return true;
 }
 
-export function IdpConfigFromJSON(json: any): IdpConfig {
-    return IdpConfigFromJSONTyped(json, false);
+export function CheckoutResponseFromJSON(json: any): CheckoutResponse {
+    return CheckoutResponseFromJSONTyped(json, false);
 }
 
-export function IdpConfigFromJSONTyped(json: any, ignoreDiscriminator: boolean): IdpConfig {
+export function CheckoutResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): CheckoutResponse {
     if (json == null) {
         return json;
     }
     return {
         
-        'provider': SupportedIdPFromJSON(json['provider']),
-        '_configuration': json['configuration'],
-        'syncCrontab': json['sync_crontab'] == null ? undefined : json['sync_crontab'],
+        'action': CheckoutActionFromJSON(json['action']),
+        'billingSystem': json['billing_system'] == null ? undefined : BillingSystemFromJSON(json['billing_system']),
+        'url': json['url'] == null ? undefined : json['url'],
+        'credential': json['credential'] == null ? undefined : json['credential'],
     };
 }
 
-export function IdpConfigToJSON(json: any): IdpConfig {
-    return IdpConfigToJSONTyped(json, false);
+export function CheckoutResponseToJSON(json: any): CheckoutResponse {
+    return CheckoutResponseToJSONTyped(json, false);
 }
 
-export function IdpConfigToJSONTyped(value?: IdpConfig | null, ignoreDiscriminator: boolean = false): any {
+export function CheckoutResponseToJSONTyped(value?: CheckoutResponse | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
         
-        'provider': SupportedIdPToJSON(value['provider']),
-        'configuration': value['_configuration'],
-        'sync_crontab': value['syncCrontab'],
+        'action': CheckoutActionToJSON(value['action']),
+        'billing_system': BillingSystemToJSON(value['billingSystem']),
+        'url': value['url'],
+        'credential': value['credential'],
     };
 }
 

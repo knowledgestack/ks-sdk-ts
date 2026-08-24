@@ -191,7 +191,7 @@ export interface TenantsApiInterface {
     deleteTenantRequestOpts(requestParameters: DeleteTenantRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * Delete a tenant.  Requires OWNER role in the tenant. Deletes the tenant\'s LiteLLM team/keys and S3 bucket after the DB transaction commits.
+     * Delete a tenant.  Requires OWNER role in the tenant. Refused (409) while a provider-billed subscription is live — deleting the tenant would not stop Stripe/Ping++ from charging for it; the OWNER must downgrade to free (or let the prepay period expire) first. Deletes the tenant\'s LiteLLM team/keys and S3 bucket after the DB transaction commits.
      * @summary Delete Tenant
      * @param {string} tenantId 
      * @param {*} [options] Override http request option.
@@ -201,7 +201,7 @@ export interface TenantsApiInterface {
     deleteTenantRaw(requestParameters: DeleteTenantRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>>;
 
     /**
-     * Delete a tenant.  Requires OWNER role in the tenant. Deletes the tenant\'s LiteLLM team/keys and S3 bucket after the DB transaction commits.
+     * Delete a tenant.  Requires OWNER role in the tenant. Refused (409) while a provider-billed subscription is live — deleting the tenant would not stop Stripe/Ping++ from charging for it; the OWNER must downgrade to free (or let the prepay period expire) first. Deletes the tenant\'s LiteLLM team/keys and S3 bucket after the DB transaction commits.
      * Delete Tenant
      */
     deleteTenant(requestParameters: DeleteTenantRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void>;
@@ -621,7 +621,7 @@ export class TenantsApi extends runtime.BaseAPI implements TenantsApiInterface {
     }
 
     /**
-     * Delete a tenant.  Requires OWNER role in the tenant. Deletes the tenant\'s LiteLLM team/keys and S3 bucket after the DB transaction commits.
+     * Delete a tenant.  Requires OWNER role in the tenant. Refused (409) while a provider-billed subscription is live — deleting the tenant would not stop Stripe/Ping++ from charging for it; the OWNER must downgrade to free (or let the prepay period expire) first. Deletes the tenant\'s LiteLLM team/keys and S3 bucket after the DB transaction commits.
      * Delete Tenant
      */
     async deleteTenantRaw(requestParameters: DeleteTenantRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
@@ -632,7 +632,7 @@ export class TenantsApi extends runtime.BaseAPI implements TenantsApiInterface {
     }
 
     /**
-     * Delete a tenant.  Requires OWNER role in the tenant. Deletes the tenant\'s LiteLLM team/keys and S3 bucket after the DB transaction commits.
+     * Delete a tenant.  Requires OWNER role in the tenant. Refused (409) while a provider-billed subscription is live — deleting the tenant would not stop Stripe/Ping++ from charging for it; the OWNER must downgrade to free (or let the prepay period expire) first. Deletes the tenant\'s LiteLLM team/keys and S3 bucket after the DB transaction commits.
      * Delete Tenant
      */
     async deleteTenant(requestParameters: DeleteTenantRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {

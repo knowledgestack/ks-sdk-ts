@@ -13,48 +13,46 @@
  */
 
 import { mapValues } from '../runtime';
+import type { BillingPaymentResponse } from './BillingPaymentResponse';
+import {
+    BillingPaymentResponseFromJSON,
+    BillingPaymentResponseFromJSONTyped,
+    BillingPaymentResponseToJSON,
+    BillingPaymentResponseToJSONTyped,
+} from './BillingPaymentResponse';
+
 /**
- * Result envelope for the subscription-change submit endpoint.
  * 
- * The endpoint returns immediately after the (mock-)Stripe charge is
- * submitted; the actual plan/seat write happens later in the Stripe
- * subscription webhook. ``submitted=True`` always when the route
- * succeeds (errors raise via the global handler).
- * 
- * ``noop=True`` indicates the tenant is already at the requested
- * ``(plan, num_seats)`` — no Stripe call was issued, no webhook will
- * arrive, and the user's account is unchanged. Symmetric with
- * ``StripeWebhookAck.replayed`` so client UIs can render "already
- * on this plan" rather than spinning a "waiting for webhook"
- * indicator forever.
- * 
- * ``idempotency_key`` echoes the value forwarded to Stripe — clients
- * can store it to correlate the eventual webhook receipt with the
- * original request, and re-send it verbatim on retries.
  * @export
- * @interface SubmitSubscriptionResponse
+ * @interface PaginatedResponseBillingPaymentResponse
  */
-export interface SubmitSubscriptionResponse {
+export interface PaginatedResponseBillingPaymentResponse {
     /**
-     * Always True when the submit returns 202.
-     * @type {boolean}
-     * @memberof SubmitSubscriptionResponse
+     * List of items
+     * @type {Array<BillingPaymentResponse>}
+     * @memberof PaginatedResponseBillingPaymentResponse
      */
-    submitted: boolean;
+    items: Array<BillingPaymentResponse>;
     /**
-     * True when the tenant was already at the target ``(plan, num_seats)`` — no Stripe call was made and no webhook will arrive.
-     * @type {boolean}
-     * @memberof SubmitSubscriptionResponse
+     * Total number of items
+     * @type {number}
+     * @memberof PaginatedResponseBillingPaymentResponse
      */
-    noop: boolean;
+    total: number;
     /**
-     * Idempotency key forwarded to Stripe — sourced from the ``Idempotency-Key`` request header or a server-generated uuid4 when absent.
-     * @type {string}
-     * @memberof SubmitSubscriptionResponse
+     * Number of items per page
+     * @type {number}
+     * @memberof PaginatedResponseBillingPaymentResponse
      */
-    idempotencyKey: string;
+    limit: number;
+    /**
+     * Number of items to skip
+     * @type {number}
+     * @memberof PaginatedResponseBillingPaymentResponse
+     */
+    offset: number;
 }
-export const SubmitSubscriptionResponsePropertyValidationAttributesMap: {
+export const PaginatedResponseBillingPaymentResponsePropertyValidationAttributesMap: {
     [property: string]: {
         maxLength?: number,
         minLength?: number,
@@ -69,49 +67,64 @@ export const SubmitSubscriptionResponsePropertyValidationAttributesMap: {
         uniqueItems?: boolean
     }
 } = {
+    total: {
+        minimum: 0,
+        exclusiveMinimum: false,
+    },
+    limit: {
+        minimum: 1,
+        exclusiveMinimum: false,
+    },
+    offset: {
+        minimum: 0,
+        exclusiveMinimum: false,
+    },
 }
 
 
 /**
- * Check if a given object implements the SubmitSubscriptionResponse interface.
+ * Check if a given object implements the PaginatedResponseBillingPaymentResponse interface.
  */
-export function instanceOfSubmitSubscriptionResponse(value: object): value is SubmitSubscriptionResponse {
-    if (!('submitted' in value) || value['submitted'] === undefined) return false;
-    if (!('noop' in value) || value['noop'] === undefined) return false;
-    if (!('idempotencyKey' in value) || value['idempotencyKey'] === undefined) return false;
+export function instanceOfPaginatedResponseBillingPaymentResponse(value: object): value is PaginatedResponseBillingPaymentResponse {
+    if (!('items' in value) || value['items'] === undefined) return false;
+    if (!('total' in value) || value['total'] === undefined) return false;
+    if (!('limit' in value) || value['limit'] === undefined) return false;
+    if (!('offset' in value) || value['offset'] === undefined) return false;
     return true;
 }
 
-export function SubmitSubscriptionResponseFromJSON(json: any): SubmitSubscriptionResponse {
-    return SubmitSubscriptionResponseFromJSONTyped(json, false);
+export function PaginatedResponseBillingPaymentResponseFromJSON(json: any): PaginatedResponseBillingPaymentResponse {
+    return PaginatedResponseBillingPaymentResponseFromJSONTyped(json, false);
 }
 
-export function SubmitSubscriptionResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): SubmitSubscriptionResponse {
+export function PaginatedResponseBillingPaymentResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedResponseBillingPaymentResponse {
     if (json == null) {
         return json;
     }
     return {
         
-        'submitted': json['submitted'],
-        'noop': json['noop'],
-        'idempotencyKey': json['idempotency_key'],
+        'items': ((json['items'] as Array<any>).map(BillingPaymentResponseFromJSON)),
+        'total': json['total'],
+        'limit': json['limit'],
+        'offset': json['offset'],
     };
 }
 
-export function SubmitSubscriptionResponseToJSON(json: any): SubmitSubscriptionResponse {
-    return SubmitSubscriptionResponseToJSONTyped(json, false);
+export function PaginatedResponseBillingPaymentResponseToJSON(json: any): PaginatedResponseBillingPaymentResponse {
+    return PaginatedResponseBillingPaymentResponseToJSONTyped(json, false);
 }
 
-export function SubmitSubscriptionResponseToJSONTyped(value?: SubmitSubscriptionResponse | null, ignoreDiscriminator: boolean = false): any {
+export function PaginatedResponseBillingPaymentResponseToJSONTyped(value?: PaginatedResponseBillingPaymentResponse | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
         
-        'submitted': value['submitted'],
-        'noop': value['noop'],
-        'idempotency_key': value['idempotencyKey'],
+        'items': ((value['items'] as Array<any>).map(BillingPaymentResponseToJSON)),
+        'total': value['total'],
+        'limit': value['limit'],
+        'offset': value['offset'],
     };
 }
 

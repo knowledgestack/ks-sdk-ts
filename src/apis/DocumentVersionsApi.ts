@@ -193,7 +193,7 @@ export interface DocumentVersionsApiInterface {
     createDocumentVersionRequestOpts(requestParameters: CreateDocumentVersionRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * Create a new version for a document.  The version number is automatically incremented from the highest existing version.
+     * Create a new version for a document.  Requires an active document checkout held by the caller. Acquire one via ``POST /v1/documents/{id}/checkout`` first and release it after; otherwise this returns 409 Conflict (\"A document checkout is required to edit this document.\").  The version number is automatically incremented from the highest existing version.
      * @summary Create Document Version Handler
      * @param {string} documentId Document ID
      * @param {*} [options] Override http request option.
@@ -203,7 +203,7 @@ export interface DocumentVersionsApiInterface {
     createDocumentVersionRaw(requestParameters: CreateDocumentVersionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<DocumentVersionResponse>>;
 
     /**
-     * Create a new version for a document.  The version number is automatically incremented from the highest existing version.
+     * Create a new version for a document.  Requires an active document checkout held by the caller. Acquire one via ``POST /v1/documents/{id}/checkout`` first and release it after; otherwise this returns 409 Conflict (\"A document checkout is required to edit this document.\").  The version number is automatically incremented from the highest existing version.
      * Create Document Version Handler
      */
     createDocumentVersion(requestParameters: CreateDocumentVersionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DocumentVersionResponse>;
@@ -217,7 +217,7 @@ export interface DocumentVersionsApiInterface {
     deleteDocumentVersionRequestOpts(requestParameters: DeleteDocumentVersionRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * Delete a document version by its ID.  Cannot delete the active version of a document.
+     * Delete a document version by its ID.  Requires an active document checkout held by the caller on the **parent document** (the version itself carries no lock). Acquire one via ``POST /v1/documents/{id}/checkout`` first; otherwise this returns 409 Conflict (\"A document checkout is required to edit this document.\").  Cannot delete the active version of a document.
      * @summary Delete Document Version Handler
      * @param {string} versionId DocumentVersion ID
      * @param {*} [options] Override http request option.
@@ -227,7 +227,7 @@ export interface DocumentVersionsApiInterface {
     deleteDocumentVersionRaw(requestParameters: DeleteDocumentVersionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>>;
 
     /**
-     * Delete a document version by its ID.  Cannot delete the active version of a document.
+     * Delete a document version by its ID.  Requires an active document checkout held by the caller on the **parent document** (the version itself carries no lock). Acquire one via ``POST /v1/documents/{id}/checkout`` first; otherwise this returns 409 Conflict (\"A document checkout is required to edit this document.\").  Cannot delete the active version of a document.
      * Delete Document Version Handler
      */
     deleteDocumentVersion(requestParameters: DeleteDocumentVersionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void>;
@@ -615,7 +615,7 @@ export class DocumentVersionsApi extends runtime.BaseAPI implements DocumentVers
     }
 
     /**
-     * Create a new version for a document.  The version number is automatically incremented from the highest existing version.
+     * Create a new version for a document.  Requires an active document checkout held by the caller. Acquire one via ``POST /v1/documents/{id}/checkout`` first and release it after; otherwise this returns 409 Conflict (\"A document checkout is required to edit this document.\").  The version number is automatically incremented from the highest existing version.
      * Create Document Version Handler
      */
     async createDocumentVersionRaw(requestParameters: CreateDocumentVersionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<DocumentVersionResponse>> {
@@ -626,7 +626,7 @@ export class DocumentVersionsApi extends runtime.BaseAPI implements DocumentVers
     }
 
     /**
-     * Create a new version for a document.  The version number is automatically incremented from the highest existing version.
+     * Create a new version for a document.  Requires an active document checkout held by the caller. Acquire one via ``POST /v1/documents/{id}/checkout`` first and release it after; otherwise this returns 409 Conflict (\"A document checkout is required to edit this document.\").  The version number is automatically incremented from the highest existing version.
      * Create Document Version Handler
      */
     async createDocumentVersion(requestParameters: CreateDocumentVersionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DocumentVersionResponse> {
@@ -670,7 +670,7 @@ export class DocumentVersionsApi extends runtime.BaseAPI implements DocumentVers
     }
 
     /**
-     * Delete a document version by its ID.  Cannot delete the active version of a document.
+     * Delete a document version by its ID.  Requires an active document checkout held by the caller on the **parent document** (the version itself carries no lock). Acquire one via ``POST /v1/documents/{id}/checkout`` first; otherwise this returns 409 Conflict (\"A document checkout is required to edit this document.\").  Cannot delete the active version of a document.
      * Delete Document Version Handler
      */
     async deleteDocumentVersionRaw(requestParameters: DeleteDocumentVersionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
@@ -681,7 +681,7 @@ export class DocumentVersionsApi extends runtime.BaseAPI implements DocumentVers
     }
 
     /**
-     * Delete a document version by its ID.  Cannot delete the active version of a document.
+     * Delete a document version by its ID.  Requires an active document checkout held by the caller on the **parent document** (the version itself carries no lock). Acquire one via ``POST /v1/documents/{id}/checkout`` first; otherwise this returns 409 Conflict (\"A document checkout is required to edit this document.\").  Cannot delete the active version of a document.
      * Delete Document Version Handler
      */
     async deleteDocumentVersion(requestParameters: DeleteDocumentVersionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {

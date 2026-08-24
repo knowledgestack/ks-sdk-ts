@@ -36,75 +36,81 @@ import {
 } from './UserInfo';
 
 /**
- * A top-level item currently in trash.
+ * A single trash item plus a preview link for DOCUMENT items.
  * @export
- * @interface TrashItemResponse
+ * @interface TrashItemDetailResponse
  */
-export interface TrashItemResponse {
+export interface TrashItemDetailResponse {
     /**
      * PathPart ID
      * @type {string}
-     * @memberof TrashItemResponse
+     * @memberof TrashItemDetailResponse
      */
     pathPartId: string;
     /**
      * Underlying PDO ID
      * @type {string}
-     * @memberof TrashItemResponse
+     * @memberof TrashItemDetailResponse
      */
     metadataObjId: string;
     /**
      * 
      * @type {PartType}
-     * @memberof TrashItemResponse
+     * @memberof TrashItemDetailResponse
      */
     partType: PartType;
     /**
      * Display name
      * @type {string}
-     * @memberof TrashItemResponse
+     * @memberof TrashItemDetailResponse
      */
     name: string;
     /**
      * Parent PathPart ID
      * @type {string}
-     * @memberof TrashItemResponse
+     * @memberof TrashItemDetailResponse
      */
     parentPathPartId: string | null;
     /**
      * Original materialized path
      * @type {string}
-     * @memberof TrashItemResponse
+     * @memberof TrashItemDetailResponse
      */
     materializedPath: string;
     /**
      * When the item was moved to trash
      * @type {Date}
-     * @memberof TrashItemResponse
+     * @memberof TrashItemDetailResponse
      */
     deletedAt: Date;
     /**
      * User that moved it to trash
      * @type {string}
-     * @memberof TrashItemResponse
+     * @memberof TrashItemDetailResponse
      */
     deletedBy: string | null;
     /**
      * 
      * @type {DocumentType}
-     * @memberof TrashItemResponse
+     * @memberof TrashItemDetailResponse
      */
     documentType?: DocumentType;
     /**
      * Current owner (creator) of the item, or null if unowned.
      * @type {UserInfo}
-     * @memberof TrashItemResponse
+     * @memberof TrashItemDetailResponse
      */
     owner?: UserInfo | null;
+    /**
+     * Presigned URL (6-hour validity) to the document's source blob for preview; null for folders and other non-document items.
+     * @type {string}
+     * @memberof TrashItemDetailResponse
+     */
+    assetS3Url?: string | null;
 }
 
 
-export const TrashItemResponsePropertyValidationAttributesMap: {
+export const TrashItemDetailResponsePropertyValidationAttributesMap: {
     [property: string]: {
         maxLength?: number,
         minLength?: number,
@@ -123,9 +129,9 @@ export const TrashItemResponsePropertyValidationAttributesMap: {
 
 
 /**
- * Check if a given object implements the TrashItemResponse interface.
+ * Check if a given object implements the TrashItemDetailResponse interface.
  */
-export function instanceOfTrashItemResponse(value: object): value is TrashItemResponse {
+export function instanceOfTrashItemDetailResponse(value: object): value is TrashItemDetailResponse {
     if (!('pathPartId' in value) || value['pathPartId'] === undefined) return false;
     if (!('metadataObjId' in value) || value['metadataObjId'] === undefined) return false;
     if (!('partType' in value) || value['partType'] === undefined) return false;
@@ -137,11 +143,11 @@ export function instanceOfTrashItemResponse(value: object): value is TrashItemRe
     return true;
 }
 
-export function TrashItemResponseFromJSON(json: any): TrashItemResponse {
-    return TrashItemResponseFromJSONTyped(json, false);
+export function TrashItemDetailResponseFromJSON(json: any): TrashItemDetailResponse {
+    return TrashItemDetailResponseFromJSONTyped(json, false);
 }
 
-export function TrashItemResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): TrashItemResponse {
+export function TrashItemDetailResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): TrashItemDetailResponse {
     if (json == null) {
         return json;
     }
@@ -157,14 +163,15 @@ export function TrashItemResponseFromJSONTyped(json: any, ignoreDiscriminator: b
         'deletedBy': json['deleted_by'],
         'documentType': json['document_type'] == null ? undefined : DocumentTypeFromJSON(json['document_type']),
         'owner': json['owner'] == null ? undefined : UserInfoFromJSON(json['owner']),
+        'assetS3Url': json['asset_s3_url'] == null ? undefined : json['asset_s3_url'],
     };
 }
 
-export function TrashItemResponseToJSON(json: any): TrashItemResponse {
-    return TrashItemResponseToJSONTyped(json, false);
+export function TrashItemDetailResponseToJSON(json: any): TrashItemDetailResponse {
+    return TrashItemDetailResponseToJSONTyped(json, false);
 }
 
-export function TrashItemResponseToJSONTyped(value?: TrashItemResponse | null, ignoreDiscriminator: boolean = false): any {
+export function TrashItemDetailResponseToJSONTyped(value?: TrashItemDetailResponse | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
@@ -181,6 +188,7 @@ export function TrashItemResponseToJSONTyped(value?: TrashItemResponse | null, i
         'deleted_by': value['deletedBy'],
         'document_type': DocumentTypeToJSON(value['documentType']),
         'owner': UserInfoToJSON(value['owner']),
+        'asset_s3_url': value['assetS3Url'],
     };
 }
 

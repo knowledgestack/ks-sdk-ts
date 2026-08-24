@@ -27,59 +27,66 @@ import {
     BillingSystemToJSON,
     BillingSystemToJSONTyped,
 } from './BillingSystem';
+import type { SubscriptionPlanResponse } from './SubscriptionPlanResponse';
+import {
+    SubscriptionPlanResponseFromJSON,
+    SubscriptionPlanResponseFromJSONTyped,
+    SubscriptionPlanResponseToJSON,
+    SubscriptionPlanResponseToJSONTyped,
+} from './SubscriptionPlanResponse';
 
 /**
- * Body for ``POST /v1/tenants/{tenant_id}/subscriptions``.
- * 
- * For a priced plan, ``interval`` and ``billing_system`` are required
- * (``channel`` too for Ping++); the response carries the provider
- * checkout to complete. For the free plan they are ignored — the
- * downgrade is applied immediately (unbilled tenants) or scheduled
- * for period end (billed tenants).
+ * The tenant's current subscription: plan body + period state.
  * @export
- * @interface ChangeSubscriptionRequest
+ * @interface TenantSubscriptionResponse
  */
-export interface ChangeSubscriptionRequest {
+export interface TenantSubscriptionResponse {
     /**
-     * Target plan to switch to.
-     * @type {string}
-     * @memberof ChangeSubscriptionRequest
+     * 
+     * @type {SubscriptionPlanResponse}
+     * @memberof TenantSubscriptionResponse
      */
-    subscriptionId: string;
+    plan: SubscriptionPlanResponse;
     /**
-     * Desired seat cap. Must be <= plan.max_seats and >= the count of active TenantUser rows.
+     * Seats in force for this period.
      * @type {number}
-     * @memberof ChangeSubscriptionRequest
+     * @memberof TenantSubscriptionResponse
      */
     numSeats: number;
     /**
-     * 
-     * @type {BillingInterval}
-     * @memberof ChangeSubscriptionRequest
+     * Inclusive period start.
+     * @type {Date}
+     * @memberof TenantSubscriptionResponse
      */
-    interval?: BillingInterval;
+    startDate: Date;
+    /**
+     * Exclusive period end. Unbilled subscriptions carry a 100-year horizon; billed ones the paid-through date.
+     * @type {Date}
+     * @memberof TenantSubscriptionResponse
+     */
+    endDate: Date;
     /**
      * 
      * @type {BillingSystem}
-     * @memberof ChangeSubscriptionRequest
+     * @memberof TenantSubscriptionResponse
      */
     billingSystem?: BillingSystem;
     /**
-     * Ping++ payment channel chosen in the UI (e.g. 'alipay_pc_direct', 'wx_pub_qr'). Required when billing_system=PING_PP.
-     * @type {string}
-     * @memberof ChangeSubscriptionRequest
+     * 
+     * @type {BillingInterval}
+     * @memberof TenantSubscriptionResponse
      */
-    channel?: string | null;
+    interval?: BillingInterval;
     /**
-     * Channel-specific Ping++ charge `extra` parameters (success_url, product ids, ... — see the Ping++ charge API for the chosen channel). Passed through verbatim; amounts are always resolved server-side.
-     * @type {{ [key: string]: any; }}
-     * @memberof ChangeSubscriptionRequest
+     * True when the subscription auto-renews at period end (a Stripe subscription with no cancellation scheduled). False for Ping++ prepay (renewal = buying again), unbilled subscriptions, and Stripe periods with a scheduled cancellation.
+     * @type {boolean}
+     * @memberof TenantSubscriptionResponse
      */
-    channelExtra?: { [key: string]: any; } | null;
+    willRenew: boolean;
 }
 
 
-export const ChangeSubscriptionRequestPropertyValidationAttributesMap: {
+export const TenantSubscriptionResponsePropertyValidationAttributesMap: {
     [property: string]: {
         maxLength?: number,
         minLength?: number,
@@ -94,58 +101,59 @@ export const ChangeSubscriptionRequestPropertyValidationAttributesMap: {
         uniqueItems?: boolean
     }
 } = {
-    numSeats: {
-        minimum: 1,
-        exclusiveMinimum: false,
-    },
 }
 
 
 /**
- * Check if a given object implements the ChangeSubscriptionRequest interface.
+ * Check if a given object implements the TenantSubscriptionResponse interface.
  */
-export function instanceOfChangeSubscriptionRequest(value: object): value is ChangeSubscriptionRequest {
-    if (!('subscriptionId' in value) || value['subscriptionId'] === undefined) return false;
+export function instanceOfTenantSubscriptionResponse(value: object): value is TenantSubscriptionResponse {
+    if (!('plan' in value) || value['plan'] === undefined) return false;
     if (!('numSeats' in value) || value['numSeats'] === undefined) return false;
+    if (!('startDate' in value) || value['startDate'] === undefined) return false;
+    if (!('endDate' in value) || value['endDate'] === undefined) return false;
+    if (!('willRenew' in value) || value['willRenew'] === undefined) return false;
     return true;
 }
 
-export function ChangeSubscriptionRequestFromJSON(json: any): ChangeSubscriptionRequest {
-    return ChangeSubscriptionRequestFromJSONTyped(json, false);
+export function TenantSubscriptionResponseFromJSON(json: any): TenantSubscriptionResponse {
+    return TenantSubscriptionResponseFromJSONTyped(json, false);
 }
 
-export function ChangeSubscriptionRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): ChangeSubscriptionRequest {
+export function TenantSubscriptionResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): TenantSubscriptionResponse {
     if (json == null) {
         return json;
     }
     return {
         
-        'subscriptionId': json['subscription_id'],
+        'plan': SubscriptionPlanResponseFromJSON(json['plan']),
         'numSeats': json['num_seats'],
-        'interval': json['interval'] == null ? undefined : BillingIntervalFromJSON(json['interval']),
+        'startDate': (new Date(json['start_date'])),
+        'endDate': (new Date(json['end_date'])),
         'billingSystem': json['billing_system'] == null ? undefined : BillingSystemFromJSON(json['billing_system']),
-        'channel': json['channel'] == null ? undefined : json['channel'],
-        'channelExtra': json['channel_extra'] == null ? undefined : json['channel_extra'],
+        'interval': json['interval'] == null ? undefined : BillingIntervalFromJSON(json['interval']),
+        'willRenew': json['will_renew'],
     };
 }
 
-export function ChangeSubscriptionRequestToJSON(json: any): ChangeSubscriptionRequest {
-    return ChangeSubscriptionRequestToJSONTyped(json, false);
+export function TenantSubscriptionResponseToJSON(json: any): TenantSubscriptionResponse {
+    return TenantSubscriptionResponseToJSONTyped(json, false);
 }
 
-export function ChangeSubscriptionRequestToJSONTyped(value?: ChangeSubscriptionRequest | null, ignoreDiscriminator: boolean = false): any {
+export function TenantSubscriptionResponseToJSONTyped(value?: TenantSubscriptionResponse | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
         
-        'subscription_id': value['subscriptionId'],
+        'plan': SubscriptionPlanResponseToJSON(value['plan']),
         'num_seats': value['numSeats'],
-        'interval': BillingIntervalToJSON(value['interval']),
+        'start_date': value['startDate'].toISOString(),
+        'end_date': value['endDate'].toISOString(),
         'billing_system': BillingSystemToJSON(value['billingSystem']),
-        'channel': value['channel'],
-        'channel_extra': value['channelExtra'],
+        'interval': BillingIntervalToJSON(value['interval']),
+        'will_renew': value['willRenew'],
     };
 }
 

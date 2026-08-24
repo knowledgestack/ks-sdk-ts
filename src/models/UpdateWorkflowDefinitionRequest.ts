@@ -13,12 +13,38 @@
  */
 
 import { mapValues } from '../runtime';
+import type { ScheduleCadence } from './ScheduleCadence';
+import {
+    ScheduleCadenceFromJSON,
+    ScheduleCadenceFromJSONTyped,
+    ScheduleCadenceToJSON,
+    ScheduleCadenceToJSONTyped,
+} from './ScheduleCadence';
+
 /**
  * Full replacement (PUT semantics).
  * @export
  * @interface UpdateWorkflowDefinitionRequest
  */
 export interface UpdateWorkflowDefinitionRequest {
+    /**
+     * 
+     * @type {ScheduleCadence}
+     * @memberof UpdateWorkflowDefinitionRequest
+     */
+    scheduleCadence?: ScheduleCadence;
+    /**
+     * First occurrence. Read in ``schedule_timezone``, so its local wall time, weekday and day of month drive the recurrence. A MONTHLY schedule must land on or before the 28th: Temporal silently skips months that are too short.
+     * @type {Date}
+     * @memberof UpdateWorkflowDefinitionRequest
+     */
+    scheduleStartAt?: Date | null;
+    /**
+     * IANA zone the schedule fires in, e.g. ``Asia/Shanghai``. Optional: omit it to inherit the tenant timezone. Only set it to fire in a different zone than the tenant's. Must be an IANA name, not an ISO offset — an offset stops meaning the same wall clock across DST.
+     * @type {string}
+     * @memberof UpdateWorkflowDefinitionRequest
+     */
+    scheduleTimezone?: string | null;
     /**
      * 
      * @type {string}
@@ -74,6 +100,8 @@ export interface UpdateWorkflowDefinitionRequest {
      */
     commonFilePathPartIds?: Array<string> | null;
 }
+
+
 export const UpdateWorkflowDefinitionRequestPropertyValidationAttributesMap: {
     [property: string]: {
         maxLength?: number,
@@ -89,6 +117,9 @@ export const UpdateWorkflowDefinitionRequestPropertyValidationAttributesMap: {
         uniqueItems?: boolean
     }
 } = {
+    scheduleTimezone: {
+        maxLength: 64,
+    },
     name: {
         maxLength: 255,
     },
@@ -129,6 +160,9 @@ export function UpdateWorkflowDefinitionRequestFromJSONTyped(json: any, ignoreDi
     }
     return {
         
+        'scheduleCadence': json['schedule_cadence'] == null ? undefined : ScheduleCadenceFromJSON(json['schedule_cadence']),
+        'scheduleStartAt': json['schedule_start_at'] == null ? undefined : (new Date(json['schedule_start_at'])),
+        'scheduleTimezone': json['schedule_timezone'] == null ? undefined : json['schedule_timezone'],
         'name': json['name'],
         'description': json['description'] == null ? undefined : json['description'],
         'maxRunDurationSeconds': json['max_run_duration_seconds'] == null ? undefined : json['max_run_duration_seconds'],
@@ -152,6 +186,9 @@ export function UpdateWorkflowDefinitionRequestToJSONTyped(value?: UpdateWorkflo
 
     return {
         
+        'schedule_cadence': ScheduleCadenceToJSON(value['scheduleCadence']),
+        'schedule_start_at': value['scheduleStartAt'] == null ? value['scheduleStartAt'] : value['scheduleStartAt'].toISOString(),
+        'schedule_timezone': value['scheduleTimezone'],
         'name': value['name'],
         'description': value['description'],
         'max_run_duration_seconds': value['maxRunDurationSeconds'],

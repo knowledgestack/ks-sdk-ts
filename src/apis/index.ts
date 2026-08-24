@@ -7,6 +7,7 @@ export * from './ApiConnectionsApi';
 export * from './ApiKeysApi';
 export * from './AuditEventsApi';
 export * from './AuthApi';
+export * from './BillingApi';
 export * from './BulkDeleteApi';
 export * from './BulkDownloadApi';
 export * from './BulkMoveApi';

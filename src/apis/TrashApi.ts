@@ -23,6 +23,7 @@ import type {
   PartType,
   PathOrder,
   SortDirection,
+  TrashItemDetailResponse,
 } from '../models/index';
 import {
     BulkOperationResponseFromJSON,
@@ -41,6 +42,8 @@ import {
     PathOrderToJSON,
     SortDirectionFromJSON,
     SortDirectionToJSON,
+    TrashItemDetailResponseFromJSON,
+    TrashItemDetailResponseToJSON,
 } from '../models/index';
 
 export interface BulkPermanentlyDeleteTrashRequest {
@@ -49,6 +52,10 @@ export interface BulkPermanentlyDeleteTrashRequest {
 
 export interface BulkRestoreTrashRequest {
     bulkTrashRequest: BulkTrashRequest;
+}
+
+export interface GetTrashItemRequest {
+    pathPartId: string;
 }
 
 export interface ListTrashRequest {
@@ -127,6 +134,30 @@ export interface TrashApiInterface {
      * Bulk Restore Trash Handler
      */
     bulkRestoreTrash(requestParameters: BulkRestoreTrashRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<BulkOperationResponse>;
+
+    /**
+     * Creates request options for getTrashItem without sending the request
+     * @param {string} pathPartId Trashed PathPart ID
+     * @throws {RequiredError}
+     * @memberof TrashApiInterface
+     */
+    getTrashItemRequestOpts(requestParameters: GetTrashItemRequest): Promise<runtime.RequestOpts>;
+
+    /**
+     * Fetch a single trash root, with a preview URL for DOCUMENT items.
+     * @summary Get Trash Item Handler
+     * @param {string} pathPartId Trashed PathPart ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof TrashApiInterface
+     */
+    getTrashItemRaw(requestParameters: GetTrashItemRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TrashItemDetailResponse>>;
+
+    /**
+     * Fetch a single trash root, with a preview URL for DOCUMENT items.
+     * Get Trash Item Handler
+     */
+    getTrashItem(requestParameters: GetTrashItemRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TrashItemDetailResponse>;
 
     /**
      * Creates request options for listTrash without sending the request
@@ -338,6 +369,61 @@ export class TrashApi extends runtime.BaseAPI implements TrashApiInterface {
      */
     async bulkRestoreTrash(requestParameters: BulkRestoreTrashRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<BulkOperationResponse> {
         const response = await this.bulkRestoreTrashRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for getTrashItem without sending the request
+     */
+    async getTrashItemRequestOpts(requestParameters: GetTrashItemRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['pathPartId'] == null) {
+            throw new runtime.RequiredError(
+                'pathPartId',
+                'Required parameter "pathPartId" was null or undefined when calling getTrashItem().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/v1/trash/{path_part_id}`;
+        urlPath = urlPath.replace(`{${"path_part_id"}}`, encodeURIComponent(String(requestParameters['pathPartId'])));
+
+        return {
+            path: urlPath,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Fetch a single trash root, with a preview URL for DOCUMENT items.
+     * Get Trash Item Handler
+     */
+    async getTrashItemRaw(requestParameters: GetTrashItemRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TrashItemDetailResponse>> {
+        const requestOptions = await this.getTrashItemRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => TrashItemDetailResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * Fetch a single trash root, with a preview URL for DOCUMENT items.
+     * Get Trash Item Handler
+     */
+    async getTrashItem(requestParameters: GetTrashItemRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TrashItemDetailResponse> {
+        const response = await this.getTrashItemRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
