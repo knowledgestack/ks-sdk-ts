@@ -71,12 +71,6 @@ export interface EventResponse {
     actorUserId: string | null;
     /**
      * 
-     * @type {string}
-     * @memberof EventResponse
-     */
-    actorOnBehalfOf?: string | null;
-    /**
-     * 
      * @type {{ [key: string]: any; }}
      * @memberof EventResponse
      */
@@ -164,7 +158,6 @@ export function EventResponseFromJSONTyped(json: any, ignoreDiscriminator: boole
         'kind': json['kind'],
         'ts': (new Date(json['ts'])),
         'actorUserId': json['actor_user_id'],
-        'actorOnBehalfOf': json['actor_on_behalf_of'] == null ? undefined : json['actor_on_behalf_of'],
         'payload': json['payload'],
         'actor': json['actor'] == null ? undefined : UserInfoFromJSON(json['actor']),
         'subjectName': json['subject_name'] == null ? undefined : json['subject_name'],
@@ -191,7 +184,6 @@ export function EventResponseToJSONTyped(value?: EventResponse | null, ignoreDis
         'kind': value['kind'],
         'ts': value['ts'].toISOString(),
         'actor_user_id': value['actorUserId'],
-        'actor_on_behalf_of': value['actorOnBehalfOf'],
         'payload': value['payload'],
         'actor': UserInfoToJSON(value['actor']),
         'subject_name': value['subjectName'],

@@ -2,8 +2,6 @@
 /* eslint-disable */
 export * from './AcceptDisclaimerRequest';
 export * from './AcceptInviteResponse';
-export * from './AcceptTenantInvitationRequest';
-export * from './AcceptTenantInvitationResponse';
 export * from './AccessCheckResponse';
 export * from './ActivateSkillVersionRequest';
 export * from './AddMemberRequest';
