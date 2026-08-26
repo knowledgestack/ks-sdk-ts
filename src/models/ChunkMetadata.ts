@@ -90,6 +90,18 @@ export interface ChunkMetadata {
      */
     endMs?: number | null;
     /**
+     * Every speaker label appearing in this chunk's segments, sorted. Lets a citation say which turn it came from. None when the provider does not diarize.
+     * @type {Array<number>}
+     * @memberof ChunkMetadata
+     */
+    speakers?: Array<number> | null;
+    /**
+     * Every language the ASR recognised across this chunk's segments, sorted. A meeting routinely code-switches, so a chunk can hold more than one; the document-level language is only the majority label and misreports a bilingual recording. None for non-media chunks and for media ingested before this field existed.
+     * @type {Array<string>}
+     * @memberof ChunkMetadata
+     */
+    languages?: Array<string> | null;
+    /**
      * Per-ASR-segment spans inside this media chunk, in order, each carrying its char offset in the chunk content. Lets citation resolution narrow a chunk-level timeframe to the enclosing segment. None for non-media chunks and media ingested before this field existed.
      * @type {Array<SegmentSpan>}
      * @memberof ChunkMetadata
@@ -195,6 +207,8 @@ export function ChunkMetadataFromJSONTyped(json: any, ignoreDiscriminator: boole
         'secondaryTaxonomy': json['secondary_taxonomy'] == null ? undefined : ImageTaxonomyFromJSON(json['secondary_taxonomy']),
         'startMs': json['start_ms'] == null ? undefined : json['start_ms'],
         'endMs': json['end_ms'] == null ? undefined : json['end_ms'],
+        'speakers': json['speakers'] == null ? undefined : json['speakers'],
+        'languages': json['languages'] == null ? undefined : json['languages'],
         'segments': json['segments'] == null ? undefined : ((json['segments'] as Array<any>).map(SegmentSpanFromJSON)),
         'sheetName': json['sheet_name'] == null ? undefined : json['sheet_name'],
         'blockType': json['block_type'] == null ? undefined : json['block_type'],
@@ -227,6 +241,8 @@ export function ChunkMetadataToJSONTyped(value?: ChunkMetadata | null, ignoreDis
         'secondary_taxonomy': ImageTaxonomyToJSON(value['secondaryTaxonomy']),
         'start_ms': value['startMs'],
         'end_ms': value['endMs'],
+        'speakers': value['speakers'],
+        'languages': value['languages'],
         'segments': value['segments'] == null ? undefined : ((value['segments'] as Array<any>).map(SegmentSpanToJSON)),
         'sheet_name': value['sheetName'],
         'block_type': value['blockType'],

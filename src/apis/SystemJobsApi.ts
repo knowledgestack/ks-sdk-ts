@@ -180,7 +180,7 @@ export interface SystemJobsApiInterface {
     getZipIngestionStatusRequestOpts(requestParameters: GetZipIngestionStatusRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * Get a ZIP fan-out\'s live status + per-member outcomes.  Tenant-scoped via the TenantId search attribute (no per-path can_read check — intentionally consistent with the sibling generic Temporal endpoints below; the opaque workflow_id is only handed to the uploader, who had can_write on the target). The per-member results come from the workflow\'s ``results`` query (served from retained history), so once Temporal retention expires this 404s.
+     * Get a fan-out\'s live status + per-member outcomes.  Serves both container fan-outs: a ZIP archive\'s members and an email\'s attachments. Both expose the same ``results`` query, so one endpoint covers them rather than duplicating the tenant check and hydration.  Tenant-scoped via the TenantId search attribute (no per-path can_read check — intentionally consistent with the sibling generic Temporal endpoints below; the opaque workflow_id is only handed to the uploader, who had can_write on the target). The per-member results come from the workflow\'s ``results`` query (served from retained history), so once Temporal retention expires this 404s.
      * @summary Get Zip Ingestion Status Handler
      * @param {string} workflowId 
      * @param {*} [options] Override http request option.
@@ -190,7 +190,7 @@ export interface SystemJobsApiInterface {
     getZipIngestionStatusRaw(requestParameters: GetZipIngestionStatusRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ZipIngestionStatusResponse>>;
 
     /**
-     * Get a ZIP fan-out\'s live status + per-member outcomes.  Tenant-scoped via the TenantId search attribute (no per-path can_read check — intentionally consistent with the sibling generic Temporal endpoints below; the opaque workflow_id is only handed to the uploader, who had can_write on the target). The per-member results come from the workflow\'s ``results`` query (served from retained history), so once Temporal retention expires this 404s.
+     * Get a fan-out\'s live status + per-member outcomes.  Serves both container fan-outs: a ZIP archive\'s members and an email\'s attachments. Both expose the same ``results`` query, so one endpoint covers them rather than duplicating the tenant check and hydration.  Tenant-scoped via the TenantId search attribute (no per-path can_read check — intentionally consistent with the sibling generic Temporal endpoints below; the opaque workflow_id is only handed to the uploader, who had can_write on the target). The per-member results come from the workflow\'s ``results`` query (served from retained history), so once Temporal retention expires this 404s.
      * Get Zip Ingestion Status Handler
      */
     getZipIngestionStatus(requestParameters: GetZipIngestionStatusRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ZipIngestionStatusResponse>;
@@ -484,7 +484,7 @@ export class SystemJobsApi extends runtime.BaseAPI implements SystemJobsApiInter
     }
 
     /**
-     * Get a ZIP fan-out\'s live status + per-member outcomes.  Tenant-scoped via the TenantId search attribute (no per-path can_read check — intentionally consistent with the sibling generic Temporal endpoints below; the opaque workflow_id is only handed to the uploader, who had can_write on the target). The per-member results come from the workflow\'s ``results`` query (served from retained history), so once Temporal retention expires this 404s.
+     * Get a fan-out\'s live status + per-member outcomes.  Serves both container fan-outs: a ZIP archive\'s members and an email\'s attachments. Both expose the same ``results`` query, so one endpoint covers them rather than duplicating the tenant check and hydration.  Tenant-scoped via the TenantId search attribute (no per-path can_read check — intentionally consistent with the sibling generic Temporal endpoints below; the opaque workflow_id is only handed to the uploader, who had can_write on the target). The per-member results come from the workflow\'s ``results`` query (served from retained history), so once Temporal retention expires this 404s.
      * Get Zip Ingestion Status Handler
      */
     async getZipIngestionStatusRaw(requestParameters: GetZipIngestionStatusRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ZipIngestionStatusResponse>> {
@@ -495,7 +495,7 @@ export class SystemJobsApi extends runtime.BaseAPI implements SystemJobsApiInter
     }
 
     /**
-     * Get a ZIP fan-out\'s live status + per-member outcomes.  Tenant-scoped via the TenantId search attribute (no per-path can_read check — intentionally consistent with the sibling generic Temporal endpoints below; the opaque workflow_id is only handed to the uploader, who had can_write on the target). The per-member results come from the workflow\'s ``results`` query (served from retained history), so once Temporal retention expires this 404s.
+     * Get a fan-out\'s live status + per-member outcomes.  Serves both container fan-outs: a ZIP archive\'s members and an email\'s attachments. Both expose the same ``results`` query, so one endpoint covers them rather than duplicating the tenant check and hydration.  Tenant-scoped via the TenantId search attribute (no per-path can_read check — intentionally consistent with the sibling generic Temporal endpoints below; the opaque workflow_id is only handed to the uploader, who had can_write on the target). The per-member results come from the workflow\'s ``results`` query (served from retained history), so once Temporal retention expires this 404s.
      * Get Zip Ingestion Status Handler
      */
     async getZipIngestionStatus(requestParameters: GetZipIngestionStatusRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ZipIngestionStatusResponse> {

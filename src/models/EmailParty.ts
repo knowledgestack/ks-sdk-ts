@@ -14,41 +14,25 @@
 
 import { mapValues } from '../runtime';
 /**
- * One ASR segment's span inside a media chunk (media chunks only).
- * 
- * Field names are deliberately compact — a media document stores hundreds of
- * chunks x tens of spans each in ``chunk_metadata`` JSONB. Measured worst
- * case is a 4-hour Mandarin recording: 175 chunks x ~33 spans, ~190 KB total.
+ * One email participant.
  * @export
- * @interface SegmentSpan
+ * @interface EmailParty
  */
-export interface SegmentSpan {
+export interface EmailParty {
     /**
-     * Segment start in the media, ms from start.
-     * @type {number}
-     * @memberof SegmentSpan
+     * Display name; empty if unnamed
+     * @type {string}
+     * @memberof EmailParty
      */
-    s: number;
+    name?: string;
     /**
-     * Segment end in the media, ms from start.
-     * @type {number}
-     * @memberof SegmentSpan
+     * Email address
+     * @type {string}
+     * @memberof EmailParty
      */
-    e: number;
-    /**
-     * Character offset of this segment's text within the chunk's joined content — maps a position in the chunk text back to a moment in the recording.
-     * @type {number}
-     * @memberof SegmentSpan
-     */
-    c: number;
-    /**
-     * Speaker label for this segment, 0-indexed within the recording. It identifies turns, not people — there is no voiceprint enrollment, so label 0 in one meeting is unrelated to label 0 in another. None when the ASR provider does not diarize.
-     * @type {number}
-     * @memberof SegmentSpan
-     */
-    k?: number | null;
+    address: string;
 }
-export const SegmentSpanPropertyValidationAttributesMap: {
+export const EmailPartyPropertyValidationAttributesMap: {
     [property: string]: {
         maxLength?: number,
         minLength?: number,
@@ -67,47 +51,41 @@ export const SegmentSpanPropertyValidationAttributesMap: {
 
 
 /**
- * Check if a given object implements the SegmentSpan interface.
+ * Check if a given object implements the EmailParty interface.
  */
-export function instanceOfSegmentSpan(value: object): value is SegmentSpan {
-    if (!('s' in value) || value['s'] === undefined) return false;
-    if (!('e' in value) || value['e'] === undefined) return false;
-    if (!('c' in value) || value['c'] === undefined) return false;
+export function instanceOfEmailParty(value: object): value is EmailParty {
+    if (!('address' in value) || value['address'] === undefined) return false;
     return true;
 }
 
-export function SegmentSpanFromJSON(json: any): SegmentSpan {
-    return SegmentSpanFromJSONTyped(json, false);
+export function EmailPartyFromJSON(json: any): EmailParty {
+    return EmailPartyFromJSONTyped(json, false);
 }
 
-export function SegmentSpanFromJSONTyped(json: any, ignoreDiscriminator: boolean): SegmentSpan {
+export function EmailPartyFromJSONTyped(json: any, ignoreDiscriminator: boolean): EmailParty {
     if (json == null) {
         return json;
     }
     return {
         
-        's': json['s'],
-        'e': json['e'],
-        'c': json['c'],
-        'k': json['k'] == null ? undefined : json['k'],
+        'name': json['name'] == null ? undefined : json['name'],
+        'address': json['address'],
     };
 }
 
-export function SegmentSpanToJSON(json: any): SegmentSpan {
-    return SegmentSpanToJSONTyped(json, false);
+export function EmailPartyToJSON(json: any): EmailParty {
+    return EmailPartyToJSONTyped(json, false);
 }
 
-export function SegmentSpanToJSONTyped(value?: SegmentSpan | null, ignoreDiscriminator: boolean = false): any {
+export function EmailPartyToJSONTyped(value?: EmailParty | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
         
-        's': value['s'],
-        'e': value['e'],
-        'c': value['c'],
-        'k': value['k'],
+        'name': value['name'],
+        'address': value['address'],
     };
 }
 

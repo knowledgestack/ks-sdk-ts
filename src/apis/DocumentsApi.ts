@@ -122,6 +122,7 @@ export interface IngestDocumentRequest {
     name?: string | null;
     tagIds?: Array<string>;
     idempotencyKey?: string | null;
+    emailNestingDepth?: number;
     ingestionMode?: IngestionMode;
     chunkType?: ChunkType;
     secondaryTaxonomy?: ImageTaxonomy;
@@ -154,6 +155,8 @@ export interface ListDocumentsRequest {
     sortDir?: SortDirection;
     ownerId?: string | null;
     documentType?: DocumentType;
+    durationMinMs?: number | null;
+    durationMaxMs?: number | null;
     withTags?: boolean;
     limit?: number;
     offset?: number;
@@ -383,6 +386,7 @@ export interface DocumentsApiInterface {
      * @param {string} [name] Document name (defaults to filename)
      * @param {Array<string>} [tagIds] Tag IDs applied to the created document.
      * @param {string} [idempotencyKey] Opt-in key: a repeat with the same key at the same (parent, name) replays the existing document instead of a 409.
+     * @param {number} [emailNestingDepth] Internal: set by the email member fan-out when a nested email re-enters this endpoint. Leave at 0 for direct uploads.
      * @param {IngestionMode} [ingestionMode] 
      * @param {ChunkType} [chunkType] 
      * @param {ImageTaxonomy} [secondaryTaxonomy] 
@@ -402,6 +406,7 @@ export interface DocumentsApiInterface {
      * @param {string} [name] Document name (defaults to filename)
      * @param {Array<string>} [tagIds] Tag IDs applied to the created document.
      * @param {string} [idempotencyKey] Opt-in key: a repeat with the same key at the same (parent, name) replays the existing document instead of a 409.
+     * @param {number} [emailNestingDepth] Internal: set by the email member fan-out when a nested email re-enters this endpoint. Leave at 0 for direct uploads.
      * @param {IngestionMode} [ingestionMode] 
      * @param {ChunkType} [chunkType] 
      * @param {ImageTaxonomy} [secondaryTaxonomy] 
@@ -495,6 +500,8 @@ export interface DocumentsApiInterface {
      * @param {SortDirection} [sortDir] Sort direction; overrides the column\&#39;s natural default
      * @param {string} [ownerId] Filter to documents owned by this user
      * @param {DocumentType} [documentType] Filter to documents of this type
+     * @param {number} [durationMinMs] Only media whose active version is at least this long (milliseconds). Non-media documents have no duration and are excluded.
+     * @param {number} [durationMaxMs] Only media whose active version is at most this long.
      * @param {boolean} [withTags] Include tags in the response (default: false)
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
@@ -515,6 +522,8 @@ export interface DocumentsApiInterface {
      * @param {SortDirection} [sortDir] Sort direction; overrides the column\&#39;s natural default
      * @param {string} [ownerId] Filter to documents owned by this user
      * @param {DocumentType} [documentType] Filter to documents of this type
+     * @param {number} [durationMinMs] Only media whose active version is at least this long (milliseconds). Non-media documents have no duration and are excluded.
+     * @param {number} [durationMaxMs] Only media whose active version is at most this long.
      * @param {boolean} [withTags] Include tags in the response (default: false)
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
@@ -1117,6 +1126,10 @@ export class DocumentsApi extends runtime.BaseAPI implements DocumentsApiInterfa
             formParams.append('idempotency_key', requestParameters['idempotencyKey'] as any);
         }
 
+        if (requestParameters['emailNestingDepth'] != null) {
+            formParams.append('email_nesting_depth', requestParameters['emailNestingDepth'] as any);
+        }
+
         if (requestParameters['ingestionMode'] != null) {
             formParams.append('ingestion_mode', requestParameters['ingestionMode'] as any);
         }
@@ -1398,6 +1411,14 @@ export class DocumentsApi extends runtime.BaseAPI implements DocumentsApiInterfa
 
         if (requestParameters['documentType'] != null) {
             queryParameters['document_type'] = requestParameters['documentType'];
+        }
+
+        if (requestParameters['durationMinMs'] != null) {
+            queryParameters['duration_min_ms'] = requestParameters['durationMinMs'];
+        }
+
+        if (requestParameters['durationMaxMs'] != null) {
+            queryParameters['duration_max_ms'] = requestParameters['durationMaxMs'];
         }
 
         if (requestParameters['withTags'] != null) {

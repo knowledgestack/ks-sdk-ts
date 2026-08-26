@@ -14,41 +14,25 @@
 
 import { mapValues } from '../runtime';
 /**
- * One ASR segment's span inside a media chunk (media chunks only).
  * 
- * Field names are deliberately compact — a media document stores hundreds of
- * chunks x tens of spans each in ``chunk_metadata`` JSONB. Measured worst
- * case is a 4-hour Mandarin recording: 175 chunks x ~33 spans, ~190 KB total.
  * @export
- * @interface SegmentSpan
+ * @interface AcceptTenantInvitationRequest
  */
-export interface SegmentSpan {
+export interface AcceptTenantInvitationRequest {
     /**
-     * Segment start in the media, ms from start.
-     * @type {number}
-     * @memberof SegmentSpan
+     * Required only when the owner has no existing KS account.
+     * @type {string}
+     * @memberof AcceptTenantInvitationRequest
      */
-    s: number;
+    password?: string | null;
     /**
-     * Segment end in the media, ms from start.
-     * @type {number}
-     * @memberof SegmentSpan
+     * 
+     * @type {string}
+     * @memberof AcceptTenantInvitationRequest
      */
-    e: number;
-    /**
-     * Character offset of this segment's text within the chunk's joined content — maps a position in the chunk text back to a moment in the recording.
-     * @type {number}
-     * @memberof SegmentSpan
-     */
-    c: number;
-    /**
-     * Speaker label for this segment, 0-indexed within the recording. It identifies turns, not people — there is no voiceprint enrollment, so label 0 in one meeting is unrelated to label 0 in another. None when the ASR provider does not diarize.
-     * @type {number}
-     * @memberof SegmentSpan
-     */
-    k?: number | null;
+    firstName?: string | null;
 }
-export const SegmentSpanPropertyValidationAttributesMap: {
+export const AcceptTenantInvitationRequestPropertyValidationAttributesMap: {
     [property: string]: {
         maxLength?: number,
         minLength?: number,
@@ -63,51 +47,47 @@ export const SegmentSpanPropertyValidationAttributesMap: {
         uniqueItems?: boolean
     }
 } = {
+    password: {
+        minLength: 8,
+    },
 }
 
 
 /**
- * Check if a given object implements the SegmentSpan interface.
+ * Check if a given object implements the AcceptTenantInvitationRequest interface.
  */
-export function instanceOfSegmentSpan(value: object): value is SegmentSpan {
-    if (!('s' in value) || value['s'] === undefined) return false;
-    if (!('e' in value) || value['e'] === undefined) return false;
-    if (!('c' in value) || value['c'] === undefined) return false;
+export function instanceOfAcceptTenantInvitationRequest(value: object): value is AcceptTenantInvitationRequest {
     return true;
 }
 
-export function SegmentSpanFromJSON(json: any): SegmentSpan {
-    return SegmentSpanFromJSONTyped(json, false);
+export function AcceptTenantInvitationRequestFromJSON(json: any): AcceptTenantInvitationRequest {
+    return AcceptTenantInvitationRequestFromJSONTyped(json, false);
 }
 
-export function SegmentSpanFromJSONTyped(json: any, ignoreDiscriminator: boolean): SegmentSpan {
+export function AcceptTenantInvitationRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): AcceptTenantInvitationRequest {
     if (json == null) {
         return json;
     }
     return {
         
-        's': json['s'],
-        'e': json['e'],
-        'c': json['c'],
-        'k': json['k'] == null ? undefined : json['k'],
+        'password': json['password'] == null ? undefined : json['password'],
+        'firstName': json['first_name'] == null ? undefined : json['first_name'],
     };
 }
 
-export function SegmentSpanToJSON(json: any): SegmentSpan {
-    return SegmentSpanToJSONTyped(json, false);
+export function AcceptTenantInvitationRequestToJSON(json: any): AcceptTenantInvitationRequest {
+    return AcceptTenantInvitationRequestToJSONTyped(json, false);
 }
 
-export function SegmentSpanToJSONTyped(value?: SegmentSpan | null, ignoreDiscriminator: boolean = false): any {
+export function AcceptTenantInvitationRequestToJSONTyped(value?: AcceptTenantInvitationRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
         
-        's': value['s'],
-        'e': value['e'],
-        'c': value['c'],
-        'k': value['k'],
+        'password': value['password'],
+        'first_name': value['firstName'],
     };
 }
 

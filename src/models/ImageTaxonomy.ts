@@ -19,6 +19,7 @@
  */
 export const ImageTaxonomy = {
     Picture: 'picture',
+    Slide: 'slide',
     Flowchart: 'flowchart'
 } as const;
 export type ImageTaxonomy = typeof ImageTaxonomy[keyof typeof ImageTaxonomy];

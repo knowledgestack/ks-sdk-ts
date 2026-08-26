@@ -2,6 +2,8 @@
 /* eslint-disable */
 export * from './AcceptDisclaimerRequest';
 export * from './AcceptInviteResponse';
+export * from './AcceptTenantInvitationRequest';
+export * from './AcceptTenantInvitationResponse';
 export * from './AccessCheckResponse';
 export * from './ActivateSkillVersionRequest';
 export * from './AddMemberRequest';
@@ -129,6 +131,8 @@ export * from './DocxParagraphAnchorInput';
 export * from './DocxParagraphAnchorOutput';
 export * from './DownloadArtifact';
 export * from './EditMemoryChunkRequest';
+export * from './EmailMetadata';
+export * from './EmailParty';
 export * from './EmailSentResponse';
 export * from './EmailVerificationRequest';
 export * from './EnrichedCitation';

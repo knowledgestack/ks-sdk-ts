@@ -14,41 +14,31 @@
 
 import { mapValues } from '../runtime';
 /**
- * One ASR segment's span inside a media chunk (media chunks only).
  * 
- * Field names are deliberately compact — a media document stores hundreds of
- * chunks x tens of spans each in ``chunk_metadata`` JSONB. Measured worst
- * case is a 4-hour Mandarin recording: 175 chunks x ~33 spans, ~190 KB total.
  * @export
- * @interface SegmentSpan
+ * @interface AcceptTenantInvitationResponse
  */
-export interface SegmentSpan {
+export interface AcceptTenantInvitationResponse {
     /**
-     * Segment start in the media, ms from start.
-     * @type {number}
-     * @memberof SegmentSpan
+     * 
+     * @type {string}
+     * @memberof AcceptTenantInvitationResponse
      */
-    s: number;
+    tenantId: string;
     /**
-     * Segment end in the media, ms from start.
-     * @type {number}
-     * @memberof SegmentSpan
+     * 
+     * @type {string}
+     * @memberof AcceptTenantInvitationResponse
      */
-    e: number;
+    tenantName: string;
     /**
-     * Character offset of this segment's text within the chunk's joined content — maps a position in the chunk text back to a moment in the recording.
-     * @type {number}
-     * @memberof SegmentSpan
+     * 
+     * @type {string}
+     * @memberof AcceptTenantInvitationResponse
      */
-    c: number;
-    /**
-     * Speaker label for this segment, 0-indexed within the recording. It identifies turns, not people — there is no voiceprint enrollment, so label 0 in one meeting is unrelated to label 0 in another. None when the ASR provider does not diarize.
-     * @type {number}
-     * @memberof SegmentSpan
-     */
-    k?: number | null;
+    userId: string;
 }
-export const SegmentSpanPropertyValidationAttributesMap: {
+export const AcceptTenantInvitationResponsePropertyValidationAttributesMap: {
     [property: string]: {
         maxLength?: number,
         minLength?: number,
@@ -67,47 +57,45 @@ export const SegmentSpanPropertyValidationAttributesMap: {
 
 
 /**
- * Check if a given object implements the SegmentSpan interface.
+ * Check if a given object implements the AcceptTenantInvitationResponse interface.
  */
-export function instanceOfSegmentSpan(value: object): value is SegmentSpan {
-    if (!('s' in value) || value['s'] === undefined) return false;
-    if (!('e' in value) || value['e'] === undefined) return false;
-    if (!('c' in value) || value['c'] === undefined) return false;
+export function instanceOfAcceptTenantInvitationResponse(value: object): value is AcceptTenantInvitationResponse {
+    if (!('tenantId' in value) || value['tenantId'] === undefined) return false;
+    if (!('tenantName' in value) || value['tenantName'] === undefined) return false;
+    if (!('userId' in value) || value['userId'] === undefined) return false;
     return true;
 }
 
-export function SegmentSpanFromJSON(json: any): SegmentSpan {
-    return SegmentSpanFromJSONTyped(json, false);
+export function AcceptTenantInvitationResponseFromJSON(json: any): AcceptTenantInvitationResponse {
+    return AcceptTenantInvitationResponseFromJSONTyped(json, false);
 }
 
-export function SegmentSpanFromJSONTyped(json: any, ignoreDiscriminator: boolean): SegmentSpan {
+export function AcceptTenantInvitationResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): AcceptTenantInvitationResponse {
     if (json == null) {
         return json;
     }
     return {
         
-        's': json['s'],
-        'e': json['e'],
-        'c': json['c'],
-        'k': json['k'] == null ? undefined : json['k'],
+        'tenantId': json['tenant_id'],
+        'tenantName': json['tenant_name'],
+        'userId': json['user_id'],
     };
 }
 
-export function SegmentSpanToJSON(json: any): SegmentSpan {
-    return SegmentSpanToJSONTyped(json, false);
+export function AcceptTenantInvitationResponseToJSON(json: any): AcceptTenantInvitationResponse {
+    return AcceptTenantInvitationResponseToJSONTyped(json, false);
 }
 
-export function SegmentSpanToJSONTyped(value?: SegmentSpan | null, ignoreDiscriminator: boolean = false): any {
+export function AcceptTenantInvitationResponseToJSONTyped(value?: AcceptTenantInvitationResponse | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
         
-        's': value['s'],
-        'e': value['e'],
-        'c': value['c'],
-        'k': value['k'],
+        'tenant_id': value['tenantId'],
+        'tenant_name': value['tenantName'],
+        'user_id': value['userId'],
     };
 }
 

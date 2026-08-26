@@ -32,6 +32,7 @@ export * from './SubscriptionsApi';
 export * from './SystemJobsApi';
 export * from './TagsApi';
 export * from './TenantGroupsApi';
+export * from './TenantInvitationsApi';
 export * from './TenantsApi';
 export * from './ThreadMessagesApi';
 export * from './ThreadsApi';

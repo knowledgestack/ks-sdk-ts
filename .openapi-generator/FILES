@@ -4,6 +4,8 @@
 README.md
 docs/AcceptDisclaimerRequest.md
 docs/AcceptInviteResponse.md
+docs/AcceptTenantInvitationRequest.md
+docs/AcceptTenantInvitationResponse.md
 docs/AccessCheckResponse.md
 docs/ActivateSkillVersionRequest.md
 docs/AddMemberRequest.md
@@ -149,6 +151,8 @@ docs/DocxParagraphAnchorInput.md
 docs/DocxParagraphAnchorOutput.md
 docs/DownloadArtifact.md
 docs/EditMemoryChunkRequest.md
+docs/EmailMetadata.md
+docs/EmailParty.md
 docs/EmailSentResponse.md
 docs/EmailVerificationRequest.md
 docs/EnrichedCitation.md
@@ -340,6 +344,7 @@ docs/TemporalWorkflowStatusResponse.md
 docs/TenantBrandingResponse.md
 docs/TenantGroupOrder.md
 docs/TenantGroupsApi.md
+docs/TenantInvitationsApi.md
 docs/TenantQuotaStateResponse.md
 docs/TenantResponse.md
 docs/TenantSettingsResponse.md
@@ -467,6 +472,7 @@ src/apis/SubscriptionsApi.ts
 src/apis/SystemJobsApi.ts
 src/apis/TagsApi.ts
 src/apis/TenantGroupsApi.ts
+src/apis/TenantInvitationsApi.ts
 src/apis/TenantsApi.ts
 src/apis/ThreadMessagesApi.ts
 src/apis/ThreadsApi.ts
@@ -480,6 +486,8 @@ src/apis/index.ts
 src/index.ts
 src/models/AcceptDisclaimerRequest.ts
 src/models/AcceptInviteResponse.ts
+src/models/AcceptTenantInvitationRequest.ts
+src/models/AcceptTenantInvitationResponse.ts
 src/models/AccessCheckResponse.ts
 src/models/ActivateSkillVersionRequest.ts
 src/models/AddMemberRequest.ts
@@ -607,6 +615,8 @@ src/models/DocxParagraphAnchorInput.ts
 src/models/DocxParagraphAnchorOutput.ts
 src/models/DownloadArtifact.ts
 src/models/EditMemoryChunkRequest.ts
+src/models/EmailMetadata.ts
+src/models/EmailParty.ts
 src/models/EmailSentResponse.ts
 src/models/EmailVerificationRequest.ts
 src/models/EnrichedCitation.ts

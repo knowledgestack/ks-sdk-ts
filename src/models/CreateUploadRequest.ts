@@ -49,6 +49,24 @@ export interface CreateUploadRequest {
      * @memberof CreateUploadRequest
      */
     tagIds?: Array<string>;
+    /**
+     * Workflow run this upload belongs to; attributes the resulting document to the run in the audit log. Must be sent together with workflow_definition_id, and only by an assumed identity.
+     * @type {string}
+     * @memberof CreateUploadRequest
+     */
+    workflowRunId?: string | null;
+    /**
+     * Workflow definition for workflow_run_id.
+     * @type {string}
+     * @memberof CreateUploadRequest
+     */
+    workflowDefinitionId?: string | null;
+    /**
+     * Replay key for callers that retry (e.g. the ZIP fan-out); completing twice with the same key replays the existing document instead of creating a duplicate.
+     * @type {string}
+     * @memberof CreateUploadRequest
+     */
+    idempotencyKey?: string | null;
 }
 export const CreateUploadRequestPropertyValidationAttributesMap: {
     [property: string]: {
@@ -94,6 +112,9 @@ export function CreateUploadRequestFromJSONTyped(json: any, ignoreDiscriminator:
         'filename': json['filename'],
         'sizeBytes': json['size_bytes'],
         'tagIds': json['tag_ids'] == null ? undefined : json['tag_ids'],
+        'workflowRunId': json['workflow_run_id'] == null ? undefined : json['workflow_run_id'],
+        'workflowDefinitionId': json['workflow_definition_id'] == null ? undefined : json['workflow_definition_id'],
+        'idempotencyKey': json['idempotency_key'] == null ? undefined : json['idempotency_key'],
     };
 }
 
@@ -113,6 +134,9 @@ export function CreateUploadRequestToJSONTyped(value?: CreateUploadRequest | nul
         'filename': value['filename'],
         'size_bytes': value['sizeBytes'],
         'tag_ids': value['tagIds'],
+        'workflow_run_id': value['workflowRunId'],
+        'workflow_definition_id': value['workflowDefinitionId'],
+        'idempotency_key': value['idempotencyKey'],
     };
 }
 
