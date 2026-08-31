@@ -72,6 +72,12 @@ export interface ChunkMetadata {
      */
     extractedTextS3Uri?: string | null;
     /**
+     * Caption and footnote lines MinerU extracted next to a visual, joined by newlines. IMAGE chunks only: their content is a generated description that enrichment overwrites, so the caption cannot live there — enrichment appends it to the description it writes. TABLE captions are appended to table_body directly, because a table's content is extracted text rather than generated.
+     * @type {string}
+     * @memberof ChunkMetadata
+     */
+    caption?: string | null;
+    /**
      * 
      * @type {ImageTaxonomy}
      * @memberof ChunkMetadata
@@ -204,6 +210,7 @@ export function ChunkMetadataFromJSONTyped(json: any, ignoreDiscriminator: boole
         'summary': json['summary'] == null ? undefined : json['summary'],
         'summarizeForEmbedding': json['summarize_for_embedding'] == null ? undefined : json['summarize_for_embedding'],
         'extractedTextS3Uri': json['extracted_text_s3_uri'] == null ? undefined : json['extracted_text_s3_uri'],
+        'caption': json['caption'] == null ? undefined : json['caption'],
         'secondaryTaxonomy': json['secondary_taxonomy'] == null ? undefined : ImageTaxonomyFromJSON(json['secondary_taxonomy']),
         'startMs': json['start_ms'] == null ? undefined : json['start_ms'],
         'endMs': json['end_ms'] == null ? undefined : json['end_ms'],
@@ -238,6 +245,7 @@ export function ChunkMetadataToJSONTyped(value?: ChunkMetadata | null, ignoreDis
         'summary': value['summary'],
         'summarize_for_embedding': value['summarizeForEmbedding'],
         'extracted_text_s3_uri': value['extractedTextS3Uri'],
+        'caption': value['caption'],
         'secondary_taxonomy': ImageTaxonomyToJSON(value['secondaryTaxonomy']),
         'start_ms': value['startMs'],
         'end_ms': value['endMs'],
