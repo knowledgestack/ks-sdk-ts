@@ -1,6 +1,6 @@
 {
   "name": "@knowledge-stack/ksapi",
-  "version": "2.10.0",
+  "version": "2.10.1",
   "description": "TypeScript / JavaScript SDK for the Knowledge Stack API — document intelligence for enterprise RAG and agent pipelines.",
   "keywords": [
     "knowledge-stack",
