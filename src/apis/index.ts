@@ -35,6 +35,7 @@ export * from './TenantGroupsApi';
 export * from './TenantsApi';
 export * from './ThreadMessagesApi';
 export * from './ThreadsApi';
+export * from './TranscriptionsApi';
 export * from './TrashApi';
 export * from './UserPermissionsApi';
 export * from './UsersApi';

@@ -332,6 +332,7 @@ export * from './TimeseriesPoint';
 export * from './ToolDisplayType';
 export * from './ToolPart';
 export * from './ToolStatus';
+export * from './TranscriptionResponse';
 export * from './TransferOwnerRequest';
 export * from './TransferOwnerResponse';
 export * from './TrashItemDetailResponse';

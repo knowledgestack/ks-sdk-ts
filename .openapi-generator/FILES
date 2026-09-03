@@ -369,6 +369,8 @@ docs/TimeseriesPoint.md
 docs/ToolDisplayType.md
 docs/ToolPart.md
 docs/ToolStatus.md
+docs/TranscriptionResponse.md
+docs/TranscriptionsApi.md
 docs/TransferOwnerRequest.md
 docs/TransferOwnerResponse.md
 docs/TrashApi.md
@@ -472,6 +474,7 @@ src/apis/TenantGroupsApi.ts
 src/apis/TenantsApi.ts
 src/apis/ThreadMessagesApi.ts
 src/apis/ThreadsApi.ts
+src/apis/TranscriptionsApi.ts
 src/apis/TrashApi.ts
 src/apis/UserPermissionsApi.ts
 src/apis/UsersApi.ts
@@ -812,6 +815,7 @@ src/models/TimeseriesPoint.ts
 src/models/ToolDisplayType.ts
 src/models/ToolPart.ts
 src/models/ToolStatus.ts
+src/models/TranscriptionResponse.ts
 src/models/TransferOwnerRequest.ts
 src/models/TransferOwnerResponse.ts
 src/models/TrashItemDetailResponse.ts

@@ -14,58 +14,25 @@
 
 import { mapValues } from '../runtime';
 /**
- * Standard error body returned for every non-2xx response.
+ * A spoken clip rendered as text, ready to send as a chat message.
  * @export
- * @interface ErrorResponse
+ * @interface TranscriptionResponse
  */
-export interface ErrorResponse {
+export interface TranscriptionResponse {
     /**
-     * Human-readable explanation of the error.
+     * The transcript. Empty when the clip contained no speech, which is a success, not an error.
      * @type {string}
-     * @memberof ErrorResponse
+     * @memberof TranscriptionResponse
      */
-    detail: string;
+    text: string;
     /**
-     * Stable, machine-readable error code from a closed set. Branch on this instead of parsing 'detail'. 'quota_exceeded'/'too_many_requests' carry a Retry-After header; 'service_unavailable' is retryable.
-     * @type {ErrorResponseCodeEnum}
-     * @memberof ErrorResponse
-     */
-    code: ErrorResponseCodeEnum;
-    /**
-     * Correlates to the x-request-id response header; quote it to support.
+     * The language ASR detected, or the one the caller pinned. Null when the backend reports none; the text is still valid.
      * @type {string}
-     * @memberof ErrorResponse
+     * @memberof TranscriptionResponse
      */
-    requestId?: string;
+    language?: string | null;
 }
-
-
-/**
- * @export
- */
-export const ErrorResponseCodeEnum = {
-    Error: 'error',
-    BadRequest: 'bad_request',
-    PermissionLimit: 'permission_limit',
-    Unauthorized: 'unauthorized',
-    Forbidden: 'forbidden',
-    NotFound: 'not_found',
-    Conflict: 'conflict',
-    RunBusy: 'run_busy',
-    PayloadTooLarge: 'payload_too_large',
-    UnsupportedMediaType: 'unsupported_media_type',
-    UnprocessableEntity: 'unprocessable_entity',
-    TooManyRequests: 'too_many_requests',
-    QuotaExceeded: 'quota_exceeded',
-    NotImplemented: 'not_implemented',
-    ServiceConfigurationError: 'service_configuration_error',
-    QuotaPeriodMissing: 'quota_period_missing',
-    InternalError: 'internal_error',
-    ServiceUnavailable: 'service_unavailable'
-} as const;
-export type ErrorResponseCodeEnum = typeof ErrorResponseCodeEnum[keyof typeof ErrorResponseCodeEnum];
-
-export const ErrorResponsePropertyValidationAttributesMap: {
+export const TranscriptionResponsePropertyValidationAttributesMap: {
     [property: string]: {
         maxLength?: number,
         minLength?: number,
@@ -84,44 +51,41 @@ export const ErrorResponsePropertyValidationAttributesMap: {
 
 
 /**
- * Check if a given object implements the ErrorResponse interface.
+ * Check if a given object implements the TranscriptionResponse interface.
  */
-export function instanceOfErrorResponse(value: object): value is ErrorResponse {
-    if (!('detail' in value) || value['detail'] === undefined) return false;
-    if (!('code' in value) || value['code'] === undefined) return false;
+export function instanceOfTranscriptionResponse(value: object): value is TranscriptionResponse {
+    if (!('text' in value) || value['text'] === undefined) return false;
     return true;
 }
 
-export function ErrorResponseFromJSON(json: any): ErrorResponse {
-    return ErrorResponseFromJSONTyped(json, false);
+export function TranscriptionResponseFromJSON(json: any): TranscriptionResponse {
+    return TranscriptionResponseFromJSONTyped(json, false);
 }
 
-export function ErrorResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): ErrorResponse {
+export function TranscriptionResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): TranscriptionResponse {
     if (json == null) {
         return json;
     }
     return {
         
-        'detail': json['detail'],
-        'code': json['code'],
-        'requestId': json['request_id'] == null ? undefined : json['request_id'],
+        'text': json['text'],
+        'language': json['language'] == null ? undefined : json['language'],
     };
 }
 
-export function ErrorResponseToJSON(json: any): ErrorResponse {
-    return ErrorResponseToJSONTyped(json, false);
+export function TranscriptionResponseToJSON(json: any): TranscriptionResponse {
+    return TranscriptionResponseToJSONTyped(json, false);
 }
 
-export function ErrorResponseToJSONTyped(value?: ErrorResponse | null, ignoreDiscriminator: boolean = false): any {
+export function TranscriptionResponseToJSONTyped(value?: TranscriptionResponse | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
         
-        'detail': value['detail'],
-        'code': value['code'],
-        'request_id': value['requestId'],
+        'text': value['text'],
+        'language': value['language'],
     };
 }
 
