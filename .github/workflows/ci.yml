@@ -19,13 +19,18 @@ jobs:
         with:
           version: 9
 
+      # No cache: pnpm and no --frozen-lockfile. This repository is regenerated
+      # from ks-backend on every release and carries no pnpm-lock.yaml, so both
+      # required a file that never exists here and failed every run. The package
+      # has a single devDependency (typescript), so there is nothing meaningful
+      # to lock; committing a lockfile would only need regenerating on each
+      # release for no benefit.
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node }}
-          cache: pnpm
 
       - name: Install
-        run: pnpm install --frozen-lockfile
+        run: pnpm install --no-frozen-lockfile
 
       - name: Build
         run: pnpm run build
