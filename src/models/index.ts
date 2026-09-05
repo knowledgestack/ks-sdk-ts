@@ -265,6 +265,7 @@ export * from './RunTimeseriesResponse';
 export * from './SSOInitiateResponse';
 export * from './ScheduleCadence';
 export * from './ScoredChunkResponse';
+export * from './SearchItemsResponse';
 export * from './SearchSkillsRequest';
 export * from './SearchSkillsResponse';
 export * from './SearchSortOrder';

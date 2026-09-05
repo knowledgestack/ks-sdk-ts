@@ -293,6 +293,7 @@ docs/RunTimeseriesResponse.md
 docs/SSOInitiateResponse.md
 docs/ScheduleCadence.md
 docs/ScoredChunkResponse.md
+docs/SearchItemsResponse.md
 docs/SearchSkillsRequest.md
 docs/SearchSkillsResponse.md
 docs/SearchSortOrder.md
@@ -748,6 +749,7 @@ src/models/RunTimeseriesResponse.ts
 src/models/SSOInitiateResponse.ts
 src/models/ScheduleCadence.ts
 src/models/ScoredChunkResponse.ts
+src/models/SearchItemsResponse.ts
 src/models/SearchSkillsRequest.ts
 src/models/SearchSkillsResponse.ts
 src/models/SearchSortOrder.ts

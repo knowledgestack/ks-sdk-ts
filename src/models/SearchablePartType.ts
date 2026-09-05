@@ -25,7 +25,8 @@ export const SearchablePartType = {
     DataSource: 'DATA_SOURCE',
     DataSourceSchema: 'DATA_SOURCE_SCHEMA',
     DataSourceTable: 'DATA_SOURCE_TABLE',
-    ApiConnection: 'API_CONNECTION'
+    ApiConnection: 'API_CONNECTION',
+    Skill: 'SKILL'
 } as const;
 export type SearchablePartType = typeof SearchablePartType[keyof typeof SearchablePartType];
 

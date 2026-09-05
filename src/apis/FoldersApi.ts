@@ -26,6 +26,7 @@ import type {
   PaginatedResponseFolderResponse,
   PathOrder,
   PathPartApprovalState,
+  SearchItemsResponse,
   SearchSortOrder,
   SearchablePartType,
   SortDirection,
@@ -54,6 +55,8 @@ import {
     PathOrderToJSON,
     PathPartApprovalStateFromJSON,
     PathPartApprovalStateToJSON,
+    SearchItemsResponseFromJSON,
+    SearchItemsResponseToJSON,
     SearchSortOrderFromJSON,
     SearchSortOrderToJSON,
     SearchablePartTypeFromJSON,
@@ -117,8 +120,8 @@ export interface ListFoldersRequest {
 
 export interface SearchItemsRequest {
     nameLike: string;
+    partType?: Array<SearchablePartType>;
     sortOrder?: SearchSortOrder;
-    partType?: SearchablePartType;
     withTags?: boolean;
     parentPathPartId?: string | null;
     limit?: number;
@@ -337,8 +340,8 @@ export interface FoldersApiInterface {
     /**
      * Creates request options for searchItems without sending the request
      * @param {string} nameLike Case-insensitive partial name search
-     * @param {SearchSortOrder} [sortOrder] Sort order for results (default: NAME)
-     * @param {SearchablePartType} [partType] Filter by item type (default: all searchable types)
+     * @param {Array<SearchablePartType>} [partType] Filter by item type; repeat the parameter to select several (default: all searchable types)
+     * @param {SearchSortOrder} [sortOrder] Sort order for results (default: RELEVANCE)
      * @param {boolean} [withTags] Include tags in the response (default: false)
      * @param {string} [parentPathPartId] Scope search to descendants of this folder\&#39;s path part
      * @param {number} [limit] Number of items per page
@@ -352,8 +355,8 @@ export interface FoldersApiInterface {
      * Search for folders, documents, and connectors by name.  Performs a case-insensitive partial name match using trigram indexing. Results are filtered by the current user\'s path permissions.  When parent_path_part_id is provided, only items under that folder are searched. Otherwise, all accessible items across the tenant are searched.
      * @summary Search Items Handler
      * @param {string} nameLike Case-insensitive partial name search
-     * @param {SearchSortOrder} [sortOrder] Sort order for results (default: NAME)
-     * @param {SearchablePartType} [partType] Filter by item type (default: all searchable types)
+     * @param {Array<SearchablePartType>} [partType] Filter by item type; repeat the parameter to select several (default: all searchable types)
+     * @param {SearchSortOrder} [sortOrder] Sort order for results (default: RELEVANCE)
      * @param {boolean} [withTags] Include tags in the response (default: false)
      * @param {string} [parentPathPartId] Scope search to descendants of this folder\&#39;s path part
      * @param {number} [limit] Number of items per page
@@ -362,13 +365,13 @@ export interface FoldersApiInterface {
      * @throws {RequiredError}
      * @memberof FoldersApiInterface
      */
-    searchItemsRaw(requestParameters: SearchItemsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseWorkflowDefinitionResponseWorkflowRunResponseDat>>;
+    searchItemsRaw(requestParameters: SearchItemsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SearchItemsResponse>>;
 
     /**
      * Search for folders, documents, and connectors by name.  Performs a case-insensitive partial name match using trigram indexing. Results are filtered by the current user\'s path permissions.  When parent_path_part_id is provided, only items under that folder are searched. Otherwise, all accessible items across the tenant are searched.
      * Search Items Handler
      */
-    searchItems(requestParameters: SearchItemsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseWorkflowDefinitionResponseWorkflowRunResponseDat>;
+    searchItems(requestParameters: SearchItemsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SearchItemsResponse>;
 
     /**
      * Creates request options for updateFolder without sending the request
@@ -860,12 +863,12 @@ export class FoldersApi extends runtime.BaseAPI implements FoldersApiInterface {
             queryParameters['name_like'] = requestParameters['nameLike'];
         }
 
-        if (requestParameters['sortOrder'] != null) {
-            queryParameters['sort_order'] = requestParameters['sortOrder'];
-        }
-
         if (requestParameters['partType'] != null) {
             queryParameters['part_type'] = requestParameters['partType'];
+        }
+
+        if (requestParameters['sortOrder'] != null) {
+            queryParameters['sort_order'] = requestParameters['sortOrder'];
         }
 
         if (requestParameters['withTags'] != null) {
@@ -909,18 +912,18 @@ export class FoldersApi extends runtime.BaseAPI implements FoldersApiInterface {
      * Search for folders, documents, and connectors by name.  Performs a case-insensitive partial name match using trigram indexing. Results are filtered by the current user\'s path permissions.  When parent_path_part_id is provided, only items under that folder are searched. Otherwise, all accessible items across the tenant are searched.
      * Search Items Handler
      */
-    async searchItemsRaw(requestParameters: SearchItemsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseWorkflowDefinitionResponseWorkflowRunResponseDat>> {
+    async searchItemsRaw(requestParameters: SearchItemsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SearchItemsResponse>> {
         const requestOptions = await this.searchItemsRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseWorkflowDefinitionResponseWorkflowRunResponseDatFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => SearchItemsResponseFromJSON(jsonValue));
     }
 
     /**
      * Search for folders, documents, and connectors by name.  Performs a case-insensitive partial name match using trigram indexing. Results are filtered by the current user\'s path permissions.  When parent_path_part_id is provided, only items under that folder are searched. Otherwise, all accessible items across the tenant are searched.
      * Search Items Handler
      */
-    async searchItems(requestParameters: SearchItemsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseWorkflowDefinitionResponseWorkflowRunResponseDat> {
+    async searchItems(requestParameters: SearchItemsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SearchItemsResponse> {
         const response = await this.searchItemsRaw(requestParameters, initOverrides);
         return await response.value();
     }
