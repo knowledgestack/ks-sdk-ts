@@ -13,6 +13,13 @@
  */
 
 import { mapValues } from '../runtime';
+import type { DocumentType } from './DocumentType';
+import {
+    DocumentTypeFromJSON,
+    DocumentTypeFromJSONTyped,
+    DocumentTypeToJSON,
+    DocumentTypeToJSONTyped,
+} from './DocumentType';
 import type { ReferenceType } from './ReferenceType';
 import {
     ReferenceTypeFromJSON,
@@ -55,6 +62,12 @@ export interface ResolvedReferenceInput {
      * @memberof ResolvedReferenceInput
      */
     materializedPath?: string | null;
+    /**
+     * 
+     * @type {DocumentType}
+     * @memberof ResolvedReferenceInput
+     */
+    documentType?: DocumentType;
 }
 
 
@@ -100,6 +113,7 @@ export function ResolvedReferenceInputFromJSONTyped(json: any, ignoreDiscriminat
         'entityId': json['entity_id'],
         'displayName': json['display_name'],
         'materializedPath': json['materialized_path'] == null ? undefined : json['materialized_path'],
+        'documentType': json['document_type'] == null ? undefined : DocumentTypeFromJSON(json['document_type']),
     };
 }
 
@@ -118,6 +132,7 @@ export function ResolvedReferenceInputToJSONTyped(value?: ResolvedReferenceInput
         'entity_id': value['entityId'],
         'display_name': value['displayName'],
         'materialized_path': value['materializedPath'],
+        'document_type': DocumentTypeToJSON(value['documentType']),
     };
 }
 
