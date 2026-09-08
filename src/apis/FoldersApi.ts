@@ -17,6 +17,7 @@ import * as runtime from '../runtime';
 import type {
   ContentsSortOrder,
   CreateFolderRequest,
+  DocumentType,
   ErrorResponse,
   FolderAction,
   FolderActionResponse,
@@ -37,6 +38,8 @@ import {
     ContentsSortOrderToJSON,
     CreateFolderRequestFromJSON,
     CreateFolderRequestToJSON,
+    DocumentTypeFromJSON,
+    DocumentTypeToJSON,
     ErrorResponseFromJSON,
     ErrorResponseToJSON,
     FolderActionFromJSON,
@@ -126,6 +129,14 @@ export interface SearchItemsRequest {
     parentPathPartId?: string | null;
     limit?: number;
     offset?: number;
+    documentType?: Array<DocumentType>;
+    ownerId?: string | null;
+    createdAfter?: Date | null;
+    createdBefore?: Date | null;
+    updatedAfter?: Date | null;
+    updatedBefore?: Date | null;
+    includeTagIds?: Array<string> | null;
+    excludeTagIds?: Array<string> | null;
 }
 
 export interface UpdateFolderOperationRequest {
@@ -346,13 +357,21 @@ export interface FoldersApiInterface {
      * @param {string} [parentPathPartId] Scope search to descendants of this folder\&#39;s path part
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
+     * @param {Array<DocumentType>} [documentType] Only documents of these types; repeat the parameter to select several (default: every type, every item kind)
+     * @param {string} [ownerId] Only items owned by this user
+     * @param {Date} [createdAfter] Only items created at or after this timestamp (inclusive)
+     * @param {Date} [createdBefore] Only items created strictly before this timestamp
+     * @param {Date} [updatedAfter] Only items updated at or after this timestamp (inclusive)
+     * @param {Date} [updatedBefore] Only items updated strictly before this timestamp
+     * @param {Array<string>} [includeTagIds] Keep only items that carry at least one of these tags on the item itself or any ancestor folder (repeatable, OR / tag inheritance).
+     * @param {Array<string>} [excludeTagIds] Drop items that carry any of these tags on the item itself or any ancestor folder (repeatable). Takes precedence over include_tag_ids.
      * @throws {RequiredError}
      * @memberof FoldersApiInterface
      */
     searchItemsRequestOpts(requestParameters: SearchItemsRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * Search for folders, documents, and connectors by name.  Performs a case-insensitive partial name match using trigram indexing. Results are filtered by the current user\'s path permissions.  When parent_path_part_id is provided, only items under that folder are searched. Otherwise, all accessible items across the tenant are searched.
+     * Search for folders, documents, connectors, workflows and skills.  Every word of the query must appear in the item\'s name or in a folder on the way to it; items named after the query rank above items that merely sit in a folder named after it. Matching is case-insensitive and served by trigram indexes, with a typo-tolerant fallback on names when nothing matches strictly. Results are filtered by the current user\'s path permissions.  Owner, document type, timestamp and tag filters narrow both the page and ``counts_by_type``; ``part_type`` narrows the page only, so the chips keep every type\'s count.
      * @summary Search Items Handler
      * @param {string} nameLike Case-insensitive partial name search
      * @param {Array<SearchablePartType>} [partType] Filter by item type; repeat the parameter to select several (default: all searchable types)
@@ -361,6 +380,14 @@ export interface FoldersApiInterface {
      * @param {string} [parentPathPartId] Scope search to descendants of this folder\&#39;s path part
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
+     * @param {Array<DocumentType>} [documentType] Only documents of these types; repeat the parameter to select several (default: every type, every item kind)
+     * @param {string} [ownerId] Only items owned by this user
+     * @param {Date} [createdAfter] Only items created at or after this timestamp (inclusive)
+     * @param {Date} [createdBefore] Only items created strictly before this timestamp
+     * @param {Date} [updatedAfter] Only items updated at or after this timestamp (inclusive)
+     * @param {Date} [updatedBefore] Only items updated strictly before this timestamp
+     * @param {Array<string>} [includeTagIds] Keep only items that carry at least one of these tags on the item itself or any ancestor folder (repeatable, OR / tag inheritance).
+     * @param {Array<string>} [excludeTagIds] Drop items that carry any of these tags on the item itself or any ancestor folder (repeatable). Takes precedence over include_tag_ids.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof FoldersApiInterface
@@ -368,7 +395,7 @@ export interface FoldersApiInterface {
     searchItemsRaw(requestParameters: SearchItemsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SearchItemsResponse>>;
 
     /**
-     * Search for folders, documents, and connectors by name.  Performs a case-insensitive partial name match using trigram indexing. Results are filtered by the current user\'s path permissions.  When parent_path_part_id is provided, only items under that folder are searched. Otherwise, all accessible items across the tenant are searched.
+     * Search for folders, documents, connectors, workflows and skills.  Every word of the query must appear in the item\'s name or in a folder on the way to it; items named after the query rank above items that merely sit in a folder named after it. Matching is case-insensitive and served by trigram indexes, with a typo-tolerant fallback on names when nothing matches strictly. Results are filtered by the current user\'s path permissions.  Owner, document type, timestamp and tag filters narrow both the page and ``counts_by_type``; ``part_type`` narrows the page only, so the chips keep every type\'s count.
      * Search Items Handler
      */
     searchItems(requestParameters: SearchItemsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SearchItemsResponse>;
@@ -887,6 +914,38 @@ export class FoldersApi extends runtime.BaseAPI implements FoldersApiInterface {
             queryParameters['offset'] = requestParameters['offset'];
         }
 
+        if (requestParameters['documentType'] != null) {
+            queryParameters['document_type'] = requestParameters['documentType'];
+        }
+
+        if (requestParameters['ownerId'] != null) {
+            queryParameters['owner_id'] = requestParameters['ownerId'];
+        }
+
+        if (requestParameters['createdAfter'] != null) {
+            queryParameters['created_after'] = (requestParameters['createdAfter'] as any).toISOString();
+        }
+
+        if (requestParameters['createdBefore'] != null) {
+            queryParameters['created_before'] = (requestParameters['createdBefore'] as any).toISOString();
+        }
+
+        if (requestParameters['updatedAfter'] != null) {
+            queryParameters['updated_after'] = (requestParameters['updatedAfter'] as any).toISOString();
+        }
+
+        if (requestParameters['updatedBefore'] != null) {
+            queryParameters['updated_before'] = (requestParameters['updatedBefore'] as any).toISOString();
+        }
+
+        if (requestParameters['includeTagIds'] != null) {
+            queryParameters['include_tag_ids'] = requestParameters['includeTagIds'];
+        }
+
+        if (requestParameters['excludeTagIds'] != null) {
+            queryParameters['exclude_tag_ids'] = requestParameters['excludeTagIds'];
+        }
+
         const headerParameters: runtime.HTTPHeaders = {};
 
         if (this.configuration && this.configuration.accessToken) {
@@ -909,7 +968,7 @@ export class FoldersApi extends runtime.BaseAPI implements FoldersApiInterface {
     }
 
     /**
-     * Search for folders, documents, and connectors by name.  Performs a case-insensitive partial name match using trigram indexing. Results are filtered by the current user\'s path permissions.  When parent_path_part_id is provided, only items under that folder are searched. Otherwise, all accessible items across the tenant are searched.
+     * Search for folders, documents, connectors, workflows and skills.  Every word of the query must appear in the item\'s name or in a folder on the way to it; items named after the query rank above items that merely sit in a folder named after it. Matching is case-insensitive and served by trigram indexes, with a typo-tolerant fallback on names when nothing matches strictly. Results are filtered by the current user\'s path permissions.  Owner, document type, timestamp and tag filters narrow both the page and ``counts_by_type``; ``part_type`` narrows the page only, so the chips keep every type\'s count.
      * Search Items Handler
      */
     async searchItemsRaw(requestParameters: SearchItemsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SearchItemsResponse>> {
@@ -920,7 +979,7 @@ export class FoldersApi extends runtime.BaseAPI implements FoldersApiInterface {
     }
 
     /**
-     * Search for folders, documents, and connectors by name.  Performs a case-insensitive partial name match using trigram indexing. Results are filtered by the current user\'s path permissions.  When parent_path_part_id is provided, only items under that folder are searched. Otherwise, all accessible items across the tenant are searched.
+     * Search for folders, documents, connectors, workflows and skills.  Every word of the query must appear in the item\'s name or in a folder on the way to it; items named after the query rank above items that merely sit in a folder named after it. Matching is case-insensitive and served by trigram indexes, with a typo-tolerant fallback on names when nothing matches strictly. Results are filtered by the current user\'s path permissions.  Owner, document type, timestamp and tag filters narrow both the page and ``counts_by_type``; ``part_type`` narrows the page only, so the chips keep every type\'s count.
      * Search Items Handler
      */
     async searchItems(requestParameters: SearchItemsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SearchItemsResponse> {
