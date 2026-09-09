@@ -136,7 +136,7 @@ export interface ApiConnectionsApiInterface {
     deleteApiConnectionRequestOpts(requestParameters: DeleteApiConnectionRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * Move a connection to trash (Admin/Owner).  Soft-delete via the path_part subtree, mirroring create/update authz. A connection holds no Qdrant vectors, so there is no trash-sync workflow.
+     * Move a connection to trash; requires ``can_delete``.
      * @summary Delete Api Connection Handler
      * @param {string} connectionId 
      * @param {*} [options] Override http request option.
@@ -146,7 +146,7 @@ export interface ApiConnectionsApiInterface {
     deleteApiConnectionRaw(requestParameters: DeleteApiConnectionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>>;
 
     /**
-     * Move a connection to trash (Admin/Owner).  Soft-delete via the path_part subtree, mirroring create/update authz. A connection holds no Qdrant vectors, so there is no trash-sync workflow.
+     * Move a connection to trash; requires ``can_delete``.
      * Delete Api Connection Handler
      */
     deleteApiConnection(requestParameters: DeleteApiConnectionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void>;
@@ -211,7 +211,7 @@ export interface ApiConnectionsApiInterface {
     updateApiConnectionRequestOpts(requestParameters: UpdateApiConnectionOperationRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * Update a connection (Admin/Owner). A risk-up change re-arms the disclaimer.
+     * Update a connection; changing its egress envelope needs Admin/Owner.
      * @summary Update Api Connection Handler
      * @param {string} connectionId 
      * @param {UpdateApiConnectionRequest} updateApiConnectionRequest 
@@ -222,7 +222,7 @@ export interface ApiConnectionsApiInterface {
     updateApiConnectionRaw(requestParameters: UpdateApiConnectionOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ApiConnectionResponse>>;
 
     /**
-     * Update a connection (Admin/Owner). A risk-up change re-arms the disclaimer.
+     * Update a connection; changing its egress envelope needs Admin/Owner.
      * Update Api Connection Handler
      */
     updateApiConnection(requestParameters: UpdateApiConnectionOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ApiConnectionResponse>;
@@ -392,7 +392,7 @@ export class ApiConnectionsApi extends runtime.BaseAPI implements ApiConnections
     }
 
     /**
-     * Move a connection to trash (Admin/Owner).  Soft-delete via the path_part subtree, mirroring create/update authz. A connection holds no Qdrant vectors, so there is no trash-sync workflow.
+     * Move a connection to trash; requires ``can_delete``.
      * Delete Api Connection Handler
      */
     async deleteApiConnectionRaw(requestParameters: DeleteApiConnectionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
@@ -403,7 +403,7 @@ export class ApiConnectionsApi extends runtime.BaseAPI implements ApiConnections
     }
 
     /**
-     * Move a connection to trash (Admin/Owner).  Soft-delete via the path_part subtree, mirroring create/update authz. A connection holds no Qdrant vectors, so there is no trash-sync workflow.
+     * Move a connection to trash; requires ``can_delete``.
      * Delete Api Connection Handler
      */
     async deleteApiConnection(requestParameters: DeleteApiConnectionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
@@ -576,7 +576,7 @@ export class ApiConnectionsApi extends runtime.BaseAPI implements ApiConnections
     }
 
     /**
-     * Update a connection (Admin/Owner). A risk-up change re-arms the disclaimer.
+     * Update a connection; changing its egress envelope needs Admin/Owner.
      * Update Api Connection Handler
      */
     async updateApiConnectionRaw(requestParameters: UpdateApiConnectionOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ApiConnectionResponse>> {
@@ -587,7 +587,7 @@ export class ApiConnectionsApi extends runtime.BaseAPI implements ApiConnections
     }
 
     /**
-     * Update a connection (Admin/Owner). A risk-up change re-arms the disclaimer.
+     * Update a connection; changing its egress envelope needs Admin/Owner.
      * Update Api Connection Handler
      */
     async updateApiConnection(requestParameters: UpdateApiConnectionOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ApiConnectionResponse> {

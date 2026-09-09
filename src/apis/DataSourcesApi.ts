@@ -548,7 +548,7 @@ export interface DataSourcesApiInterface {
     updateDataSourceRequestOpts(requestParameters: UpdateDataSourceOperationRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * Rename, move, and/or re-credential a connector.  Requires ``can_write`` on the connector (and on the destination folder for a move). Fresh ``connection_config`` is re-validated against the DB before persisting (bad creds → 400, consistent with create); creds are never echoed back. ``engine`` is immutable.
+     * Rename, move, and/or re-credential a connector.  Requires ``can_write`` on the connector (and on the destination folder for a move); supplying ``connection_config`` additionally requires OWNER/ADMIN. Fresh ``connection_config`` is re-validated against the DB before persisting (bad creds → 400, consistent with create); creds are never echoed back. ``engine`` is immutable.
      * @summary Update Data Source Handler
      * @param {string} dataSourceId 
      * @param {UpdateDataSourceRequest} updateDataSourceRequest 
@@ -559,7 +559,7 @@ export interface DataSourcesApiInterface {
     updateDataSourceRaw(requestParameters: UpdateDataSourceOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<DataSourceResponse>>;
 
     /**
-     * Rename, move, and/or re-credential a connector.  Requires ``can_write`` on the connector (and on the destination folder for a move). Fresh ``connection_config`` is re-validated against the DB before persisting (bad creds → 400, consistent with create); creds are never echoed back. ``engine`` is immutable.
+     * Rename, move, and/or re-credential a connector.  Requires ``can_write`` on the connector (and on the destination folder for a move); supplying ``connection_config`` additionally requires OWNER/ADMIN. Fresh ``connection_config`` is re-validated against the DB before persisting (bad creds → 400, consistent with create); creds are never echoed back. ``engine`` is immutable.
      * Update Data Source Handler
      */
     updateDataSource(requestParameters: UpdateDataSourceOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DataSourceResponse>;
@@ -1522,7 +1522,7 @@ export class DataSourcesApi extends runtime.BaseAPI implements DataSourcesApiInt
     }
 
     /**
-     * Rename, move, and/or re-credential a connector.  Requires ``can_write`` on the connector (and on the destination folder for a move). Fresh ``connection_config`` is re-validated against the DB before persisting (bad creds → 400, consistent with create); creds are never echoed back. ``engine`` is immutable.
+     * Rename, move, and/or re-credential a connector.  Requires ``can_write`` on the connector (and on the destination folder for a move); supplying ``connection_config`` additionally requires OWNER/ADMIN. Fresh ``connection_config`` is re-validated against the DB before persisting (bad creds → 400, consistent with create); creds are never echoed back. ``engine`` is immutable.
      * Update Data Source Handler
      */
     async updateDataSourceRaw(requestParameters: UpdateDataSourceOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<DataSourceResponse>> {
@@ -1533,7 +1533,7 @@ export class DataSourcesApi extends runtime.BaseAPI implements DataSourcesApiInt
     }
 
     /**
-     * Rename, move, and/or re-credential a connector.  Requires ``can_write`` on the connector (and on the destination folder for a move). Fresh ``connection_config`` is re-validated against the DB before persisting (bad creds → 400, consistent with create); creds are never echoed back. ``engine`` is immutable.
+     * Rename, move, and/or re-credential a connector.  Requires ``can_write`` on the connector (and on the destination folder for a move); supplying ``connection_config`` additionally requires OWNER/ADMIN. Fresh ``connection_config`` is re-validated against the DB before persisting (bad creds → 400, consistent with create); creds are never echoed back. ``engine`` is immutable.
      * Update Data Source Handler
      */
     async updateDataSource(requestParameters: UpdateDataSourceOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DataSourceResponse> {
