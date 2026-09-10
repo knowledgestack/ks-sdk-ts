@@ -39,10 +39,10 @@ import {
 
 export interface GetAdminKbTimeseriesRequest {
     metric: KbMetric;
+    timezone?: string | null;
     since?: Date | null;
     until?: Date | null;
     bucket?: TimeBucket;
-    timezone?: string | null;
 }
 
 /**
@@ -77,10 +77,10 @@ export interface AdminKbApiInterface {
     /**
      * Creates request options for getAdminKbTimeseries without sending the request
      * @param {KbMetric} metric Which KB metric to bucket.
-     * @param {Date} [since] Window start.
-     * @param {Date} [until] Window end.
-     * @param {TimeBucket} [bucket] Bucket size.
      * @param {string} [timezone] IANA tz override; defaults to tenant setting.
+     * @param {Date} [since] Window start (inclusive). Defaults to 7 days ago.
+     * @param {Date} [until] Window end (inclusive).
+     * @param {TimeBucket} [bucket] Bucket size.
      * @throws {RequiredError}
      * @memberof AdminKbApiInterface
      */
@@ -90,10 +90,10 @@ export interface AdminKbApiInterface {
      * A knowledge-base metric bucketed over time, in the resolved timezone.
      * @summary Get Admin Kb Timeseries Handler
      * @param {KbMetric} metric Which KB metric to bucket.
-     * @param {Date} [since] Window start.
-     * @param {Date} [until] Window end.
-     * @param {TimeBucket} [bucket] Bucket size.
      * @param {string} [timezone] IANA tz override; defaults to tenant setting.
+     * @param {Date} [since] Window start (inclusive). Defaults to 7 days ago.
+     * @param {Date} [until] Window end (inclusive).
+     * @param {TimeBucket} [bucket] Bucket size.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof AdminKbApiInterface
@@ -177,6 +177,10 @@ export class AdminKbApi extends runtime.BaseAPI implements AdminKbApiInterface {
             queryParameters['metric'] = requestParameters['metric'];
         }
 
+        if (requestParameters['timezone'] != null) {
+            queryParameters['timezone'] = requestParameters['timezone'];
+        }
+
         if (requestParameters['since'] != null) {
             queryParameters['since'] = (requestParameters['since'] as any).toISOString();
         }
@@ -187,10 +191,6 @@ export class AdminKbApi extends runtime.BaseAPI implements AdminKbApiInterface {
 
         if (requestParameters['bucket'] != null) {
             queryParameters['bucket'] = requestParameters['bucket'];
-        }
-
-        if (requestParameters['timezone'] != null) {
-            queryParameters['timezone'] = requestParameters['timezone'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};

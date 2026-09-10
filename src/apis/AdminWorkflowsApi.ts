@@ -44,16 +44,16 @@ import {
 } from '../models/index';
 
 export interface GetAdminWorkflowByHourRequest {
-    since?: Date | null;
-    until?: Date | null;
     timezone?: string | null;
     definitionId?: string | null;
+    since?: Date | null;
+    until?: Date | null;
 }
 
 export interface GetAdminWorkflowLeaderboardRequest {
+    limit?: number;
     since?: Date | null;
     until?: Date | null;
-    limit?: number;
 }
 
 export interface GetAdminWorkflowOutputStatsRequest {
@@ -62,17 +62,17 @@ export interface GetAdminWorkflowOutputStatsRequest {
 }
 
 export interface GetAdminWorkflowSummaryRequest {
+    definitionId?: string | null;
     since?: Date | null;
     until?: Date | null;
-    definitionId?: string | null;
 }
 
 export interface GetAdminWorkflowTimeseriesRequest {
+    timezone?: string | null;
+    definitionId?: string | null;
     since?: Date | null;
     until?: Date | null;
     bucket?: TimeBucket;
-    timezone?: string | null;
-    definitionId?: string | null;
 }
 
 /**
@@ -84,10 +84,10 @@ export interface GetAdminWorkflowTimeseriesRequest {
 export interface AdminWorkflowsApiInterface {
     /**
      * Creates request options for getAdminWorkflowByHour without sending the request
-     * @param {Date} [since] Window start.
-     * @param {Date} [until] Window end.
      * @param {string} [timezone] IANA tz override; defaults to tenant setting.
      * @param {string} [definitionId] Scope to one workflow.
+     * @param {Date} [since] Window start (inclusive). Defaults to 7 days ago.
+     * @param {Date} [until] Window end (inclusive).
      * @throws {RequiredError}
      * @memberof AdminWorkflowsApiInterface
      */
@@ -96,10 +96,10 @@ export interface AdminWorkflowsApiInterface {
     /**
      * Runs per hour-of-day (0-23) in the resolved timezone.
      * @summary Get Admin Workflow By Hour Handler
-     * @param {Date} [since] Window start.
-     * @param {Date} [until] Window end.
      * @param {string} [timezone] IANA tz override; defaults to tenant setting.
      * @param {string} [definitionId] Scope to one workflow.
+     * @param {Date} [since] Window start (inclusive). Defaults to 7 days ago.
+     * @param {Date} [until] Window end (inclusive).
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof AdminWorkflowsApiInterface
@@ -114,9 +114,9 @@ export interface AdminWorkflowsApiInterface {
 
     /**
      * Creates request options for getAdminWorkflowLeaderboard without sending the request
-     * @param {Date} [since] Window start.
-     * @param {Date} [until] Window end.
      * @param {number} [limit] Top-N per leaderboard.
+     * @param {Date} [since] Window start (inclusive). Defaults to 7 days ago.
+     * @param {Date} [until] Window end (inclusive).
      * @throws {RequiredError}
      * @memberof AdminWorkflowsApiInterface
      */
@@ -125,9 +125,9 @@ export interface AdminWorkflowsApiInterface {
     /**
      * Top workflows and top run owners by run count.
      * @summary Get Admin Workflow Leaderboard Handler
-     * @param {Date} [since] Window start.
-     * @param {Date} [until] Window end.
      * @param {number} [limit] Top-N per leaderboard.
+     * @param {Date} [since] Window start (inclusive). Defaults to 7 days ago.
+     * @param {Date} [until] Window end (inclusive).
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof AdminWorkflowsApiInterface
@@ -142,8 +142,8 @@ export interface AdminWorkflowsApiInterface {
 
     /**
      * Creates request options for getAdminWorkflowOutputStats without sending the request
-     * @param {Date} [since] Window start.
-     * @param {Date} [until] Window end.
+     * @param {Date} [since] Window start (inclusive). Defaults to 7 days ago.
+     * @param {Date} [until] Window end (inclusive).
      * @throws {RequiredError}
      * @memberof AdminWorkflowsApiInterface
      */
@@ -152,8 +152,8 @@ export interface AdminWorkflowsApiInterface {
     /**
      * Average output DOCUMENTs generated per workflow definition (completed runs).
      * @summary Get Admin Workflow Output Stats Handler
-     * @param {Date} [since] Window start.
-     * @param {Date} [until] Window end.
+     * @param {Date} [since] Window start (inclusive). Defaults to 7 days ago.
+     * @param {Date} [until] Window end (inclusive).
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof AdminWorkflowsApiInterface
@@ -168,9 +168,9 @@ export interface AdminWorkflowsApiInterface {
 
     /**
      * Creates request options for getAdminWorkflowSummary without sending the request
+     * @param {string} [definitionId] Scope all numbers to one workflow.
      * @param {Date} [since] Window start (inclusive). Defaults to 7 days ago.
      * @param {Date} [until] Window end (inclusive).
-     * @param {string} [definitionId] Scope all numbers to one workflow.
      * @throws {RequiredError}
      * @memberof AdminWorkflowsApiInterface
      */
@@ -179,9 +179,9 @@ export interface AdminWorkflowsApiInterface {
     /**
      * Tenant-wide run health: counts, failure rate, durations, approval backlog.
      * @summary Get Admin Workflow Summary Handler
+     * @param {string} [definitionId] Scope all numbers to one workflow.
      * @param {Date} [since] Window start (inclusive). Defaults to 7 days ago.
      * @param {Date} [until] Window end (inclusive).
-     * @param {string} [definitionId] Scope all numbers to one workflow.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof AdminWorkflowsApiInterface
@@ -196,11 +196,11 @@ export interface AdminWorkflowsApiInterface {
 
     /**
      * Creates request options for getAdminWorkflowTimeseries without sending the request
-     * @param {Date} [since] Window start.
-     * @param {Date} [until] Window end.
-     * @param {TimeBucket} [bucket] Bucket size.
      * @param {string} [timezone] IANA tz override; defaults to tenant setting.
      * @param {string} [definitionId] Scope to one workflow.
+     * @param {Date} [since] Window start (inclusive). Defaults to 7 days ago.
+     * @param {Date} [until] Window end (inclusive).
+     * @param {TimeBucket} [bucket] Bucket size.
      * @throws {RequiredError}
      * @memberof AdminWorkflowsApiInterface
      */
@@ -209,11 +209,11 @@ export interface AdminWorkflowsApiInterface {
     /**
      * Run counts bucketed over time, in the resolved timezone.
      * @summary Get Admin Workflow Timeseries Handler
-     * @param {Date} [since] Window start.
-     * @param {Date} [until] Window end.
-     * @param {TimeBucket} [bucket] Bucket size.
      * @param {string} [timezone] IANA tz override; defaults to tenant setting.
      * @param {string} [definitionId] Scope to one workflow.
+     * @param {Date} [since] Window start (inclusive). Defaults to 7 days ago.
+     * @param {Date} [until] Window end (inclusive).
+     * @param {TimeBucket} [bucket] Bucket size.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof AdminWorkflowsApiInterface
@@ -239,20 +239,20 @@ export class AdminWorkflowsApi extends runtime.BaseAPI implements AdminWorkflows
     async getAdminWorkflowByHourRequestOpts(requestParameters: GetAdminWorkflowByHourRequest): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['since'] != null) {
-            queryParameters['since'] = (requestParameters['since'] as any).toISOString();
-        }
-
-        if (requestParameters['until'] != null) {
-            queryParameters['until'] = (requestParameters['until'] as any).toISOString();
-        }
-
         if (requestParameters['timezone'] != null) {
             queryParameters['timezone'] = requestParameters['timezone'];
         }
 
         if (requestParameters['definitionId'] != null) {
             queryParameters['definition_id'] = requestParameters['definitionId'];
+        }
+
+        if (requestParameters['since'] != null) {
+            queryParameters['since'] = (requestParameters['since'] as any).toISOString();
+        }
+
+        if (requestParameters['until'] != null) {
+            queryParameters['until'] = (requestParameters['until'] as any).toISOString();
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -302,16 +302,16 @@ export class AdminWorkflowsApi extends runtime.BaseAPI implements AdminWorkflows
     async getAdminWorkflowLeaderboardRequestOpts(requestParameters: GetAdminWorkflowLeaderboardRequest): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
+        if (requestParameters['limit'] != null) {
+            queryParameters['limit'] = requestParameters['limit'];
+        }
+
         if (requestParameters['since'] != null) {
             queryParameters['since'] = (requestParameters['since'] as any).toISOString();
         }
 
         if (requestParameters['until'] != null) {
             queryParameters['until'] = (requestParameters['until'] as any).toISOString();
-        }
-
-        if (requestParameters['limit'] != null) {
-            queryParameters['limit'] = requestParameters['limit'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -416,16 +416,16 @@ export class AdminWorkflowsApi extends runtime.BaseAPI implements AdminWorkflows
     async getAdminWorkflowSummaryRequestOpts(requestParameters: GetAdminWorkflowSummaryRequest): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
+        if (requestParameters['definitionId'] != null) {
+            queryParameters['definition_id'] = requestParameters['definitionId'];
+        }
+
         if (requestParameters['since'] != null) {
             queryParameters['since'] = (requestParameters['since'] as any).toISOString();
         }
 
         if (requestParameters['until'] != null) {
             queryParameters['until'] = (requestParameters['until'] as any).toISOString();
-        }
-
-        if (requestParameters['definitionId'] != null) {
-            queryParameters['definition_id'] = requestParameters['definitionId'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -475,6 +475,14 @@ export class AdminWorkflowsApi extends runtime.BaseAPI implements AdminWorkflows
     async getAdminWorkflowTimeseriesRequestOpts(requestParameters: GetAdminWorkflowTimeseriesRequest): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
+        if (requestParameters['timezone'] != null) {
+            queryParameters['timezone'] = requestParameters['timezone'];
+        }
+
+        if (requestParameters['definitionId'] != null) {
+            queryParameters['definition_id'] = requestParameters['definitionId'];
+        }
+
         if (requestParameters['since'] != null) {
             queryParameters['since'] = (requestParameters['since'] as any).toISOString();
         }
@@ -485,14 +493,6 @@ export class AdminWorkflowsApi extends runtime.BaseAPI implements AdminWorkflows
 
         if (requestParameters['bucket'] != null) {
             queryParameters['bucket'] = requestParameters['bucket'];
-        }
-
-        if (requestParameters['timezone'] != null) {
-            queryParameters['timezone'] = requestParameters['timezone'];
-        }
-
-        if (requestParameters['definitionId'] != null) {
-            queryParameters['definition_id'] = requestParameters['definitionId'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
