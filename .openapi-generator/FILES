@@ -158,6 +158,7 @@ docs/EnrichedThreadMessageContent.md
 docs/ErrorResponse.md
 docs/EventResponse.md
 docs/ExcludedCommonFile.md
+docs/ExportSkillsRequest.md
 docs/ExtractRequest.md
 docs/ExtractResponse.md
 docs/FeaturesApi.md
@@ -622,6 +623,7 @@ src/models/EnrichedThreadMessageContent.ts
 src/models/ErrorResponse.ts
 src/models/EventResponse.ts
 src/models/ExcludedCommonFile.ts
+src/models/ExportSkillsRequest.ts
 src/models/ExtractRequest.ts
 src/models/ExtractResponse.ts
 src/models/FeaturesResponse.ts

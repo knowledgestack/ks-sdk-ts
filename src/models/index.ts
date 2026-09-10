@@ -138,6 +138,7 @@ export * from './EnrichedThreadMessageContent';
 export * from './ErrorResponse';
 export * from './EventResponse';
 export * from './ExcludedCommonFile';
+export * from './ExportSkillsRequest';
 export * from './ExtractRequest';
 export * from './ExtractResponse';
 export * from './FeaturesResponse';

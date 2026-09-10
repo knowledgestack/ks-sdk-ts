@@ -18,6 +18,7 @@ import type {
   ActivateSkillVersionRequest,
   CreateSkillRequest,
   ErrorResponse,
+  ExportSkillsRequest,
   HTTPValidationError,
   PaginatedResponseSkillResponse,
   SearchSkillsRequest,
@@ -35,6 +36,8 @@ import {
     CreateSkillRequestToJSON,
     ErrorResponseFromJSON,
     ErrorResponseToJSON,
+    ExportSkillsRequestFromJSON,
+    ExportSkillsRequestToJSON,
     HTTPValidationErrorFromJSON,
     HTTPValidationErrorToJSON,
     PaginatedResponseSkillResponseFromJSON,
@@ -83,6 +86,10 @@ export interface DiscardSkillDraftRequest {
 
 export interface ExportSkillRequest {
     skillId: string;
+}
+
+export interface ExportSkillsOperationRequest {
+    exportSkillsRequest: ExportSkillsRequest;
 }
 
 export interface GetSkillRequest {
@@ -297,6 +304,30 @@ export interface SkillsApiInterface {
      * Export Skill Handler
      */
     exportSkill(requestParameters: ExportSkillRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<any>;
+
+    /**
+     * Creates request options for exportSkills without sending the request
+     * @param {ExportSkillsRequest} exportSkillsRequest 
+     * @throws {RequiredError}
+     * @memberof SkillsApiInterface
+     */
+    exportSkillsRequestOpts(requestParameters: ExportSkillsOperationRequest): Promise<runtime.RequestOpts>;
+
+    /**
+     * Download several skills\' active versions as one ZIP; needs can_read on each.
+     * @summary Export Skills Handler
+     * @param {ExportSkillsRequest} exportSkillsRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof SkillsApiInterface
+     */
+    exportSkillsRaw(requestParameters: ExportSkillsOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Blob>>;
+
+    /**
+     * Download several skills\' active versions as one ZIP; needs can_read on each.
+     * Export Skills Handler
+     */
+    exportSkills(requestParameters: ExportSkillsOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Blob>;
 
     /**
      * Creates request options for getSkill without sending the request
@@ -889,6 +920,63 @@ export class SkillsApi extends runtime.BaseAPI implements SkillsApiInterface {
      */
     async exportSkill(requestParameters: ExportSkillRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<any> {
         const response = await this.exportSkillRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for exportSkills without sending the request
+     */
+    async exportSkillsRequestOpts(requestParameters: ExportSkillsOperationRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['exportSkillsRequest'] == null) {
+            throw new runtime.RequiredError(
+                'exportSkillsRequest',
+                'Required parameter "exportSkillsRequest" was null or undefined when calling exportSkills().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/v1/skills/export`;
+
+        return {
+            path: urlPath,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: ExportSkillsRequestToJSON(requestParameters['exportSkillsRequest']),
+        };
+    }
+
+    /**
+     * Download several skills\' active versions as one ZIP; needs can_read on each.
+     * Export Skills Handler
+     */
+    async exportSkillsRaw(requestParameters: ExportSkillsOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Blob>> {
+        const requestOptions = await this.exportSkillsRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.BlobApiResponse(response);
+    }
+
+    /**
+     * Download several skills\' active versions as one ZIP; needs can_read on each.
+     * Export Skills Handler
+     */
+    async exportSkills(requestParameters: ExportSkillsOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Blob> {
+        const response = await this.exportSkillsRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
