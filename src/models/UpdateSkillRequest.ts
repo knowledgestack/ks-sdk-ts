@@ -28,6 +28,12 @@ import {
  */
 export interface UpdateSkillRequest {
     /**
+     * New skill name (its folder name), unique within the tenant and never a built-in name; the working copy's SKILL.md frontmatter follows it.
+     * @type {string}
+     * @memberof UpdateSkillRequest
+     */
+    name?: string | null;
+    /**
      * Replacement SKILL.md, written to the working copy in place; null leaves it unchanged. Publish a version to snapshot; the active version is unchanged until then.
      * @type {string}
      * @memberof UpdateSkillRequest
@@ -55,6 +61,9 @@ export const UpdateSkillRequestPropertyValidationAttributesMap: {
         uniqueItems?: boolean
     }
 } = {
+    name: {
+        maxLength: 255,
+    },
     files: {
         maxItems: 2000,
         uniqueItems: false,
@@ -79,6 +88,7 @@ export function UpdateSkillRequestFromJSONTyped(json: any, ignoreDiscriminator: 
     }
     return {
         
+        'name': json['name'] == null ? undefined : json['name'],
         'skillMd': json['skill_md'] == null ? undefined : json['skill_md'],
         'files': json['files'] == null ? undefined : ((json['files'] as Array<any>).map(SkillFileFromJSON)),
     };
@@ -95,6 +105,7 @@ export function UpdateSkillRequestToJSONTyped(value?: UpdateSkillRequest | null,
 
     return {
         
+        'name': value['name'],
         'skill_md': value['skillMd'],
         'files': value['files'] == null ? undefined : ((value['files'] as Array<any>).map(SkillFileToJSON)),
     };
