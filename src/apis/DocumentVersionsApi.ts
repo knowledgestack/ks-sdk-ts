@@ -113,7 +113,7 @@ export interface ListDocumentVersionsRequest {
     documentId: string;
     sortBy?: DocumentVersionOrder;
     sortDir?: SortDirection;
-    uploaderTenantUserId?: string | null;
+    uploaderUserId?: string | null;
     limit?: number;
     offset?: number;
     createdAfter?: Date | null;
@@ -372,7 +372,7 @@ export interface DocumentVersionsApiInterface {
      * @param {string} documentId Document ID to list versions for
      * @param {DocumentVersionOrder} [sortBy] Field to sort versions by (default: VERSION)
      * @param {SortDirection} [sortDir] Sort direction; overrides the field\&#39;s natural default
-     * @param {string} [uploaderTenantUserId] Filter to versions created by this user
+     * @param {string} [uploaderUserId] Filter to versions created by this user
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
      * @param {Date} [createdAfter] Only items created at or after this timestamp (inclusive)
@@ -390,7 +390,7 @@ export interface DocumentVersionsApiInterface {
      * @param {string} documentId Document ID to list versions for
      * @param {DocumentVersionOrder} [sortBy] Field to sort versions by (default: VERSION)
      * @param {SortDirection} [sortDir] Sort direction; overrides the field\&#39;s natural default
-     * @param {string} [uploaderTenantUserId] Filter to versions created by this user
+     * @param {string} [uploaderUserId] Filter to versions created by this user
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
      * @param {Date} [createdAfter] Only items created at or after this timestamp (inclusive)
@@ -1025,8 +1025,8 @@ export class DocumentVersionsApi extends runtime.BaseAPI implements DocumentVers
             queryParameters['sort_dir'] = requestParameters['sortDir'];
         }
 
-        if (requestParameters['uploaderTenantUserId'] != null) {
-            queryParameters['uploader_tenant_user_id'] = requestParameters['uploaderTenantUserId'];
+        if (requestParameters['uploaderUserId'] != null) {
+            queryParameters['uploader_user_id'] = requestParameters['uploaderUserId'];
         }
 
         if (requestParameters['limit'] != null) {
