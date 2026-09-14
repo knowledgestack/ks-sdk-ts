@@ -83,6 +83,7 @@ docs/ColumnReference.md
 docs/CommonFileExclusionReason.md
 docs/CompleteUploadRequest.md
 docs/ConnectionConfig.md
+docs/ConnectionSummary.md
 docs/ContentsSortOrder.md
 docs/CreateApiConnectionRequest.md
 docs/CreateApiKeyRequest.md
@@ -321,6 +322,8 @@ docs/SkillSearchResult.md
 docs/SkillVersionResponse.md
 docs/SkillsApi.md
 docs/SortDirection.md
+docs/SourceConfigSummary.md
+docs/SourceType.md
 docs/StartWorkflowRunRequest.md
 docs/Step.md
 docs/StepKind.md
@@ -437,6 +440,8 @@ docs/XlsxCellAnchorInput.md
 docs/XlsxCellAnchorInputOrDocxParagraphAnchorInput.md
 docs/XlsxCellAnchorOutput.md
 docs/XlsxCellAnchorOutputOrDocxParagraphAnchorOutput.md
+docs/YidingConfig.md
+docs/YidingCursor.md
 docs/ZipFileResult.md
 docs/ZipIngestionStatusResponse.md
 docs/ZipMemberStatusResponse.md
@@ -553,6 +558,7 @@ src/models/ColumnReference.ts
 src/models/CommonFileExclusionReason.ts
 src/models/CompleteUploadRequest.ts
 src/models/ConnectionConfig.ts
+src/models/ConnectionSummary.ts
 src/models/ContentsSortOrder.ts
 src/models/CreateApiConnectionRequest.ts
 src/models/CreateApiKeyRequest.ts
@@ -776,6 +782,8 @@ src/models/SkillResponse.ts
 src/models/SkillSearchResult.ts
 src/models/SkillVersionResponse.ts
 src/models/SortDirection.ts
+src/models/SourceConfigSummary.ts
+src/models/SourceType.ts
 src/models/StartWorkflowRunRequest.ts
 src/models/Step.ts
 src/models/StepKind.ts
@@ -878,6 +886,8 @@ src/models/XlsxCellAnchorInput.ts
 src/models/XlsxCellAnchorInputOrDocxParagraphAnchorInput.ts
 src/models/XlsxCellAnchorOutput.ts
 src/models/XlsxCellAnchorOutputOrDocxParagraphAnchorOutput.ts
+src/models/YidingConfig.ts
+src/models/YidingCursor.ts
 src/models/ZipFileResult.ts
 src/models/ZipIngestionStatusResponse.ts
 src/models/ZipMemberStatusResponse.ts

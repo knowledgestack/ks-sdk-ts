@@ -13,6 +13,20 @@
  */
 
 import { mapValues } from '../runtime';
+import type { YidingConfig } from './YidingConfig';
+import {
+    YidingConfigFromJSON,
+    YidingConfigFromJSONTyped,
+    YidingConfigToJSON,
+    YidingConfigToJSONTyped,
+} from './YidingConfig';
+import type { YidingCursor } from './YidingCursor';
+import {
+    YidingCursorFromJSON,
+    YidingCursorFromJSONTyped,
+    YidingCursorToJSON,
+    YidingCursorToJSONTyped,
+} from './YidingCursor';
 import type { ConnectionConfig } from './ConnectionConfig';
 import {
     ConnectionConfigFromJSON,
@@ -53,6 +67,18 @@ export interface UpdateDataSourceRequest {
      * @memberof UpdateDataSourceRequest
      */
     connectionConfig?: ConnectionConfig | null;
+    /**
+     * Fresh YIDINGSYNC crawler config to replace the stored one (login, shop, start date, recurrence); rejected on a DIRECT connector. Changing ``cron`` re-arms the schedule. connection_config stays server-managed for YIDINGSYNC.
+     * @type {YidingConfig}
+     * @memberof UpdateDataSourceRequest
+     */
+    sourceConfig?: YidingConfig | null;
+    /**
+     * The crawl cursor, replaced whole. Written by the sync itself (the worker acts as the connector's owner) after each batch, so it records what has already been read. Moving it forward by hand makes the next run skip those days for good — the increment only re-scans what the cursor points at.
+     * @type {YidingCursor}
+     * @memberof UpdateDataSourceRequest
+     */
+    syncState?: YidingCursor | null;
 }
 export const UpdateDataSourceRequestPropertyValidationAttributesMap: {
     [property: string]: {
@@ -96,6 +122,8 @@ export function UpdateDataSourceRequestFromJSONTyped(json: any, ignoreDiscrimina
         'name': json['name'] == null ? undefined : json['name'],
         'parentPathPartId': json['parent_path_part_id'] == null ? undefined : json['parent_path_part_id'],
         'connectionConfig': json['connection_config'] == null ? undefined : ConnectionConfigFromJSON(json['connection_config']),
+        'sourceConfig': json['source_config'] == null ? undefined : YidingConfigFromJSON(json['source_config']),
+        'syncState': json['sync_state'] == null ? undefined : YidingCursorFromJSON(json['sync_state']),
     };
 }
 
@@ -113,6 +141,8 @@ export function UpdateDataSourceRequestToJSONTyped(value?: UpdateDataSourceReque
         'name': value['name'],
         'parent_path_part_id': value['parentPathPartId'],
         'connection_config': ConnectionConfigToJSON(value['connectionConfig']),
+        'source_config': YidingConfigToJSON(value['sourceConfig']),
+        'sync_state': YidingCursorToJSON(value['syncState']),
     };
 }
 

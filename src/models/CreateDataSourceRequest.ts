@@ -13,6 +13,20 @@
  */
 
 import { mapValues } from '../runtime';
+import type { SourceType } from './SourceType';
+import {
+    SourceTypeFromJSON,
+    SourceTypeFromJSONTyped,
+    SourceTypeToJSON,
+    SourceTypeToJSONTyped,
+} from './SourceType';
+import type { YidingConfig } from './YidingConfig';
+import {
+    YidingConfigFromJSON,
+    YidingConfigFromJSONTyped,
+    YidingConfigToJSON,
+    YidingConfigToJSONTyped,
+} from './YidingConfig';
 import type { ConnectionConfig } from './ConnectionConfig';
 import {
     ConnectionConfigFromJSON,
@@ -48,16 +62,28 @@ export interface CreateDataSourceRequest {
     parentPathPartId: string;
     /**
      * 
+     * @type {SourceType}
+     * @memberof CreateDataSourceRequest
+     */
+    sourceType?: SourceType;
+    /**
+     * 
      * @type {DataSourceEngine}
      * @memberof CreateDataSourceRequest
      */
-    engine: DataSourceEngine;
+    engine?: DataSourceEngine;
     /**
      * 
      * @type {ConnectionConfig}
      * @memberof CreateDataSourceRequest
      */
-    connectionConfig: ConnectionConfig;
+    connectionConfig?: ConnectionConfig | null;
+    /**
+     * 
+     * @type {YidingConfig}
+     * @memberof CreateDataSourceRequest
+     */
+    sourceConfig?: YidingConfig | null;
 }
 
 
@@ -88,8 +114,6 @@ export const CreateDataSourceRequestPropertyValidationAttributesMap: {
 export function instanceOfCreateDataSourceRequest(value: object): value is CreateDataSourceRequest {
     if (!('name' in value) || value['name'] === undefined) return false;
     if (!('parentPathPartId' in value) || value['parentPathPartId'] === undefined) return false;
-    if (!('engine' in value) || value['engine'] === undefined) return false;
-    if (!('connectionConfig' in value) || value['connectionConfig'] === undefined) return false;
     return true;
 }
 
@@ -105,8 +129,10 @@ export function CreateDataSourceRequestFromJSONTyped(json: any, ignoreDiscrimina
         
         'name': json['name'],
         'parentPathPartId': json['parent_path_part_id'],
-        'engine': DataSourceEngineFromJSON(json['engine']),
-        'connectionConfig': ConnectionConfigFromJSON(json['connection_config']),
+        'sourceType': json['source_type'] == null ? undefined : SourceTypeFromJSON(json['source_type']),
+        'engine': json['engine'] == null ? undefined : DataSourceEngineFromJSON(json['engine']),
+        'connectionConfig': json['connection_config'] == null ? undefined : ConnectionConfigFromJSON(json['connection_config']),
+        'sourceConfig': json['source_config'] == null ? undefined : YidingConfigFromJSON(json['source_config']),
     };
 }
 
@@ -123,8 +149,10 @@ export function CreateDataSourceRequestToJSONTyped(value?: CreateDataSourceReque
         
         'name': value['name'],
         'parent_path_part_id': value['parentPathPartId'],
+        'source_type': SourceTypeToJSON(value['sourceType']),
         'engine': DataSourceEngineToJSON(value['engine']),
         'connection_config': ConnectionConfigToJSON(value['connectionConfig']),
+        'source_config': YidingConfigToJSON(value['sourceConfig']),
     };
 }
 

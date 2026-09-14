@@ -199,7 +199,7 @@ export interface DataSourcesApiInterface {
     deleteDataSourceRequestOpts(requestParameters: DeleteDataSourceRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * Move a connector and its schemas/tables to trash.  Soft-delete via the path_part subtree (schemas + tables are children, so they trash with it). Each modeled table\'s summary Qdrant point carries that table\'s path_part, so the set-trashed workflow flips it to trashed too — keeping trashed tables out of the agent\'s table search (best-effort, mirrors the document delete path).
+     * Move a connector and its schemas/tables to trash.  Soft-delete via the path_part subtree (schemas + tables are children, so they trash with it). Each modeled table\'s summary Qdrant point carries that table\'s path_part, so the set-trashed workflow flips it to trashed too — keeping trashed tables out of the agent\'s table search (best-effort, mirrors the document delete path).  A YIDINGSYNC connector also owns a daily crawl schedule, which is removed here: left behind, it would fire every night at a connector that is gone. The check is not redundant — unlike the best-effort trash sync above, ``delete_connector_schedule`` re-raises anything that is not NOT_FOUND, so calling it for a DIRECT connector would put a Temporal outage in the way of a delete that never needed Temporal at all.
      * @summary Delete Data Source Handler
      * @param {string} dataSourceId 
      * @param {*} [options] Override http request option.
@@ -209,7 +209,7 @@ export interface DataSourcesApiInterface {
     deleteDataSourceRaw(requestParameters: DeleteDataSourceRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>>;
 
     /**
-     * Move a connector and its schemas/tables to trash.  Soft-delete via the path_part subtree (schemas + tables are children, so they trash with it). Each modeled table\'s summary Qdrant point carries that table\'s path_part, so the set-trashed workflow flips it to trashed too — keeping trashed tables out of the agent\'s table search (best-effort, mirrors the document delete path).
+     * Move a connector and its schemas/tables to trash.  Soft-delete via the path_part subtree (schemas + tables are children, so they trash with it). Each modeled table\'s summary Qdrant point carries that table\'s path_part, so the set-trashed workflow flips it to trashed too — keeping trashed tables out of the agent\'s table search (best-effort, mirrors the document delete path).  A YIDINGSYNC connector also owns a daily crawl schedule, which is removed here: left behind, it would fire every night at a connector that is gone. The check is not redundant — unlike the best-effort trash sync above, ``delete_connector_schedule`` re-raises anything that is not NOT_FOUND, so calling it for a DIRECT connector would put a Temporal outage in the way of a delete that never needed Temporal at all.
      * Delete Data Source Handler
      */
     deleteDataSource(requestParameters: DeleteDataSourceRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void>;
@@ -475,7 +475,7 @@ export interface DataSourcesApiInterface {
     syncDataSourceRequestOpts(requestParameters: SyncDataSourceRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * Reconcile modeled tables against the live external catalog.  Requires ``can_write``. Re-introspects each modeled schema and, per table: a schema change (columns added/removed/retyped) refreshes ``column_config`` (preserving the admin\'s ``exposed``/``comment`` field-modeling) and re-summarizes + re-embeds; an unchanged table is a no-op; a table dropped from the source is soft-deleted (keeping the \"was modeled, now gone\" record) and its embedding purged. It never models tables that were not imported.
+     * Reconcile modeled tables against the live external catalog.  Requires ``can_write``. Re-introspects each modeled schema and, per table: a schema change (columns added/removed/retyped) refreshes ``column_config`` (preserving the admin\'s ``exposed``/``comment`` field-modeling) and re-summarizes + re-embeds; an unchanged table is a no-op; a table dropped from the source is soft-deleted (keeping the \"was modeled, now gone\" record) and its embedding purged. It never models tables that were not imported.  A crawler-fed connector has no catalog to reconcile against, so it starts a crawl instead and returns 202.
      * @summary Sync Data Source Handler
      * @param {string} dataSourceId 
      * @param {*} [options] Override http request option.
@@ -485,10 +485,10 @@ export interface DataSourcesApiInterface {
     syncDataSourceRaw(requestParameters: SyncDataSourceRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<DataSourceSyncResponse>>;
 
     /**
-     * Reconcile modeled tables against the live external catalog.  Requires ``can_write``. Re-introspects each modeled schema and, per table: a schema change (columns added/removed/retyped) refreshes ``column_config`` (preserving the admin\'s ``exposed``/``comment`` field-modeling) and re-summarizes + re-embeds; an unchanged table is a no-op; a table dropped from the source is soft-deleted (keeping the \"was modeled, now gone\" record) and its embedding purged. It never models tables that were not imported.
+     * Reconcile modeled tables against the live external catalog.  Requires ``can_write``. Re-introspects each modeled schema and, per table: a schema change (columns added/removed/retyped) refreshes ``column_config`` (preserving the admin\'s ``exposed``/``comment`` field-modeling) and re-summarizes + re-embeds; an unchanged table is a no-op; a table dropped from the source is soft-deleted (keeping the \"was modeled, now gone\" record) and its embedding purged. It never models tables that were not imported.  A crawler-fed connector has no catalog to reconcile against, so it starts a crawl instead and returns 202.
      * Sync Data Source Handler
      */
-    syncDataSource(requestParameters: SyncDataSourceRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DataSourceSyncResponse>;
+    syncDataSource(requestParameters: SyncDataSourceRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DataSourceSyncResponse | null | undefined >;
 
     /**
      * Creates request options for testDataSourceConnection without sending the request
@@ -548,7 +548,7 @@ export interface DataSourcesApiInterface {
     updateDataSourceRequestOpts(requestParameters: UpdateDataSourceOperationRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * Rename, move, and/or re-credential a connector.  Requires ``can_write`` on the connector (and on the destination folder for a move); supplying ``connection_config`` additionally requires OWNER/ADMIN. Fresh ``connection_config`` is re-validated against the DB before persisting (bad creds → 400, consistent with create); creds are never echoed back. ``engine`` is immutable.
+     * Rename, move, and/or re-credential a connector.  Requires ``can_write`` on the connector (and on the destination folder for a move); supplying ``connection_config`` additionally requires OWNER/ADMIN. Fresh ``connection_config`` is re-validated against the DB before persisting (bad creds → 400, consistent with create); creds are never echoed back. ``engine`` is immutable. A fresh ``source_config`` re-arms the crawl schedule, so changing ``cron`` takes effect immediately rather than at the next provisioning.
      * @summary Update Data Source Handler
      * @param {string} dataSourceId 
      * @param {UpdateDataSourceRequest} updateDataSourceRequest 
@@ -559,7 +559,7 @@ export interface DataSourcesApiInterface {
     updateDataSourceRaw(requestParameters: UpdateDataSourceOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<DataSourceResponse>>;
 
     /**
-     * Rename, move, and/or re-credential a connector.  Requires ``can_write`` on the connector (and on the destination folder for a move); supplying ``connection_config`` additionally requires OWNER/ADMIN. Fresh ``connection_config`` is re-validated against the DB before persisting (bad creds → 400, consistent with create); creds are never echoed back. ``engine`` is immutable.
+     * Rename, move, and/or re-credential a connector.  Requires ``can_write`` on the connector (and on the destination folder for a move); supplying ``connection_config`` additionally requires OWNER/ADMIN. Fresh ``connection_config`` is re-validated against the DB before persisting (bad creds → 400, consistent with create); creds are never echoed back. ``engine`` is immutable. A fresh ``source_config`` re-arms the crawl schedule, so changing ``cron`` takes effect immediately rather than at the next provisioning.
      * Update Data Source Handler
      */
     updateDataSource(requestParameters: UpdateDataSourceOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DataSourceResponse>;
@@ -692,7 +692,7 @@ export class DataSourcesApi extends runtime.BaseAPI implements DataSourcesApiInt
     }
 
     /**
-     * Move a connector and its schemas/tables to trash.  Soft-delete via the path_part subtree (schemas + tables are children, so they trash with it). Each modeled table\'s summary Qdrant point carries that table\'s path_part, so the set-trashed workflow flips it to trashed too — keeping trashed tables out of the agent\'s table search (best-effort, mirrors the document delete path).
+     * Move a connector and its schemas/tables to trash.  Soft-delete via the path_part subtree (schemas + tables are children, so they trash with it). Each modeled table\'s summary Qdrant point carries that table\'s path_part, so the set-trashed workflow flips it to trashed too — keeping trashed tables out of the agent\'s table search (best-effort, mirrors the document delete path).  A YIDINGSYNC connector also owns a daily crawl schedule, which is removed here: left behind, it would fire every night at a connector that is gone. The check is not redundant — unlike the best-effort trash sync above, ``delete_connector_schedule`` re-raises anything that is not NOT_FOUND, so calling it for a DIRECT connector would put a Temporal outage in the way of a delete that never needed Temporal at all.
      * Delete Data Source Handler
      */
     async deleteDataSourceRaw(requestParameters: DeleteDataSourceRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
@@ -703,7 +703,7 @@ export class DataSourcesApi extends runtime.BaseAPI implements DataSourcesApiInt
     }
 
     /**
-     * Move a connector and its schemas/tables to trash.  Soft-delete via the path_part subtree (schemas + tables are children, so they trash with it). Each modeled table\'s summary Qdrant point carries that table\'s path_part, so the set-trashed workflow flips it to trashed too — keeping trashed tables out of the agent\'s table search (best-effort, mirrors the document delete path).
+     * Move a connector and its schemas/tables to trash.  Soft-delete via the path_part subtree (schemas + tables are children, so they trash with it). Each modeled table\'s summary Qdrant point carries that table\'s path_part, so the set-trashed workflow flips it to trashed too — keeping trashed tables out of the agent\'s table search (best-effort, mirrors the document delete path).  A YIDINGSYNC connector also owns a daily crawl schedule, which is removed here: left behind, it would fire every night at a connector that is gone. The check is not redundant — unlike the best-effort trash sync above, ``delete_connector_schedule`` re-raises anything that is not NOT_FOUND, so calling it for a DIRECT connector would put a Temporal outage in the way of a delete that never needed Temporal at all.
      * Delete Data Source Handler
      */
     async deleteDataSource(requestParameters: DeleteDataSourceRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
@@ -1346,7 +1346,7 @@ export class DataSourcesApi extends runtime.BaseAPI implements DataSourcesApiInt
     }
 
     /**
-     * Reconcile modeled tables against the live external catalog.  Requires ``can_write``. Re-introspects each modeled schema and, per table: a schema change (columns added/removed/retyped) refreshes ``column_config`` (preserving the admin\'s ``exposed``/``comment`` field-modeling) and re-summarizes + re-embeds; an unchanged table is a no-op; a table dropped from the source is soft-deleted (keeping the \"was modeled, now gone\" record) and its embedding purged. It never models tables that were not imported.
+     * Reconcile modeled tables against the live external catalog.  Requires ``can_write``. Re-introspects each modeled schema and, per table: a schema change (columns added/removed/retyped) refreshes ``column_config`` (preserving the admin\'s ``exposed``/``comment`` field-modeling) and re-summarizes + re-embeds; an unchanged table is a no-op; a table dropped from the source is soft-deleted (keeping the \"was modeled, now gone\" record) and its embedding purged. It never models tables that were not imported.  A crawler-fed connector has no catalog to reconcile against, so it starts a crawl instead and returns 202.
      * Sync Data Source Handler
      */
     async syncDataSourceRaw(requestParameters: SyncDataSourceRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<DataSourceSyncResponse>> {
@@ -1357,12 +1357,19 @@ export class DataSourcesApi extends runtime.BaseAPI implements DataSourcesApiInt
     }
 
     /**
-     * Reconcile modeled tables against the live external catalog.  Requires ``can_write``. Re-introspects each modeled schema and, per table: a schema change (columns added/removed/retyped) refreshes ``column_config`` (preserving the admin\'s ``exposed``/``comment`` field-modeling) and re-summarizes + re-embeds; an unchanged table is a no-op; a table dropped from the source is soft-deleted (keeping the \"was modeled, now gone\" record) and its embedding purged. It never models tables that were not imported.
+     * Reconcile modeled tables against the live external catalog.  Requires ``can_write``. Re-introspects each modeled schema and, per table: a schema change (columns added/removed/retyped) refreshes ``column_config`` (preserving the admin\'s ``exposed``/``comment`` field-modeling) and re-summarizes + re-embeds; an unchanged table is a no-op; a table dropped from the source is soft-deleted (keeping the \"was modeled, now gone\" record) and its embedding purged. It never models tables that were not imported.  A crawler-fed connector has no catalog to reconcile against, so it starts a crawl instead and returns 202.
      * Sync Data Source Handler
      */
-    async syncDataSource(requestParameters: SyncDataSourceRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DataSourceSyncResponse> {
+    async syncDataSource(requestParameters: SyncDataSourceRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DataSourceSyncResponse | null | undefined > {
         const response = await this.syncDataSourceRaw(requestParameters, initOverrides);
-        return await response.value();
+        switch (response.raw.status) {
+            case 200:
+                return await response.value();
+            case 202:
+                return null;
+            default:
+                return await response.value();
+        }
     }
 
     /**
@@ -1522,7 +1529,7 @@ export class DataSourcesApi extends runtime.BaseAPI implements DataSourcesApiInt
     }
 
     /**
-     * Rename, move, and/or re-credential a connector.  Requires ``can_write`` on the connector (and on the destination folder for a move); supplying ``connection_config`` additionally requires OWNER/ADMIN. Fresh ``connection_config`` is re-validated against the DB before persisting (bad creds → 400, consistent with create); creds are never echoed back. ``engine`` is immutable.
+     * Rename, move, and/or re-credential a connector.  Requires ``can_write`` on the connector (and on the destination folder for a move); supplying ``connection_config`` additionally requires OWNER/ADMIN. Fresh ``connection_config`` is re-validated against the DB before persisting (bad creds → 400, consistent with create); creds are never echoed back. ``engine`` is immutable. A fresh ``source_config`` re-arms the crawl schedule, so changing ``cron`` takes effect immediately rather than at the next provisioning.
      * Update Data Source Handler
      */
     async updateDataSourceRaw(requestParameters: UpdateDataSourceOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<DataSourceResponse>> {
@@ -1533,7 +1540,7 @@ export class DataSourcesApi extends runtime.BaseAPI implements DataSourcesApiInt
     }
 
     /**
-     * Rename, move, and/or re-credential a connector.  Requires ``can_write`` on the connector (and on the destination folder for a move); supplying ``connection_config`` additionally requires OWNER/ADMIN. Fresh ``connection_config`` is re-validated against the DB before persisting (bad creds → 400, consistent with create); creds are never echoed back. ``engine`` is immutable.
+     * Rename, move, and/or re-credential a connector.  Requires ``can_write`` on the connector (and on the destination folder for a move); supplying ``connection_config`` additionally requires OWNER/ADMIN. Fresh ``connection_config`` is re-validated against the DB before persisting (bad creds → 400, consistent with create); creds are never echoed back. ``engine`` is immutable. A fresh ``source_config`` re-arms the crawl schedule, so changing ``cron`` takes effect immediately rather than at the next provisioning.
      * Update Data Source Handler
      */
     async updateDataSource(requestParameters: UpdateDataSourceOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DataSourceResponse> {

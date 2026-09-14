@@ -13,6 +13,13 @@
  */
 
 import { mapValues } from '../runtime';
+import type { ConnectionSummary } from './ConnectionSummary';
+import {
+    ConnectionSummaryFromJSON,
+    ConnectionSummaryFromJSONTyped,
+    ConnectionSummaryToJSON,
+    ConnectionSummaryToJSONTyped,
+} from './ConnectionSummary';
 import type { ItemPermissions } from './ItemPermissions';
 import {
     ItemPermissionsFromJSON,
@@ -20,6 +27,13 @@ import {
     ItemPermissionsToJSON,
     ItemPermissionsToJSONTyped,
 } from './ItemPermissions';
+import type { SourceType } from './SourceType';
+import {
+    SourceTypeFromJSON,
+    SourceTypeFromJSONTyped,
+    SourceTypeToJSON,
+    SourceTypeToJSONTyped,
+} from './SourceType';
 import type { PathPartApprovalState } from './PathPartApprovalState';
 import {
     PathPartApprovalStateFromJSON,
@@ -27,6 +41,13 @@ import {
     PathPartApprovalStateToJSON,
     PathPartApprovalStateToJSONTyped,
 } from './PathPartApprovalState';
+import type { SourceConfigSummary } from './SourceConfigSummary';
+import {
+    SourceConfigSummaryFromJSON,
+    SourceConfigSummaryFromJSONTyped,
+    SourceConfigSummaryToJSON,
+    SourceConfigSummaryToJSONTyped,
+} from './SourceConfigSummary';
 import type { UserInfo } from './UserInfo';
 import {
     UserInfoFromJSON,
@@ -45,8 +66,11 @@ import {
 /**
  * Connector response; a discriminated-union variant for folder listings.
  * 
- * The ``connection_config`` (host/port/credentials) is intentionally
- * omitted — the password is write-only and never serialized back.
+ * The stored ``connection_config`` is never returned whole: the password is
+ * write-only and never serialized back. What it points at travels in
+ * ``connection_summary`` instead, which a YIDINGSYNC connector needs — the
+ * server generated those credentials, so this is the only place its owner ever
+ * sees which database the sync built.
  * @export
  * @interface DataSourceResponse
  */
@@ -99,6 +123,24 @@ export interface DataSourceResponse {
      * @memberof DataSourceResponse
      */
     engine: DataSourceEngine;
+    /**
+     * 
+     * @type {SourceType}
+     * @memberof DataSourceResponse
+     */
+    sourceType: SourceType;
+    /**
+     * Where the connector points, without the password. Null on a YIDINGSYNC connector until provisioning has built its database, so polling this is how the UI learns the sync is ready.
+     * @type {ConnectionSummary}
+     * @memberof DataSourceResponse
+     */
+    connectionSummary?: ConnectionSummary | null;
+    /**
+     * A YIDINGSYNC connector's crawler config without the password: which shop, from when, and the crawl recurrence. Null on DIRECT.
+     * @type {SourceConfigSummary}
+     * @memberof DataSourceResponse
+     */
+    sourceConfig?: SourceConfigSummary | null;
     /**
      * 
      * @type {PathPartApprovalState}
@@ -169,6 +211,7 @@ export function instanceOfDataSourceResponse(value: object): value is DataSource
     if (!('tenantId' in value) || value['tenantId'] === undefined) return false;
     if (!('name' in value) || value['name'] === undefined) return false;
     if (!('engine' in value) || value['engine'] === undefined) return false;
+    if (!('sourceType' in value) || value['sourceType'] === undefined) return false;
     if (!('approvalState' in value) || value['approvalState'] === undefined) return false;
     if (!('permissions' in value) || value['permissions'] === undefined) return false;
     if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
@@ -194,6 +237,9 @@ export function DataSourceResponseFromJSONTyped(json: any, ignoreDiscriminator: 
         'tenantId': json['tenant_id'],
         'name': json['name'],
         'engine': DataSourceEngineFromJSON(json['engine']),
+        'sourceType': SourceTypeFromJSON(json['source_type']),
+        'connectionSummary': json['connection_summary'] == null ? undefined : ConnectionSummaryFromJSON(json['connection_summary']),
+        'sourceConfig': json['source_config'] == null ? undefined : SourceConfigSummaryFromJSON(json['source_config']),
         'approvalState': PathPartApprovalStateFromJSON(json['approval_state']),
         'owner': json['owner'] == null ? undefined : UserInfoFromJSON(json['owner']),
         'permissions': ItemPermissionsFromJSON(json['permissions']),
@@ -221,6 +267,9 @@ export function DataSourceResponseToJSONTyped(value?: DataSourceResponse | null,
         'tenant_id': value['tenantId'],
         'name': value['name'],
         'engine': DataSourceEngineToJSON(value['engine']),
+        'source_type': SourceTypeToJSON(value['sourceType']),
+        'connection_summary': ConnectionSummaryToJSON(value['connectionSummary']),
+        'source_config': SourceConfigSummaryToJSON(value['sourceConfig']),
         'approval_state': PathPartApprovalStateToJSON(value['approvalState']),
         'owner': UserInfoToJSON(value['owner']),
         'permissions': ItemPermissionsToJSON(value['permissions']),
