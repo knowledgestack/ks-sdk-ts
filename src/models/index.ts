@@ -397,6 +397,7 @@ export * from './XlsxCellAnchorInputOrDocxParagraphAnchorInput';
 export * from './XlsxCellAnchorOutput';
 export * from './XlsxCellAnchorOutputOrDocxParagraphAnchorOutput';
 export * from './YidingConfig';
+export * from './YidingConfigChange';
 export * from './YidingCursor';
 export * from './ZipFileResult';
 export * from './ZipIngestionStatusResponse';

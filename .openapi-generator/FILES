@@ -441,6 +441,7 @@ docs/XlsxCellAnchorInputOrDocxParagraphAnchorInput.md
 docs/XlsxCellAnchorOutput.md
 docs/XlsxCellAnchorOutputOrDocxParagraphAnchorOutput.md
 docs/YidingConfig.md
+docs/YidingConfigChange.md
 docs/YidingCursor.md
 docs/ZipFileResult.md
 docs/ZipIngestionStatusResponse.md
@@ -887,6 +888,7 @@ src/models/XlsxCellAnchorInputOrDocxParagraphAnchorInput.ts
 src/models/XlsxCellAnchorOutput.ts
 src/models/XlsxCellAnchorOutputOrDocxParagraphAnchorOutput.ts
 src/models/YidingConfig.ts
+src/models/YidingConfigChange.ts
 src/models/YidingCursor.ts
 src/models/ZipFileResult.ts
 src/models/ZipIngestionStatusResponse.ts
