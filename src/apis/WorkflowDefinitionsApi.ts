@@ -89,6 +89,7 @@ export interface ListWorkflowDefinitionsRequest {
     sortBy?: WorkflowDefinitionOrder;
     sortDir?: SortDirection;
     isTemplate?: boolean;
+    needsApproval?: boolean;
     limit?: number;
     offset?: number;
     createdAfter?: Date | null;
@@ -262,6 +263,7 @@ export interface WorkflowDefinitionsApiInterface {
      * @param {WorkflowDefinitionOrder} [sortBy] Field to sort definitions by (default: CREATED_AT)
      * @param {SortDirection} [sortDir] Sort direction; overrides the field\&#39;s natural default
      * @param {boolean} [isTemplate] 
+     * @param {boolean} [needsApproval] Only definitions with a run awaiting approval.
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
      * @param {Date} [createdAfter] Only items created at or after this timestamp (inclusive)
@@ -283,6 +285,7 @@ export interface WorkflowDefinitionsApiInterface {
      * @param {WorkflowDefinitionOrder} [sortBy] Field to sort definitions by (default: CREATED_AT)
      * @param {SortDirection} [sortDir] Sort direction; overrides the field\&#39;s natural default
      * @param {boolean} [isTemplate] 
+     * @param {boolean} [needsApproval] Only definitions with a run awaiting approval.
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
      * @param {Date} [createdAfter] Only items created at or after this timestamp (inclusive)
@@ -723,6 +726,10 @@ export class WorkflowDefinitionsApi extends runtime.BaseAPI implements WorkflowD
 
         if (requestParameters['isTemplate'] != null) {
             queryParameters['is_template'] = requestParameters['isTemplate'];
+        }
+
+        if (requestParameters['needsApproval'] != null) {
+            queryParameters['needs_approval'] = requestParameters['needsApproval'];
         }
 
         if (requestParameters['limit'] != null) {
