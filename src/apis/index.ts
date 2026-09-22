@@ -15,6 +15,7 @@ export * from './ChunkLineagesApi';
 export * from './ChunksApi';
 export * from './DataSourcesApi';
 export * from './DefaultApi';
+export * from './DiagnosticsApi';
 export * from './DocumentCheckoutApi';
 export * from './DocumentVersionsApi';
 export * from './DocumentsApi';
