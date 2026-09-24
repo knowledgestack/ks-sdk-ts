@@ -13,6 +13,14 @@
  */
 
 import { mapValues } from '../runtime';
+import type { SupportedLanguage } from './SupportedLanguage';
+import {
+    SupportedLanguageFromJSON,
+    SupportedLanguageFromJSONTyped,
+    SupportedLanguageToJSON,
+    SupportedLanguageToJSONTyped,
+} from './SupportedLanguage';
+
 /**
  * 
  * @export
@@ -31,7 +39,15 @@ export interface UserMessageRequest {
      * @memberof UserMessageRequest
      */
     fastMode?: boolean | null;
+    /**
+     * 
+     * @type {SupportedLanguage}
+     * @memberof UserMessageRequest
+     */
+    outputLanguage?: SupportedLanguage;
 }
+
+
 export const UserMessageRequestPropertyValidationAttributesMap: {
     [property: string]: {
         maxLength?: number,
@@ -69,6 +85,7 @@ export function UserMessageRequestFromJSONTyped(json: any, ignoreDiscriminator: 
         
         'inputText': json['input_text'] == null ? undefined : json['input_text'],
         'fastMode': json['fast_mode'] == null ? undefined : json['fast_mode'],
+        'outputLanguage': json['output_language'] == null ? undefined : SupportedLanguageFromJSON(json['output_language']),
     };
 }
 
@@ -85,6 +102,7 @@ export function UserMessageRequestToJSONTyped(value?: UserMessageRequest | null,
         
         'input_text': value['inputText'],
         'fast_mode': value['fastMode'],
+        'output_language': SupportedLanguageToJSON(value['outputLanguage']),
     };
 }
 

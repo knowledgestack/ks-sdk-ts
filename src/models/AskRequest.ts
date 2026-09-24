@@ -13,6 +13,14 @@
  */
 
 import { mapValues } from '../runtime';
+import type { SupportedLanguage } from './SupportedLanguage';
+import {
+    SupportedLanguageFromJSON,
+    SupportedLanguageFromJSONTyped,
+    SupportedLanguageToJSON,
+    SupportedLanguageToJSONTyped,
+} from './SupportedLanguage';
+
 /**
  * Request body for POST /v1/agent/ask.
  * @export
@@ -25,7 +33,15 @@ export interface AskRequest {
      * @memberof AskRequest
      */
     prompt: string;
+    /**
+     * 
+     * @type {SupportedLanguage}
+     * @memberof AskRequest
+     */
+    outputLanguage?: SupportedLanguage;
 }
+
+
 export const AskRequestPropertyValidationAttributesMap: {
     [property: string]: {
         maxLength?: number,
@@ -63,6 +79,7 @@ export function AskRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean)
     return {
         
         'prompt': json['prompt'],
+        'outputLanguage': json['output_language'] == null ? undefined : SupportedLanguageFromJSON(json['output_language']),
     };
 }
 
@@ -78,6 +95,7 @@ export function AskRequestToJSONTyped(value?: AskRequest | null, ignoreDiscrimin
     return {
         
         'prompt': value['prompt'],
+        'output_language': SupportedLanguageToJSON(value['outputLanguage']),
     };
 }
 
