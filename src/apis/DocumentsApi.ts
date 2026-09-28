@@ -122,7 +122,6 @@ export interface IngestDocumentRequest {
     name?: string | null;
     tagIds?: Array<string>;
     idempotencyKey?: string | null;
-    emailNestingDepth?: number;
     ingestionMode?: IngestionMode;
     chunkType?: ChunkType;
     secondaryTaxonomy?: ImageTaxonomy;
@@ -386,7 +385,6 @@ export interface DocumentsApiInterface {
      * @param {string} [name] Document name (defaults to filename)
      * @param {Array<string>} [tagIds] Tag IDs applied to the created document.
      * @param {string} [idempotencyKey] Opt-in key: a repeat with the same key at the same (parent, name) replays the existing document instead of a 409.
-     * @param {number} [emailNestingDepth] Internal: set by the email member fan-out when a nested email re-enters this endpoint. Leave at 0 for direct uploads.
      * @param {IngestionMode} [ingestionMode] 
      * @param {ChunkType} [chunkType] 
      * @param {ImageTaxonomy} [secondaryTaxonomy] 
@@ -406,7 +404,6 @@ export interface DocumentsApiInterface {
      * @param {string} [name] Document name (defaults to filename)
      * @param {Array<string>} [tagIds] Tag IDs applied to the created document.
      * @param {string} [idempotencyKey] Opt-in key: a repeat with the same key at the same (parent, name) replays the existing document instead of a 409.
-     * @param {number} [emailNestingDepth] Internal: set by the email member fan-out when a nested email re-enters this endpoint. Leave at 0 for direct uploads.
      * @param {IngestionMode} [ingestionMode] 
      * @param {ChunkType} [chunkType] 
      * @param {ImageTaxonomy} [secondaryTaxonomy] 
@@ -441,7 +438,7 @@ export interface DocumentsApiInterface {
     ingestDocumentVersionRequestOpts(requestParameters: IngestDocumentVersionRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * Upload a new file for an existing document, creating a new version and triggering ingestion.  Requires an active document checkout held by the caller. Acquire one via ``POST /v1/documents/{id}/checkout`` first and release it after; otherwise this returns 409 Conflict (\"A document checkout is required to edit this document.\").  Creates a new document version (incrementing the highest version number), uploads the file to S3, and starts the ingestion workflow. Upon successful ingestion, the new version is automatically activated (set as the document\'s active_version) and the old version\'s Qdrant points are deactivated.  Returns 201 immediately with the Temporal ``workflow_id``. Ingestion runs in the background — poll ``GET /v1/system-jobs/document_versions/{workflow_id}`` (also given in the ``Location`` header) until ``status`` is terminal.
+     * Upload a new file for an existing document, creating a new version and triggering ingestion.  Requires an active document checkout held by the caller. Acquire one via ``POST /v1/documents/{id}/checkout`` first and release it after; otherwise this returns 409 Conflict (\"A document checkout is required to edit this document.\").  The file must be the document\'s type (a PDF document takes only PDF versions; ``.md`` and ``.txt`` are both PLAINTEXT); any other type is a 400.  Creates a new document version (incrementing the highest version number), uploads the file to S3, and starts the ingestion workflow. Upon successful ingestion, the new version is automatically activated (set as the document\'s active_version) and the old version\'s Qdrant points are deactivated.  Returns 201 immediately with the Temporal ``workflow_id``. Ingestion runs in the background — poll ``GET /v1/system-jobs/document_versions/{workflow_id}`` (also given in the ``Location`` header) until ``status`` is terminal.
      * @summary Ingest Document Version Handler
      * @param {string} documentId Document ID
      * @param {Blob} file 
@@ -458,7 +455,7 @@ export interface DocumentsApiInterface {
     ingestDocumentVersionRaw(requestParameters: IngestDocumentVersionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<IngestDocumentResponse>>;
 
     /**
-     * Upload a new file for an existing document, creating a new version and triggering ingestion.  Requires an active document checkout held by the caller. Acquire one via ``POST /v1/documents/{id}/checkout`` first and release it after; otherwise this returns 409 Conflict (\"A document checkout is required to edit this document.\").  Creates a new document version (incrementing the highest version number), uploads the file to S3, and starts the ingestion workflow. Upon successful ingestion, the new version is automatically activated (set as the document\'s active_version) and the old version\'s Qdrant points are deactivated.  Returns 201 immediately with the Temporal ``workflow_id``. Ingestion runs in the background — poll ``GET /v1/system-jobs/document_versions/{workflow_id}`` (also given in the ``Location`` header) until ``status`` is terminal.
+     * Upload a new file for an existing document, creating a new version and triggering ingestion.  Requires an active document checkout held by the caller. Acquire one via ``POST /v1/documents/{id}/checkout`` first and release it after; otherwise this returns 409 Conflict (\"A document checkout is required to edit this document.\").  The file must be the document\'s type (a PDF document takes only PDF versions; ``.md`` and ``.txt`` are both PLAINTEXT); any other type is a 400.  Creates a new document version (incrementing the highest version number), uploads the file to S3, and starts the ingestion workflow. Upon successful ingestion, the new version is automatically activated (set as the document\'s active_version) and the old version\'s Qdrant points are deactivated.  Returns 201 immediately with the Temporal ``workflow_id``. Ingestion runs in the background — poll ``GET /v1/system-jobs/document_versions/{workflow_id}`` (also given in the ``Location`` header) until ``status`` is terminal.
      * Ingest Document Version Handler
      */
     ingestDocumentVersion(requestParameters: IngestDocumentVersionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<IngestDocumentResponse>;
@@ -1126,10 +1123,6 @@ export class DocumentsApi extends runtime.BaseAPI implements DocumentsApiInterfa
             formParams.append('idempotency_key', requestParameters['idempotencyKey'] as any);
         }
 
-        if (requestParameters['emailNestingDepth'] != null) {
-            formParams.append('email_nesting_depth', requestParameters['emailNestingDepth'] as any);
-        }
-
         if (requestParameters['ingestionMode'] != null) {
             formParams.append('ingestion_mode', requestParameters['ingestionMode'] as any);
         }
@@ -1274,7 +1267,7 @@ export class DocumentsApi extends runtime.BaseAPI implements DocumentsApiInterfa
     }
 
     /**
-     * Upload a new file for an existing document, creating a new version and triggering ingestion.  Requires an active document checkout held by the caller. Acquire one via ``POST /v1/documents/{id}/checkout`` first and release it after; otherwise this returns 409 Conflict (\"A document checkout is required to edit this document.\").  Creates a new document version (incrementing the highest version number), uploads the file to S3, and starts the ingestion workflow. Upon successful ingestion, the new version is automatically activated (set as the document\'s active_version) and the old version\'s Qdrant points are deactivated.  Returns 201 immediately with the Temporal ``workflow_id``. Ingestion runs in the background — poll ``GET /v1/system-jobs/document_versions/{workflow_id}`` (also given in the ``Location`` header) until ``status`` is terminal.
+     * Upload a new file for an existing document, creating a new version and triggering ingestion.  Requires an active document checkout held by the caller. Acquire one via ``POST /v1/documents/{id}/checkout`` first and release it after; otherwise this returns 409 Conflict (\"A document checkout is required to edit this document.\").  The file must be the document\'s type (a PDF document takes only PDF versions; ``.md`` and ``.txt`` are both PLAINTEXT); any other type is a 400.  Creates a new document version (incrementing the highest version number), uploads the file to S3, and starts the ingestion workflow. Upon successful ingestion, the new version is automatically activated (set as the document\'s active_version) and the old version\'s Qdrant points are deactivated.  Returns 201 immediately with the Temporal ``workflow_id``. Ingestion runs in the background — poll ``GET /v1/system-jobs/document_versions/{workflow_id}`` (also given in the ``Location`` header) until ``status`` is terminal.
      * Ingest Document Version Handler
      */
     async ingestDocumentVersionRaw(requestParameters: IngestDocumentVersionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<IngestDocumentResponse>> {
@@ -1285,7 +1278,7 @@ export class DocumentsApi extends runtime.BaseAPI implements DocumentsApiInterfa
     }
 
     /**
-     * Upload a new file for an existing document, creating a new version and triggering ingestion.  Requires an active document checkout held by the caller. Acquire one via ``POST /v1/documents/{id}/checkout`` first and release it after; otherwise this returns 409 Conflict (\"A document checkout is required to edit this document.\").  Creates a new document version (incrementing the highest version number), uploads the file to S3, and starts the ingestion workflow. Upon successful ingestion, the new version is automatically activated (set as the document\'s active_version) and the old version\'s Qdrant points are deactivated.  Returns 201 immediately with the Temporal ``workflow_id``. Ingestion runs in the background — poll ``GET /v1/system-jobs/document_versions/{workflow_id}`` (also given in the ``Location`` header) until ``status`` is terminal.
+     * Upload a new file for an existing document, creating a new version and triggering ingestion.  Requires an active document checkout held by the caller. Acquire one via ``POST /v1/documents/{id}/checkout`` first and release it after; otherwise this returns 409 Conflict (\"A document checkout is required to edit this document.\").  The file must be the document\'s type (a PDF document takes only PDF versions; ``.md`` and ``.txt`` are both PLAINTEXT); any other type is a 400.  Creates a new document version (incrementing the highest version number), uploads the file to S3, and starts the ingestion workflow. Upon successful ingestion, the new version is automatically activated (set as the document\'s active_version) and the old version\'s Qdrant points are deactivated.  Returns 201 immediately with the Temporal ``workflow_id``. Ingestion runs in the background — poll ``GET /v1/system-jobs/document_versions/{workflow_id}`` (also given in the ``Location`` header) until ``status`` is terminal.
      * Ingest Document Version Handler
      */
     async ingestDocumentVersion(requestParameters: IngestDocumentVersionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<IngestDocumentResponse> {

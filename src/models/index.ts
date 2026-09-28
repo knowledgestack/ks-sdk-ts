@@ -134,8 +134,6 @@ export * from './DocxParagraphAnchorInput';
 export * from './DocxParagraphAnchorOutput';
 export * from './DownloadArtifact';
 export * from './EditMemoryChunkRequest';
-export * from './EmailMetadata';
-export * from './EmailParty';
 export * from './EmailSentResponse';
 export * from './EmailVerificationRequest';
 export * from './EnrichedCitation';

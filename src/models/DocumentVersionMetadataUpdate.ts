@@ -34,13 +34,6 @@ import {
     InformationStatisticsToJSON,
     InformationStatisticsToJSONTyped,
 } from './InformationStatistics';
-import type { EmailMetadata } from './EmailMetadata';
-import {
-    EmailMetadataFromJSON,
-    EmailMetadataFromJSONTyped,
-    EmailMetadataToJSON,
-    EmailMetadataToJSONTyped,
-} from './EmailMetadata';
 
 /**
  * Partial update schema for document version metadata.
@@ -153,12 +146,6 @@ export interface DocumentVersionMetadataUpdate {
      * @memberof DocumentVersionMetadataUpdate
      */
     segmentCount?: number | null;
-    /**
-     * 
-     * @type {EmailMetadata}
-     * @memberof DocumentVersionMetadataUpdate
-     */
-    email?: EmailMetadata | null;
     /**
      * 
      * @type {number}
@@ -278,7 +265,6 @@ export function DocumentVersionMetadataUpdateFromJSONTyped(json: any, ignoreDisc
         'durationMs': json['duration_ms'] == null ? undefined : json['duration_ms'],
         'language': json['language'] == null ? undefined : json['language'],
         'segmentCount': json['segment_count'] == null ? undefined : json['segment_count'],
-        'email': json['email'] == null ? undefined : EmailMetadataFromJSON(json['email']),
         'totalFormulas': json['total_formulas'] == null ? undefined : json['total_formulas'],
         'xlsxParseResultS3': json['xlsx_parse_result_s3'] == null ? undefined : json['xlsx_parse_result_s3'],
         'xlsxNamedRanges': json['xlsx_named_ranges'] == null ? undefined : json['xlsx_named_ranges'],
@@ -321,7 +307,6 @@ export function DocumentVersionMetadataUpdateToJSONTyped(value?: DocumentVersion
         'duration_ms': value['durationMs'],
         'language': value['language'],
         'segment_count': value['segmentCount'],
-        'email': EmailMetadataToJSON(value['email']),
         'total_formulas': value['totalFormulas'],
         'xlsx_parse_result_s3': value['xlsxParseResultS3'],
         'xlsx_named_ranges': value['xlsxNamedRanges'],

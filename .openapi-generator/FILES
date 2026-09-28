@@ -155,8 +155,6 @@ docs/DocxParagraphAnchorInput.md
 docs/DocxParagraphAnchorOutput.md
 docs/DownloadArtifact.md
 docs/EditMemoryChunkRequest.md
-docs/EmailMetadata.md
-docs/EmailParty.md
 docs/EmailSentResponse.md
 docs/EmailVerificationRequest.md
 docs/EnrichedCitation.md
@@ -632,8 +630,6 @@ src/models/DocxParagraphAnchorInput.ts
 src/models/DocxParagraphAnchorOutput.ts
 src/models/DownloadArtifact.ts
 src/models/EditMemoryChunkRequest.ts
-src/models/EmailMetadata.ts
-src/models/EmailParty.ts
 src/models/EmailSentResponse.ts
 src/models/EmailVerificationRequest.ts
 src/models/EnrichedCitation.ts

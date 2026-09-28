@@ -31,6 +31,12 @@ export interface UploadFormat {
      * @memberof UploadFormat
      */
     contentType: string;
+    /**
+     * Largest file of this format the buffered uploads accept (new document, new version, ZIP member, workflow-run file). A new audio/video document uses the resumable upload, capped at upload.max_media_bytes
+     * @type {number}
+     * @memberof UploadFormat
+     */
+    maxBytes: number;
 }
 export const UploadFormatPropertyValidationAttributesMap: {
     [property: string]: {
@@ -56,6 +62,7 @@ export const UploadFormatPropertyValidationAttributesMap: {
 export function instanceOfUploadFormat(value: object): value is UploadFormat {
     if (!('extension' in value) || value['extension'] === undefined) return false;
     if (!('contentType' in value) || value['contentType'] === undefined) return false;
+    if (!('maxBytes' in value) || value['maxBytes'] === undefined) return false;
     return true;
 }
 
@@ -71,6 +78,7 @@ export function UploadFormatFromJSONTyped(json: any, ignoreDiscriminator: boolea
         
         'extension': json['extension'],
         'contentType': json['content_type'],
+        'maxBytes': json['max_bytes'],
     };
 }
 
@@ -87,6 +95,7 @@ export function UploadFormatToJSONTyped(value?: UploadFormat | null, ignoreDiscr
         
         'extension': value['extension'],
         'content_type': value['contentType'],
+        'max_bytes': value['maxBytes'],
     };
 }
 

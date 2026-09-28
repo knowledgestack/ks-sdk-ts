@@ -20,6 +20,13 @@ import {
     PipelineStatusToJSON,
     PipelineStatusToJSONTyped,
 } from './PipelineStatus';
+import type { ImageTaxonomy } from './ImageTaxonomy';
+import {
+    ImageTaxonomyFromJSON,
+    ImageTaxonomyFromJSONTyped,
+    ImageTaxonomyToJSON,
+    ImageTaxonomyToJSONTyped,
+} from './ImageTaxonomy';
 import type { IngestionMode } from './IngestionMode';
 import {
     IngestionModeFromJSON,
@@ -60,7 +67,7 @@ export interface PipelineState {
      */
     lastStateUpdateTimestamp?: Date | null;
     /**
-     * Name of the last activity that executed (e.g., 'document_preparation')
+     * Name of the last activity that executed (e.g., 'pdf_preparation_activity')
      * @type {string}
      * @memberof PipelineState
      */
@@ -101,6 +108,12 @@ export interface PipelineState {
      * @memberof PipelineState
      */
     chunkType?: ChunkType;
+    /**
+     * 
+     * @type {ImageTaxonomy}
+     * @memberof PipelineState
+     */
+    secondaryTaxonomy?: ImageTaxonomy;
 }
 
 
@@ -150,6 +163,7 @@ export function PipelineStateFromJSONTyped(json: any, ignoreDiscriminator: boole
         'pageDpi': json['page_dpi'] == null ? undefined : json['page_dpi'],
         'ingestionMode': json['ingestion_mode'] == null ? undefined : IngestionModeFromJSON(json['ingestion_mode']),
         'chunkType': json['chunk_type'] == null ? undefined : ChunkTypeFromJSON(json['chunk_type']),
+        'secondaryTaxonomy': json['secondary_taxonomy'] == null ? undefined : ImageTaxonomyFromJSON(json['secondary_taxonomy']),
     };
 }
 
@@ -174,6 +188,7 @@ export function PipelineStateToJSONTyped(value?: PipelineState | null, ignoreDis
         'page_dpi': value['pageDpi'],
         'ingestion_mode': IngestionModeToJSON(value['ingestionMode']),
         'chunk_type': ChunkTypeToJSON(value['chunkType']),
+        'secondary_taxonomy': ImageTaxonomyToJSON(value['secondaryTaxonomy']),
     };
 }
 
