@@ -95,6 +95,24 @@ export interface UserResponse {
      */
     jobTitle?: string | null;
     /**
+     * User's department at the current tenant (per-membership)
+     * @type {string}
+     * @memberof UserResponse
+     */
+    department?: string | null;
+    /**
+     * What the user wrote about themselves at the current tenant. The chat agent reads it on every turn.
+     * @type {string}
+     * @memberof UserResponse
+     */
+    bio?: string | null;
+    /**
+     * Presigned URL of the user's profile photo at the current tenant. Expires after six hours; read GET /v1/users/me again for a fresh one.
+     * @type {string}
+     * @memberof UserResponse
+     */
+    avatarUrl?: string | null;
+    /**
      * When the user finished onboarding for the current tenant. NULL = wizard should be shown.
      * @type {Date}
      * @memberof UserResponse
@@ -156,6 +174,9 @@ export function UserResponseFromJSONTyped(json: any, ignoreDiscriminator: boolea
         'currentTenantRole': TenantUserRoleFromJSON(json['current_tenant_role']),
         'defaultTenantId': json['default_tenant_id'],
         'jobTitle': json['job_title'] == null ? undefined : json['job_title'],
+        'department': json['department'] == null ? undefined : json['department'],
+        'bio': json['bio'] == null ? undefined : json['bio'],
+        'avatarUrl': json['avatar_url'] == null ? undefined : json['avatar_url'],
         'onboardingCompletedAt': json['onboarding_completed_at'] == null ? undefined : (new Date(json['onboarding_completed_at'])),
     };
 }
@@ -181,6 +202,9 @@ export function UserResponseToJSONTyped(value?: UserResponse | null, ignoreDiscr
         'current_tenant_role': TenantUserRoleToJSON(value['currentTenantRole']),
         'default_tenant_id': value['defaultTenantId'],
         'job_title': value['jobTitle'],
+        'department': value['department'],
+        'bio': value['bio'],
+        'avatar_url': value['avatarUrl'],
         'onboarding_completed_at': value['onboardingCompletedAt'] == null ? value['onboardingCompletedAt'] : value['onboardingCompletedAt'].toISOString(),
     };
 }

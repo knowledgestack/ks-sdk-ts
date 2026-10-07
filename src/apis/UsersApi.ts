@@ -49,6 +49,10 @@ export interface UpdateOnboardingProfileRequest {
     onboardingProfileRequest: OnboardingProfileRequest;
 }
 
+export interface UploadMyAvatarRequest {
+    file: Blob;
+}
+
 /**
  * UsersApi - interface
  * 
@@ -56,6 +60,28 @@ export interface UpdateOnboardingProfileRequest {
  * @interface UsersApiInterface
  */
 export interface UsersApiInterface {
+    /**
+     * Creates request options for deleteMyAvatar without sending the request
+     * @throws {RequiredError}
+     * @memberof UsersApiInterface
+     */
+    deleteMyAvatarRequestOpts(): Promise<runtime.RequestOpts>;
+
+    /**
+     * Remove the profile photo for the current tenant. No photo is a no-op.
+     * @summary Delete My Avatar Handler
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UsersApiInterface
+     */
+    deleteMyAvatarRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserResponse>>;
+
+    /**
+     * Remove the profile photo for the current tenant. No photo is a no-op.
+     * Delete My Avatar Handler
+     */
+    deleteMyAvatar(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserResponse>;
+
     /**
      * Creates request options for getMe without sending the request
      * @throws {RequiredError}
@@ -109,7 +135,7 @@ export interface UsersApiInterface {
     updateMeRequestOpts(requestParameters: UpdateMeRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * Update the user\'s profile (default tenant, name fields).  When updating default_tenant_id, the user must belong to the specified tenant.
+     * Update the user\'s name and default tenant, and the membership\'s profile.  When updating default_tenant_id, the user must belong to the specified tenant.
      * @summary Update Me Handler
      * @param {UpdateUserRequest} updateUserRequest 
      * @param {*} [options] Override http request option.
@@ -119,7 +145,7 @@ export interface UsersApiInterface {
     updateMeRaw(requestParameters: UpdateMeRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserResponse>>;
 
     /**
-     * Update the user\'s profile (default tenant, name fields).  When updating default_tenant_id, the user must belong to the specified tenant.
+     * Update the user\'s name and default tenant, and the membership\'s profile.  When updating default_tenant_id, the user must belong to the specified tenant.
      * Update Me Handler
      */
     updateMe(requestParameters: UpdateMeRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserResponse>;
@@ -157,7 +183,7 @@ export interface UsersApiInterface {
     updateOnboardingProfileRequestOpts(requestParameters: UpdateOnboardingProfileRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * Step 2 (final) of onboarding: per-user profile for the current tenant.  Writes name to the User row (global) and job_title to the TenantUser row (per-tenant), then stamps ``onboarding_completed_at`` on the membership. Returns 409 if onboarding has already been completed or skipped — post-onboarding edits go through PATCH /v1/users (name) or a future per-membership profile endpoint (job_title).
+     * Step 2 (final) of onboarding: per-user profile for the current tenant.  Writes name to the User row (global) and job_title to the TenantUser row (per-tenant), then stamps ``onboarding_completed_at`` on the membership. Returns 409 if onboarding has already been completed or skipped — post-onboarding edits go through PATCH /v1/users.
      * @summary Update Onboarding Profile Handler
      * @param {OnboardingProfileRequest} onboardingProfileRequest 
      * @param {*} [options] Override http request option.
@@ -167,10 +193,34 @@ export interface UsersApiInterface {
     updateOnboardingProfileRaw(requestParameters: UpdateOnboardingProfileRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserResponse>>;
 
     /**
-     * Step 2 (final) of onboarding: per-user profile for the current tenant.  Writes name to the User row (global) and job_title to the TenantUser row (per-tenant), then stamps ``onboarding_completed_at`` on the membership. Returns 409 if onboarding has already been completed or skipped — post-onboarding edits go through PATCH /v1/users (name) or a future per-membership profile endpoint (job_title).
+     * Step 2 (final) of onboarding: per-user profile for the current tenant.  Writes name to the User row (global) and job_title to the TenantUser row (per-tenant), then stamps ``onboarding_completed_at`` on the membership. Returns 409 if onboarding has already been completed or skipped — post-onboarding edits go through PATCH /v1/users.
      * Update Onboarding Profile Handler
      */
     updateOnboardingProfile(requestParameters: UpdateOnboardingProfileRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserResponse>;
+
+    /**
+     * Creates request options for uploadMyAvatar without sending the request
+     * @param {Blob} file 
+     * @throws {RequiredError}
+     * @memberof UsersApiInterface
+     */
+    uploadMyAvatarRequestOpts(requestParameters: UploadMyAvatarRequest): Promise<runtime.RequestOpts>;
+
+    /**
+     * Set the profile photo for the current tenant. PNG, JPEG, WebP or GIF, at most 2 MB and 4096 px per side; the format is read from the bytes, not the content type.
+     * @summary Upload My Avatar Handler
+     * @param {Blob} file 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UsersApiInterface
+     */
+    uploadMyAvatarRaw(requestParameters: UploadMyAvatarRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserResponse>>;
+
+    /**
+     * Set the profile photo for the current tenant. PNG, JPEG, WebP or GIF, at most 2 MB and 4096 px per side; the format is read from the bytes, not the content type.
+     * Upload My Avatar Handler
+     */
+    uploadMyAvatar(requestParameters: UploadMyAvatarRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserResponse>;
 
 }
 
@@ -178,6 +228,53 @@ export interface UsersApiInterface {
  * 
  */
 export class UsersApi extends runtime.BaseAPI implements UsersApiInterface {
+
+    /**
+     * Creates request options for deleteMyAvatar without sending the request
+     */
+    async deleteMyAvatarRequestOpts(): Promise<runtime.RequestOpts> {
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/v1/users/me/avatar`;
+
+        return {
+            path: urlPath,
+            method: 'DELETE',
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Remove the profile photo for the current tenant. No photo is a no-op.
+     * Delete My Avatar Handler
+     */
+    async deleteMyAvatarRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserResponse>> {
+        const requestOptions = await this.deleteMyAvatarRequestOpts();
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => UserResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * Remove the profile photo for the current tenant. No photo is a no-op.
+     * Delete My Avatar Handler
+     */
+    async deleteMyAvatar(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserResponse> {
+        const response = await this.deleteMyAvatarRaw(initOverrides);
+        return await response.value();
+    }
 
     /**
      * Creates request options for getMe without sending the request
@@ -311,7 +408,7 @@ export class UsersApi extends runtime.BaseAPI implements UsersApiInterface {
     }
 
     /**
-     * Update the user\'s profile (default tenant, name fields).  When updating default_tenant_id, the user must belong to the specified tenant.
+     * Update the user\'s name and default tenant, and the membership\'s profile.  When updating default_tenant_id, the user must belong to the specified tenant.
      * Update Me Handler
      */
     async updateMeRaw(requestParameters: UpdateMeRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserResponse>> {
@@ -322,7 +419,7 @@ export class UsersApi extends runtime.BaseAPI implements UsersApiInterface {
     }
 
     /**
-     * Update the user\'s profile (default tenant, name fields).  When updating default_tenant_id, the user must belong to the specified tenant.
+     * Update the user\'s name and default tenant, and the membership\'s profile.  When updating default_tenant_id, the user must belong to the specified tenant.
      * Update Me Handler
      */
     async updateMe(requestParameters: UpdateMeRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserResponse> {
@@ -425,7 +522,7 @@ export class UsersApi extends runtime.BaseAPI implements UsersApiInterface {
     }
 
     /**
-     * Step 2 (final) of onboarding: per-user profile for the current tenant.  Writes name to the User row (global) and job_title to the TenantUser row (per-tenant), then stamps ``onboarding_completed_at`` on the membership. Returns 409 if onboarding has already been completed or skipped — post-onboarding edits go through PATCH /v1/users (name) or a future per-membership profile endpoint (job_title).
+     * Step 2 (final) of onboarding: per-user profile for the current tenant.  Writes name to the User row (global) and job_title to the TenantUser row (per-tenant), then stamps ``onboarding_completed_at`` on the membership. Returns 409 if onboarding has already been completed or skipped — post-onboarding edits go through PATCH /v1/users.
      * Update Onboarding Profile Handler
      */
     async updateOnboardingProfileRaw(requestParameters: UpdateOnboardingProfileRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserResponse>> {
@@ -436,11 +533,86 @@ export class UsersApi extends runtime.BaseAPI implements UsersApiInterface {
     }
 
     /**
-     * Step 2 (final) of onboarding: per-user profile for the current tenant.  Writes name to the User row (global) and job_title to the TenantUser row (per-tenant), then stamps ``onboarding_completed_at`` on the membership. Returns 409 if onboarding has already been completed or skipped — post-onboarding edits go through PATCH /v1/users (name) or a future per-membership profile endpoint (job_title).
+     * Step 2 (final) of onboarding: per-user profile for the current tenant.  Writes name to the User row (global) and job_title to the TenantUser row (per-tenant), then stamps ``onboarding_completed_at`` on the membership. Returns 409 if onboarding has already been completed or skipped — post-onboarding edits go through PATCH /v1/users.
      * Update Onboarding Profile Handler
      */
     async updateOnboardingProfile(requestParameters: UpdateOnboardingProfileRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserResponse> {
         const response = await this.updateOnboardingProfileRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for uploadMyAvatar without sending the request
+     */
+    async uploadMyAvatarRequestOpts(requestParameters: UploadMyAvatarRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['file'] == null) {
+            throw new runtime.RequiredError(
+                'file',
+                'Required parameter "file" was null or undefined when calling uploadMyAvatar().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const consumes: runtime.Consume[] = [
+            { contentType: 'multipart/form-data' },
+        ];
+        // @ts-ignore: canConsumeForm may be unused
+        const canConsumeForm = runtime.canConsumeForm(consumes);
+
+        let formParams: { append(param: string, value: any): any };
+        let useForm = false;
+        // use FormData to transmit files using content-type "multipart/form-data"
+        useForm = canConsumeForm;
+        if (useForm) {
+            formParams = new FormData();
+        } else {
+            formParams = new URLSearchParams();
+        }
+
+        if (requestParameters['file'] != null) {
+            formParams.append('file', requestParameters['file'] as any);
+        }
+
+
+        let urlPath = `/v1/users/me/avatar`;
+
+        return {
+            path: urlPath,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: formParams,
+        };
+    }
+
+    /**
+     * Set the profile photo for the current tenant. PNG, JPEG, WebP or GIF, at most 2 MB and 4096 px per side; the format is read from the bytes, not the content type.
+     * Upload My Avatar Handler
+     */
+    async uploadMyAvatarRaw(requestParameters: UploadMyAvatarRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserResponse>> {
+        const requestOptions = await this.uploadMyAvatarRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => UserResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * Set the profile photo for the current tenant. PNG, JPEG, WebP or GIF, at most 2 MB and 4096 px per side; the format is read from the bytes, not the content type.
+     * Upload My Avatar Handler
+     */
+    async uploadMyAvatar(requestParameters: UploadMyAvatarRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserResponse> {
+        const response = await this.uploadMyAvatarRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

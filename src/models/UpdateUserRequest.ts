@@ -32,11 +32,29 @@ export interface UpdateUserRequest {
      */
     firstName?: string | null;
     /**
-     * Last name of the user
+     * Last name of the user. Directory-synced users cannot set it.
      * @type {string}
      * @memberof UpdateUserRequest
      */
     lastName?: string | null;
+    /**
+     * Job title at the current tenant; omit to leave unchanged, empty string to clear. Directory-synced users cannot set it.
+     * @type {string}
+     * @memberof UpdateUserRequest
+     */
+    jobTitle?: string | null;
+    /**
+     * Department at the current tenant; omit to leave unchanged, empty string to clear. Directory-synced users cannot set it.
+     * @type {string}
+     * @memberof UpdateUserRequest
+     */
+    department?: string | null;
+    /**
+     * About the user at the current tenant, read by the chat agent; omit to leave unchanged, empty string to clear.
+     * @type {string}
+     * @memberof UpdateUserRequest
+     */
+    bio?: string | null;
 }
 export const UpdateUserRequestPropertyValidationAttributesMap: {
     [property: string]: {
@@ -53,6 +71,21 @@ export const UpdateUserRequestPropertyValidationAttributesMap: {
         uniqueItems?: boolean
     }
 } = {
+    firstName: {
+        maxLength: 255,
+    },
+    lastName: {
+        maxLength: 255,
+    },
+    jobTitle: {
+        maxLength: 120,
+    },
+    department: {
+        maxLength: 120,
+    },
+    bio: {
+        maxLength: 1000,
+    },
 }
 
 
@@ -76,6 +109,9 @@ export function UpdateUserRequestFromJSONTyped(json: any, ignoreDiscriminator: b
         'defaultTenantId': json['default_tenant_id'] == null ? undefined : json['default_tenant_id'],
         'firstName': json['first_name'] == null ? undefined : json['first_name'],
         'lastName': json['last_name'] == null ? undefined : json['last_name'],
+        'jobTitle': json['job_title'] == null ? undefined : json['job_title'],
+        'department': json['department'] == null ? undefined : json['department'],
+        'bio': json['bio'] == null ? undefined : json['bio'],
     };
 }
 
@@ -93,6 +129,9 @@ export function UpdateUserRequestToJSONTyped(value?: UpdateUserRequest | null, i
         'default_tenant_id': value['defaultTenantId'],
         'first_name': value['firstName'],
         'last_name': value['lastName'],
+        'job_title': value['jobTitle'],
+        'department': value['department'],
+        'bio': value['bio'],
     };
 }
 
