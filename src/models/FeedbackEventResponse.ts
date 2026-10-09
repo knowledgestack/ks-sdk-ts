@@ -76,13 +76,13 @@ export interface FeedbackEventResponse {
      * @type {FeedbackReason}
      * @memberof FeedbackEventResponse
      */
-    reason: FeedbackReason;
+    reason?: FeedbackReason;
     /**
      * 
      * @type {string}
      * @memberof FeedbackEventResponse
      */
-    comment: string | null;
+    comment?: string | null;
     /**
      * 
      * @type {{ [key: string]: any; }}
@@ -131,8 +131,6 @@ export function instanceOfFeedbackEventResponse(value: object): value is Feedbac
     if (!('targetId' in value) || value['targetId'] === undefined) return false;
     if (!('userId' in value) || value['userId'] === undefined) return false;
     if (!('rating' in value) || value['rating'] === undefined) return false;
-    if (!('reason' in value) || value['reason'] === undefined) return false;
-    if (!('comment' in value) || value['comment'] === undefined) return false;
     if (!('extraMetadata' in value) || value['extraMetadata'] === undefined) return false;
     if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
     if (!('updatedAt' in value) || value['updatedAt'] === undefined) return false;
@@ -154,8 +152,8 @@ export function FeedbackEventResponseFromJSONTyped(json: any, ignoreDiscriminato
         'targetId': json['target_id'],
         'userId': json['user_id'],
         'rating': FeedbackRatingFromJSON(json['rating']),
-        'reason': FeedbackReasonFromJSON(json['reason']),
-        'comment': json['comment'],
+        'reason': json['reason'] == null ? undefined : FeedbackReasonFromJSON(json['reason']),
+        'comment': json['comment'] == null ? undefined : json['comment'],
         'extraMetadata': json['extra_metadata'],
         'createdAt': (new Date(json['created_at'])),
         'updatedAt': (new Date(json['updated_at'])),
