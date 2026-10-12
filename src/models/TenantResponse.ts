@@ -20,6 +20,13 @@ import {
     TenantBrandingResponseToJSON,
     TenantBrandingResponseToJSONTyped,
 } from './TenantBrandingResponse';
+import type { UserInfo } from './UserInfo';
+import {
+    UserInfoFromJSON,
+    UserInfoFromJSONTyped,
+    UserInfoToJSON,
+    UserInfoToJSONTyped,
+} from './UserInfo';
 import type { TenantSettingsResponse } from './TenantSettingsResponse';
 import {
     TenantSettingsResponseFromJSON,
@@ -46,6 +53,12 @@ export interface TenantResponse {
      * @memberof TenantResponse
      */
     name: string;
+    /**
+     * The tenant OWNER's name, so a member knows who can grant access. Null only when the tenant has no OWNER membership.
+     * @type {UserInfo}
+     * @memberof TenantResponse
+     */
+    owner: UserInfo | null;
     /**
      * External IdP configuration
      * @type {{ [key: string]: any; }}
@@ -105,6 +118,7 @@ export const TenantResponsePropertyValidationAttributesMap: {
 export function instanceOfTenantResponse(value: object): value is TenantResponse {
     if (!('id' in value) || value['id'] === undefined) return false;
     if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('owner' in value) || value['owner'] === undefined) return false;
     if (!('settings' in value) || value['settings'] === undefined) return false;
     if (!('seats' in value) || value['seats'] === undefined) return false;
     if (!('subscriptionId' in value) || value['subscriptionId'] === undefined) return false;
@@ -123,6 +137,7 @@ export function TenantResponseFromJSONTyped(json: any, ignoreDiscriminator: bool
         
         'id': json['id'],
         'name': json['name'],
+        'owner': UserInfoFromJSON(json['owner']),
         'idpConfig': json['idp_config'] == null ? undefined : json['idp_config'],
         'settings': TenantSettingsResponseFromJSON(json['settings']),
         'branding': json['branding'] == null ? undefined : TenantBrandingResponseFromJSON(json['branding']),
@@ -144,6 +159,7 @@ export function TenantResponseToJSONTyped(value?: TenantResponse | null, ignoreD
         
         'id': value['id'],
         'name': value['name'],
+        'owner': UserInfoToJSON(value['owner']),
         'idp_config': value['idpConfig'],
         'settings': TenantSettingsResponseToJSON(value['settings']),
         'branding': TenantBrandingResponseToJSON(value['branding']),

@@ -19,6 +19,7 @@ import type {
   ErrorResponse,
   HTTPValidationError,
   InviteOrder,
+  InvitePreviewResponse,
   InviteResponse,
   InviteStatus,
   InviteUserRequest,
@@ -36,6 +37,8 @@ import {
     HTTPValidationErrorToJSON,
     InviteOrderFromJSON,
     InviteOrderToJSON,
+    InvitePreviewResponseFromJSON,
+    InvitePreviewResponseToJSON,
     InviteResponseFromJSON,
     InviteResponseToJSON,
     InviteStatusFromJSON,
@@ -77,6 +80,10 @@ export interface ListInvitesRequest {
     createdBefore?: Date | null;
     updatedAfter?: Date | null;
     updatedBefore?: Date | null;
+}
+
+export interface PreviewInviteRequest {
+    inviteId: string;
 }
 
 export interface UpdateInviteOperationRequest {
@@ -208,6 +215,30 @@ export interface InvitesApiInterface {
      * List Invites Handler
      */
     listInvites(requestParameters: ListInvitesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedResponseInviteResponse>;
+
+    /**
+     * Creates request options for previewInvite without sending the request
+     * @param {string} inviteId 
+     * @throws {RequiredError}
+     * @memberof InvitesApiInterface
+     */
+    previewInviteRequestOpts(requestParameters: PreviewInviteRequest): Promise<runtime.RequestOpts>;
+
+    /**
+     * Unauthenticated; the invite id in the emailed link is the only credential.
+     * @summary Preview Invite Handler
+     * @param {string} inviteId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof InvitesApiInterface
+     */
+    previewInviteRaw(requestParameters: PreviewInviteRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<InvitePreviewResponse>>;
+
+    /**
+     * Unauthenticated; the invite id in the emailed link is the only credential.
+     * Preview Invite Handler
+     */
+    previewInvite(requestParameters: PreviewInviteRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<InvitePreviewResponse>;
 
     /**
      * Creates request options for updateInvite without sending the request
@@ -500,6 +531,53 @@ export class InvitesApi extends runtime.BaseAPI implements InvitesApiInterface {
      */
     async listInvites(requestParameters: ListInvitesRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedResponseInviteResponse> {
         const response = await this.listInvitesRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for previewInvite without sending the request
+     */
+    async previewInviteRequestOpts(requestParameters: PreviewInviteRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['inviteId'] == null) {
+            throw new runtime.RequiredError(
+                'inviteId',
+                'Required parameter "inviteId" was null or undefined when calling previewInvite().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+
+        let urlPath = `/v1/invites/{invite_id}/preview`;
+        urlPath = urlPath.replace(`{${"invite_id"}}`, encodeURIComponent(String(requestParameters['inviteId'])));
+
+        return {
+            path: urlPath,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Unauthenticated; the invite id in the emailed link is the only credential.
+     * Preview Invite Handler
+     */
+    async previewInviteRaw(requestParameters: PreviewInviteRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<InvitePreviewResponse>> {
+        const requestOptions = await this.previewInviteRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => InvitePreviewResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * Unauthenticated; the invite id in the emailed link is the only credential.
+     * Preview Invite Handler
+     */
+    async previewInvite(requestParameters: PreviewInviteRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<InvitePreviewResponse> {
+        const response = await this.previewInviteRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

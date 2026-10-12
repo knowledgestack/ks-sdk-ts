@@ -5,8 +5,10 @@ README.md
 docs/AcceptDisclaimerRequest.md
 docs/AcceptInviteResponse.md
 docs/AccessCheckResponse.md
+docs/AccessRequestResponse.md
 docs/ActivateSkillVersionRequest.md
 docs/AddMemberRequest.md
+docs/AddedBy.md
 docs/AdminKbApi.md
 docs/AdminWorkflowsApi.md
 docs/AgentApi.md
@@ -182,6 +184,9 @@ docs/GroupMemberOrder.md
 docs/GroupPermissionOrder.md
 docs/GroupPermissionResponse.md
 docs/GroupResponse.md
+docs/GuideModuleProgress.md
+docs/GuideModuleStatus.md
+docs/GuideModules.md
 docs/HTTPValidationError.md
 docs/HealthCheckResponse.md
 docs/HourHistogramResponse.md
@@ -201,6 +206,9 @@ docs/InstructionSnapshot.md
 docs/InviteLinkSettingsRequest.md
 docs/InviteLinkSettingsResponse.md
 docs/InviteOrder.md
+docs/InvitePreviewResponse.md
+docs/InvitePreviewState.md
+docs/InviteRejection.md
 docs/InviteResponse.md
 docs/InviteStatus.md
 docs/InviteUserRequest.md
@@ -229,8 +237,9 @@ docs/ModelTableRequest.md
 docs/ModelTableResult.md
 docs/NetworkClass.md
 docs/NonFilesystemReferenceType.md
-docs/OnboardingCompanyRequest.md
-docs/OnboardingProfileRequest.md
+docs/OnboardingState.md
+docs/OnboardingStateUpdate.md
+docs/OnboardingStep.md
 docs/PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseWorkflowDefinitionResponseWorkflowRunResponseDat.md
 docs/PaginatedResponseAnnotatedUnionSectionContentItemChunkContentItemDiscriminator.md
 docs/PaginatedResponseBillingPaymentResponse.md
@@ -318,6 +327,7 @@ docs/SetApprovalStateRequest.md
 docs/SetWorkflowRunApprovalRequest.md
 docs/SheetVisibilityChange.md
 docs/SignInRequest.md
+docs/SignUpResponse.md
 docs/SkillFile.md
 docs/SkillOrder.md
 docs/SkillResponse.md
@@ -356,6 +366,7 @@ docs/TenantSettingsResponse.md
 docs/TenantSettingsUpdate.md
 docs/TenantSubscriptionResponse.md
 docs/TenantUserEditRequest.md
+docs/TenantUserJoinMethod.md
 docs/TenantUserOrder.md
 docs/TenantUserResponse.md
 docs/TenantUserRole.md
@@ -499,8 +510,10 @@ src/index.ts
 src/models/AcceptDisclaimerRequest.ts
 src/models/AcceptInviteResponse.ts
 src/models/AccessCheckResponse.ts
+src/models/AccessRequestResponse.ts
 src/models/ActivateSkillVersionRequest.ts
 src/models/AddMemberRequest.ts
+src/models/AddedBy.ts
 src/models/AncestryResponse.ts
 src/models/ApiAuthConfig.ts
 src/models/ApiConnectionRequestRequest.ts
@@ -654,6 +667,9 @@ src/models/GroupMemberOrder.ts
 src/models/GroupPermissionOrder.ts
 src/models/GroupPermissionResponse.ts
 src/models/GroupResponse.ts
+src/models/GuideModuleProgress.ts
+src/models/GuideModuleStatus.ts
+src/models/GuideModules.ts
 src/models/HTTPValidationError.ts
 src/models/HealthCheckResponse.ts
 src/models/HourHistogramResponse.ts
@@ -673,6 +689,9 @@ src/models/InstructionSnapshot.ts
 src/models/InviteLinkSettingsRequest.ts
 src/models/InviteLinkSettingsResponse.ts
 src/models/InviteOrder.ts
+src/models/InvitePreviewResponse.ts
+src/models/InvitePreviewState.ts
+src/models/InviteRejection.ts
 src/models/InviteResponse.ts
 src/models/InviteStatus.ts
 src/models/InviteUserRequest.ts
@@ -699,8 +718,9 @@ src/models/ModelTableRequest.ts
 src/models/ModelTableResult.ts
 src/models/NetworkClass.ts
 src/models/NonFilesystemReferenceType.ts
-src/models/OnboardingCompanyRequest.ts
-src/models/OnboardingProfileRequest.ts
+src/models/OnboardingState.ts
+src/models/OnboardingStateUpdate.ts
+src/models/OnboardingStep.ts
 src/models/PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseWorkflowDefinitionResponseWorkflowRunResponseDat.ts
 src/models/PaginatedResponseAnnotatedUnionSectionContentItemChunkContentItemDiscriminator.ts
 src/models/PaginatedResponseBillingPaymentResponse.ts
@@ -784,6 +804,7 @@ src/models/SetApprovalStateRequest.ts
 src/models/SetWorkflowRunApprovalRequest.ts
 src/models/SheetVisibilityChange.ts
 src/models/SignInRequest.ts
+src/models/SignUpResponse.ts
 src/models/SkillFile.ts
 src/models/SkillOrder.ts
 src/models/SkillResponse.ts
@@ -817,6 +838,7 @@ src/models/TenantSettingsResponse.ts
 src/models/TenantSettingsUpdate.ts
 src/models/TenantSubscriptionResponse.ts
 src/models/TenantUserEditRequest.ts
+src/models/TenantUserJoinMethod.ts
 src/models/TenantUserOrder.ts
 src/models/TenantUserResponse.ts
 src/models/TenantUserRole.ts

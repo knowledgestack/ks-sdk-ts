@@ -13,6 +13,13 @@
  */
 
 import { mapValues } from '../runtime';
+import type { TenantUserJoinMethod } from './TenantUserJoinMethod';
+import {
+    TenantUserJoinMethodFromJSON,
+    TenantUserJoinMethodFromJSONTyped,
+    TenantUserJoinMethodToJSON,
+    TenantUserJoinMethodToJSONTyped,
+} from './TenantUserJoinMethod';
 import type { IdpType } from './IdpType';
 import {
     IdpTypeFromJSON,
@@ -27,6 +34,27 @@ import {
     TenantUserRoleToJSON,
     TenantUserRoleToJSONTyped,
 } from './TenantUserRole';
+import type { OnboardingState } from './OnboardingState';
+import {
+    OnboardingStateFromJSON,
+    OnboardingStateFromJSONTyped,
+    OnboardingStateToJSON,
+    OnboardingStateToJSONTyped,
+} from './OnboardingState';
+import type { UserInfo } from './UserInfo';
+import {
+    UserInfoFromJSON,
+    UserInfoFromJSONTyped,
+    UserInfoToJSON,
+    UserInfoToJSONTyped,
+} from './UserInfo';
+import type { AddedBy } from './AddedBy';
+import {
+    AddedByFromJSON,
+    AddedByFromJSONTyped,
+    AddedByToJSON,
+    AddedByToJSONTyped,
+} from './AddedBy';
 
 /**
  * 
@@ -118,6 +146,42 @@ export interface UserResponse {
      * @memberof UserResponse
      */
     onboardingCompletedAt?: Date | null;
+    /**
+     * 
+     * @type {TenantUserJoinMethod}
+     * @memberof UserResponse
+     */
+    joinMethod: TenantUserJoinMethod;
+    /**
+     * Resume step and guide progress for the current membership.
+     * @type {OnboardingState}
+     * @memberof UserResponse
+     */
+    onboardingState?: OnboardingState | null;
+    /**
+     * Who sent the accepted invite that created the current membership. NULL when the membership did not come from an email invite, and on the sign-in and sign-up responses; read it from GET /v1/users/me.
+     * @type {UserInfo}
+     * @memberof UserResponse
+     */
+    invitedBy?: UserInfo | null;
+    /**
+     * 
+     * @type {AddedBy}
+     * @memberof UserResponse
+     */
+    addedBy?: AddedBy;
+    /**
+     * Profile fields the identity provider overwrites on every sync, so clients render them read-only. Empty unless directory-managed.
+     * @type {Array<string>}
+     * @memberof UserResponse
+     */
+    idpManagedFields?: Array<string>;
+    /**
+     * The current tenant's onboarding switch: true forces the flow on, false hides it, NULL follows the deployment default.
+     * @type {boolean}
+     * @memberof UserResponse
+     */
+    onboardingEnabled?: boolean | null;
 }
 
 
@@ -151,6 +215,7 @@ export function instanceOfUserResponse(value: object): value is UserResponse {
     if (!('currentTenantId' in value) || value['currentTenantId'] === undefined) return false;
     if (!('currentTenantRole' in value) || value['currentTenantRole'] === undefined) return false;
     if (!('defaultTenantId' in value) || value['defaultTenantId'] === undefined) return false;
+    if (!('joinMethod' in value) || value['joinMethod'] === undefined) return false;
     return true;
 }
 
@@ -178,6 +243,12 @@ export function UserResponseFromJSONTyped(json: any, ignoreDiscriminator: boolea
         'bio': json['bio'] == null ? undefined : json['bio'],
         'avatarUrl': json['avatar_url'] == null ? undefined : json['avatar_url'],
         'onboardingCompletedAt': json['onboarding_completed_at'] == null ? undefined : (new Date(json['onboarding_completed_at'])),
+        'joinMethod': TenantUserJoinMethodFromJSON(json['join_method']),
+        'onboardingState': json['onboarding_state'] == null ? undefined : OnboardingStateFromJSON(json['onboarding_state']),
+        'invitedBy': json['invited_by'] == null ? undefined : UserInfoFromJSON(json['invited_by']),
+        'addedBy': json['added_by'] == null ? undefined : AddedByFromJSON(json['added_by']),
+        'idpManagedFields': json['idp_managed_fields'] == null ? undefined : json['idp_managed_fields'],
+        'onboardingEnabled': json['onboarding_enabled'] == null ? undefined : json['onboarding_enabled'],
     };
 }
 
@@ -206,6 +277,12 @@ export function UserResponseToJSONTyped(value?: UserResponse | null, ignoreDiscr
         'bio': value['bio'],
         'avatar_url': value['avatarUrl'],
         'onboarding_completed_at': value['onboardingCompletedAt'] == null ? value['onboardingCompletedAt'] : value['onboardingCompletedAt'].toISOString(),
+        'join_method': TenantUserJoinMethodToJSON(value['joinMethod']),
+        'onboarding_state': OnboardingStateToJSON(value['onboardingState']),
+        'invited_by': UserInfoToJSON(value['invitedBy']),
+        'added_by': AddedByToJSON(value['addedBy']),
+        'idp_managed_fields': value['idpManagedFields'],
+        'onboarding_enabled': value['onboardingEnabled'],
     };
 }
 

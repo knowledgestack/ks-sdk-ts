@@ -13,26 +13,74 @@
  */
 
 import { mapValues } from '../runtime';
+import type { TenantUserRole } from './TenantUserRole';
+import {
+    TenantUserRoleFromJSON,
+    TenantUserRoleFromJSONTyped,
+    TenantUserRoleToJSON,
+    TenantUserRoleToJSONTyped,
+} from './TenantUserRole';
+import type { UserInfo } from './UserInfo';
+import {
+    UserInfoFromJSON,
+    UserInfoFromJSONTyped,
+    UserInfoToJSON,
+    UserInfoToJSONTyped,
+} from './UserInfo';
+import type { InvitePreviewState } from './InvitePreviewState';
+import {
+    InvitePreviewStateFromJSON,
+    InvitePreviewStateFromJSONTyped,
+    InvitePreviewStateToJSON,
+    InvitePreviewStateToJSONTyped,
+} from './InvitePreviewState';
+
 /**
- * Step 1 of onboarding — tenant-wide company info. OWNER/ADMIN only.
+ * 
  * @export
- * @interface OnboardingCompanyRequest
+ * @interface InvitePreviewResponse
  */
-export interface OnboardingCompanyRequest {
+export interface InvitePreviewResponse {
     /**
-     * Brief company description (≤5000 chars)
-     * @type {string}
-     * @memberof OnboardingCompanyRequest
+     * 
+     * @type {InvitePreviewState}
+     * @memberof InvitePreviewResponse
      */
-    description?: string | null;
+    state: InvitePreviewState;
     /**
-     * Industry / company type (free text)
+     * Invitee email, to lock the form
      * @type {string}
-     * @memberof OnboardingCompanyRequest
+     * @memberof InvitePreviewResponse
      */
-    industry?: string | null;
+    email?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof InvitePreviewResponse
+     */
+    tenantName?: string | null;
+    /**
+     * 
+     * @type {TenantUserRole}
+     * @memberof InvitePreviewResponse
+     */
+    role?: TenantUserRole;
+    /**
+     * 
+     * @type {Date}
+     * @memberof InvitePreviewResponse
+     */
+    expiresAt?: Date | null;
+    /**
+     * Display name only, no email
+     * @type {UserInfo}
+     * @memberof InvitePreviewResponse
+     */
+    invitedBy?: UserInfo | null;
 }
-export const OnboardingCompanyRequestPropertyValidationAttributesMap: {
+
+
+export const InvitePreviewResponsePropertyValidationAttributesMap: {
     [property: string]: {
         maxLength?: number,
         minLength?: number,
@@ -47,50 +95,53 @@ export const OnboardingCompanyRequestPropertyValidationAttributesMap: {
         uniqueItems?: boolean
     }
 } = {
-    description: {
-        maxLength: 5000,
-    },
-    industry: {
-        maxLength: 120,
-    },
 }
 
 
 /**
- * Check if a given object implements the OnboardingCompanyRequest interface.
+ * Check if a given object implements the InvitePreviewResponse interface.
  */
-export function instanceOfOnboardingCompanyRequest(value: object): value is OnboardingCompanyRequest {
+export function instanceOfInvitePreviewResponse(value: object): value is InvitePreviewResponse {
+    if (!('state' in value) || value['state'] === undefined) return false;
     return true;
 }
 
-export function OnboardingCompanyRequestFromJSON(json: any): OnboardingCompanyRequest {
-    return OnboardingCompanyRequestFromJSONTyped(json, false);
+export function InvitePreviewResponseFromJSON(json: any): InvitePreviewResponse {
+    return InvitePreviewResponseFromJSONTyped(json, false);
 }
 
-export function OnboardingCompanyRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): OnboardingCompanyRequest {
+export function InvitePreviewResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): InvitePreviewResponse {
     if (json == null) {
         return json;
     }
     return {
         
-        'description': json['description'] == null ? undefined : json['description'],
-        'industry': json['industry'] == null ? undefined : json['industry'],
+        'state': InvitePreviewStateFromJSON(json['state']),
+        'email': json['email'] == null ? undefined : json['email'],
+        'tenantName': json['tenant_name'] == null ? undefined : json['tenant_name'],
+        'role': json['role'] == null ? undefined : TenantUserRoleFromJSON(json['role']),
+        'expiresAt': json['expires_at'] == null ? undefined : (new Date(json['expires_at'])),
+        'invitedBy': json['invited_by'] == null ? undefined : UserInfoFromJSON(json['invited_by']),
     };
 }
 
-export function OnboardingCompanyRequestToJSON(json: any): OnboardingCompanyRequest {
-    return OnboardingCompanyRequestToJSONTyped(json, false);
+export function InvitePreviewResponseToJSON(json: any): InvitePreviewResponse {
+    return InvitePreviewResponseToJSONTyped(json, false);
 }
 
-export function OnboardingCompanyRequestToJSONTyped(value?: OnboardingCompanyRequest | null, ignoreDiscriminator: boolean = false): any {
+export function InvitePreviewResponseToJSONTyped(value?: InvitePreviewResponse | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
         
-        'description': value['description'],
-        'industry': value['industry'],
+        'state': InvitePreviewStateToJSON(value['state']),
+        'email': value['email'],
+        'tenant_name': value['tenantName'],
+        'role': TenantUserRoleToJSON(value['role']),
+        'expires_at': value['expiresAt'] == null ? value['expiresAt'] : value['expiresAt'].toISOString(),
+        'invited_by': UserInfoToJSON(value['invitedBy']),
     };
 }
 

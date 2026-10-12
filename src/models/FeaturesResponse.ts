@@ -27,6 +27,13 @@ import {
     UploadConstraintsToJSON,
     UploadConstraintsToJSONTyped,
 } from './UploadConstraints';
+import type { DataSourceEngine } from './DataSourceEngine';
+import {
+    DataSourceEngineFromJSON,
+    DataSourceEngineFromJSONTyped,
+    DataSourceEngineToJSON,
+    DataSourceEngineToJSONTyped,
+} from './DataSourceEngine';
 
 /**
  * 
@@ -70,6 +77,12 @@ export interface FeaturesResponse {
      * @memberof FeaturesResponse
      */
     upload: UploadConstraints;
+    /**
+     * 
+     * @type {Array<DataSourceEngine>}
+     * @memberof FeaturesResponse
+     */
+    dataSourceEngines: Array<DataSourceEngine>;
 }
 
 
@@ -101,6 +114,7 @@ export function instanceOfFeaturesResponse(value: object): value is FeaturesResp
     if (!('smsLoginEnabled' in value) || value['smsLoginEnabled'] === undefined) return false;
     if (!('defaultFrontendLanguage' in value) || value['defaultFrontendLanguage'] === undefined) return false;
     if (!('upload' in value) || value['upload'] === undefined) return false;
+    if (!('dataSourceEngines' in value) || value['dataSourceEngines'] === undefined) return false;
     return true;
 }
 
@@ -120,6 +134,7 @@ export function FeaturesResponseFromJSONTyped(json: any, ignoreDiscriminator: bo
         'smsLoginEnabled': json['sms_login_enabled'],
         'defaultFrontendLanguage': SupportedLanguageFromJSON(json['default_frontend_language']),
         'upload': UploadConstraintsFromJSON(json['upload']),
+        'dataSourceEngines': ((json['data_source_engines'] as Array<any>).map(DataSourceEngineFromJSON)),
     };
 }
 
@@ -140,6 +155,7 @@ export function FeaturesResponseToJSONTyped(value?: FeaturesResponse | null, ign
         'sms_login_enabled': value['smsLoginEnabled'],
         'default_frontend_language': SupportedLanguageToJSON(value['defaultFrontendLanguage']),
         'upload': UploadConstraintsToJSON(value['upload']),
+        'data_source_engines': ((value['dataSourceEngines'] as Array<any>).map(DataSourceEngineToJSON)),
     };
 }
 

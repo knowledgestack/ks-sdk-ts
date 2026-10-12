@@ -43,6 +43,12 @@ export interface CreatePasswordUserRequest {
      * @memberof CreatePasswordUserRequest
      */
     lastName?: string | null;
+    /**
+     * Invite to resolve before any workspace is provisioned. When it is valid for the verified email the account joins that tenant only; otherwise sign-up proceeds as usual and invite_rejection says why.
+     * @type {string}
+     * @memberof CreatePasswordUserRequest
+     */
+    inviteId?: string | null;
 }
 export const CreatePasswordUserRequestPropertyValidationAttributesMap: {
     [property: string]: {
@@ -88,6 +94,7 @@ export function CreatePasswordUserRequestFromJSONTyped(json: any, ignoreDiscrimi
         'emailToken': json['email_token'],
         'firstName': json['first_name'] == null ? undefined : json['first_name'],
         'lastName': json['last_name'] == null ? undefined : json['last_name'],
+        'inviteId': json['invite_id'] == null ? undefined : json['invite_id'],
     };
 }
 
@@ -106,6 +113,7 @@ export function CreatePasswordUserRequestToJSONTyped(value?: CreatePasswordUserR
         'email_token': value['emailToken'],
         'first_name': value['firstName'],
         'last_name': value['lastName'],
+        'invite_id': value['inviteId'],
     };
 }
 

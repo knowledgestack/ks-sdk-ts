@@ -15,22 +15,22 @@
 
 import * as runtime from '../runtime';
 import type {
+  AccessRequestResponse,
   ErrorResponse,
   HTTPValidationError,
-  OnboardingCompanyRequest,
-  OnboardingProfileRequest,
+  OnboardingStateUpdate,
   UpdateUserRequest,
   UserResponse,
 } from '../models/index';
 import {
+    AccessRequestResponseFromJSON,
+    AccessRequestResponseToJSON,
     ErrorResponseFromJSON,
     ErrorResponseToJSON,
     HTTPValidationErrorFromJSON,
     HTTPValidationErrorToJSON,
-    OnboardingCompanyRequestFromJSON,
-    OnboardingCompanyRequestToJSON,
-    OnboardingProfileRequestFromJSON,
-    OnboardingProfileRequestToJSON,
+    OnboardingStateUpdateFromJSON,
+    OnboardingStateUpdateToJSON,
     UpdateUserRequestFromJSON,
     UpdateUserRequestToJSON,
     UserResponseFromJSON,
@@ -41,12 +41,8 @@ export interface UpdateMeRequest {
     updateUserRequest: UpdateUserRequest;
 }
 
-export interface UpdateOnboardingCompanyRequest {
-    onboardingCompanyRequest: OnboardingCompanyRequest;
-}
-
-export interface UpdateOnboardingProfileRequest {
-    onboardingProfileRequest: OnboardingProfileRequest;
+export interface UpdateOnboardingStateRequest {
+    onboardingStateUpdate: OnboardingStateUpdate;
 }
 
 export interface UploadMyAvatarRequest {
@@ -105,6 +101,28 @@ export interface UsersApiInterface {
     getMe(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserResponse>;
 
     /**
+     * Creates request options for requestAccess without sending the request
+     * @throws {RequiredError}
+     * @memberof UsersApiInterface
+     */
+    requestAccessRequestOpts(): Promise<runtime.RequestOpts>;
+
+    /**
+     * Email the owner and admins for access; one request per member per day.
+     * @summary Request Access Handler
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UsersApiInterface
+     */
+    requestAccessRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AccessRequestResponse>>;
+
+    /**
+     * Email the owner and admins for access; one request per member per day.
+     * Request Access Handler
+     */
+    requestAccess(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<AccessRequestResponse>;
+
+    /**
      * Creates request options for skipOnboarding without sending the request
      * @throws {RequiredError}
      * @memberof UsersApiInterface
@@ -151,52 +169,27 @@ export interface UsersApiInterface {
     updateMe(requestParameters: UpdateMeRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserResponse>;
 
     /**
-     * Creates request options for updateOnboardingCompany without sending the request
-     * @param {OnboardingCompanyRequest} onboardingCompanyRequest 
+     * Creates request options for updateOnboardingState without sending the request
+     * @param {OnboardingStateUpdate} onboardingStateUpdate 
      * @throws {RequiredError}
      * @memberof UsersApiInterface
      */
-    updateOnboardingCompanyRequestOpts(requestParameters: UpdateOnboardingCompanyRequest): Promise<runtime.RequestOpts>;
+    updateOnboardingStateRequestOpts(requestParameters: UpdateOnboardingStateRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * Step 1 of onboarding: tenant-wide company info.  Writes ``industry`` and ``description`` into the current tenant\'s settings JSONB. Restricted to OWNER and ADMIN — invited USERs see a pre-filled, read-only step on the frontend instead.  Does not mark onboarding complete; the user finishes via the profile step. Re-running while the wizard is still open overwrites prior values; once onboarding has been completed/skipped, this endpoint returns 409. Post-onboarding edits go through PATCH /v1/tenants/{id}.
-     * @summary Update Onboarding Company Handler
-     * @param {OnboardingCompanyRequest} onboardingCompanyRequest 
+     * 
+     * @summary Update Onboarding State Handler
+     * @param {OnboardingStateUpdate} onboardingStateUpdate 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof UsersApiInterface
      */
-    updateOnboardingCompanyRaw(requestParameters: UpdateOnboardingCompanyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserResponse>>;
+    updateOnboardingStateRaw(requestParameters: UpdateOnboardingStateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserResponse>>;
 
     /**
-     * Step 1 of onboarding: tenant-wide company info.  Writes ``industry`` and ``description`` into the current tenant\'s settings JSONB. Restricted to OWNER and ADMIN — invited USERs see a pre-filled, read-only step on the frontend instead.  Does not mark onboarding complete; the user finishes via the profile step. Re-running while the wizard is still open overwrites prior values; once onboarding has been completed/skipped, this endpoint returns 409. Post-onboarding edits go through PATCH /v1/tenants/{id}.
-     * Update Onboarding Company Handler
+     * Update Onboarding State Handler
      */
-    updateOnboardingCompany(requestParameters: UpdateOnboardingCompanyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserResponse>;
-
-    /**
-     * Creates request options for updateOnboardingProfile without sending the request
-     * @param {OnboardingProfileRequest} onboardingProfileRequest 
-     * @throws {RequiredError}
-     * @memberof UsersApiInterface
-     */
-    updateOnboardingProfileRequestOpts(requestParameters: UpdateOnboardingProfileRequest): Promise<runtime.RequestOpts>;
-
-    /**
-     * Step 2 (final) of onboarding: per-user profile for the current tenant.  Writes name to the User row (global) and job_title to the TenantUser row (per-tenant), then stamps ``onboarding_completed_at`` on the membership. Returns 409 if onboarding has already been completed or skipped — post-onboarding edits go through PATCH /v1/users.
-     * @summary Update Onboarding Profile Handler
-     * @param {OnboardingProfileRequest} onboardingProfileRequest 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof UsersApiInterface
-     */
-    updateOnboardingProfileRaw(requestParameters: UpdateOnboardingProfileRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserResponse>>;
-
-    /**
-     * Step 2 (final) of onboarding: per-user profile for the current tenant.  Writes name to the User row (global) and job_title to the TenantUser row (per-tenant), then stamps ``onboarding_completed_at`` on the membership. Returns 409 if onboarding has already been completed or skipped — post-onboarding edits go through PATCH /v1/users.
-     * Update Onboarding Profile Handler
-     */
-    updateOnboardingProfile(requestParameters: UpdateOnboardingProfileRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserResponse>;
+    updateOnboardingState(requestParameters: UpdateOnboardingStateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserResponse>;
 
     /**
      * Creates request options for uploadMyAvatar without sending the request
@@ -324,6 +317,53 @@ export class UsersApi extends runtime.BaseAPI implements UsersApiInterface {
     }
 
     /**
+     * Creates request options for requestAccess without sending the request
+     */
+    async requestAccessRequestOpts(): Promise<runtime.RequestOpts> {
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/v1/users/me/access_requests`;
+
+        return {
+            path: urlPath,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Email the owner and admins for access; one request per member per day.
+     * Request Access Handler
+     */
+    async requestAccessRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AccessRequestResponse>> {
+        const requestOptions = await this.requestAccessRequestOpts();
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => AccessRequestResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * Email the owner and admins for access; one request per member per day.
+     * Request Access Handler
+     */
+    async requestAccess(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<AccessRequestResponse> {
+        const response = await this.requestAccessRaw(initOverrides);
+        return await response.value();
+    }
+
+    /**
      * Creates request options for skipOnboarding without sending the request
      */
     async skipOnboardingRequestOpts(): Promise<runtime.RequestOpts> {
@@ -428,13 +468,13 @@ export class UsersApi extends runtime.BaseAPI implements UsersApiInterface {
     }
 
     /**
-     * Creates request options for updateOnboardingCompany without sending the request
+     * Creates request options for updateOnboardingState without sending the request
      */
-    async updateOnboardingCompanyRequestOpts(requestParameters: UpdateOnboardingCompanyRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['onboardingCompanyRequest'] == null) {
+    async updateOnboardingStateRequestOpts(requestParameters: UpdateOnboardingStateRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['onboardingStateUpdate'] == null) {
             throw new runtime.RequiredError(
-                'onboardingCompanyRequest',
-                'Required parameter "onboardingCompanyRequest" was null or undefined when calling updateOnboardingCompany().'
+                'onboardingStateUpdate',
+                'Required parameter "onboardingStateUpdate" was null or undefined when calling updateOnboardingState().'
             );
         }
 
@@ -453,91 +493,32 @@ export class UsersApi extends runtime.BaseAPI implements UsersApiInterface {
             }
         }
 
-        let urlPath = `/v1/users/me/onboarding/company`;
+        let urlPath = `/v1/users/me/onboarding`;
 
         return {
             path: urlPath,
             method: 'PATCH',
             headers: headerParameters,
             query: queryParameters,
-            body: OnboardingCompanyRequestToJSON(requestParameters['onboardingCompanyRequest']),
+            body: OnboardingStateUpdateToJSON(requestParameters['onboardingStateUpdate']),
         };
     }
 
     /**
-     * Step 1 of onboarding: tenant-wide company info.  Writes ``industry`` and ``description`` into the current tenant\'s settings JSONB. Restricted to OWNER and ADMIN — invited USERs see a pre-filled, read-only step on the frontend instead.  Does not mark onboarding complete; the user finishes via the profile step. Re-running while the wizard is still open overwrites prior values; once onboarding has been completed/skipped, this endpoint returns 409. Post-onboarding edits go through PATCH /v1/tenants/{id}.
-     * Update Onboarding Company Handler
+     * Update Onboarding State Handler
      */
-    async updateOnboardingCompanyRaw(requestParameters: UpdateOnboardingCompanyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserResponse>> {
-        const requestOptions = await this.updateOnboardingCompanyRequestOpts(requestParameters);
+    async updateOnboardingStateRaw(requestParameters: UpdateOnboardingStateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserResponse>> {
+        const requestOptions = await this.updateOnboardingStateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => UserResponseFromJSON(jsonValue));
     }
 
     /**
-     * Step 1 of onboarding: tenant-wide company info.  Writes ``industry`` and ``description`` into the current tenant\'s settings JSONB. Restricted to OWNER and ADMIN — invited USERs see a pre-filled, read-only step on the frontend instead.  Does not mark onboarding complete; the user finishes via the profile step. Re-running while the wizard is still open overwrites prior values; once onboarding has been completed/skipped, this endpoint returns 409. Post-onboarding edits go through PATCH /v1/tenants/{id}.
-     * Update Onboarding Company Handler
+     * Update Onboarding State Handler
      */
-    async updateOnboardingCompany(requestParameters: UpdateOnboardingCompanyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserResponse> {
-        const response = await this.updateOnboardingCompanyRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * Creates request options for updateOnboardingProfile without sending the request
-     */
-    async updateOnboardingProfileRequestOpts(requestParameters: UpdateOnboardingProfileRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['onboardingProfileRequest'] == null) {
-            throw new runtime.RequiredError(
-                'onboardingProfileRequest',
-                'Required parameter "onboardingProfileRequest" was null or undefined when calling updateOnboardingProfile().'
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        headerParameters['Content-Type'] = 'application/json';
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("bearerAuth", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-
-        let urlPath = `/v1/users/me/onboarding/profile`;
-
-        return {
-            path: urlPath,
-            method: 'PATCH',
-            headers: headerParameters,
-            query: queryParameters,
-            body: OnboardingProfileRequestToJSON(requestParameters['onboardingProfileRequest']),
-        };
-    }
-
-    /**
-     * Step 2 (final) of onboarding: per-user profile for the current tenant.  Writes name to the User row (global) and job_title to the TenantUser row (per-tenant), then stamps ``onboarding_completed_at`` on the membership. Returns 409 if onboarding has already been completed or skipped — post-onboarding edits go through PATCH /v1/users.
-     * Update Onboarding Profile Handler
-     */
-    async updateOnboardingProfileRaw(requestParameters: UpdateOnboardingProfileRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserResponse>> {
-        const requestOptions = await this.updateOnboardingProfileRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => UserResponseFromJSON(jsonValue));
-    }
-
-    /**
-     * Step 2 (final) of onboarding: per-user profile for the current tenant.  Writes name to the User row (global) and job_title to the TenantUser row (per-tenant), then stamps ``onboarding_completed_at`` on the membership. Returns 409 if onboarding has already been completed or skipped — post-onboarding edits go through PATCH /v1/users.
-     * Update Onboarding Profile Handler
-     */
-    async updateOnboardingProfile(requestParameters: UpdateOnboardingProfileRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserResponse> {
-        const response = await this.updateOnboardingProfileRaw(requestParameters, initOverrides);
+    async updateOnboardingState(requestParameters: UpdateOnboardingStateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserResponse> {
+        const response = await this.updateOnboardingStateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

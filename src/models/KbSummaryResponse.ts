@@ -46,6 +46,12 @@ export interface KbSummaryResponse {
      */
     documentsByType: { [key: string]: number; };
     /**
+     * Live document count keyed by the active version's pipeline status (pending, processing, completed, failed, cancelled, quota_limit). Documents whose active version was never ingested are absent.
+     * @type {{ [key: string]: number; }}
+     * @memberof KbSummaryResponse
+     */
+    documentsByIngestionStatus: { [key: string]: number; };
+    /**
      * 
      * @type {number}
      * @memberof KbSummaryResponse
@@ -155,6 +161,7 @@ export function instanceOfKbSummaryResponse(value: object): value is KbSummaryRe
     if (!('documentsTotal' in value) || value['documentsTotal'] === undefined) return false;
     if (!('documentsByOrigin' in value) || value['documentsByOrigin'] === undefined) return false;
     if (!('documentsByType' in value) || value['documentsByType'] === undefined) return false;
+    if (!('documentsByIngestionStatus' in value) || value['documentsByIngestionStatus'] === undefined) return false;
     if (!('documentVersionsTotal' in value) || value['documentVersionsTotal'] === undefined) return false;
     if (!('chunksTotal' in value) || value['chunksTotal'] === undefined) return false;
     if (!('chunksByType' in value) || value['chunksByType'] === undefined) return false;
@@ -185,6 +192,7 @@ export function KbSummaryResponseFromJSONTyped(json: any, ignoreDiscriminator: b
         'documentsTotal': json['documents_total'],
         'documentsByOrigin': json['documents_by_origin'],
         'documentsByType': json['documents_by_type'],
+        'documentsByIngestionStatus': json['documents_by_ingestion_status'],
         'documentVersionsTotal': json['document_versions_total'],
         'chunksTotal': json['chunks_total'],
         'chunksByType': json['chunks_by_type'],
@@ -216,6 +224,7 @@ export function KbSummaryResponseToJSONTyped(value?: KbSummaryResponse | null, i
         'documents_total': value['documentsTotal'],
         'documents_by_origin': value['documentsByOrigin'],
         'documents_by_type': value['documentsByType'],
+        'documents_by_ingestion_status': value['documentsByIngestionStatus'],
         'document_versions_total': value['documentVersionsTotal'],
         'chunks_total': value['chunksTotal'],
         'chunks_by_type': value['chunksByType'],

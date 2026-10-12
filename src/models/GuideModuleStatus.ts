@@ -12,90 +12,43 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
+
 /**
- * Step 2 of onboarding — per-user info for the current tenant.
+ * 
  * @export
- * @interface OnboardingProfileRequest
  */
-export interface OnboardingProfileRequest {
-    /**
-     * User's first name
-     * @type {string}
-     * @memberof OnboardingProfileRequest
-     */
-    firstName?: string | null;
-    /**
-     * User's last name
-     * @type {string}
-     * @memberof OnboardingProfileRequest
-     */
-    lastName?: string | null;
-    /**
-     * What the user does at this tenant
-     * @type {string}
-     * @memberof OnboardingProfileRequest
-     */
-    jobTitle?: string | null;
-}
-export const OnboardingProfileRequestPropertyValidationAttributesMap: {
-    [property: string]: {
-        maxLength?: number,
-        minLength?: number,
-        pattern?: string,
-        maximum?: number,
-        exclusiveMaximum?: boolean,
-        minimum?: number,
-        exclusiveMinimum?: boolean,
-        multipleOf?: number,
-        maxItems?: number,
-        minItems?: number,
-        uniqueItems?: boolean
+export const GuideModuleStatus = {
+    InProgress: 'IN_PROGRESS',
+    Completed: 'COMPLETED',
+    Dismissed: 'DISMISSED'
+} as const;
+export type GuideModuleStatus = typeof GuideModuleStatus[keyof typeof GuideModuleStatus];
+
+
+export function instanceOfGuideModuleStatus(value: any): boolean {
+    for (const key in GuideModuleStatus) {
+        if (Object.prototype.hasOwnProperty.call(GuideModuleStatus, key)) {
+            if (GuideModuleStatus[key as keyof typeof GuideModuleStatus] === value) {
+                return true;
+            }
+        }
     }
-} = {
-    jobTitle: {
-        maxLength: 120,
-    },
+    return false;
 }
 
-
-/**
- * Check if a given object implements the OnboardingProfileRequest interface.
- */
-export function instanceOfOnboardingProfileRequest(value: object): value is OnboardingProfileRequest {
-    return true;
+export function GuideModuleStatusFromJSON(json: any): GuideModuleStatus {
+    return GuideModuleStatusFromJSONTyped(json, false);
 }
 
-export function OnboardingProfileRequestFromJSON(json: any): OnboardingProfileRequest {
-    return OnboardingProfileRequestFromJSONTyped(json, false);
+export function GuideModuleStatusFromJSONTyped(json: any, ignoreDiscriminator: boolean): GuideModuleStatus {
+    return json as GuideModuleStatus;
 }
 
-export function OnboardingProfileRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): OnboardingProfileRequest {
-    if (json == null) {
-        return json;
-    }
-    return {
-        
-        'firstName': json['first_name'] == null ? undefined : json['first_name'],
-        'lastName': json['last_name'] == null ? undefined : json['last_name'],
-        'jobTitle': json['job_title'] == null ? undefined : json['job_title'],
-    };
+export function GuideModuleStatusToJSON(value?: GuideModuleStatus | null): any {
+    return value as any;
 }
 
-export function OnboardingProfileRequestToJSON(json: any): OnboardingProfileRequest {
-    return OnboardingProfileRequestToJSONTyped(json, false);
-}
-
-export function OnboardingProfileRequestToJSONTyped(value?: OnboardingProfileRequest | null, ignoreDiscriminator: boolean = false): any {
-    if (value == null) {
-        return value;
-    }
-
-    return {
-        
-        'first_name': value['firstName'],
-        'last_name': value['lastName'],
-        'job_title': value['jobTitle'],
-    };
+export function GuideModuleStatusToJSONTyped(value: any, ignoreDiscriminator: boolean): GuideModuleStatus {
+    return value as GuideModuleStatus;
 }
 

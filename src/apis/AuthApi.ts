@@ -34,6 +34,7 @@ import type {
   SSOInitiateResponse,
   SendPasswordResetRequest,
   SignInRequest,
+  SignUpResponse,
   UserResponse,
   ValidateResetCodeRequest,
 } from '../models/index';
@@ -76,6 +77,8 @@ import {
     SendPasswordResetRequestToJSON,
     SignInRequestFromJSON,
     SignInRequestToJSON,
+    SignUpResponseFromJSON,
+    SignUpResponseToJSON,
     UserResponseFromJSON,
     UserResponseToJSON,
     ValidateResetCodeRequestFromJSON,
@@ -108,6 +111,7 @@ export interface FanweiDirectorySync0Request {
 
 export interface InitiateSsoRequest {
     provider: IdpType;
+    inviteId?: string | null;
     tenantId?: string | null;
 }
 
@@ -208,12 +212,12 @@ export interface AuthApiInterface {
      * @throws {RequiredError}
      * @memberof AuthApiInterface
      */
-    createPasswordUserRaw(requestParameters: CreatePasswordUserOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserResponse>>;
+    createPasswordUserRaw(requestParameters: CreatePasswordUserOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SignUpResponse>>;
 
     /**
      * Create Password User Handler
      */
-    createPasswordUser(requestParameters: CreatePasswordUserOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserResponse>;
+    createPasswordUser(requestParameters: CreatePasswordUserOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SignUpResponse>;
 
     /**
      * Creates request options for createPhonePasswordUser without sending the request
@@ -298,6 +302,7 @@ export interface AuthApiInterface {
     /**
      * Creates request options for initiateSso without sending the request
      * @param {IdpType} provider Provider to initiate SSO with
+     * @param {string} [inviteId] Invite to resolve if this sign-in creates the account; carried in the session to the callback like the OAuth state.
      * @param {string} [tenantId] Tenant ID to initiate SSO with
      * @throws {RequiredError}
      * @memberof AuthApiInterface
@@ -308,6 +313,7 @@ export interface AuthApiInterface {
      * Initiate SSO with the given provider and tenant ID.
      * @summary Initiate Sso Handler
      * @param {IdpType} provider Provider to initiate SSO with
+     * @param {string} [inviteId] Invite to resolve if this sign-in creates the account; carried in the session to the callback like the OAuth state.
      * @param {string} [tenantId] Tenant ID to initiate SSO with
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -347,13 +353,13 @@ export interface AuthApiInterface {
      * @throws {RequiredError}
      * @memberof AuthApiInterface
      */
-    oauth2CallbackRaw(requestParameters: Oauth2CallbackRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserResponse>>;
+    oauth2CallbackRaw(requestParameters: Oauth2CallbackRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SignUpResponse>>;
 
     /**
      * Handle OAuth2 callback from the given OAuth client.
      * Oauth2 Callback Handler
      */
-    oauth2Callback(requestParameters: Oauth2CallbackRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserResponse>;
+    oauth2Callback(requestParameters: Oauth2CallbackRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SignUpResponse>;
 
     /**
      * Creates request options for pwEmailVerification without sending the request
@@ -714,17 +720,17 @@ export class AuthApi extends runtime.BaseAPI implements AuthApiInterface {
     /**
      * Create Password User Handler
      */
-    async createPasswordUserRaw(requestParameters: CreatePasswordUserOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserResponse>> {
+    async createPasswordUserRaw(requestParameters: CreatePasswordUserOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SignUpResponse>> {
         const requestOptions = await this.createPasswordUserRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => UserResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => SignUpResponseFromJSON(jsonValue));
     }
 
     /**
      * Create Password User Handler
      */
-    async createPasswordUser(requestParameters: CreatePasswordUserOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserResponse> {
+    async createPasswordUser(requestParameters: CreatePasswordUserOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SignUpResponse> {
         const response = await this.createPasswordUserRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -893,6 +899,10 @@ export class AuthApi extends runtime.BaseAPI implements AuthApiInterface {
 
         const queryParameters: any = {};
 
+        if (requestParameters['inviteId'] != null) {
+            queryParameters['invite_id'] = requestParameters['inviteId'];
+        }
+
         if (requestParameters['provider'] != null) {
             queryParameters['provider'] = requestParameters['provider'];
         }
@@ -988,18 +998,18 @@ export class AuthApi extends runtime.BaseAPI implements AuthApiInterface {
      * Handle OAuth2 callback from the given OAuth client.
      * Oauth2 Callback Handler
      */
-    async oauth2CallbackRaw(requestParameters: Oauth2CallbackRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserResponse>> {
+    async oauth2CallbackRaw(requestParameters: Oauth2CallbackRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SignUpResponse>> {
         const requestOptions = await this.oauth2CallbackRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => UserResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => SignUpResponseFromJSON(jsonValue));
     }
 
     /**
      * Handle OAuth2 callback from the given OAuth client.
      * Oauth2 Callback Handler
      */
-    async oauth2Callback(requestParameters: Oauth2CallbackRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserResponse> {
+    async oauth2Callback(requestParameters: Oauth2CallbackRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SignUpResponse> {
         const response = await this.oauth2CallbackRaw(requestParameters, initOverrides);
         return await response.value();
     }

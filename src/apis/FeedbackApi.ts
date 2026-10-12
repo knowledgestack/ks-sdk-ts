@@ -52,8 +52,9 @@ export interface DeleteFeedbackRequest {
 
 export interface ListFeedbackRequest {
     targetType?: FeedbackTargetType;
-    targetId?: string | null;
+    targetId?: Array<string> | null;
     rating?: FeedbackRating;
+    mine?: boolean;
     sortBy?: FeedbackOrder;
     sortDir?: SortDirection;
     limit?: number;
@@ -102,8 +103,9 @@ export interface FeedbackApiInterface {
     /**
      * Creates request options for listFeedback without sending the request
      * @param {FeedbackTargetType} [targetType] 
-     * @param {string} [targetId] 
+     * @param {Array<string>} [targetId] Repeatable. Feedback on any of these targets, so a thread page reads every visible message\&#39;s feedback in one call; more than 200 ids is a 422 (send the page you render, not the thread).
      * @param {FeedbackRating} [rating] 
+     * @param {boolean} [mine] Only the caller\&#39;s own feedback, whatever their role, so an owner or admin reading a thread sees their own vote on each message.
      * @param {FeedbackOrder} [sortBy] Field to sort feedback by (default: CREATED_AT)
      * @param {SortDirection} [sortDir] Sort direction; overrides the field\&#39;s natural default
      * @param {number} [limit] Number of items per page
@@ -118,11 +120,12 @@ export interface FeedbackApiInterface {
     listFeedbackRequestOpts(requestParameters: ListFeedbackRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * List feedback entries with optional filters.  USER role: only returns their own feedback. OWNER/ADMIN role: returns feedback from all users.
+     * List feedback entries with optional filters.  USER role: only returns their own feedback. OWNER/ADMIN role: returns feedback from all users unless `mine` is set.
      * @summary List Feedback Handler
      * @param {FeedbackTargetType} [targetType] 
-     * @param {string} [targetId] 
+     * @param {Array<string>} [targetId] Repeatable. Feedback on any of these targets, so a thread page reads every visible message\&#39;s feedback in one call; more than 200 ids is a 422 (send the page you render, not the thread).
      * @param {FeedbackRating} [rating] 
+     * @param {boolean} [mine] Only the caller\&#39;s own feedback, whatever their role, so an owner or admin reading a thread sees their own vote on each message.
      * @param {FeedbackOrder} [sortBy] Field to sort feedback by (default: CREATED_AT)
      * @param {SortDirection} [sortDir] Sort direction; overrides the field\&#39;s natural default
      * @param {number} [limit] Number of items per page
@@ -138,7 +141,7 @@ export interface FeedbackApiInterface {
     listFeedbackRaw(requestParameters: ListFeedbackRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedResponseFeedbackEventResponse>>;
 
     /**
-     * List feedback entries with optional filters.  USER role: only returns their own feedback. OWNER/ADMIN role: returns feedback from all users.
+     * List feedback entries with optional filters.  USER role: only returns their own feedback. OWNER/ADMIN role: returns feedback from all users unless `mine` is set.
      * List Feedback Handler
      */
     listFeedback(requestParameters: ListFeedbackRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedResponseFeedbackEventResponse>;
@@ -246,6 +249,10 @@ export class FeedbackApi extends runtime.BaseAPI implements FeedbackApiInterface
             queryParameters['rating'] = requestParameters['rating'];
         }
 
+        if (requestParameters['mine'] != null) {
+            queryParameters['mine'] = requestParameters['mine'];
+        }
+
         if (requestParameters['sortBy'] != null) {
             queryParameters['sort_by'] = requestParameters['sortBy'];
         }
@@ -300,7 +307,7 @@ export class FeedbackApi extends runtime.BaseAPI implements FeedbackApiInterface
     }
 
     /**
-     * List feedback entries with optional filters.  USER role: only returns their own feedback. OWNER/ADMIN role: returns feedback from all users.
+     * List feedback entries with optional filters.  USER role: only returns their own feedback. OWNER/ADMIN role: returns feedback from all users unless `mine` is set.
      * List Feedback Handler
      */
     async listFeedbackRaw(requestParameters: ListFeedbackRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedResponseFeedbackEventResponse>> {
@@ -311,7 +318,7 @@ export class FeedbackApi extends runtime.BaseAPI implements FeedbackApiInterface
     }
 
     /**
-     * List feedback entries with optional filters.  USER role: only returns their own feedback. OWNER/ADMIN role: returns feedback from all users.
+     * List feedback entries with optional filters.  USER role: only returns their own feedback. OWNER/ADMIN role: returns feedback from all users unless `mine` is set.
      * List Feedback Handler
      */
     async listFeedback(requestParameters: ListFeedbackRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedResponseFeedbackEventResponse> {
