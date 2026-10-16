@@ -50,6 +50,7 @@ docs/BulkModelTablesResponse.md
 docs/BulkMoveApi.md
 docs/BulkMoveRequest.md
 docs/BulkOperationResponse.md
+docs/BulkRerunRequest.md
 docs/BulkRevokeRequest.md
 docs/BulkTagRequest.md
 docs/BulkTrashRequest.md
@@ -263,6 +264,7 @@ docs/PaginatedResponseTenantUserResponse.md
 docs/PaginatedResponseThreadMessageResponse.md
 docs/PaginatedResponseThreadResponse.md
 docs/PaginatedResponseTrashItemResponse.md
+docs/PaginatedResponseUserInfo.md
 docs/PaginatedResponseWorkflowDefinitionResponse.md
 docs/PaginatedResponseWorkflowRunResponse.md
 docs/PaginatedResponseWorkflowSummaryResponse.md
@@ -544,6 +546,7 @@ src/models/BulkModelTablesRequest.ts
 src/models/BulkModelTablesResponse.ts
 src/models/BulkMoveRequest.ts
 src/models/BulkOperationResponse.ts
+src/models/BulkRerunRequest.ts
 src/models/BulkRevokeRequest.ts
 src/models/BulkTagRequest.ts
 src/models/BulkTrashRequest.ts
@@ -744,6 +747,7 @@ src/models/PaginatedResponseTenantUserResponse.ts
 src/models/PaginatedResponseThreadMessageResponse.ts
 src/models/PaginatedResponseThreadResponse.ts
 src/models/PaginatedResponseTrashItemResponse.ts
+src/models/PaginatedResponseUserInfo.ts
 src/models/PaginatedResponseWorkflowDefinitionResponse.ts
 src/models/PaginatedResponseWorkflowRunResponse.ts
 src/models/PaginatedResponseWorkflowSummaryResponse.ts

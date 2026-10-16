@@ -31,7 +31,10 @@ export const BulkFailureReason = {
     CheckedOut: 'checked_out',
     NameConflict: 'name_conflict',
     InProgressWorkflow: 'in_progress_workflow',
-    PermissionLimit: 'permission_limit'
+    PermissionLimit: 'permission_limit',
+    AlreadyIngested: 'already_ingested',
+    UnsupportedDocumentType: 'unsupported_document_type',
+    Superseded: 'superseded'
 } as const;
 export type BulkFailureReason = typeof BulkFailureReason[keyof typeof BulkFailureReason];
 

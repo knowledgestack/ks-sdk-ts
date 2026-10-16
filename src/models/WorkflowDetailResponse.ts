@@ -20,6 +20,13 @@ import {
     PipelineStatusToJSON,
     PipelineStatusToJSONTyped,
 } from './PipelineStatus';
+import type { UserInfo } from './UserInfo';
+import {
+    UserInfoFromJSON,
+    UserInfoFromJSONTyped,
+    UserInfoToJSON,
+    UserInfoToJSONTyped,
+} from './UserInfo';
 
 /**
  * Single item - adds live Temporal fields.
@@ -44,7 +51,31 @@ export interface WorkflowDetailResponse {
      * @type {string}
      * @memberof WorkflowDetailResponse
      */
+    documentName: string;
+    /**
+     * The document's path
+     * @type {string}
+     * @memberof WorkflowDetailResponse
+     */
+    materializedPath: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof WorkflowDetailResponse
+     */
     documentVersionId: string;
+    /**
+     * Whether this version is the document's active one; false for an unfinished newer upload and for a superseded older version
+     * @type {boolean}
+     * @memberof WorkflowDetailResponse
+     */
+    isActiveVersion: boolean;
+    /**
+     * 
+     * @type {UserInfo}
+     * @memberof WorkflowDetailResponse
+     */
+    uploader: UserInfo;
     /**
      * 
      * @type {PipelineStatus}
@@ -64,7 +95,7 @@ export interface WorkflowDetailResponse {
      */
     error?: string | null;
     /**
-     * 
+     * When the last run started; the upload time until a run has started
      * @type {Date}
      * @memberof WorkflowDetailResponse
      */
@@ -150,7 +181,11 @@ export const WorkflowDetailResponsePropertyValidationAttributesMap: {
 export function instanceOfWorkflowDetailResponse(value: object): value is WorkflowDetailResponse {
     if (!('workflowId' in value) || value['workflowId'] === undefined) return false;
     if (!('documentId' in value) || value['documentId'] === undefined) return false;
+    if (!('documentName' in value) || value['documentName'] === undefined) return false;
+    if (!('materializedPath' in value) || value['materializedPath'] === undefined) return false;
     if (!('documentVersionId' in value) || value['documentVersionId'] === undefined) return false;
+    if (!('isActiveVersion' in value) || value['isActiveVersion'] === undefined) return false;
+    if (!('uploader' in value) || value['uploader'] === undefined) return false;
     if (!('status' in value) || value['status'] === undefined) return false;
     if (!('lastRunTimestamp' in value) || value['lastRunTimestamp'] === undefined) return false;
     if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
@@ -174,7 +209,11 @@ export function WorkflowDetailResponseFromJSONTyped(json: any, ignoreDiscriminat
         
         'workflowId': json['workflow_id'],
         'documentId': json['document_id'],
+        'documentName': json['document_name'],
+        'materializedPath': json['materialized_path'],
         'documentVersionId': json['document_version_id'],
+        'isActiveVersion': json['is_active_version'],
+        'uploader': UserInfoFromJSON(json['uploader']),
         'status': PipelineStatusFromJSON(json['status']),
         'lastActivity': json['last_activity'] == null ? undefined : json['last_activity'],
         'error': json['error'] == null ? undefined : json['error'],
@@ -204,7 +243,11 @@ export function WorkflowDetailResponseToJSONTyped(value?: WorkflowDetailResponse
         
         'workflow_id': value['workflowId'],
         'document_id': value['documentId'],
+        'document_name': value['documentName'],
+        'materialized_path': value['materializedPath'],
         'document_version_id': value['documentVersionId'],
+        'is_active_version': value['isActiveVersion'],
+        'uploader': UserInfoToJSON(value['uploader']),
         'status': PipelineStatusToJSON(value['status']),
         'last_activity': value['lastActivity'],
         'error': value['error'],

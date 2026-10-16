@@ -15,9 +15,14 @@
 
 import * as runtime from '../runtime';
 import type {
+  BulkOperationResponse,
+  BulkRerunRequest,
   ErrorResponse,
   HTTPValidationError,
+  PaginatedResponseUserInfo,
   PaginatedResponseWorkflowSummaryResponse,
+  PipelineStatus,
+  SortDirection,
   TemporalWorkflowStatusResponse,
   WorkflowActionResponse,
   WorkflowCancelResponse,
@@ -25,12 +30,22 @@ import type {
   ZipIngestionStatusResponse,
 } from '../models/index';
 import {
+    BulkOperationResponseFromJSON,
+    BulkOperationResponseToJSON,
+    BulkRerunRequestFromJSON,
+    BulkRerunRequestToJSON,
     ErrorResponseFromJSON,
     ErrorResponseToJSON,
     HTTPValidationErrorFromJSON,
     HTTPValidationErrorToJSON,
+    PaginatedResponseUserInfoFromJSON,
+    PaginatedResponseUserInfoToJSON,
     PaginatedResponseWorkflowSummaryResponseFromJSON,
     PaginatedResponseWorkflowSummaryResponseToJSON,
+    PipelineStatusFromJSON,
+    PipelineStatusToJSON,
+    SortDirectionFromJSON,
+    SortDirectionToJSON,
     TemporalWorkflowStatusResponseFromJSON,
     TemporalWorkflowStatusResponseToJSON,
     WorkflowActionResponseFromJSON,
@@ -42,6 +57,10 @@ import {
     ZipIngestionStatusResponseFromJSON,
     ZipIngestionStatusResponseToJSON,
 } from '../models/index';
+
+export interface BulkRerunDvWorkflowsRequest {
+    bulkRerunRequest: BulkRerunRequest;
+}
 
 export interface CancelTemporalWorkflowRequest {
     workflowId: string;
@@ -63,9 +82,24 @@ export interface GetZipIngestionStatusRequest {
     workflowId: string;
 }
 
+export interface ListDvWorkflowUploadersRequest {
+    usernameLike?: string | null;
+    limit?: number;
+    offset?: number;
+}
+
 export interface ListDvWorkflowsRequest {
     limit?: number;
     offset?: number;
+    sortDir?: SortDirection;
+    status?: Array<PipelineStatus> | null;
+    nameLike?: string | null;
+    latestVersionOnly?: boolean;
+    uploaderUserId?: string | null;
+    createdAfter?: Date | null;
+    createdBefore?: Date | null;
+    updatedAfter?: Date | null;
+    updatedBefore?: Date | null;
 }
 
 /**
@@ -76,6 +110,30 @@ export interface ListDvWorkflowsRequest {
  */
 export interface SystemJobsApiInterface {
     /**
+     * Creates request options for bulkRerunDvWorkflows without sending the request
+     * @param {BulkRerunRequest} bulkRerunRequest 
+     * @throws {RequiredError}
+     * @memberof SystemJobsApiInterface
+     */
+    bulkRerunDvWorkflowsRequestOpts(requestParameters: BulkRerunDvWorkflowsRequest): Promise<runtime.RequestOpts>;
+
+    /**
+     * Re-run ingestion for the selected document versions, reporting per item.  ``not_found``: missing, trashed, never ingested or without its stored source; ``forbidden``: no ``can_write``; ``in_progress_workflow``: still pending/processing; ``already_ingested``: completed; ``unsupported_document_type``: a type that is no longer ingested; ``superseded``: a newer version of the document exists. More than 200 ids is a 400 before any re-run.
+     * @summary Bulk Rerun Dv Workflows Handler
+     * @param {BulkRerunRequest} bulkRerunRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof SystemJobsApiInterface
+     */
+    bulkRerunDvWorkflowsRaw(requestParameters: BulkRerunDvWorkflowsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<BulkOperationResponse>>;
+
+    /**
+     * Re-run ingestion for the selected document versions, reporting per item.  ``not_found``: missing, trashed, never ingested or without its stored source; ``forbidden``: no ``can_write``; ``in_progress_workflow``: still pending/processing; ``already_ingested``: completed; ``unsupported_document_type``: a type that is no longer ingested; ``superseded``: a newer version of the document exists. More than 200 ids is a 400 before any re-run.
+     * Bulk Rerun Dv Workflows Handler
+     */
+    bulkRerunDvWorkflows(requestParameters: BulkRerunDvWorkflowsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<BulkOperationResponse>;
+
+    /**
      * Creates request options for cancelTemporalWorkflow without sending the request
      * @param {string} workflowId 
      * @throws {RequiredError}
@@ -84,7 +142,7 @@ export interface SystemJobsApiInterface {
     cancelTemporalWorkflowRequestOpts(requestParameters: CancelTemporalWorkflowRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * Cancel any Temporal workflow owned by the caller\'s tenant.  No status guard — this is a thin Temporal wrapper. Cancelling an already-terminal workflow is a no-op on the Temporal side.
+     * Cancel any Temporal workflow owned by the caller\'s tenant.  No status guard — this is a thin Temporal wrapper. Cancelling an already-terminal workflow is a no-op on the Temporal side. A run no worker ever picked up is terminated instead, since a cancel request is itself a workflow task nobody would process. When Temporal no longer has the run, or it was terminated here, a document version still showing it running is settled as cancelled (needs ``can_write``) so it can be re-run.
      * @summary Cancel Temporal Workflow Handler
      * @param {string} workflowId 
      * @param {*} [options] Override http request option.
@@ -94,7 +152,7 @@ export interface SystemJobsApiInterface {
     cancelTemporalWorkflowRaw(requestParameters: CancelTemporalWorkflowRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<WorkflowCancelResponse>>;
 
     /**
-     * Cancel any Temporal workflow owned by the caller\'s tenant.  No status guard — this is a thin Temporal wrapper. Cancelling an already-terminal workflow is a no-op on the Temporal side.
+     * Cancel any Temporal workflow owned by the caller\'s tenant.  No status guard — this is a thin Temporal wrapper. Cancelling an already-terminal workflow is a no-op on the Temporal side. A run no worker ever picked up is terminated instead, since a cancel request is itself a workflow task nobody would process. When Temporal no longer has the run, or it was terminated here, a document version still showing it running is settled as cancelled (needs ``can_write``) so it can be re-run.
      * Cancel Temporal Workflow Handler
      */
     cancelTemporalWorkflow(requestParameters: CancelTemporalWorkflowRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<WorkflowCancelResponse>;
@@ -108,7 +166,7 @@ export interface SystemJobsApiInterface {
     dvWorkflowRerunRequestOpts(requestParameters: DvWorkflowRerunRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * Rerun a workflow. USER role requires ``can_write`` on the document path.  ``s3_client`` is injected because ``DocumentIngestionService.__init__`` requires it, even though the re-ingestion path reuses the existing S3 source.
+     * Rerun a workflow. USER role requires ``can_write`` on the document path.  A version that a newer live version supersedes is refused with 409. ``s3_client`` is injected because ``DocumentIngestionService.__init__`` requires it, even though the re-ingestion path reuses the existing S3 source.
      * @summary Dv Workflow Rerun Handler
      * @param {string} workflowId 
      * @param {*} [options] Override http request option.
@@ -118,7 +176,7 @@ export interface SystemJobsApiInterface {
     dvWorkflowRerunRaw(requestParameters: DvWorkflowRerunRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<WorkflowActionResponse>>;
 
     /**
-     * Rerun a workflow. USER role requires ``can_write`` on the document path.  ``s3_client`` is injected because ``DocumentIngestionService.__init__`` requires it, even though the re-ingestion path reuses the existing S3 source.
+     * Rerun a workflow. USER role requires ``can_write`` on the document path.  A version that a newer live version supersedes is refused with 409. ``s3_client`` is injected because ``DocumentIngestionService.__init__`` requires it, even though the re-ingestion path reuses the existing S3 source.
      * Dv Workflow Rerun Handler
      */
     dvWorkflowRerun(requestParameters: DvWorkflowRerunRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<WorkflowActionResponse>;
@@ -180,7 +238,7 @@ export interface SystemJobsApiInterface {
     getZipIngestionStatusRequestOpts(requestParameters: GetZipIngestionStatusRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * Get a ZIP fan-out\'s live status + per-member outcomes.  Tenant-scoped via the TenantId search attribute (no per-path can_read check — intentionally consistent with the sibling generic Temporal endpoints below; the opaque workflow_id is only handed to the uploader, who had can_write on the target). The per-member results come from the workflow\'s ``results`` query (served from retained history), so once Temporal retention expires this 404s.
+     * Get a ZIP fan-out\'s live status + per-member outcomes.  Tenant-scoped via the TenantId search attribute (no per-path can_read check — intentionally consistent with the sibling generic Temporal endpoints below; the opaque workflow_id is only handed to the uploader, who had can_write on the target). The per-member results come from the workflow\'s ``results`` query (served from retained history), so once Temporal retention expires this 404s. Any other workflow type has no ``results`` query and is a 404, not a 500.
      * @summary Get Zip Ingestion Status Handler
      * @param {string} workflowId 
      * @param {*} [options] Override http request option.
@@ -190,25 +248,71 @@ export interface SystemJobsApiInterface {
     getZipIngestionStatusRaw(requestParameters: GetZipIngestionStatusRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ZipIngestionStatusResponse>>;
 
     /**
-     * Get a ZIP fan-out\'s live status + per-member outcomes.  Tenant-scoped via the TenantId search attribute (no per-path can_read check — intentionally consistent with the sibling generic Temporal endpoints below; the opaque workflow_id is only handed to the uploader, who had can_write on the target). The per-member results come from the workflow\'s ``results`` query (served from retained history), so once Temporal retention expires this 404s.
+     * Get a ZIP fan-out\'s live status + per-member outcomes.  Tenant-scoped via the TenantId search attribute (no per-path can_read check — intentionally consistent with the sibling generic Temporal endpoints below; the opaque workflow_id is only handed to the uploader, who had can_write on the target). The per-member results come from the workflow\'s ``results`` query (served from retained history), so once Temporal retention expires this 404s. Any other workflow type has no ``results`` query and is a 404, not a 500.
      * Get Zip Ingestion Status Handler
      */
     getZipIngestionStatus(requestParameters: GetZipIngestionStatusRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ZipIngestionStatusResponse>;
 
     /**
+     * Creates request options for listDvWorkflowUploaders without sending the request
+     * @param {string} [usernameLike] Case-insensitive substring of the first or last name
+     * @param {number} [limit] Number of items per page
+     * @param {number} [offset] Number of items to skip
+     * @throws {RequiredError}
+     * @memberof SystemJobsApiInterface
+     */
+    listDvWorkflowUploadersRequestOpts(requestParameters: ListDvWorkflowUploadersRequest): Promise<runtime.RequestOpts>;
+
+    /**
+     * People who uploaded a version the caller can list, for the uploader filter.  Scoped like ``list_dv_workflows``: USER only counts versions under readable paths.
+     * @summary List Dv Workflow Uploaders Handler
+     * @param {string} [usernameLike] Case-insensitive substring of the first or last name
+     * @param {number} [limit] Number of items per page
+     * @param {number} [offset] Number of items to skip
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof SystemJobsApiInterface
+     */
+    listDvWorkflowUploadersRaw(requestParameters: ListDvWorkflowUploadersRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedResponseUserInfo>>;
+
+    /**
+     * People who uploaded a version the caller can list, for the uploader filter.  Scoped like ``list_dv_workflows``: USER only counts versions under readable paths.
+     * List Dv Workflow Uploaders Handler
+     */
+    listDvWorkflowUploaders(requestParameters: ListDvWorkflowUploadersRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedResponseUserInfo>;
+
+    /**
      * Creates request options for listDvWorkflows without sending the request
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
+     * @param {SortDirection} [sortDir] Sort direction (ASC or DESC); overrides the field\&#39;s natural default. Every sort field supports both directions.
+     * @param {Array<PipelineStatus>} [status] Only versions in one of these pipeline statuses
+     * @param {string} [nameLike] Case-insensitive substring filter on document name
+     * @param {boolean} [latestVersionOnly] Skip versions superseded by a newer version
+     * @param {string} [uploaderUserId] Filter to versions uploaded by this user
+     * @param {Date} [createdAfter] Only items created at or after this timestamp (inclusive)
+     * @param {Date} [createdBefore] Only items created strictly before this timestamp
+     * @param {Date} [updatedAfter] Only items updated at or after this timestamp (inclusive)
+     * @param {Date} [updatedBefore] Only items updated strictly before this timestamp
      * @throws {RequiredError}
      * @memberof SystemJobsApiInterface
      */
     listDvWorkflowsRequestOpts(requestParameters: ListDvWorkflowsRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * List all workflows for the current tenant (paginated, DB-backed).  ADMIN/OWNER see all workflows; USER sees only those under permitted paths.
+     * List ingestions of live documents in the current tenant, newest upload first.  ADMIN/OWNER see every version; USER only versions under readable paths. ``sort_dir=ASC`` lists the oldest upload first.
      * @summary List Dv Workflows Handler
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
+     * @param {SortDirection} [sortDir] Sort direction (ASC or DESC); overrides the field\&#39;s natural default. Every sort field supports both directions.
+     * @param {Array<PipelineStatus>} [status] Only versions in one of these pipeline statuses
+     * @param {string} [nameLike] Case-insensitive substring filter on document name
+     * @param {boolean} [latestVersionOnly] Skip versions superseded by a newer version
+     * @param {string} [uploaderUserId] Filter to versions uploaded by this user
+     * @param {Date} [createdAfter] Only items created at or after this timestamp (inclusive)
+     * @param {Date} [createdBefore] Only items created strictly before this timestamp
+     * @param {Date} [updatedAfter] Only items updated at or after this timestamp (inclusive)
+     * @param {Date} [updatedBefore] Only items updated strictly before this timestamp
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof SystemJobsApiInterface
@@ -216,7 +320,7 @@ export interface SystemJobsApiInterface {
     listDvWorkflowsRaw(requestParameters: ListDvWorkflowsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedResponseWorkflowSummaryResponse>>;
 
     /**
-     * List all workflows for the current tenant (paginated, DB-backed).  ADMIN/OWNER see all workflows; USER sees only those under permitted paths.
+     * List ingestions of live documents in the current tenant, newest upload first.  ADMIN/OWNER see every version; USER only versions under readable paths. ``sort_dir=ASC`` lists the oldest upload first.
      * List Dv Workflows Handler
      */
     listDvWorkflows(requestParameters: ListDvWorkflowsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedResponseWorkflowSummaryResponse>;
@@ -227,6 +331,63 @@ export interface SystemJobsApiInterface {
  * 
  */
 export class SystemJobsApi extends runtime.BaseAPI implements SystemJobsApiInterface {
+
+    /**
+     * Creates request options for bulkRerunDvWorkflows without sending the request
+     */
+    async bulkRerunDvWorkflowsRequestOpts(requestParameters: BulkRerunDvWorkflowsRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['bulkRerunRequest'] == null) {
+            throw new runtime.RequiredError(
+                'bulkRerunRequest',
+                'Required parameter "bulkRerunRequest" was null or undefined when calling bulkRerunDvWorkflows().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/v1/system-jobs/document_versions/bulk-rerun`;
+
+        return {
+            path: urlPath,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: BulkRerunRequestToJSON(requestParameters['bulkRerunRequest']),
+        };
+    }
+
+    /**
+     * Re-run ingestion for the selected document versions, reporting per item.  ``not_found``: missing, trashed, never ingested or without its stored source; ``forbidden``: no ``can_write``; ``in_progress_workflow``: still pending/processing; ``already_ingested``: completed; ``unsupported_document_type``: a type that is no longer ingested; ``superseded``: a newer version of the document exists. More than 200 ids is a 400 before any re-run.
+     * Bulk Rerun Dv Workflows Handler
+     */
+    async bulkRerunDvWorkflowsRaw(requestParameters: BulkRerunDvWorkflowsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<BulkOperationResponse>> {
+        const requestOptions = await this.bulkRerunDvWorkflowsRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => BulkOperationResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * Re-run ingestion for the selected document versions, reporting per item.  ``not_found``: missing, trashed, never ingested or without its stored source; ``forbidden``: no ``can_write``; ``in_progress_workflow``: still pending/processing; ``already_ingested``: completed; ``unsupported_document_type``: a type that is no longer ingested; ``superseded``: a newer version of the document exists. More than 200 ids is a 400 before any re-run.
+     * Bulk Rerun Dv Workflows Handler
+     */
+    async bulkRerunDvWorkflows(requestParameters: BulkRerunDvWorkflowsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<BulkOperationResponse> {
+        const response = await this.bulkRerunDvWorkflowsRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
 
     /**
      * Creates request options for cancelTemporalWorkflow without sending the request
@@ -264,7 +425,7 @@ export class SystemJobsApi extends runtime.BaseAPI implements SystemJobsApiInter
     }
 
     /**
-     * Cancel any Temporal workflow owned by the caller\'s tenant.  No status guard — this is a thin Temporal wrapper. Cancelling an already-terminal workflow is a no-op on the Temporal side.
+     * Cancel any Temporal workflow owned by the caller\'s tenant.  No status guard — this is a thin Temporal wrapper. Cancelling an already-terminal workflow is a no-op on the Temporal side. A run no worker ever picked up is terminated instead, since a cancel request is itself a workflow task nobody would process. When Temporal no longer has the run, or it was terminated here, a document version still showing it running is settled as cancelled (needs ``can_write``) so it can be re-run.
      * Cancel Temporal Workflow Handler
      */
     async cancelTemporalWorkflowRaw(requestParameters: CancelTemporalWorkflowRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<WorkflowCancelResponse>> {
@@ -275,7 +436,7 @@ export class SystemJobsApi extends runtime.BaseAPI implements SystemJobsApiInter
     }
 
     /**
-     * Cancel any Temporal workflow owned by the caller\'s tenant.  No status guard — this is a thin Temporal wrapper. Cancelling an already-terminal workflow is a no-op on the Temporal side.
+     * Cancel any Temporal workflow owned by the caller\'s tenant.  No status guard — this is a thin Temporal wrapper. Cancelling an already-terminal workflow is a no-op on the Temporal side. A run no worker ever picked up is terminated instead, since a cancel request is itself a workflow task nobody would process. When Temporal no longer has the run, or it was terminated here, a document version still showing it running is settled as cancelled (needs ``can_write``) so it can be re-run.
      * Cancel Temporal Workflow Handler
      */
     async cancelTemporalWorkflow(requestParameters: CancelTemporalWorkflowRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<WorkflowCancelResponse> {
@@ -319,7 +480,7 @@ export class SystemJobsApi extends runtime.BaseAPI implements SystemJobsApiInter
     }
 
     /**
-     * Rerun a workflow. USER role requires ``can_write`` on the document path.  ``s3_client`` is injected because ``DocumentIngestionService.__init__`` requires it, even though the re-ingestion path reuses the existing S3 source.
+     * Rerun a workflow. USER role requires ``can_write`` on the document path.  A version that a newer live version supersedes is refused with 409. ``s3_client`` is injected because ``DocumentIngestionService.__init__`` requires it, even though the re-ingestion path reuses the existing S3 source.
      * Dv Workflow Rerun Handler
      */
     async dvWorkflowRerunRaw(requestParameters: DvWorkflowRerunRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<WorkflowActionResponse>> {
@@ -330,7 +491,7 @@ export class SystemJobsApi extends runtime.BaseAPI implements SystemJobsApiInter
     }
 
     /**
-     * Rerun a workflow. USER role requires ``can_write`` on the document path.  ``s3_client`` is injected because ``DocumentIngestionService.__init__`` requires it, even though the re-ingestion path reuses the existing S3 source.
+     * Rerun a workflow. USER role requires ``can_write`` on the document path.  A version that a newer live version supersedes is refused with 409. ``s3_client`` is injected because ``DocumentIngestionService.__init__`` requires it, even though the re-ingestion path reuses the existing S3 source.
      * Dv Workflow Rerun Handler
      */
     async dvWorkflowRerun(requestParameters: DvWorkflowRerunRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<WorkflowActionResponse> {
@@ -484,7 +645,7 @@ export class SystemJobsApi extends runtime.BaseAPI implements SystemJobsApiInter
     }
 
     /**
-     * Get a ZIP fan-out\'s live status + per-member outcomes.  Tenant-scoped via the TenantId search attribute (no per-path can_read check — intentionally consistent with the sibling generic Temporal endpoints below; the opaque workflow_id is only handed to the uploader, who had can_write on the target). The per-member results come from the workflow\'s ``results`` query (served from retained history), so once Temporal retention expires this 404s.
+     * Get a ZIP fan-out\'s live status + per-member outcomes.  Tenant-scoped via the TenantId search attribute (no per-path can_read check — intentionally consistent with the sibling generic Temporal endpoints below; the opaque workflow_id is only handed to the uploader, who had can_write on the target). The per-member results come from the workflow\'s ``results`` query (served from retained history), so once Temporal retention expires this 404s. Any other workflow type has no ``results`` query and is a 404, not a 500.
      * Get Zip Ingestion Status Handler
      */
     async getZipIngestionStatusRaw(requestParameters: GetZipIngestionStatusRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ZipIngestionStatusResponse>> {
@@ -495,11 +656,70 @@ export class SystemJobsApi extends runtime.BaseAPI implements SystemJobsApiInter
     }
 
     /**
-     * Get a ZIP fan-out\'s live status + per-member outcomes.  Tenant-scoped via the TenantId search attribute (no per-path can_read check — intentionally consistent with the sibling generic Temporal endpoints below; the opaque workflow_id is only handed to the uploader, who had can_write on the target). The per-member results come from the workflow\'s ``results`` query (served from retained history), so once Temporal retention expires this 404s.
+     * Get a ZIP fan-out\'s live status + per-member outcomes.  Tenant-scoped via the TenantId search attribute (no per-path can_read check — intentionally consistent with the sibling generic Temporal endpoints below; the opaque workflow_id is only handed to the uploader, who had can_write on the target). The per-member results come from the workflow\'s ``results`` query (served from retained history), so once Temporal retention expires this 404s. Any other workflow type has no ``results`` query and is a 404, not a 500.
      * Get Zip Ingestion Status Handler
      */
     async getZipIngestionStatus(requestParameters: GetZipIngestionStatusRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ZipIngestionStatusResponse> {
         const response = await this.getZipIngestionStatusRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for listDvWorkflowUploaders without sending the request
+     */
+    async listDvWorkflowUploadersRequestOpts(requestParameters: ListDvWorkflowUploadersRequest): Promise<runtime.RequestOpts> {
+        const queryParameters: any = {};
+
+        if (requestParameters['usernameLike'] != null) {
+            queryParameters['username_like'] = requestParameters['usernameLike'];
+        }
+
+        if (requestParameters['limit'] != null) {
+            queryParameters['limit'] = requestParameters['limit'];
+        }
+
+        if (requestParameters['offset'] != null) {
+            queryParameters['offset'] = requestParameters['offset'];
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/v1/system-jobs/document_versions/uploaders`;
+
+        return {
+            path: urlPath,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * People who uploaded a version the caller can list, for the uploader filter.  Scoped like ``list_dv_workflows``: USER only counts versions under readable paths.
+     * List Dv Workflow Uploaders Handler
+     */
+    async listDvWorkflowUploadersRaw(requestParameters: ListDvWorkflowUploadersRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedResponseUserInfo>> {
+        const requestOptions = await this.listDvWorkflowUploadersRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedResponseUserInfoFromJSON(jsonValue));
+    }
+
+    /**
+     * People who uploaded a version the caller can list, for the uploader filter.  Scoped like ``list_dv_workflows``: USER only counts versions under readable paths.
+     * List Dv Workflow Uploaders Handler
+     */
+    async listDvWorkflowUploaders(requestParameters: ListDvWorkflowUploadersRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedResponseUserInfo> {
+        const response = await this.listDvWorkflowUploadersRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -515,6 +735,42 @@ export class SystemJobsApi extends runtime.BaseAPI implements SystemJobsApiInter
 
         if (requestParameters['offset'] != null) {
             queryParameters['offset'] = requestParameters['offset'];
+        }
+
+        if (requestParameters['sortDir'] != null) {
+            queryParameters['sort_dir'] = requestParameters['sortDir'];
+        }
+
+        if (requestParameters['status'] != null) {
+            queryParameters['status'] = requestParameters['status'];
+        }
+
+        if (requestParameters['nameLike'] != null) {
+            queryParameters['name_like'] = requestParameters['nameLike'];
+        }
+
+        if (requestParameters['latestVersionOnly'] != null) {
+            queryParameters['latest_version_only'] = requestParameters['latestVersionOnly'];
+        }
+
+        if (requestParameters['uploaderUserId'] != null) {
+            queryParameters['uploader_user_id'] = requestParameters['uploaderUserId'];
+        }
+
+        if (requestParameters['createdAfter'] != null) {
+            queryParameters['created_after'] = (requestParameters['createdAfter'] as any).toISOString();
+        }
+
+        if (requestParameters['createdBefore'] != null) {
+            queryParameters['created_before'] = (requestParameters['createdBefore'] as any).toISOString();
+        }
+
+        if (requestParameters['updatedAfter'] != null) {
+            queryParameters['updated_after'] = (requestParameters['updatedAfter'] as any).toISOString();
+        }
+
+        if (requestParameters['updatedBefore'] != null) {
+            queryParameters['updated_before'] = (requestParameters['updatedBefore'] as any).toISOString();
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -539,7 +795,7 @@ export class SystemJobsApi extends runtime.BaseAPI implements SystemJobsApiInter
     }
 
     /**
-     * List all workflows for the current tenant (paginated, DB-backed).  ADMIN/OWNER see all workflows; USER sees only those under permitted paths.
+     * List ingestions of live documents in the current tenant, newest upload first.  ADMIN/OWNER see every version; USER only versions under readable paths. ``sort_dir=ASC`` lists the oldest upload first.
      * List Dv Workflows Handler
      */
     async listDvWorkflowsRaw(requestParameters: ListDvWorkflowsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedResponseWorkflowSummaryResponse>> {
@@ -550,7 +806,7 @@ export class SystemJobsApi extends runtime.BaseAPI implements SystemJobsApiInter
     }
 
     /**
-     * List all workflows for the current tenant (paginated, DB-backed).  ADMIN/OWNER see all workflows; USER sees only those under permitted paths.
+     * List ingestions of live documents in the current tenant, newest upload first.  ADMIN/OWNER see every version; USER only versions under readable paths. ``sort_dir=ASC`` lists the oldest upload first.
      * List Dv Workflows Handler
      */
     async listDvWorkflows(requestParameters: ListDvWorkflowsRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedResponseWorkflowSummaryResponse> {
