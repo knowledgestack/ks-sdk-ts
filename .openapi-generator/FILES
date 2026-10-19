@@ -331,6 +331,7 @@ docs/SheetVisibilityChange.md
 docs/SignInRequest.md
 docs/SignUpResponse.md
 docs/SkillFile.md
+docs/SkillFileDocument.md
 docs/SkillOrder.md
 docs/SkillResponse.md
 docs/SkillSearchResult.md
@@ -810,6 +811,7 @@ src/models/SheetVisibilityChange.ts
 src/models/SignInRequest.ts
 src/models/SignUpResponse.ts
 src/models/SkillFile.ts
+src/models/SkillFileDocument.ts
 src/models/SkillOrder.ts
 src/models/SkillResponse.ts
 src/models/SkillSearchResult.ts

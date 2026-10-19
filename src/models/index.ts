@@ -301,6 +301,7 @@ export * from './SheetVisibilityChange';
 export * from './SignInRequest';
 export * from './SignUpResponse';
 export * from './SkillFile';
+export * from './SkillFileDocument';
 export * from './SkillOrder';
 export * from './SkillResponse';
 export * from './SkillSearchResult';

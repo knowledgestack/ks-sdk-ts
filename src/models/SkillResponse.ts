@@ -41,6 +41,13 @@ import {
     UserInfoToJSON,
     UserInfoToJSONTyped,
 } from './UserInfo';
+import type { SkillFileDocument } from './SkillFileDocument';
+import {
+    SkillFileDocumentFromJSON,
+    SkillFileDocumentFromJSONTyped,
+    SkillFileDocumentToJSON,
+    SkillFileDocumentToJSONTyped,
+} from './SkillFileDocument';
 
 /**
  * Skill response; ``part_type`` is the folder-listing discriminator.
@@ -114,6 +121,12 @@ export interface SkillResponse {
      * @memberof SkillResponse
      */
     files?: Array<SkillFile> | null;
+    /**
+     * Every working file with its Document id, SKILL.md included, sorted by path; populated with file_paths, empty on list.
+     * @type {Array<SkillFileDocument>}
+     * @memberof SkillResponse
+     */
+    fileDocuments?: Array<SkillFileDocument>;
     /**
      * Whether the working copy differs from the active published version. Always present (incl. list responses) so the UI can flag a skill with an unpublished draft.
      * @type {boolean}
@@ -217,6 +230,7 @@ export function SkillResponseFromJSONTyped(json: any, ignoreDiscriminator: boole
         'skillMd': json['skill_md'] == null ? undefined : json['skill_md'],
         'filePaths': json['file_paths'] == null ? undefined : json['file_paths'],
         'files': json['files'] == null ? undefined : ((json['files'] as Array<any>).map(SkillFileFromJSON)),
+        'fileDocuments': json['file_documents'] == null ? undefined : ((json['file_documents'] as Array<any>).map(SkillFileDocumentFromJSON)),
         'hasUnpublishedChanges': json['has_unpublished_changes'] == null ? undefined : json['has_unpublished_changes'],
         'approvalState': PathPartApprovalStateFromJSON(json['approval_state']),
         'owner': json['owner'] == null ? undefined : UserInfoFromJSON(json['owner']),
@@ -248,6 +262,7 @@ export function SkillResponseToJSONTyped(value?: SkillResponse | null, ignoreDis
         'skill_md': value['skillMd'],
         'file_paths': value['filePaths'],
         'files': value['files'] == null ? undefined : ((value['files'] as Array<any>).map(SkillFileToJSON)),
+        'file_documents': value['fileDocuments'] == null ? undefined : ((value['fileDocuments'] as Array<any>).map(SkillFileDocumentToJSON)),
         'has_unpublished_changes': value['hasUnpublishedChanges'],
         'approval_state': PathPartApprovalStateToJSON(value['approvalState']),
         'owner': UserInfoToJSON(value['owner']),
