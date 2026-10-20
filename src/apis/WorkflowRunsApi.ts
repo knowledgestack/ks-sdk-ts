@@ -304,7 +304,7 @@ export interface WorkflowRunsApiInterface {
     resumeWorkflowRunRequestOpts(requestParameters: ResumeWorkflowRunRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * Continue a FAILED run in place instead of restarting it.  Unlike ``retry`` (which restarts the agent cold), ``resume`` loads the run\'s surviving thread history — the checkpoint summary and any persisted partial reply — and re-hydrates ``/work/``, so a run that timed out or was stopped near the end finishes from where it left off rather than redoing the work. Same guards as retry: 409 if the run is not FAILED or was never started; triggerer or OWNER/ADMIN only.  Runs in the background — poll ``GET /v1/workflow-runs/{run_id}`` (also given in the ``Location`` header) until ``execution_state`` is COMPLETED or FAILED.
+     * Continue a FAILED run in place instead of restarting it.  Unlike ``retry`` (which restarts the agent cold), ``resume`` loads the run\'s surviving thread history — the checkpoint summary and any persisted partial reply — and re-hydrates ``/work/``, so a run that timed out or was stopped near the end finishes from where it left off rather than redoing the work. Same guards and never-started re-arm as retry; triggerer or OWNER/ADMIN only.  Runs in the background — poll ``GET /v1/workflow-runs/{run_id}`` (also given in the ``Location`` header) until ``execution_state`` is COMPLETED or FAILED.
      * @summary Resume Workflow Run Handler
      * @param {string} runId 
      * @param {*} [options] Override http request option.
@@ -314,7 +314,7 @@ export interface WorkflowRunsApiInterface {
     resumeWorkflowRunRaw(requestParameters: ResumeWorkflowRunRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<WorkflowRunResponse>>;
 
     /**
-     * Continue a FAILED run in place instead of restarting it.  Unlike ``retry`` (which restarts the agent cold), ``resume`` loads the run\'s surviving thread history — the checkpoint summary and any persisted partial reply — and re-hydrates ``/work/``, so a run that timed out or was stopped near the end finishes from where it left off rather than redoing the work. Same guards as retry: 409 if the run is not FAILED or was never started; triggerer or OWNER/ADMIN only.  Runs in the background — poll ``GET /v1/workflow-runs/{run_id}`` (also given in the ``Location`` header) until ``execution_state`` is COMPLETED or FAILED.
+     * Continue a FAILED run in place instead of restarting it.  Unlike ``retry`` (which restarts the agent cold), ``resume`` loads the run\'s surviving thread history — the checkpoint summary and any persisted partial reply — and re-hydrates ``/work/``, so a run that timed out or was stopped near the end finishes from where it left off rather than redoing the work. Same guards and never-started re-arm as retry; triggerer or OWNER/ADMIN only.  Runs in the background — poll ``GET /v1/workflow-runs/{run_id}`` (also given in the ``Location`` header) until ``execution_state`` is COMPLETED or FAILED.
      * Resume Workflow Run Handler
      */
     resumeWorkflowRun(requestParameters: ResumeWorkflowRunRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<WorkflowRunResponse>;
@@ -328,7 +328,7 @@ export interface WorkflowRunsApiInterface {
     retryWorkflowRunRequestOpts(requestParameters: RetryWorkflowRunRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * Re-run a FAILED run (including a user-stopped one) from scratch.  Restarts the agent cold: flips ``FAILED -> IN_PROGRESS`` against the run\'s existing snapshot and re-dispatches with empty history. Use ``resume`` to continue from surviving history instead. 409 if the run is not FAILED (NOT_STARTED/PENDING use Start; COMPLETED is cloned) or was never started. Triggerer or OWNER/ADMIN only.  Runs in the background — poll ``GET /v1/workflow-runs/{run_id}`` (also given in the ``Location`` header) until ``execution_state`` is COMPLETED or FAILED.
+     * Re-run a FAILED run (including a user-stopped one) from scratch.  Restarts the agent cold: flips ``FAILED -> IN_PROGRESS`` against the run\'s existing snapshot and re-dispatches with empty history. Use ``resume`` to continue from surviving history instead. 409 if the run is not FAILED (NOT_STARTED/PENDING use Start; COMPLETED is cloned); never-started re-arms. Triggerer or OWNER/ADMIN only.  Runs in the background — poll ``GET /v1/workflow-runs/{run_id}`` (also given in the ``Location`` header) until ``execution_state`` is COMPLETED or FAILED.
      * @summary Retry Workflow Run Handler
      * @param {string} runId 
      * @param {*} [options] Override http request option.
@@ -338,7 +338,7 @@ export interface WorkflowRunsApiInterface {
     retryWorkflowRunRaw(requestParameters: RetryWorkflowRunRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<WorkflowRunResponse>>;
 
     /**
-     * Re-run a FAILED run (including a user-stopped one) from scratch.  Restarts the agent cold: flips ``FAILED -> IN_PROGRESS`` against the run\'s existing snapshot and re-dispatches with empty history. Use ``resume`` to continue from surviving history instead. 409 if the run is not FAILED (NOT_STARTED/PENDING use Start; COMPLETED is cloned) or was never started. Triggerer or OWNER/ADMIN only.  Runs in the background — poll ``GET /v1/workflow-runs/{run_id}`` (also given in the ``Location`` header) until ``execution_state`` is COMPLETED or FAILED.
+     * Re-run a FAILED run (including a user-stopped one) from scratch.  Restarts the agent cold: flips ``FAILED -> IN_PROGRESS`` against the run\'s existing snapshot and re-dispatches with empty history. Use ``resume`` to continue from surviving history instead. 409 if the run is not FAILED (NOT_STARTED/PENDING use Start; COMPLETED is cloned); never-started re-arms. Triggerer or OWNER/ADMIN only.  Runs in the background — poll ``GET /v1/workflow-runs/{run_id}`` (also given in the ``Location`` header) until ``execution_state`` is COMPLETED or FAILED.
      * Retry Workflow Run Handler
      */
     retryWorkflowRun(requestParameters: RetryWorkflowRunRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<WorkflowRunResponse>;
@@ -854,7 +854,7 @@ export class WorkflowRunsApi extends runtime.BaseAPI implements WorkflowRunsApiI
     }
 
     /**
-     * Continue a FAILED run in place instead of restarting it.  Unlike ``retry`` (which restarts the agent cold), ``resume`` loads the run\'s surviving thread history — the checkpoint summary and any persisted partial reply — and re-hydrates ``/work/``, so a run that timed out or was stopped near the end finishes from where it left off rather than redoing the work. Same guards as retry: 409 if the run is not FAILED or was never started; triggerer or OWNER/ADMIN only.  Runs in the background — poll ``GET /v1/workflow-runs/{run_id}`` (also given in the ``Location`` header) until ``execution_state`` is COMPLETED or FAILED.
+     * Continue a FAILED run in place instead of restarting it.  Unlike ``retry`` (which restarts the agent cold), ``resume`` loads the run\'s surviving thread history — the checkpoint summary and any persisted partial reply — and re-hydrates ``/work/``, so a run that timed out or was stopped near the end finishes from where it left off rather than redoing the work. Same guards and never-started re-arm as retry; triggerer or OWNER/ADMIN only.  Runs in the background — poll ``GET /v1/workflow-runs/{run_id}`` (also given in the ``Location`` header) until ``execution_state`` is COMPLETED or FAILED.
      * Resume Workflow Run Handler
      */
     async resumeWorkflowRunRaw(requestParameters: ResumeWorkflowRunRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<WorkflowRunResponse>> {
@@ -865,7 +865,7 @@ export class WorkflowRunsApi extends runtime.BaseAPI implements WorkflowRunsApiI
     }
 
     /**
-     * Continue a FAILED run in place instead of restarting it.  Unlike ``retry`` (which restarts the agent cold), ``resume`` loads the run\'s surviving thread history — the checkpoint summary and any persisted partial reply — and re-hydrates ``/work/``, so a run that timed out or was stopped near the end finishes from where it left off rather than redoing the work. Same guards as retry: 409 if the run is not FAILED or was never started; triggerer or OWNER/ADMIN only.  Runs in the background — poll ``GET /v1/workflow-runs/{run_id}`` (also given in the ``Location`` header) until ``execution_state`` is COMPLETED or FAILED.
+     * Continue a FAILED run in place instead of restarting it.  Unlike ``retry`` (which restarts the agent cold), ``resume`` loads the run\'s surviving thread history — the checkpoint summary and any persisted partial reply — and re-hydrates ``/work/``, so a run that timed out or was stopped near the end finishes from where it left off rather than redoing the work. Same guards and never-started re-arm as retry; triggerer or OWNER/ADMIN only.  Runs in the background — poll ``GET /v1/workflow-runs/{run_id}`` (also given in the ``Location`` header) until ``execution_state`` is COMPLETED or FAILED.
      * Resume Workflow Run Handler
      */
     async resumeWorkflowRun(requestParameters: ResumeWorkflowRunRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<WorkflowRunResponse> {
@@ -909,7 +909,7 @@ export class WorkflowRunsApi extends runtime.BaseAPI implements WorkflowRunsApiI
     }
 
     /**
-     * Re-run a FAILED run (including a user-stopped one) from scratch.  Restarts the agent cold: flips ``FAILED -> IN_PROGRESS`` against the run\'s existing snapshot and re-dispatches with empty history. Use ``resume`` to continue from surviving history instead. 409 if the run is not FAILED (NOT_STARTED/PENDING use Start; COMPLETED is cloned) or was never started. Triggerer or OWNER/ADMIN only.  Runs in the background — poll ``GET /v1/workflow-runs/{run_id}`` (also given in the ``Location`` header) until ``execution_state`` is COMPLETED or FAILED.
+     * Re-run a FAILED run (including a user-stopped one) from scratch.  Restarts the agent cold: flips ``FAILED -> IN_PROGRESS`` against the run\'s existing snapshot and re-dispatches with empty history. Use ``resume`` to continue from surviving history instead. 409 if the run is not FAILED (NOT_STARTED/PENDING use Start; COMPLETED is cloned); never-started re-arms. Triggerer or OWNER/ADMIN only.  Runs in the background — poll ``GET /v1/workflow-runs/{run_id}`` (also given in the ``Location`` header) until ``execution_state`` is COMPLETED or FAILED.
      * Retry Workflow Run Handler
      */
     async retryWorkflowRunRaw(requestParameters: RetryWorkflowRunRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<WorkflowRunResponse>> {
@@ -920,7 +920,7 @@ export class WorkflowRunsApi extends runtime.BaseAPI implements WorkflowRunsApiI
     }
 
     /**
-     * Re-run a FAILED run (including a user-stopped one) from scratch.  Restarts the agent cold: flips ``FAILED -> IN_PROGRESS`` against the run\'s existing snapshot and re-dispatches with empty history. Use ``resume`` to continue from surviving history instead. 409 if the run is not FAILED (NOT_STARTED/PENDING use Start; COMPLETED is cloned) or was never started. Triggerer or OWNER/ADMIN only.  Runs in the background — poll ``GET /v1/workflow-runs/{run_id}`` (also given in the ``Location`` header) until ``execution_state`` is COMPLETED or FAILED.
+     * Re-run a FAILED run (including a user-stopped one) from scratch.  Restarts the agent cold: flips ``FAILED -> IN_PROGRESS`` against the run\'s existing snapshot and re-dispatches with empty history. Use ``resume`` to continue from surviving history instead. 409 if the run is not FAILED (NOT_STARTED/PENDING use Start; COMPLETED is cloned); never-started re-arms. Triggerer or OWNER/ADMIN only.  Runs in the background — poll ``GET /v1/workflow-runs/{run_id}`` (also given in the ``Location`` header) until ``execution_state`` is COMPLETED or FAILED.
      * Retry Workflow Run Handler
      */
     async retryWorkflowRun(requestParameters: RetryWorkflowRunRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<WorkflowRunResponse> {
