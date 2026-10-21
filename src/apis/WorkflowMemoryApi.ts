@@ -19,8 +19,8 @@ import type {
   EditMemoryChunkRequest,
   ErrorResponse,
   HTTPValidationError,
-  MemoryChunkResponse,
-  PaginatedResponseMemoryChunkResponse,
+  MemoryEntryResponse,
+  PaginatedResponseMemoryEntryResponse,
 } from '../models/index';
 import {
     AppendMemoryChunkRequestFromJSON,
@@ -31,10 +31,10 @@ import {
     ErrorResponseToJSON,
     HTTPValidationErrorFromJSON,
     HTTPValidationErrorToJSON,
-    MemoryChunkResponseFromJSON,
-    MemoryChunkResponseToJSON,
-    PaginatedResponseMemoryChunkResponseFromJSON,
-    PaginatedResponseMemoryChunkResponseToJSON,
+    MemoryEntryResponseFromJSON,
+    MemoryEntryResponseToJSON,
+    PaginatedResponseMemoryEntryResponseFromJSON,
+    PaginatedResponseMemoryEntryResponseToJSON,
 } from '../models/index';
 
 export interface AppendWorkflowMemoryChunkRequest {
@@ -89,12 +89,12 @@ export interface WorkflowMemoryApiInterface {
      * @throws {RequiredError}
      * @memberof WorkflowMemoryApiInterface
      */
-    appendWorkflowMemoryChunkRaw(requestParameters: AppendWorkflowMemoryChunkRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<MemoryChunkResponse>>;
+    appendWorkflowMemoryChunkRaw(requestParameters: AppendWorkflowMemoryChunkRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<MemoryEntryResponse>>;
 
     /**
      * Append Workflow Memory Chunk Handler
      */
-    appendWorkflowMemoryChunk(requestParameters: AppendWorkflowMemoryChunkRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<MemoryChunkResponse>;
+    appendWorkflowMemoryChunk(requestParameters: AppendWorkflowMemoryChunkRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<MemoryEntryResponse>;
 
     /**
      * Creates request options for editWorkflowMemoryChunk without sending the request
@@ -116,12 +116,12 @@ export interface WorkflowMemoryApiInterface {
      * @throws {RequiredError}
      * @memberof WorkflowMemoryApiInterface
      */
-    editWorkflowMemoryChunkRaw(requestParameters: EditWorkflowMemoryChunkRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<MemoryChunkResponse>>;
+    editWorkflowMemoryChunkRaw(requestParameters: EditWorkflowMemoryChunkRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<MemoryEntryResponse>>;
 
     /**
      * Edit Workflow Memory Chunk Handler
      */
-    editWorkflowMemoryChunk(requestParameters: EditWorkflowMemoryChunkRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<MemoryChunkResponse>;
+    editWorkflowMemoryChunk(requestParameters: EditWorkflowMemoryChunkRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<MemoryEntryResponse>;
 
     /**
      * Creates request options for forgetWorkflowMemoryChunk without sending the request
@@ -166,12 +166,12 @@ export interface WorkflowMemoryApiInterface {
      * @throws {RequiredError}
      * @memberof WorkflowMemoryApiInterface
      */
-    getWorkflowMemoryChunkRaw(requestParameters: GetWorkflowMemoryChunkRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<MemoryChunkResponse>>;
+    getWorkflowMemoryChunkRaw(requestParameters: GetWorkflowMemoryChunkRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<MemoryEntryResponse>>;
 
     /**
      * Get Workflow Memory Chunk Handler
      */
-    getWorkflowMemoryChunk(requestParameters: GetWorkflowMemoryChunkRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<MemoryChunkResponse>;
+    getWorkflowMemoryChunk(requestParameters: GetWorkflowMemoryChunkRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<MemoryEntryResponse>;
 
     /**
      * Creates request options for listWorkflowMemoryChunks without sending the request
@@ -193,12 +193,12 @@ export interface WorkflowMemoryApiInterface {
      * @throws {RequiredError}
      * @memberof WorkflowMemoryApiInterface
      */
-    listWorkflowMemoryChunksRaw(requestParameters: ListWorkflowMemoryChunksRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedResponseMemoryChunkResponse>>;
+    listWorkflowMemoryChunksRaw(requestParameters: ListWorkflowMemoryChunksRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedResponseMemoryEntryResponse>>;
 
     /**
      * List Workflow Memory Chunks Handler
      */
-    listWorkflowMemoryChunks(requestParameters: ListWorkflowMemoryChunksRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedResponseMemoryChunkResponse>;
+    listWorkflowMemoryChunks(requestParameters: ListWorkflowMemoryChunksRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedResponseMemoryEntryResponse>;
 
 }
 
@@ -255,17 +255,17 @@ export class WorkflowMemoryApi extends runtime.BaseAPI implements WorkflowMemory
     /**
      * Append Workflow Memory Chunk Handler
      */
-    async appendWorkflowMemoryChunkRaw(requestParameters: AppendWorkflowMemoryChunkRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<MemoryChunkResponse>> {
+    async appendWorkflowMemoryChunkRaw(requestParameters: AppendWorkflowMemoryChunkRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<MemoryEntryResponse>> {
         const requestOptions = await this.appendWorkflowMemoryChunkRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => MemoryChunkResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => MemoryEntryResponseFromJSON(jsonValue));
     }
 
     /**
      * Append Workflow Memory Chunk Handler
      */
-    async appendWorkflowMemoryChunk(requestParameters: AppendWorkflowMemoryChunkRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<MemoryChunkResponse> {
+    async appendWorkflowMemoryChunk(requestParameters: AppendWorkflowMemoryChunkRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<MemoryEntryResponse> {
         const response = await this.appendWorkflowMemoryChunkRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -326,17 +326,17 @@ export class WorkflowMemoryApi extends runtime.BaseAPI implements WorkflowMemory
     /**
      * Edit Workflow Memory Chunk Handler
      */
-    async editWorkflowMemoryChunkRaw(requestParameters: EditWorkflowMemoryChunkRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<MemoryChunkResponse>> {
+    async editWorkflowMemoryChunkRaw(requestParameters: EditWorkflowMemoryChunkRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<MemoryEntryResponse>> {
         const requestOptions = await this.editWorkflowMemoryChunkRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => MemoryChunkResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => MemoryEntryResponseFromJSON(jsonValue));
     }
 
     /**
      * Edit Workflow Memory Chunk Handler
      */
-    async editWorkflowMemoryChunk(requestParameters: EditWorkflowMemoryChunkRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<MemoryChunkResponse> {
+    async editWorkflowMemoryChunk(requestParameters: EditWorkflowMemoryChunkRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<MemoryEntryResponse> {
         const response = await this.editWorkflowMemoryChunkRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -447,17 +447,17 @@ export class WorkflowMemoryApi extends runtime.BaseAPI implements WorkflowMemory
     /**
      * Get Workflow Memory Chunk Handler
      */
-    async getWorkflowMemoryChunkRaw(requestParameters: GetWorkflowMemoryChunkRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<MemoryChunkResponse>> {
+    async getWorkflowMemoryChunkRaw(requestParameters: GetWorkflowMemoryChunkRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<MemoryEntryResponse>> {
         const requestOptions = await this.getWorkflowMemoryChunkRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => MemoryChunkResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => MemoryEntryResponseFromJSON(jsonValue));
     }
 
     /**
      * Get Workflow Memory Chunk Handler
      */
-    async getWorkflowMemoryChunk(requestParameters: GetWorkflowMemoryChunkRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<MemoryChunkResponse> {
+    async getWorkflowMemoryChunk(requestParameters: GetWorkflowMemoryChunkRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<MemoryEntryResponse> {
         const response = await this.getWorkflowMemoryChunkRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -508,17 +508,17 @@ export class WorkflowMemoryApi extends runtime.BaseAPI implements WorkflowMemory
     /**
      * List Workflow Memory Chunks Handler
      */
-    async listWorkflowMemoryChunksRaw(requestParameters: ListWorkflowMemoryChunksRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedResponseMemoryChunkResponse>> {
+    async listWorkflowMemoryChunksRaw(requestParameters: ListWorkflowMemoryChunksRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedResponseMemoryEntryResponse>> {
         const requestOptions = await this.listWorkflowMemoryChunksRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedResponseMemoryChunkResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedResponseMemoryEntryResponseFromJSON(jsonValue));
     }
 
     /**
      * List Workflow Memory Chunks Handler
      */
-    async listWorkflowMemoryChunks(requestParameters: ListWorkflowMemoryChunksRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedResponseMemoryChunkResponse> {
+    async listWorkflowMemoryChunks(requestParameters: ListWorkflowMemoryChunksRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedResponseMemoryEntryResponse> {
         const response = await this.listWorkflowMemoryChunksRaw(requestParameters, initOverrides);
         return await response.value();
     }

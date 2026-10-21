@@ -42,4 +42,5 @@ export * from './UserPermissionsApi';
 export * from './UsersApi';
 export * from './WorkflowDefinitionsApi';
 export * from './WorkflowMemoryApi';
+export * from './WorkflowRepositoryApi';
 export * from './WorkflowRunsApi';

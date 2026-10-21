@@ -18,7 +18,7 @@ import type {
   ErrorResponse,
   HTTPValidationError,
   MemoryBodyResponse,
-  MemoryChunkResponse,
+  MemoryEntryResponse,
   MemoryScope,
   PaginatedResponsePendingMemoryChunkResponse,
   PendingMemoryChunkResponse,
@@ -31,8 +31,8 @@ import {
     HTTPValidationErrorToJSON,
     MemoryBodyResponseFromJSON,
     MemoryBodyResponseToJSON,
-    MemoryChunkResponseFromJSON,
-    MemoryChunkResponseToJSON,
+    MemoryEntryResponseFromJSON,
+    MemoryEntryResponseToJSON,
     MemoryScopeFromJSON,
     MemoryScopeToJSON,
     PaginatedResponsePendingMemoryChunkResponseFromJSON,
@@ -88,12 +88,12 @@ export interface MemoryApiInterface {
      * @throws {RequiredError}
      * @memberof MemoryApiInterface
      */
-    approveMemoryProposalRaw(requestParameters: ApproveMemoryProposalRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<MemoryChunkResponse>>;
+    approveMemoryProposalRaw(requestParameters: ApproveMemoryProposalRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<MemoryEntryResponse>>;
 
     /**
      * Approve Memory Proposal Handler
      */
-    approveMemoryProposal(requestParameters: ApproveMemoryProposalRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<MemoryChunkResponse>;
+    approveMemoryProposal(requestParameters: ApproveMemoryProposalRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<MemoryEntryResponse>;
 
     /**
      * Creates request options for getMemoryBody without sending the request
@@ -236,17 +236,17 @@ export class MemoryApi extends runtime.BaseAPI implements MemoryApiInterface {
     /**
      * Approve Memory Proposal Handler
      */
-    async approveMemoryProposalRaw(requestParameters: ApproveMemoryProposalRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<MemoryChunkResponse>> {
+    async approveMemoryProposalRaw(requestParameters: ApproveMemoryProposalRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<MemoryEntryResponse>> {
         const requestOptions = await this.approveMemoryProposalRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => MemoryChunkResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => MemoryEntryResponseFromJSON(jsonValue));
     }
 
     /**
      * Approve Memory Proposal Handler
      */
-    async approveMemoryProposal(requestParameters: ApproveMemoryProposalRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<MemoryChunkResponse> {
+    async approveMemoryProposal(requestParameters: ApproveMemoryProposalRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<MemoryEntryResponse> {
         const response = await this.approveMemoryProposalRaw(requestParameters, initOverrides);
         return await response.value();
     }

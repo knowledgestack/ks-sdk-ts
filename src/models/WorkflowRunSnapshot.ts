@@ -13,6 +13,13 @@
  */
 
 import { mapValues } from '../runtime';
+import type { RepoSnapshot } from './RepoSnapshot';
+import {
+    RepoSnapshotFromJSON,
+    RepoSnapshotFromJSONTyped,
+    RepoSnapshotToJSON,
+    RepoSnapshotToJSONTyped,
+} from './RepoSnapshot';
 import type { InputSnapshot } from './InputSnapshot';
 import {
     InputSnapshotFromJSON,
@@ -91,6 +98,12 @@ export interface WorkflowRunSnapshot {
      * @memberof WorkflowRunSnapshot
      */
     selectedSkillIds?: Array<string>;
+    /**
+     * The workflow repository's main when the run started; absent when the workflow had no repository.
+     * @type {RepoSnapshot}
+     * @memberof WorkflowRunSnapshot
+     */
+    repo?: RepoSnapshot | null;
 }
 export const WorkflowRunSnapshotPropertyValidationAttributesMap: {
     [property: string]: {
@@ -141,6 +154,7 @@ export function WorkflowRunSnapshotFromJSONTyped(json: any, ignoreDiscriminator:
         'excludedCommonFiles': json['excluded_common_files'] == null ? undefined : ((json['excluded_common_files'] as Array<any>).map(ExcludedCommonFileFromJSON)),
         'userMessage': json['user_message'] == null ? undefined : json['user_message'],
         'selectedSkillIds': json['selected_skill_ids'] == null ? undefined : json['selected_skill_ids'],
+        'repo': json['repo'] == null ? undefined : RepoSnapshotFromJSON(json['repo']),
     };
 }
 
@@ -162,6 +176,7 @@ export function WorkflowRunSnapshotToJSONTyped(value?: WorkflowRunSnapshot | nul
         'excluded_common_files': value['excludedCommonFiles'] == null ? undefined : ((value['excludedCommonFiles'] as Array<any>).map(ExcludedCommonFileToJSON)),
         'user_message': value['userMessage'],
         'selected_skill_ids': value['selectedSkillIds'],
+        'repo': RepoSnapshotToJSON(value['repo']),
     };
 }
 

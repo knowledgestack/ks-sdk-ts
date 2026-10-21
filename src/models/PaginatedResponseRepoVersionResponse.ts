@@ -13,46 +13,46 @@
  */
 
 import { mapValues } from '../runtime';
-import type { MemoryChunkResponse } from './MemoryChunkResponse';
+import type { RepoVersionResponse } from './RepoVersionResponse';
 import {
-    MemoryChunkResponseFromJSON,
-    MemoryChunkResponseFromJSONTyped,
-    MemoryChunkResponseToJSON,
-    MemoryChunkResponseToJSONTyped,
-} from './MemoryChunkResponse';
+    RepoVersionResponseFromJSON,
+    RepoVersionResponseFromJSONTyped,
+    RepoVersionResponseToJSON,
+    RepoVersionResponseToJSONTyped,
+} from './RepoVersionResponse';
 
 /**
  * 
  * @export
- * @interface PaginatedResponseMemoryChunkResponse
+ * @interface PaginatedResponseRepoVersionResponse
  */
-export interface PaginatedResponseMemoryChunkResponse {
+export interface PaginatedResponseRepoVersionResponse {
     /**
      * List of items
-     * @type {Array<MemoryChunkResponse>}
-     * @memberof PaginatedResponseMemoryChunkResponse
+     * @type {Array<RepoVersionResponse>}
+     * @memberof PaginatedResponseRepoVersionResponse
      */
-    items: Array<MemoryChunkResponse>;
+    items: Array<RepoVersionResponse>;
     /**
      * Total number of items
      * @type {number}
-     * @memberof PaginatedResponseMemoryChunkResponse
+     * @memberof PaginatedResponseRepoVersionResponse
      */
     total: number;
     /**
      * Number of items per page
      * @type {number}
-     * @memberof PaginatedResponseMemoryChunkResponse
+     * @memberof PaginatedResponseRepoVersionResponse
      */
     limit: number;
     /**
      * Number of items to skip
      * @type {number}
-     * @memberof PaginatedResponseMemoryChunkResponse
+     * @memberof PaginatedResponseRepoVersionResponse
      */
     offset: number;
 }
-export const PaginatedResponseMemoryChunkResponsePropertyValidationAttributesMap: {
+export const PaginatedResponseRepoVersionResponsePropertyValidationAttributesMap: {
     [property: string]: {
         maxLength?: number,
         minLength?: number,
@@ -83,9 +83,9 @@ export const PaginatedResponseMemoryChunkResponsePropertyValidationAttributesMap
 
 
 /**
- * Check if a given object implements the PaginatedResponseMemoryChunkResponse interface.
+ * Check if a given object implements the PaginatedResponseRepoVersionResponse interface.
  */
-export function instanceOfPaginatedResponseMemoryChunkResponse(value: object): value is PaginatedResponseMemoryChunkResponse {
+export function instanceOfPaginatedResponseRepoVersionResponse(value: object): value is PaginatedResponseRepoVersionResponse {
     if (!('items' in value) || value['items'] === undefined) return false;
     if (!('total' in value) || value['total'] === undefined) return false;
     if (!('limit' in value) || value['limit'] === undefined) return false;
@@ -93,35 +93,35 @@ export function instanceOfPaginatedResponseMemoryChunkResponse(value: object): v
     return true;
 }
 
-export function PaginatedResponseMemoryChunkResponseFromJSON(json: any): PaginatedResponseMemoryChunkResponse {
-    return PaginatedResponseMemoryChunkResponseFromJSONTyped(json, false);
+export function PaginatedResponseRepoVersionResponseFromJSON(json: any): PaginatedResponseRepoVersionResponse {
+    return PaginatedResponseRepoVersionResponseFromJSONTyped(json, false);
 }
 
-export function PaginatedResponseMemoryChunkResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedResponseMemoryChunkResponse {
+export function PaginatedResponseRepoVersionResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedResponseRepoVersionResponse {
     if (json == null) {
         return json;
     }
     return {
         
-        'items': ((json['items'] as Array<any>).map(MemoryChunkResponseFromJSON)),
+        'items': ((json['items'] as Array<any>).map(RepoVersionResponseFromJSON)),
         'total': json['total'],
         'limit': json['limit'],
         'offset': json['offset'],
     };
 }
 
-export function PaginatedResponseMemoryChunkResponseToJSON(json: any): PaginatedResponseMemoryChunkResponse {
-    return PaginatedResponseMemoryChunkResponseToJSONTyped(json, false);
+export function PaginatedResponseRepoVersionResponseToJSON(json: any): PaginatedResponseRepoVersionResponse {
+    return PaginatedResponseRepoVersionResponseToJSONTyped(json, false);
 }
 
-export function PaginatedResponseMemoryChunkResponseToJSONTyped(value?: PaginatedResponseMemoryChunkResponse | null, ignoreDiscriminator: boolean = false): any {
+export function PaginatedResponseRepoVersionResponseToJSONTyped(value?: PaginatedResponseRepoVersionResponse | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
         
-        'items': ((value['items'] as Array<any>).map(MemoryChunkResponseToJSON)),
+        'items': ((value['items'] as Array<any>).map(RepoVersionResponseToJSON)),
         'total': value['total'],
         'limit': value['limit'],
         'offset': value['offset'],

@@ -12,100 +12,53 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { MemoryKind } from './MemoryKind';
-import {
-    MemoryKindFromJSON,
-    MemoryKindFromJSONTyped,
-    MemoryKindToJSON,
-    MemoryKindToJSONTyped,
-} from './MemoryKind';
 
 /**
+ * Why retention or integration could not complete.
  * 
+ * ``conflict``: integration failed; a retained branch remains recoverable.
+ * ``history_rewrite``:
+ * the run rewrote saved history. ``no_write``: the turn's user cannot write the
+ * workflow. ``uncommitted``: changes were never committed to the assigned branch.
+ * ``rejected``: the platform refused the bundle (too large, unsafe paths).
+ * ``failed``: the checkout or the save itself failed.
  * @export
- * @interface MemoryChunkResponse
  */
-export interface MemoryChunkResponse {
-    /**
-     * 
-     * @type {string}
-     * @memberof MemoryChunkResponse
-     */
-    chunkId: string;
-    /**
-     * 
-     * @type {MemoryKind}
-     * @memberof MemoryChunkResponse
-     */
-    kind: MemoryKind;
-    /**
-     * 
-     * @type {string}
-     * @memberof MemoryChunkResponse
-     */
-    body: string;
-}
+export const RepoSaveSkipReason = {
+    Conflict: 'conflict',
+    HistoryRewrite: 'history_rewrite',
+    NoWrite: 'no_write',
+    Uncommitted: 'uncommitted',
+    Rejected: 'rejected',
+    Failed: 'failed'
+} as const;
+export type RepoSaveSkipReason = typeof RepoSaveSkipReason[keyof typeof RepoSaveSkipReason];
 
 
-export const MemoryChunkResponsePropertyValidationAttributesMap: {
-    [property: string]: {
-        maxLength?: number,
-        minLength?: number,
-        pattern?: string,
-        maximum?: number,
-        exclusiveMaximum?: boolean,
-        minimum?: number,
-        exclusiveMinimum?: boolean,
-        multipleOf?: number,
-        maxItems?: number,
-        minItems?: number,
-        uniqueItems?: boolean
+export function instanceOfRepoSaveSkipReason(value: any): boolean {
+    for (const key in RepoSaveSkipReason) {
+        if (Object.prototype.hasOwnProperty.call(RepoSaveSkipReason, key)) {
+            if (RepoSaveSkipReason[key as keyof typeof RepoSaveSkipReason] === value) {
+                return true;
+            }
+        }
     }
-} = {
+    return false;
 }
 
-
-/**
- * Check if a given object implements the MemoryChunkResponse interface.
- */
-export function instanceOfMemoryChunkResponse(value: object): value is MemoryChunkResponse {
-    if (!('chunkId' in value) || value['chunkId'] === undefined) return false;
-    if (!('kind' in value) || value['kind'] === undefined) return false;
-    if (!('body' in value) || value['body'] === undefined) return false;
-    return true;
+export function RepoSaveSkipReasonFromJSON(json: any): RepoSaveSkipReason {
+    return RepoSaveSkipReasonFromJSONTyped(json, false);
 }
 
-export function MemoryChunkResponseFromJSON(json: any): MemoryChunkResponse {
-    return MemoryChunkResponseFromJSONTyped(json, false);
+export function RepoSaveSkipReasonFromJSONTyped(json: any, ignoreDiscriminator: boolean): RepoSaveSkipReason {
+    return json as RepoSaveSkipReason;
 }
 
-export function MemoryChunkResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): MemoryChunkResponse {
-    if (json == null) {
-        return json;
-    }
-    return {
-        
-        'chunkId': json['chunk_id'],
-        'kind': MemoryKindFromJSON(json['kind']),
-        'body': json['body'],
-    };
+export function RepoSaveSkipReasonToJSON(value?: RepoSaveSkipReason | null): any {
+    return value as any;
 }
 
-export function MemoryChunkResponseToJSON(json: any): MemoryChunkResponse {
-    return MemoryChunkResponseToJSONTyped(json, false);
-}
-
-export function MemoryChunkResponseToJSONTyped(value?: MemoryChunkResponse | null, ignoreDiscriminator: boolean = false): any {
-    if (value == null) {
-        return value;
-    }
-
-    return {
-        
-        'chunk_id': value['chunkId'],
-        'kind': MemoryKindToJSON(value['kind']),
-        'body': value['body'],
-    };
+export function RepoSaveSkipReasonToJSONTyped(value: any, ignoreDiscriminator: boolean): RepoSaveSkipReason {
+    return value as RepoSaveSkipReason;
 }
 
