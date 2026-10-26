@@ -13,6 +13,14 @@
  */
 
 import { mapValues } from '../runtime';
+import type { SupportedLanguage } from './SupportedLanguage';
+import {
+    SupportedLanguageFromJSON,
+    SupportedLanguageFromJSONTyped,
+    SupportedLanguageToJSON,
+    SupportedLanguageToJSONTyped,
+} from './SupportedLanguage';
+
 /**
  * 
  * @export
@@ -55,7 +63,15 @@ export interface UpdateUserRequest {
      * @memberof UpdateUserRequest
      */
     bio?: string | null;
+    /**
+     * 
+     * @type {SupportedLanguage}
+     * @memberof UpdateUserRequest
+     */
+    languagePreference?: SupportedLanguage;
 }
+
+
 export const UpdateUserRequestPropertyValidationAttributesMap: {
     [property: string]: {
         maxLength?: number,
@@ -112,6 +128,7 @@ export function UpdateUserRequestFromJSONTyped(json: any, ignoreDiscriminator: b
         'jobTitle': json['job_title'] == null ? undefined : json['job_title'],
         'department': json['department'] == null ? undefined : json['department'],
         'bio': json['bio'] == null ? undefined : json['bio'],
+        'languagePreference': json['language_preference'] == null ? undefined : SupportedLanguageFromJSON(json['language_preference']),
     };
 }
 
@@ -132,6 +149,7 @@ export function UpdateUserRequestToJSONTyped(value?: UpdateUserRequest | null, i
         'job_title': value['jobTitle'],
         'department': value['department'],
         'bio': value['bio'],
+        'language_preference': SupportedLanguageToJSON(value['languagePreference']),
     };
 }
 

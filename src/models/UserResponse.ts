@@ -27,6 +27,13 @@ import {
     IdpTypeToJSON,
     IdpTypeToJSONTyped,
 } from './IdpType';
+import type { SupportedLanguage } from './SupportedLanguage';
+import {
+    SupportedLanguageFromJSON,
+    SupportedLanguageFromJSONTyped,
+    SupportedLanguageToJSON,
+    SupportedLanguageToJSONTyped,
+} from './SupportedLanguage';
 import type { TenantUserRole } from './TenantUserRole';
 import {
     TenantUserRoleFromJSON,
@@ -141,6 +148,12 @@ export interface UserResponse {
      */
     avatarUrl?: string | null;
     /**
+     * 
+     * @type {SupportedLanguage}
+     * @memberof UserResponse
+     */
+    languagePreference: SupportedLanguage;
+    /**
      * When the user finished onboarding for the current tenant. NULL = wizard should be shown.
      * @type {Date}
      * @memberof UserResponse
@@ -215,6 +228,7 @@ export function instanceOfUserResponse(value: object): value is UserResponse {
     if (!('currentTenantId' in value) || value['currentTenantId'] === undefined) return false;
     if (!('currentTenantRole' in value) || value['currentTenantRole'] === undefined) return false;
     if (!('defaultTenantId' in value) || value['defaultTenantId'] === undefined) return false;
+    if (!('languagePreference' in value) || value['languagePreference'] === undefined) return false;
     if (!('joinMethod' in value) || value['joinMethod'] === undefined) return false;
     return true;
 }
@@ -242,6 +256,7 @@ export function UserResponseFromJSONTyped(json: any, ignoreDiscriminator: boolea
         'department': json['department'] == null ? undefined : json['department'],
         'bio': json['bio'] == null ? undefined : json['bio'],
         'avatarUrl': json['avatar_url'] == null ? undefined : json['avatar_url'],
+        'languagePreference': SupportedLanguageFromJSON(json['language_preference']),
         'onboardingCompletedAt': json['onboarding_completed_at'] == null ? undefined : (new Date(json['onboarding_completed_at'])),
         'joinMethod': TenantUserJoinMethodFromJSON(json['join_method']),
         'onboardingState': json['onboarding_state'] == null ? undefined : OnboardingStateFromJSON(json['onboarding_state']),
@@ -276,6 +291,7 @@ export function UserResponseToJSONTyped(value?: UserResponse | null, ignoreDiscr
         'department': value['department'],
         'bio': value['bio'],
         'avatar_url': value['avatarUrl'],
+        'language_preference': SupportedLanguageToJSON(value['languagePreference']),
         'onboarding_completed_at': value['onboardingCompletedAt'] == null ? value['onboardingCompletedAt'] : value['onboardingCompletedAt'].toISOString(),
         'join_method': TenantUserJoinMethodToJSON(value['joinMethod']),
         'onboarding_state': OnboardingStateToJSON(value['onboardingState']),
