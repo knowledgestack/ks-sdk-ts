@@ -90,6 +90,12 @@ export interface WorkflowSummaryResponse {
     lastActivity?: string | null;
     /**
      * 
+     * @type {number}
+     * @memberof WorkflowSummaryResponse
+     */
+    lastStageRetryAttempt?: number;
+    /**
+     * 
      * @type {string}
      * @memberof WorkflowSummaryResponse
      */
@@ -130,6 +136,10 @@ export const WorkflowSummaryResponsePropertyValidationAttributesMap: {
         uniqueItems?: boolean
     }
 } = {
+    lastStageRetryAttempt: {
+        minimum: 0,
+        exclusiveMinimum: false,
+    },
 }
 
 
@@ -169,6 +179,7 @@ export function WorkflowSummaryResponseFromJSONTyped(json: any, ignoreDiscrimina
         'uploader': UserInfoFromJSON(json['uploader']),
         'status': PipelineStatusFromJSON(json['status']),
         'lastActivity': json['last_activity'] == null ? undefined : json['last_activity'],
+        'lastStageRetryAttempt': json['last_stage_retry_attempt'] == null ? undefined : json['last_stage_retry_attempt'],
         'error': json['error'] == null ? undefined : json['error'],
         'lastRunTimestamp': (new Date(json['last_run_timestamp'])),
         'lastStateUpdateTimestamp': json['last_state_update_timestamp'] == null ? undefined : (new Date(json['last_state_update_timestamp'])),
@@ -196,6 +207,7 @@ export function WorkflowSummaryResponseToJSONTyped(value?: WorkflowSummaryRespon
         'uploader': UserInfoToJSON(value['uploader']),
         'status': PipelineStatusToJSON(value['status']),
         'last_activity': value['lastActivity'],
+        'last_stage_retry_attempt': value['lastStageRetryAttempt'],
         'error': value['error'],
         'last_run_timestamp': value['lastRunTimestamp'].toISOString(),
         'last_state_update_timestamp': value['lastStateUpdateTimestamp'] == null ? value['lastStateUpdateTimestamp'] : value['lastStateUpdateTimestamp'].toISOString(),

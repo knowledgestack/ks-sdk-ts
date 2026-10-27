@@ -49,6 +49,12 @@ import {
  */
 export interface PipelineState {
     /**
+     * Zero-based retry count for the current stage; maximum across fan-out activities. Managed by ingestion.
+     * @type {number}
+     * @memberof PipelineState
+     */
+    readonly lastStageRetryAttempt?: number;
+    /**
      * 
      * @type {PipelineStatus}
      * @memberof PipelineState
@@ -67,13 +73,13 @@ export interface PipelineState {
      */
     lastStateUpdateTimestamp?: Date | null;
     /**
-     * Name of the last activity that executed (e.g., 'pdf_preparation_activity')
+     * Current ingestion stage, recorded before its activity starts
      * @type {string}
      * @memberof PipelineState
      */
     lastActivity?: string | null;
     /**
-     * Error message if pipeline failed
+     * Latest stage failure; retained during retries and cleared on the next stage or success
      * @type {string}
      * @memberof PipelineState
      */
@@ -132,6 +138,10 @@ export const PipelineStatePropertyValidationAttributesMap: {
         uniqueItems?: boolean
     }
 } = {
+    lastStageRetryAttempt: {
+        minimum: 0,
+        exclusiveMinimum: false,
+    },
 }
 
 
@@ -153,6 +163,7 @@ export function PipelineStateFromJSONTyped(json: any, ignoreDiscriminator: boole
     }
     return {
         
+        'lastStageRetryAttempt': json['last_stage_retry_attempt'] == null ? undefined : json['last_stage_retry_attempt'],
         'status': PipelineStatusFromJSON(json['status']),
         'lastRunTimestamp': json['last_run_timestamp'] == null ? undefined : (new Date(json['last_run_timestamp'])),
         'lastStateUpdateTimestamp': json['last_state_update_timestamp'] == null ? undefined : (new Date(json['last_state_update_timestamp'])),
@@ -171,7 +182,7 @@ export function PipelineStateToJSON(json: any): PipelineState {
     return PipelineStateToJSONTyped(json, false);
 }
 
-export function PipelineStateToJSONTyped(value?: PipelineState | null, ignoreDiscriminator: boolean = false): any {
+export function PipelineStateToJSONTyped(value?: Omit<PipelineState, 'last_stage_retry_attempt'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }

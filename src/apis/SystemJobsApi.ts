@@ -142,7 +142,7 @@ export interface SystemJobsApiInterface {
     cancelTemporalWorkflowRequestOpts(requestParameters: CancelTemporalWorkflowRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * Cancel any Temporal workflow owned by the caller\'s tenant.  No status guard — this is a thin Temporal wrapper. Cancelling an already-terminal workflow is a no-op on the Temporal side. A run no worker ever picked up is terminated instead, since a cancel request is itself a workflow task nobody would process. When Temporal no longer has the run, or it was terminated here, a document version still showing it running is settled as cancelled (needs ``can_write``) so it can be re-run.
+     * Cancel a tenant workflow; tracked ingestion also requires document write access.  Tracked attempts are settled before cancelling their matching Temporal run, including attempts not yet dispatched. Unstarted executions are terminated because cancellation needs a worker. Temporal operations pin the described run so a concurrent rerun is left alone.
      * @summary Cancel Temporal Workflow Handler
      * @param {string} workflowId 
      * @param {*} [options] Override http request option.
@@ -152,7 +152,7 @@ export interface SystemJobsApiInterface {
     cancelTemporalWorkflowRaw(requestParameters: CancelTemporalWorkflowRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<WorkflowCancelResponse>>;
 
     /**
-     * Cancel any Temporal workflow owned by the caller\'s tenant.  No status guard — this is a thin Temporal wrapper. Cancelling an already-terminal workflow is a no-op on the Temporal side. A run no worker ever picked up is terminated instead, since a cancel request is itself a workflow task nobody would process. When Temporal no longer has the run, or it was terminated here, a document version still showing it running is settled as cancelled (needs ``can_write``) so it can be re-run.
+     * Cancel a tenant workflow; tracked ingestion also requires document write access.  Tracked attempts are settled before cancelling their matching Temporal run, including attempts not yet dispatched. Unstarted executions are terminated because cancellation needs a worker. Temporal operations pin the described run so a concurrent rerun is left alone.
      * Cancel Temporal Workflow Handler
      */
     cancelTemporalWorkflow(requestParameters: CancelTemporalWorkflowRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<WorkflowCancelResponse>;
@@ -425,7 +425,7 @@ export class SystemJobsApi extends runtime.BaseAPI implements SystemJobsApiInter
     }
 
     /**
-     * Cancel any Temporal workflow owned by the caller\'s tenant.  No status guard — this is a thin Temporal wrapper. Cancelling an already-terminal workflow is a no-op on the Temporal side. A run no worker ever picked up is terminated instead, since a cancel request is itself a workflow task nobody would process. When Temporal no longer has the run, or it was terminated here, a document version still showing it running is settled as cancelled (needs ``can_write``) so it can be re-run.
+     * Cancel a tenant workflow; tracked ingestion also requires document write access.  Tracked attempts are settled before cancelling their matching Temporal run, including attempts not yet dispatched. Unstarted executions are terminated because cancellation needs a worker. Temporal operations pin the described run so a concurrent rerun is left alone.
      * Cancel Temporal Workflow Handler
      */
     async cancelTemporalWorkflowRaw(requestParameters: CancelTemporalWorkflowRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<WorkflowCancelResponse>> {
@@ -436,7 +436,7 @@ export class SystemJobsApi extends runtime.BaseAPI implements SystemJobsApiInter
     }
 
     /**
-     * Cancel any Temporal workflow owned by the caller\'s tenant.  No status guard — this is a thin Temporal wrapper. Cancelling an already-terminal workflow is a no-op on the Temporal side. A run no worker ever picked up is terminated instead, since a cancel request is itself a workflow task nobody would process. When Temporal no longer has the run, or it was terminated here, a document version still showing it running is settled as cancelled (needs ``can_write``) so it can be re-run.
+     * Cancel a tenant workflow; tracked ingestion also requires document write access.  Tracked attempts are settled before cancelling their matching Temporal run, including attempts not yet dispatched. Unstarted executions are terminated because cancellation needs a worker. Temporal operations pin the described run so a concurrent rerun is left alone.
      * Cancel Temporal Workflow Handler
      */
     async cancelTemporalWorkflow(requestParameters: CancelTemporalWorkflowRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<WorkflowCancelResponse> {
