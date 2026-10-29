@@ -34,7 +34,7 @@ export interface UpdateUserRequest {
      */
     defaultTenantId?: string | null;
     /**
-     * First name of the user
+     * First name of the user. Directory-synced users cannot set it.
      * @type {string}
      * @memberof UpdateUserRequest
      */

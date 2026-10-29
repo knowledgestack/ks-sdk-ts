@@ -191,7 +191,7 @@ export interface SignUpResponse {
      */
     addedBy?: AddedBy;
     /**
-     * Profile fields the identity provider overwrites on every sync, so clients render them read-only. Empty unless directory-managed.
+     * Profile fields the identity provider owns, so clients render them read-only and updates to them are refused. Empty unless directory-managed.
      * @type {Array<string>}
      * @memberof SignUpResponse
      */
