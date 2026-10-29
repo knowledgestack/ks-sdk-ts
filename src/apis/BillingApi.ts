@@ -12,25 +12,35 @@
  * Do not edit the class manually.
  */
 
-
 import * as runtime from '../runtime';
-import type {
-  ErrorResponse,
-  HTTPValidationError,
-  PaginatedResponseBillingPaymentResponse,
-} from '../models/index';
 import {
+    type ErrorResponse,
     ErrorResponseFromJSON,
     ErrorResponseToJSON,
+} from '../models/ErrorResponse';
+import {
+    type HTTPValidationError,
     HTTPValidationErrorFromJSON,
     HTTPValidationErrorToJSON,
+} from '../models/HTTPValidationError';
+import {
+    type PaginatedResponseBillingPaymentResponse,
     PaginatedResponseBillingPaymentResponseFromJSON,
     PaginatedResponseBillingPaymentResponseToJSON,
-} from '../models/index';
+} from '../models/PaginatedResponseBillingPaymentResponse';
 
 export interface ListBillingPaymentsRequest {
+    /**
+     * 
+     */
     tenantId: string;
+    /**
+     * Number of items per page
+     */
     limit?: number;
+    /**
+     * Number of items to skip
+     */
     offset?: number;
 }
 
@@ -109,7 +119,7 @@ export class BillingApi extends runtime.BaseAPI implements BillingApiInterface {
         }
 
         let urlPath = `/v1/tenants/{tenant_id}/billing/payments`;
-        urlPath = urlPath.replace(`{${"tenant_id"}}`, encodeURIComponent(String(requestParameters['tenantId'])));
+        urlPath = urlPath.replace('{tenant_id}', encodeURIComponent(String(requestParameters['tenantId'])));
 
         return {
             path: urlPath,

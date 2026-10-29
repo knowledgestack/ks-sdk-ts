@@ -23,7 +23,7 @@
 export const CommonFileExclusionReason = {
     NotFound: 'NOT_FOUND',
     NoAccess: 'NO_ACCESS',
-    Unresolvable: 'UNRESOLVABLE'
+    Unresolvable: 'UNRESOLVABLE',
 } as const;
 export type CommonFileExclusionReason = typeof CommonFileExclusionReason[keyof typeof CommonFileExclusionReason];
 

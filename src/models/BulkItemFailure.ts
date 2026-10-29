@@ -29,14 +29,10 @@ import {
 export interface BulkItemFailure {
     /**
      * 
-     * @type {string}
-     * @memberof BulkItemFailure
      */
     id: string;
     /**
      * 
-     * @type {BulkFailureReason}
-     * @memberof BulkItemFailure
      */
     reason: BulkFailureReason;
 }
@@ -44,6 +40,8 @@ export interface BulkItemFailure {
 
 export const BulkItemFailurePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,

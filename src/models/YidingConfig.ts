@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
 /**
  * What a customer supplies for a YiDing sync: the summary plus the secret.
  * @export
@@ -21,43 +21,33 @@ import { mapValues } from '../runtime';
 export interface YidingConfig {
     /**
      * The account the crawler signs in to the panel as
-     * @type {string}
-     * @memberof YidingConfig
      */
     username: string;
     /**
      * The panel's own id for the shop. Only the customer list is scoped by it — orders follow the logged-in account — but it answers a wrong one with a 500, so an empty value fails the crawl, not just that page.
-     * @type {string}
-     * @memberof YidingConfig
      */
     businessId: string;
     /**
      * First dining day to sync; earlier orders are not fetched
-     * @type {Date}
-     * @memberof YidingConfig
      */
     startDate: Date;
     /**
      * Crawl recurrence, in the tenant's timezone
-     * @type {string}
-     * @memberof YidingConfig
      */
     cron: string;
     /**
      * Root of the YiDing admin panel the crawler signs in to
-     * @type {string}
-     * @memberof YidingConfig
      */
     baseUrl?: string;
     /**
      * Write-only: the settings panel never reads it back
-     * @type {string}
-     * @memberof YidingConfig
      */
     password: string;
 }
 export const YidingConfigPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -72,18 +62,27 @@ export const YidingConfigPropertyValidationAttributesMap: {
     }
 } = {
     username: {
+        dataType: "string",
+        required: true,
         minLength: 1,
     },
     businessId: {
+        dataType: "string",
+        required: true,
         minLength: 1,
     },
     cron: {
+        dataType: "string",
+        required: true,
         minLength: 1,
     },
     baseUrl: {
+        dataType: "string",
         maxLength: 2048,
     },
     password: {
+        dataType: "string",
+        required: true,
         minLength: 1,
     },
 }
@@ -94,8 +93,8 @@ export const YidingConfigPropertyValidationAttributesMap: {
  */
 export function instanceOfYidingConfig(value: object): value is YidingConfig {
     if (!('username' in value) || value['username'] === undefined) return false;
-    if (!('businessId' in value) || value['businessId'] === undefined) return false;
-    if (!('startDate' in value) || value['startDate'] === undefined) return false;
+    if ((!('businessId' in (value as Record<string, any>)) && !('business_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['businessId'] === undefined && (value as Record<string, any>)['business_id'] === undefined)) return false;
+    if ((!('startDate' in (value as Record<string, any>)) && !('start_date' in (value as Record<string, any>))) || ((value as Record<string, any>)['startDate'] === undefined && (value as Record<string, any>)['start_date'] === undefined)) return false;
     if (!('cron' in value) || value['cron'] === undefined) return false;
     if (!('password' in value) || value['password'] === undefined) return false;
     return true;
@@ -113,7 +112,7 @@ export function YidingConfigFromJSONTyped(json: any, ignoreDiscriminator: boolea
         
         'username': json['username'],
         'businessId': json['business_id'],
-        'startDate': (new Date(json['start_date'])),
+        'startDate': (json['start_date'] == null ? json['start_date'] : parseDate(json['start_date'])),
         'cron': json['cron'],
         'baseUrl': json['base_url'] == null ? undefined : json['base_url'],
         'password': json['password'],
@@ -133,7 +132,7 @@ export function YidingConfigToJSONTyped(value?: YidingConfig | null, ignoreDiscr
         
         'username': value['username'],
         'business_id': value['businessId'],
-        'start_date': value['startDate'].toISOString().substring(0,10),
+        'start_date': value['startDate'] == null ? value['startDate'] : serializeDate(value['startDate']),
         'cron': value['cron'],
         'base_url': value['baseUrl'],
         'password': value['password'],

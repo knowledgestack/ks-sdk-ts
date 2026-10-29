@@ -12,118 +12,233 @@
  * Do not edit the class manually.
  */
 
-
 import * as runtime from '../runtime';
-import type {
-  ClearVersionContentsResponse,
-  DocumentDownloadResponse,
-  DocumentVersionAction,
-  DocumentVersionActionResponse,
-  DocumentVersionContentTypeFilter,
-  DocumentVersionMetadataUpdate,
-  DocumentVersionOrder,
-  DocumentVersionResponse,
-  DownloadArtifact,
-  ErrorResponse,
-  HTTPValidationError,
-  PaginatedResponseAnnotatedUnionSectionContentItemChunkContentItemDiscriminator,
-  PaginatedResponseDocumentVersionResponse,
-  SortDirection,
-  VersionDiffResponse,
-} from '../models/index';
 import {
+    type ClearVersionContentsResponse,
     ClearVersionContentsResponseFromJSON,
     ClearVersionContentsResponseToJSON,
+} from '../models/ClearVersionContentsResponse';
+import {
+    type DocumentDownloadResponse,
     DocumentDownloadResponseFromJSON,
     DocumentDownloadResponseToJSON,
+} from '../models/DocumentDownloadResponse';
+import {
+    type DocumentVersionAction,
     DocumentVersionActionFromJSON,
     DocumentVersionActionToJSON,
+} from '../models/DocumentVersionAction';
+import {
+    type DocumentVersionActionResponse,
     DocumentVersionActionResponseFromJSON,
     DocumentVersionActionResponseToJSON,
+} from '../models/DocumentVersionActionResponse';
+import {
+    type DocumentVersionContentTypeFilter,
     DocumentVersionContentTypeFilterFromJSON,
     DocumentVersionContentTypeFilterToJSON,
+} from '../models/DocumentVersionContentTypeFilter';
+import {
+    type DocumentVersionMetadataUpdate,
     DocumentVersionMetadataUpdateFromJSON,
     DocumentVersionMetadataUpdateToJSON,
+} from '../models/DocumentVersionMetadataUpdate';
+import {
+    type DocumentVersionOrder,
     DocumentVersionOrderFromJSON,
     DocumentVersionOrderToJSON,
+} from '../models/DocumentVersionOrder';
+import {
+    type DocumentVersionResponse,
     DocumentVersionResponseFromJSON,
     DocumentVersionResponseToJSON,
+} from '../models/DocumentVersionResponse';
+import {
+    type DownloadArtifact,
     DownloadArtifactFromJSON,
     DownloadArtifactToJSON,
+} from '../models/DownloadArtifact';
+import {
+    type ErrorResponse,
     ErrorResponseFromJSON,
     ErrorResponseToJSON,
+} from '../models/ErrorResponse';
+import {
+    type HTTPValidationError,
     HTTPValidationErrorFromJSON,
     HTTPValidationErrorToJSON,
+} from '../models/HTTPValidationError';
+import {
+    type PaginatedResponseAnnotatedUnionSectionContentItemChunkContentItemDiscriminator,
     PaginatedResponseAnnotatedUnionSectionContentItemChunkContentItemDiscriminatorFromJSON,
     PaginatedResponseAnnotatedUnionSectionContentItemChunkContentItemDiscriminatorToJSON,
+} from '../models/PaginatedResponseAnnotatedUnionSectionContentItemChunkContentItemDiscriminator';
+import {
+    type PaginatedResponseDocumentVersionResponse,
     PaginatedResponseDocumentVersionResponseFromJSON,
     PaginatedResponseDocumentVersionResponseToJSON,
+} from '../models/PaginatedResponseDocumentVersionResponse';
+import {
+    type SortDirection,
     SortDirectionFromJSON,
     SortDirectionToJSON,
+} from '../models/SortDirection';
+import {
+    type VersionDiffResponse,
     VersionDiffResponseFromJSON,
     VersionDiffResponseToJSON,
-} from '../models/index';
+} from '../models/VersionDiffResponse';
 
 export interface AttachCitedAssetRequest {
+    /**
+     * DocumentVersion ID
+     */
     versionId: string;
+    /**
+     * 
+     */
     file: Blob;
 }
 
 export interface ClearDocumentVersionContentsRequest {
+    /**
+     * DocumentVersion ID
+     */
     versionId: string;
 }
 
 export interface CreateDocumentVersionRequest {
+    /**
+     * Document ID
+     */
     documentId: string;
 }
 
 export interface DeleteDocumentVersionRequest {
+    /**
+     * DocumentVersion ID
+     */
     versionId: string;
 }
 
 export interface DocumentVersionActionRequest {
+    /**
+     * DocumentVersion ID
+     */
     versionId: string;
+    /**
+     * Action to perform
+     */
     action: DocumentVersionAction;
 }
 
 export interface DownloadDocumentVersionRequest {
+    /**
+     * DocumentVersion ID
+     */
     versionId: string;
+    /**
+     * Artifact to download: source, fast_plaintext, or transcript (media only)
+     */
     artifact?: DownloadArtifact;
 }
 
 export interface GetDocumentVersionRequest {
+    /**
+     * DocumentVersion ID
+     */
     versionId: string;
+    /**
+     * When true, populate page_screenshot_urls with presigned URLs for every per-page WEBP screenshot the ingestion pipeline produced. Off by default to keep typical responses small.
+     */
     includePageScreenshots?: boolean;
 }
 
 export interface GetDocumentVersionContentsRequest {
+    /**
+     * DocumentVersion ID
+     */
     versionId: string;
+    /**
+     * Optional section ID to scope traversal to a subtree
+     */
     sectionId?: string | null;
+    /**
+     * Filter by content type: SECTION or CHUNK. Omit to return both types.
+     */
     contentType?: DocumentVersionContentTypeFilter;
+    /**
+     * Number of items per page
+     */
     limit?: number;
+    /**
+     * Number of items to skip
+     */
     offset?: number;
 }
 
 export interface GetDocumentVersionDiffRequest {
+    /**
+     * The new (right) version ID
+     */
     versionId: string;
+    /**
+     * The old (left) version; defaults to the predecessor
+     */
     fromVersionId?: string | null;
 }
 
 export interface ListDocumentVersionsRequest {
+    /**
+     * Document ID to list versions for
+     */
     documentId: string;
+    /**
+     * Field to sort versions by (default: VERSION)
+     */
     sortBy?: DocumentVersionOrder;
+    /**
+     * Sort direction; overrides the field's natural default
+     */
     sortDir?: SortDirection;
+    /**
+     * Filter to versions created by this user
+     */
     uploaderUserId?: string | null;
+    /**
+     * Number of items per page
+     */
     limit?: number;
+    /**
+     * Number of items to skip
+     */
     offset?: number;
+    /**
+     * Only items created at or after this timestamp (inclusive)
+     */
     createdAfter?: Date | null;
+    /**
+     * Only items created strictly before this timestamp
+     */
     createdBefore?: Date | null;
+    /**
+     * Only items updated at or after this timestamp (inclusive)
+     */
     updatedAfter?: Date | null;
+    /**
+     * Only items updated strictly before this timestamp
+     */
     updatedBefore?: Date | null;
 }
 
 export interface UpdateDocumentVersionMetadataRequest {
+    /**
+     * DocumentVersion ID
+     */
     versionId: string;
+    /**
+     * 
+     */
     documentVersionMetadataUpdate: DocumentVersionMetadataUpdate;
 }
 
@@ -494,7 +609,7 @@ export class DocumentVersionsApi extends runtime.BaseAPI implements DocumentVers
 
 
         let urlPath = `/v1/document_versions/{version_id}/cited-asset`;
-        urlPath = urlPath.replace(`{${"version_id"}}`, encodeURIComponent(String(requestParameters['versionId'])));
+        urlPath = urlPath.replace('{version_id}', encodeURIComponent(String(requestParameters['versionId'])));
 
         return {
             path: urlPath,
@@ -549,7 +664,7 @@ export class DocumentVersionsApi extends runtime.BaseAPI implements DocumentVers
         }
 
         let urlPath = `/v1/document_versions/{version_id}/contents`;
-        urlPath = urlPath.replace(`{${"version_id"}}`, encodeURIComponent(String(requestParameters['versionId'])));
+        urlPath = urlPath.replace('{version_id}', encodeURIComponent(String(requestParameters['versionId'])));
 
         return {
             path: urlPath,
@@ -604,7 +719,7 @@ export class DocumentVersionsApi extends runtime.BaseAPI implements DocumentVers
         }
 
         let urlPath = `/v1/documents/{document_id}/versions`;
-        urlPath = urlPath.replace(`{${"document_id"}}`, encodeURIComponent(String(requestParameters['documentId'])));
+        urlPath = urlPath.replace('{document_id}', encodeURIComponent(String(requestParameters['documentId'])));
 
         return {
             path: urlPath,
@@ -659,7 +774,7 @@ export class DocumentVersionsApi extends runtime.BaseAPI implements DocumentVers
         }
 
         let urlPath = `/v1/document_versions/{version_id}`;
-        urlPath = urlPath.replace(`{${"version_id"}}`, encodeURIComponent(String(requestParameters['versionId'])));
+        urlPath = urlPath.replace('{version_id}', encodeURIComponent(String(requestParameters['versionId'])));
 
         return {
             path: urlPath,
@@ -724,7 +839,7 @@ export class DocumentVersionsApi extends runtime.BaseAPI implements DocumentVers
         }
 
         let urlPath = `/v1/document_versions/{version_id}`;
-        urlPath = urlPath.replace(`{${"version_id"}}`, encodeURIComponent(String(requestParameters['versionId'])));
+        urlPath = urlPath.replace('{version_id}', encodeURIComponent(String(requestParameters['versionId'])));
 
         return {
             path: urlPath,
@@ -783,7 +898,7 @@ export class DocumentVersionsApi extends runtime.BaseAPI implements DocumentVers
         }
 
         let urlPath = `/v1/document_versions/{version_id}/download`;
-        urlPath = urlPath.replace(`{${"version_id"}}`, encodeURIComponent(String(requestParameters['versionId'])));
+        urlPath = urlPath.replace('{version_id}', encodeURIComponent(String(requestParameters['versionId'])));
 
         return {
             path: urlPath,
@@ -842,7 +957,7 @@ export class DocumentVersionsApi extends runtime.BaseAPI implements DocumentVers
         }
 
         let urlPath = `/v1/document_versions/{version_id}`;
-        urlPath = urlPath.replace(`{${"version_id"}}`, encodeURIComponent(String(requestParameters['versionId'])));
+        urlPath = urlPath.replace('{version_id}', encodeURIComponent(String(requestParameters['versionId'])));
 
         return {
             path: urlPath,
@@ -911,7 +1026,7 @@ export class DocumentVersionsApi extends runtime.BaseAPI implements DocumentVers
         }
 
         let urlPath = `/v1/document_versions/{version_id}/contents`;
-        urlPath = urlPath.replace(`{${"version_id"}}`, encodeURIComponent(String(requestParameters['versionId'])));
+        urlPath = urlPath.replace('{version_id}', encodeURIComponent(String(requestParameters['versionId'])));
 
         return {
             path: urlPath,
@@ -970,7 +1085,7 @@ export class DocumentVersionsApi extends runtime.BaseAPI implements DocumentVers
         }
 
         let urlPath = `/v1/document_versions/{version_id}/diff`;
-        urlPath = urlPath.replace(`{${"version_id"}}`, encodeURIComponent(String(requestParameters['versionId'])));
+        urlPath = urlPath.replace('{version_id}', encodeURIComponent(String(requestParameters['versionId'])));
 
         return {
             path: urlPath,
@@ -1038,19 +1153,19 @@ export class DocumentVersionsApi extends runtime.BaseAPI implements DocumentVers
         }
 
         if (requestParameters['createdAfter'] != null) {
-            queryParameters['created_after'] = (requestParameters['createdAfter'] as any).toISOString();
+            queryParameters['created_after'] = runtime.serializeDateTime(requestParameters['createdAfter'] as any);
         }
 
         if (requestParameters['createdBefore'] != null) {
-            queryParameters['created_before'] = (requestParameters['createdBefore'] as any).toISOString();
+            queryParameters['created_before'] = runtime.serializeDateTime(requestParameters['createdBefore'] as any);
         }
 
         if (requestParameters['updatedAfter'] != null) {
-            queryParameters['updated_after'] = (requestParameters['updatedAfter'] as any).toISOString();
+            queryParameters['updated_after'] = runtime.serializeDateTime(requestParameters['updatedAfter'] as any);
         }
 
         if (requestParameters['updatedBefore'] != null) {
-            queryParameters['updated_before'] = (requestParameters['updatedBefore'] as any).toISOString();
+            queryParameters['updated_before'] = runtime.serializeDateTime(requestParameters['updatedBefore'] as any);
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -1128,7 +1243,7 @@ export class DocumentVersionsApi extends runtime.BaseAPI implements DocumentVers
         }
 
         let urlPath = `/v1/document_versions/{version_id}/metadata`;
-        urlPath = urlPath.replace(`{${"version_id"}}`, encodeURIComponent(String(requestParameters['versionId'])));
+        urlPath = urlPath.replace('{version_id}', encodeURIComponent(String(requestParameters['versionId'])));
 
         return {
             path: urlPath,

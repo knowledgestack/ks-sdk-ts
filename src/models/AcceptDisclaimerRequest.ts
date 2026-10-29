@@ -21,13 +21,13 @@ import { mapValues } from '../runtime';
 export interface AcceptDisclaimerRequest {
     /**
      * 
-     * @type {boolean}
-     * @memberof AcceptDisclaimerRequest
      */
     accepted: boolean;
 }
 export const AcceptDisclaimerRequestPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,

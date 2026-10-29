@@ -19,7 +19,7 @@
  */
 export const DocumentVersionContentTypeFilter = {
     Section: 'SECTION',
-    Chunk: 'CHUNK'
+    Chunk: 'CHUNK',
 } as const;
 export type DocumentVersionContentTypeFilter = typeof DocumentVersionContentTypeFilter[keyof typeof DocumentVersionContentTypeFilter];
 

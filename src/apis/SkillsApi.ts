@@ -12,117 +12,207 @@
  * Do not edit the class manually.
  */
 
-
 import * as runtime from '../runtime';
-import type {
-  ActivateSkillVersionRequest,
-  CreateSkillRequest,
-  ErrorResponse,
-  ExportSkillsRequest,
-  HTTPValidationError,
-  PaginatedResponseSkillResponse,
-  SearchSkillsRequest,
-  SearchSkillsResponse,
-  SkillOrder,
-  SkillResponse,
-  SkillVersionResponse,
-  SortDirection,
-  UpdateSkillRequest,
-} from '../models/index';
 import {
+    type ActivateSkillVersionRequest,
     ActivateSkillVersionRequestFromJSON,
     ActivateSkillVersionRequestToJSON,
+} from '../models/ActivateSkillVersionRequest';
+import {
+    type CreateSkillRequest,
     CreateSkillRequestFromJSON,
     CreateSkillRequestToJSON,
+} from '../models/CreateSkillRequest';
+import {
+    type ErrorResponse,
     ErrorResponseFromJSON,
     ErrorResponseToJSON,
+} from '../models/ErrorResponse';
+import {
+    type ExportSkillsRequest,
     ExportSkillsRequestFromJSON,
     ExportSkillsRequestToJSON,
+} from '../models/ExportSkillsRequest';
+import {
+    type HTTPValidationError,
     HTTPValidationErrorFromJSON,
     HTTPValidationErrorToJSON,
+} from '../models/HTTPValidationError';
+import {
+    type PaginatedResponseSkillResponse,
     PaginatedResponseSkillResponseFromJSON,
     PaginatedResponseSkillResponseToJSON,
+} from '../models/PaginatedResponseSkillResponse';
+import {
+    type SearchSkillsRequest,
     SearchSkillsRequestFromJSON,
     SearchSkillsRequestToJSON,
+} from '../models/SearchSkillsRequest';
+import {
+    type SearchSkillsResponse,
     SearchSkillsResponseFromJSON,
     SearchSkillsResponseToJSON,
+} from '../models/SearchSkillsResponse';
+import {
+    type SkillOrder,
     SkillOrderFromJSON,
     SkillOrderToJSON,
+} from '../models/SkillOrder';
+import {
+    type SkillResponse,
     SkillResponseFromJSON,
     SkillResponseToJSON,
+} from '../models/SkillResponse';
+import {
+    type SkillVersionResponse,
     SkillVersionResponseFromJSON,
     SkillVersionResponseToJSON,
+} from '../models/SkillVersionResponse';
+import {
+    type SortDirection,
     SortDirectionFromJSON,
     SortDirectionToJSON,
+} from '../models/SortDirection';
+import {
+    type UpdateSkillRequest,
     UpdateSkillRequestFromJSON,
     UpdateSkillRequestToJSON,
-} from '../models/index';
+} from '../models/UpdateSkillRequest';
 
 export interface ActivateSkillVersionOperationRequest {
+    /**
+     * 
+     */
     skillId: string;
+    /**
+     * 
+     */
     versionId: string;
+    /**
+     * 
+     */
     activateSkillVersionRequest: ActivateSkillVersionRequest;
 }
 
 export interface CheckinSkillRequest {
+    /**
+     * 
+     */
     skillId: string;
 }
 
 export interface CheckoutSkillRequest {
+    /**
+     * 
+     */
     skillId: string;
 }
 
 export interface CreateSkillOperationRequest {
+    /**
+     * 
+     */
     createSkillRequest: CreateSkillRequest;
 }
 
 export interface DeleteSkillRequest {
+    /**
+     * 
+     */
     skillId: string;
 }
 
 export interface DiscardSkillDraftRequest {
+    /**
+     * 
+     */
     skillId: string;
 }
 
 export interface ExportSkillRequest {
+    /**
+     * 
+     */
     skillId: string;
 }
 
 export interface ExportSkillsOperationRequest {
+    /**
+     * 
+     */
     exportSkillsRequest: ExportSkillsRequest;
 }
 
 export interface GetSkillRequest {
+    /**
+     * 
+     */
     skillId: string;
+    /**
+     * Include every bundle file's contents (base64 for binary). Off by default — the editor opts in; a large skill's contents can be many MB and one S3 read per file.
+     */
     includeFileContents?: boolean;
 }
 
 export interface ImportSkillRequest {
+    /**
+     * 
+     */
     file: Blob;
 }
 
 export interface ListSkillVersionsRequest {
+    /**
+     * 
+     */
     skillId: string;
 }
 
 export interface ListSkillsRequest {
+    /**
+     * Field to sort skills by (default: CREATED_AT)
+     */
     sortBy?: SkillOrder;
+    /**
+     * Case-insensitive skill-name substring filter (search bar)
+     */
     search?: string | null;
+    /**
+     * Number of items per page
+     */
     limit?: number;
+    /**
+     * Number of items to skip
+     */
     offset?: number;
+    /**
+     * Sort direction (ASC or DESC); overrides the field's natural default. Every sort field supports both directions.
+     */
     sortDir?: SortDirection;
 }
 
 export interface PublishSkillVersionRequest {
+    /**
+     * 
+     */
     skillId: string;
 }
 
 export interface SearchSkillsOperationRequest {
+    /**
+     * 
+     */
     searchSkillsRequest: SearchSkillsRequest;
 }
 
 export interface UpdateSkillOperationRequest {
+    /**
+     * 
+     */
     skillId: string;
+    /**
+     * 
+     */
     updateSkillRequest: UpdateSkillRequest;
 }
 
@@ -321,13 +411,13 @@ export interface SkillsApiInterface {
      * @throws {RequiredError}
      * @memberof SkillsApiInterface
      */
-    exportSkillsRaw(requestParameters: ExportSkillsOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Blob>>;
+    exportSkillsRaw(requestParameters: ExportSkillsOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<runtime.HttpFile>>;
 
     /**
      * Download several skills\' active versions as one ZIP; needs can_read on each.
      * Export Skills Handler
      */
-    exportSkills(requestParameters: ExportSkillsOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Blob>;
+    exportSkills(requestParameters: ExportSkillsOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.HttpFile>;
 
     /**
      * Creates request options for getSkill without sending the request
@@ -557,8 +647,8 @@ export class SkillsApi extends runtime.BaseAPI implements SkillsApiInterface {
         }
 
         let urlPath = `/v1/skills/{skill_id}/versions/{version_id}/activate`;
-        urlPath = urlPath.replace(`{${"skill_id"}}`, encodeURIComponent(String(requestParameters['skillId'])));
-        urlPath = urlPath.replace(`{${"version_id"}}`, encodeURIComponent(String(requestParameters['versionId'])));
+        urlPath = urlPath.replace('{skill_id}', encodeURIComponent(String(requestParameters['skillId'])));
+        urlPath = urlPath.replace('{version_id}', encodeURIComponent(String(requestParameters['versionId'])));
 
         return {
             path: urlPath,
@@ -614,7 +704,7 @@ export class SkillsApi extends runtime.BaseAPI implements SkillsApiInterface {
         }
 
         let urlPath = `/v1/skills/{skill_id}/checkin`;
-        urlPath = urlPath.replace(`{${"skill_id"}}`, encodeURIComponent(String(requestParameters['skillId'])));
+        urlPath = urlPath.replace('{skill_id}', encodeURIComponent(String(requestParameters['skillId'])));
 
         return {
             path: urlPath,
@@ -668,7 +758,7 @@ export class SkillsApi extends runtime.BaseAPI implements SkillsApiInterface {
         }
 
         let urlPath = `/v1/skills/{skill_id}/checkout`;
-        urlPath = urlPath.replace(`{${"skill_id"}}`, encodeURIComponent(String(requestParameters['skillId'])));
+        urlPath = urlPath.replace('{skill_id}', encodeURIComponent(String(requestParameters['skillId'])));
 
         return {
             path: urlPath,
@@ -780,7 +870,7 @@ export class SkillsApi extends runtime.BaseAPI implements SkillsApiInterface {
         }
 
         let urlPath = `/v1/skills/{skill_id}`;
-        urlPath = urlPath.replace(`{${"skill_id"}}`, encodeURIComponent(String(requestParameters['skillId'])));
+        urlPath = urlPath.replace('{skill_id}', encodeURIComponent(String(requestParameters['skillId'])));
 
         return {
             path: urlPath,
@@ -834,7 +924,7 @@ export class SkillsApi extends runtime.BaseAPI implements SkillsApiInterface {
         }
 
         let urlPath = `/v1/skills/{skill_id}/discard-draft`;
-        urlPath = urlPath.replace(`{${"skill_id"}}`, encodeURIComponent(String(requestParameters['skillId'])));
+        urlPath = urlPath.replace('{skill_id}', encodeURIComponent(String(requestParameters['skillId'])));
 
         return {
             path: urlPath,
@@ -889,7 +979,7 @@ export class SkillsApi extends runtime.BaseAPI implements SkillsApiInterface {
         }
 
         let urlPath = `/v1/skills/{skill_id}/export`;
-        urlPath = urlPath.replace(`{${"skill_id"}}`, encodeURIComponent(String(requestParameters['skillId'])));
+        urlPath = urlPath.replace('{skill_id}', encodeURIComponent(String(requestParameters['skillId'])));
 
         return {
             path: urlPath,
@@ -964,7 +1054,7 @@ export class SkillsApi extends runtime.BaseAPI implements SkillsApiInterface {
      * Download several skills\' active versions as one ZIP; needs can_read on each.
      * Export Skills Handler
      */
-    async exportSkillsRaw(requestParameters: ExportSkillsOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Blob>> {
+    async exportSkillsRaw(requestParameters: ExportSkillsOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<runtime.HttpFile>> {
         const requestOptions = await this.exportSkillsRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -975,7 +1065,7 @@ export class SkillsApi extends runtime.BaseAPI implements SkillsApiInterface {
      * Download several skills\' active versions as one ZIP; needs can_read on each.
      * Export Skills Handler
      */
-    async exportSkills(requestParameters: ExportSkillsOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Blob> {
+    async exportSkills(requestParameters: ExportSkillsOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.HttpFile> {
         const response = await this.exportSkillsRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -1009,7 +1099,7 @@ export class SkillsApi extends runtime.BaseAPI implements SkillsApiInterface {
         }
 
         let urlPath = `/v1/skills/{skill_id}`;
-        urlPath = urlPath.replace(`{${"skill_id"}}`, encodeURIComponent(String(requestParameters['skillId'])));
+        urlPath = urlPath.replace('{skill_id}', encodeURIComponent(String(requestParameters['skillId'])));
 
         return {
             path: urlPath,
@@ -1139,7 +1229,7 @@ export class SkillsApi extends runtime.BaseAPI implements SkillsApiInterface {
         }
 
         let urlPath = `/v1/skills/{skill_id}/versions`;
-        urlPath = urlPath.replace(`{${"skill_id"}}`, encodeURIComponent(String(requestParameters['skillId'])));
+        urlPath = urlPath.replace('{skill_id}', encodeURIComponent(String(requestParameters['skillId'])));
 
         return {
             path: urlPath,
@@ -1261,7 +1351,7 @@ export class SkillsApi extends runtime.BaseAPI implements SkillsApiInterface {
         }
 
         let urlPath = `/v1/skills/{skill_id}/versions`;
-        urlPath = urlPath.replace(`{${"skill_id"}}`, encodeURIComponent(String(requestParameters['skillId'])));
+        urlPath = urlPath.replace('{skill_id}', encodeURIComponent(String(requestParameters['skillId'])));
 
         return {
             path: urlPath,
@@ -1382,7 +1472,7 @@ export class SkillsApi extends runtime.BaseAPI implements SkillsApiInterface {
         }
 
         let urlPath = `/v1/skills/{skill_id}`;
-        urlPath = urlPath.replace(`{${"skill_id"}}`, encodeURIComponent(String(requestParameters['skillId'])));
+        urlPath = urlPath.replace('{skill_id}', encodeURIComponent(String(requestParameters['skillId'])));
 
         return {
             path: urlPath,

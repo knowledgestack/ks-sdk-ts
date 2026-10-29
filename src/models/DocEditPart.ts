@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
 /**
  * 
  * @export
@@ -21,68 +21,46 @@ import { mapValues } from '../runtime';
 export interface DocEditPart {
     /**
      * Stable per-message part id (uuid)
-     * @type {string}
-     * @memberof DocEditPart
      */
     id: string;
     /**
      * 0-based order within the message
-     * @type {number}
-     * @memberof DocEditPart
      */
     seq: number;
     /**
      * 
-     * @type {Date}
-     * @memberof DocEditPart
      */
     startTime: Date;
     /**
      * 
-     * @type {Date}
-     * @memberof DocEditPart
      */
     endTime?: Date | null;
     /**
      * 
-     * @type {DocEditPartKindEnum}
-     * @memberof DocEditPart
      */
     kind?: DocEditPartKindEnum;
     /**
      * 
-     * @type {string}
-     * @memberof DocEditPart
      */
     toolCallId?: string | null;
     /**
      * 
-     * @type {string}
-     * @memberof DocEditPart
      */
     documentId: string;
     /**
      * 
-     * @type {string}
-     * @memberof DocEditPart
      */
     baseVersionId?: string | null;
     /**
      * 
-     * @type {string}
-     * @memberof DocEditPart
      */
     newVersionId: string;
     /**
      * 
-     * @type {DocEditPartDocFormatEnum}
-     * @memberof DocEditPart
      */
     docFormat: DocEditPartDocFormatEnum;
     /**
      * 
-     * @type {string}
-     * @memberof DocEditPart
      */
     approvalId?: string | null;
 }
@@ -92,7 +70,7 @@ export interface DocEditPart {
  * @export
  */
 export const DocEditPartKindEnum = {
-    DocEdit: 'doc_edit'
+    DocEdit: 'doc_edit',
 } as const;
 export type DocEditPartKindEnum = typeof DocEditPartKindEnum[keyof typeof DocEditPartKindEnum];
 
@@ -101,12 +79,14 @@ export type DocEditPartKindEnum = typeof DocEditPartKindEnum[keyof typeof DocEdi
  */
 export const DocEditPartDocFormatEnum = {
     Docx: 'docx',
-    Xlsx: 'xlsx'
+    Xlsx: 'xlsx',
 } as const;
 export type DocEditPartDocFormatEnum = typeof DocEditPartDocFormatEnum[keyof typeof DocEditPartDocFormatEnum];
 
 export const DocEditPartPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -121,6 +101,8 @@ export const DocEditPartPropertyValidationAttributesMap: {
     }
 } = {
     seq: {
+        dataType: "number",
+        required: true,
         minimum: 0,
         exclusiveMinimum: false,
     },
@@ -133,10 +115,10 @@ export const DocEditPartPropertyValidationAttributesMap: {
 export function instanceOfDocEditPart(value: object): value is DocEditPart {
     if (!('id' in value) || value['id'] === undefined) return false;
     if (!('seq' in value) || value['seq'] === undefined) return false;
-    if (!('startTime' in value) || value['startTime'] === undefined) return false;
-    if (!('documentId' in value) || value['documentId'] === undefined) return false;
-    if (!('newVersionId' in value) || value['newVersionId'] === undefined) return false;
-    if (!('docFormat' in value) || value['docFormat'] === undefined) return false;
+    if ((!('startTime' in (value as Record<string, any>)) && !('start_time' in (value as Record<string, any>))) || ((value as Record<string, any>)['startTime'] === undefined && (value as Record<string, any>)['start_time'] === undefined)) return false;
+    if ((!('documentId' in (value as Record<string, any>)) && !('document_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['documentId'] === undefined && (value as Record<string, any>)['document_id'] === undefined)) return false;
+    if ((!('newVersionId' in (value as Record<string, any>)) && !('new_version_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['newVersionId'] === undefined && (value as Record<string, any>)['new_version_id'] === undefined)) return false;
+    if ((!('docFormat' in (value as Record<string, any>)) && !('doc_format' in (value as Record<string, any>))) || ((value as Record<string, any>)['docFormat'] === undefined && (value as Record<string, any>)['doc_format'] === undefined)) return false;
     return true;
 }
 
@@ -152,15 +134,15 @@ export function DocEditPartFromJSONTyped(json: any, ignoreDiscriminator: boolean
         
         'id': json['id'],
         'seq': json['seq'],
-        'startTime': (new Date(json['start_time'])),
-        'endTime': json['end_time'] == null ? undefined : (new Date(json['end_time'])),
+        'startTime': (json['start_time'] == null ? json['start_time'] : parseDateTime(json['start_time'])),
+        'endTime': json['end_time'] === undefined ? undefined : json['end_time'] === null ? null : (parseDateTime(json['end_time'])),
         'kind': json['kind'] == null ? undefined : json['kind'],
-        'toolCallId': json['tool_call_id'] == null ? undefined : json['tool_call_id'],
+        'toolCallId': json['tool_call_id'] === undefined ? undefined : json['tool_call_id'] === null ? null : json['tool_call_id'],
         'documentId': json['document_id'],
-        'baseVersionId': json['base_version_id'] == null ? undefined : json['base_version_id'],
+        'baseVersionId': json['base_version_id'] === undefined ? undefined : json['base_version_id'] === null ? null : json['base_version_id'],
         'newVersionId': json['new_version_id'],
         'docFormat': json['doc_format'],
-        'approvalId': json['approval_id'] == null ? undefined : json['approval_id'],
+        'approvalId': json['approval_id'] === undefined ? undefined : json['approval_id'] === null ? null : json['approval_id'],
     };
 }
 
@@ -177,8 +159,8 @@ export function DocEditPartToJSONTyped(value?: DocEditPart | null, ignoreDiscrim
         
         'id': value['id'],
         'seq': value['seq'],
-        'start_time': value['startTime'].toISOString(),
-        'end_time': value['endTime'] == null ? value['endTime'] : value['endTime'].toISOString(),
+        'start_time': value['startTime'] == null ? value['startTime'] : serializeDateTime(value['startTime']),
+        'end_time': value['endTime'] == null ? value['endTime'] : serializeDateTime(value['endTime']),
         'kind': value['kind'],
         'tool_call_id': value['toolCallId'],
         'document_id': value['documentId'],

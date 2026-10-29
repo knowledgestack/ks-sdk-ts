@@ -36,32 +36,22 @@ import {
 export interface CreateChunkRequest {
     /**
      * Parent PathPart ID (must be DOCUMENT_VERSION or SECTION)
-     * @type {string}
-     * @memberof CreateChunkRequest
      */
     parentPathId: string;
     /**
      * Chunk text content
-     * @type {string}
-     * @memberof CreateChunkRequest
      */
     content: string;
     /**
      * 
-     * @type {ChunkType}
-     * @memberof CreateChunkRequest
      */
     chunkType: ChunkType;
     /**
      * 
-     * @type {ChunkMetadata}
-     * @memberof CreateChunkRequest
      */
     chunkMetadata: ChunkMetadata;
     /**
      * PathPart ID to insert after (null = append to tail)
-     * @type {string}
-     * @memberof CreateChunkRequest
      */
     prevSiblingPathId?: string | null;
 }
@@ -69,6 +59,8 @@ export interface CreateChunkRequest {
 
 export const CreateChunkRequestPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -83,6 +75,8 @@ export const CreateChunkRequestPropertyValidationAttributesMap: {
     }
 } = {
     content: {
+        dataType: "string",
+        required: true,
         minLength: 1,
     },
 }
@@ -92,10 +86,10 @@ export const CreateChunkRequestPropertyValidationAttributesMap: {
  * Check if a given object implements the CreateChunkRequest interface.
  */
 export function instanceOfCreateChunkRequest(value: object): value is CreateChunkRequest {
-    if (!('parentPathId' in value) || value['parentPathId'] === undefined) return false;
+    if ((!('parentPathId' in (value as Record<string, any>)) && !('parent_path_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['parentPathId'] === undefined && (value as Record<string, any>)['parent_path_id'] === undefined)) return false;
     if (!('content' in value) || value['content'] === undefined) return false;
-    if (!('chunkType' in value) || value['chunkType'] === undefined) return false;
-    if (!('chunkMetadata' in value) || value['chunkMetadata'] === undefined) return false;
+    if ((!('chunkType' in (value as Record<string, any>)) && !('chunk_type' in (value as Record<string, any>))) || ((value as Record<string, any>)['chunkType'] === undefined && (value as Record<string, any>)['chunk_type'] === undefined)) return false;
+    if ((!('chunkMetadata' in (value as Record<string, any>)) && !('chunk_metadata' in (value as Record<string, any>))) || ((value as Record<string, any>)['chunkMetadata'] === undefined && (value as Record<string, any>)['chunk_metadata'] === undefined)) return false;
     return true;
 }
 
@@ -113,7 +107,7 @@ export function CreateChunkRequestFromJSONTyped(json: any, ignoreDiscriminator: 
         'content': json['content'],
         'chunkType': ChunkTypeFromJSON(json['chunk_type']),
         'chunkMetadata': ChunkMetadataFromJSON(json['chunk_metadata']),
-        'prevSiblingPathId': json['prev_sibling_path_id'] == null ? undefined : json['prev_sibling_path_id'],
+        'prevSiblingPathId': json['prev_sibling_path_id'] === undefined ? undefined : json['prev_sibling_path_id'] === null ? null : json['prev_sibling_path_id'],
     };
 }
 

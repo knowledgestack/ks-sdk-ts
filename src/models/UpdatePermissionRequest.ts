@@ -29,20 +29,14 @@ import {
 export interface UpdatePermissionRequest {
     /**
      * 
-     * @type {string}
-     * @memberof UpdatePermissionRequest
      */
     pathPartId?: string | null;
     /**
      * 
-     * @type {PermissionCapability}
-     * @memberof UpdatePermissionRequest
      */
     capability?: PermissionCapability;
     /**
      * 
-     * @type {boolean}
-     * @memberof UpdatePermissionRequest
      */
     canApprove?: boolean | null;
 }
@@ -50,6 +44,8 @@ export interface UpdatePermissionRequest {
 
 export const UpdatePermissionRequestPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -83,9 +79,9 @@ export function UpdatePermissionRequestFromJSONTyped(json: any, ignoreDiscrimina
     }
     return {
         
-        'pathPartId': json['path_part_id'] == null ? undefined : json['path_part_id'],
+        'pathPartId': json['path_part_id'] === undefined ? undefined : json['path_part_id'] === null ? null : json['path_part_id'],
         'capability': json['capability'] == null ? undefined : PermissionCapabilityFromJSON(json['capability']),
-        'canApprove': json['can_approve'] == null ? undefined : json['can_approve'],
+        'canApprove': json['can_approve'] === undefined ? undefined : json['can_approve'] === null ? null : json['can_approve'],
     };
 }
 

@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
 import type { PartType } from './PartType';
 import {
     PartTypeFromJSON,
@@ -43,74 +43,50 @@ import {
 export interface PathPartResponse {
     /**
      * PathPart ID
-     * @type {string}
-     * @memberof PathPartResponse
      */
     pathPartId: string;
     /**
      * Item name
-     * @type {string}
-     * @memberof PathPartResponse
      */
     name: string;
     /**
      * 
-     * @type {PartType}
-     * @memberof PathPartResponse
      */
     partType: PartType;
     /**
      * Parent PathPart ID
-     * @type {string}
-     * @memberof PathPartResponse
      */
     parentPathId: string | null;
     /**
      * ID of the underlying object
-     * @type {string}
-     * @memberof PathPartResponse
      */
     metadataObjId: string | null;
     /**
      * Full materialized path from root
-     * @type {string}
-     * @memberof PathPartResponse
      */
     materializedPath: string;
     /**
      * Whether this path part is system-managed
-     * @type {boolean}
-     * @memberof PathPartResponse
      */
     systemManaged: boolean;
     /**
      * Direct exclusion flag on this path part only. The effective exclusion also applies when any ancestor has the flag set — walk the ancestry to determine effective state.
-     * @type {boolean}
-     * @memberof PathPartResponse
      */
     excludeFromQdrant: boolean;
     /**
      * Tags attached to this path part
-     * @type {Array<TagResponse>}
-     * @memberof PathPartResponse
      */
     tags?: Array<TagResponse> | null;
     /**
      * 
-     * @type {ItemPermissions}
-     * @memberof PathPartResponse
      */
     permissions: ItemPermissions;
     /**
      * Creation timestamp
-     * @type {Date}
-     * @memberof PathPartResponse
      */
     createdAt: Date;
     /**
      * Last update timestamp
-     * @type {Date}
-     * @memberof PathPartResponse
      */
     updatedAt: Date;
 }
@@ -118,6 +94,8 @@ export interface PathPartResponse {
 
 export const PathPartResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -138,17 +116,17 @@ export const PathPartResponsePropertyValidationAttributesMap: {
  * Check if a given object implements the PathPartResponse interface.
  */
 export function instanceOfPathPartResponse(value: object): value is PathPartResponse {
-    if (!('pathPartId' in value) || value['pathPartId'] === undefined) return false;
+    if ((!('pathPartId' in (value as Record<string, any>)) && !('path_part_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['pathPartId'] === undefined && (value as Record<string, any>)['path_part_id'] === undefined)) return false;
     if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('partType' in value) || value['partType'] === undefined) return false;
-    if (!('parentPathId' in value) || value['parentPathId'] === undefined) return false;
-    if (!('metadataObjId' in value) || value['metadataObjId'] === undefined) return false;
-    if (!('materializedPath' in value) || value['materializedPath'] === undefined) return false;
-    if (!('systemManaged' in value) || value['systemManaged'] === undefined) return false;
-    if (!('excludeFromQdrant' in value) || value['excludeFromQdrant'] === undefined) return false;
+    if ((!('partType' in (value as Record<string, any>)) && !('part_type' in (value as Record<string, any>))) || ((value as Record<string, any>)['partType'] === undefined && (value as Record<string, any>)['part_type'] === undefined)) return false;
+    if ((!('parentPathId' in (value as Record<string, any>)) && !('parent_path_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['parentPathId'] === undefined && (value as Record<string, any>)['parent_path_id'] === undefined)) return false;
+    if ((!('metadataObjId' in (value as Record<string, any>)) && !('metadata_obj_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['metadataObjId'] === undefined && (value as Record<string, any>)['metadata_obj_id'] === undefined)) return false;
+    if ((!('materializedPath' in (value as Record<string, any>)) && !('materialized_path' in (value as Record<string, any>))) || ((value as Record<string, any>)['materializedPath'] === undefined && (value as Record<string, any>)['materialized_path'] === undefined)) return false;
+    if ((!('systemManaged' in (value as Record<string, any>)) && !('system_managed' in (value as Record<string, any>))) || ((value as Record<string, any>)['systemManaged'] === undefined && (value as Record<string, any>)['system_managed'] === undefined)) return false;
+    if ((!('excludeFromQdrant' in (value as Record<string, any>)) && !('exclude_from_qdrant' in (value as Record<string, any>))) || ((value as Record<string, any>)['excludeFromQdrant'] === undefined && (value as Record<string, any>)['exclude_from_qdrant'] === undefined)) return false;
     if (!('permissions' in value) || value['permissions'] === undefined) return false;
-    if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
-    if (!('updatedAt' in value) || value['updatedAt'] === undefined) return false;
+    if ((!('createdAt' in (value as Record<string, any>)) && !('created_at' in (value as Record<string, any>))) || ((value as Record<string, any>)['createdAt'] === undefined && (value as Record<string, any>)['created_at'] === undefined)) return false;
+    if ((!('updatedAt' in (value as Record<string, any>)) && !('updated_at' in (value as Record<string, any>))) || ((value as Record<string, any>)['updatedAt'] === undefined && (value as Record<string, any>)['updated_at'] === undefined)) return false;
     return true;
 }
 
@@ -170,10 +148,10 @@ export function PathPartResponseFromJSONTyped(json: any, ignoreDiscriminator: bo
         'materializedPath': json['materialized_path'],
         'systemManaged': json['system_managed'],
         'excludeFromQdrant': json['exclude_from_qdrant'],
-        'tags': json['tags'] == null ? undefined : ((json['tags'] as Array<any>).map(TagResponseFromJSON)),
+        'tags': json['tags'] === undefined ? undefined : json['tags'] === null ? null : ((json['tags'] as Array<any>).map(TagResponseFromJSON)),
         'permissions': ItemPermissionsFromJSON(json['permissions']),
-        'createdAt': (new Date(json['created_at'])),
-        'updatedAt': (new Date(json['updated_at'])),
+        'createdAt': (json['created_at'] == null ? json['created_at'] : parseDateTime(json['created_at'])),
+        'updatedAt': (json['updated_at'] == null ? json['updated_at'] : parseDateTime(json['updated_at'])),
     };
 }
 
@@ -198,8 +176,8 @@ export function PathPartResponseToJSONTyped(value?: PathPartResponse | null, ign
         'exclude_from_qdrant': value['excludeFromQdrant'],
         'tags': value['tags'] == null ? undefined : ((value['tags'] as Array<any>).map(TagResponseToJSON)),
         'permissions': ItemPermissionsToJSON(value['permissions']),
-        'created_at': value['createdAt'].toISOString(),
-        'updated_at': value['updatedAt'].toISOString(),
+        'created_at': value['createdAt'] == null ? value['createdAt'] : serializeDateTime(value['createdAt']),
+        'updated_at': value['updatedAt'] == null ? value['updatedAt'] : serializeDateTime(value['updatedAt']),
     };
 }
 

@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
 import type { PermissionCapability } from './PermissionCapability';
 import {
     PermissionCapabilityFromJSON,
@@ -29,56 +29,38 @@ import {
 export interface GroupPermissionResponse {
     /**
      * 
-     * @type {string}
-     * @memberof GroupPermissionResponse
      */
     id: string;
     /**
      * 
-     * @type {string}
-     * @memberof GroupPermissionResponse
      */
     tenantId: string;
     /**
      * 
-     * @type {string}
-     * @memberof GroupPermissionResponse
      */
     groupId: string;
     /**
      * 
-     * @type {string}
-     * @memberof GroupPermissionResponse
      */
     pathPartId: string;
     /**
      * 
-     * @type {string}
-     * @memberof GroupPermissionResponse
      */
     materializedPath: string;
     /**
      * 
-     * @type {PermissionCapability}
-     * @memberof GroupPermissionResponse
      */
     capability: PermissionCapability;
     /**
      * 
-     * @type {boolean}
-     * @memberof GroupPermissionResponse
      */
     canApprove: boolean;
     /**
      * 
-     * @type {Date}
-     * @memberof GroupPermissionResponse
      */
     createdAt: Date;
     /**
      * 
-     * @type {Date}
-     * @memberof GroupPermissionResponse
      */
     updatedAt: Date;
 }
@@ -86,6 +68,8 @@ export interface GroupPermissionResponse {
 
 export const GroupPermissionResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -107,14 +91,14 @@ export const GroupPermissionResponsePropertyValidationAttributesMap: {
  */
 export function instanceOfGroupPermissionResponse(value: object): value is GroupPermissionResponse {
     if (!('id' in value) || value['id'] === undefined) return false;
-    if (!('tenantId' in value) || value['tenantId'] === undefined) return false;
-    if (!('groupId' in value) || value['groupId'] === undefined) return false;
-    if (!('pathPartId' in value) || value['pathPartId'] === undefined) return false;
-    if (!('materializedPath' in value) || value['materializedPath'] === undefined) return false;
+    if ((!('tenantId' in (value as Record<string, any>)) && !('tenant_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['tenantId'] === undefined && (value as Record<string, any>)['tenant_id'] === undefined)) return false;
+    if ((!('groupId' in (value as Record<string, any>)) && !('group_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['groupId'] === undefined && (value as Record<string, any>)['group_id'] === undefined)) return false;
+    if ((!('pathPartId' in (value as Record<string, any>)) && !('path_part_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['pathPartId'] === undefined && (value as Record<string, any>)['path_part_id'] === undefined)) return false;
+    if ((!('materializedPath' in (value as Record<string, any>)) && !('materialized_path' in (value as Record<string, any>))) || ((value as Record<string, any>)['materializedPath'] === undefined && (value as Record<string, any>)['materialized_path'] === undefined)) return false;
     if (!('capability' in value) || value['capability'] === undefined) return false;
-    if (!('canApprove' in value) || value['canApprove'] === undefined) return false;
-    if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
-    if (!('updatedAt' in value) || value['updatedAt'] === undefined) return false;
+    if ((!('canApprove' in (value as Record<string, any>)) && !('can_approve' in (value as Record<string, any>))) || ((value as Record<string, any>)['canApprove'] === undefined && (value as Record<string, any>)['can_approve'] === undefined)) return false;
+    if ((!('createdAt' in (value as Record<string, any>)) && !('created_at' in (value as Record<string, any>))) || ((value as Record<string, any>)['createdAt'] === undefined && (value as Record<string, any>)['created_at'] === undefined)) return false;
+    if ((!('updatedAt' in (value as Record<string, any>)) && !('updated_at' in (value as Record<string, any>))) || ((value as Record<string, any>)['updatedAt'] === undefined && (value as Record<string, any>)['updated_at'] === undefined)) return false;
     return true;
 }
 
@@ -135,8 +119,8 @@ export function GroupPermissionResponseFromJSONTyped(json: any, ignoreDiscrimina
         'materializedPath': json['materialized_path'],
         'capability': PermissionCapabilityFromJSON(json['capability']),
         'canApprove': json['can_approve'],
-        'createdAt': (new Date(json['created_at'])),
-        'updatedAt': (new Date(json['updated_at'])),
+        'createdAt': (json['created_at'] == null ? json['created_at'] : parseDateTime(json['created_at'])),
+        'updatedAt': (json['updated_at'] == null ? json['updated_at'] : parseDateTime(json['updated_at'])),
     };
 }
 
@@ -158,8 +142,8 @@ export function GroupPermissionResponseToJSONTyped(value?: GroupPermissionRespon
         'materialized_path': value['materializedPath'],
         'capability': PermissionCapabilityToJSON(value['capability']),
         'can_approve': value['canApprove'],
-        'created_at': value['createdAt'].toISOString(),
-        'updated_at': value['updatedAt'].toISOString(),
+        'created_at': value['createdAt'] == null ? value['createdAt'] : serializeDateTime(value['createdAt']),
+        'updated_at': value['updatedAt'] == null ? value['updatedAt'] : serializeDateTime(value['updatedAt']),
     };
 }
 

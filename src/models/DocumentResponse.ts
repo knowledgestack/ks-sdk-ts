@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
 import type { DocumentOrigin } from './DocumentOrigin';
 import {
     DocumentOriginFromJSON,
@@ -78,122 +78,82 @@ import {
 export interface DocumentResponse {
     /**
      * Path part type
-     * @type {DocumentResponsePartTypeEnum}
-     * @memberof DocumentResponse
      */
     partType: DocumentResponsePartTypeEnum;
     /**
      * Document ID
-     * @type {string}
-     * @memberof DocumentResponse
      */
     id: string;
     /**
      * PathPart ID
-     * @type {string}
-     * @memberof DocumentResponse
      */
     pathPartId: string;
     /**
      * Document name
-     * @type {string}
-     * @memberof DocumentResponse
      */
     name: string;
     /**
      * Parent PathPart ID
-     * @type {string}
-     * @memberof DocumentResponse
      */
     parentPathPartId: string | null;
     /**
      * 
-     * @type {DocumentType}
-     * @memberof DocumentResponse
      */
     documentType: DocumentType;
     /**
      * 
-     * @type {DocumentOrigin}
-     * @memberof DocumentResponse
      */
     documentOrigin: DocumentOrigin;
     /**
      * Active version ID
-     * @type {string}
-     * @memberof DocumentResponse
      */
     activeVersionId: string;
     /**
      * 
-     * @type {DocumentVersionResponse}
-     * @memberof DocumentResponse
      */
     activeVersion: DocumentVersionResponse;
     /**
      * Full materialized path from root
-     * @type {string}
-     * @memberof DocumentResponse
      */
     materializedPath: string;
     /**
      * Whether this document is system-managed
-     * @type {boolean}
-     * @memberof DocumentResponse
      */
     systemManaged: boolean;
     /**
      * 
-     * @type {PathPartApprovalState}
-     * @memberof DocumentResponse
      */
     approvalState: PathPartApprovalState;
     /**
      * Direct exclusion flag on this document's path part only. The effective exclusion also applies when any ancestor folder has the flag set — fetch the ancestry to determine effective state.
-     * @type {boolean}
-     * @memberof DocumentResponse
      */
     excludeFromQdrant: boolean;
     /**
      * Tenant ID
-     * @type {string}
-     * @memberof DocumentResponse
      */
     tenantId: string;
     /**
      * Current owner (creator) of the document, or null if unowned. Transferable via PATCH by the current owner or an ADMIN/OWNER.
-     * @type {UserInfo}
-     * @memberof DocumentResponse
      */
     owner?: UserInfo | null;
     /**
      * Creation timestamp
-     * @type {Date}
-     * @memberof DocumentResponse
      */
     createdAt: Date;
     /**
      * Last update timestamp
-     * @type {Date}
-     * @memberof DocumentResponse
      */
     updatedAt: Date;
     /**
      * Tags attached to this document
-     * @type {Array<TagResponse>}
-     * @memberof DocumentResponse
      */
     tags?: Array<TagResponse> | null;
     /**
      * Caller's effective rights; null on mutation responses.
-     * @type {ItemPermissions}
-     * @memberof DocumentResponse
      */
     permissions?: ItemPermissions | null;
     /**
      * Active write-lock state. Null when no checkout is held. Populated on detail endpoints (GET /v1/documents/{id}). Any tenant member with read access may observe this state.
-     * @type {DocumentCheckoutResponse}
-     * @memberof DocumentResponse
      */
     checkout?: DocumentCheckoutResponse | null;
 }
@@ -203,12 +163,14 @@ export interface DocumentResponse {
  * @export
  */
 export const DocumentResponsePartTypeEnum = {
-    Document: 'DOCUMENT'
+    Document: 'DOCUMENT',
 } as const;
 export type DocumentResponsePartTypeEnum = typeof DocumentResponsePartTypeEnum[keyof typeof DocumentResponsePartTypeEnum];
 
 export const DocumentResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -229,22 +191,24 @@ export const DocumentResponsePropertyValidationAttributesMap: {
  * Check if a given object implements the DocumentResponse interface.
  */
 export function instanceOfDocumentResponse(value: object): value is DocumentResponse {
-    if (!('partType' in value) || value['partType'] === undefined) return false;
+    if ((!('partType' in (value as Record<string, any>)) && !('part_type' in (value as Record<string, any>))) || ((value as Record<string, any>)['partType'] === undefined && (value as Record<string, any>)['part_type'] === undefined)) return false;
+    if ((value as Record<string, any>)['partType'] !== 'DOCUMENT' && (value as Record<string, any>)['part_type'] !== 'DOCUMENT') return false;
+    
     if (!('id' in value) || value['id'] === undefined) return false;
-    if (!('pathPartId' in value) || value['pathPartId'] === undefined) return false;
+    if ((!('pathPartId' in (value as Record<string, any>)) && !('path_part_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['pathPartId'] === undefined && (value as Record<string, any>)['path_part_id'] === undefined)) return false;
     if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('parentPathPartId' in value) || value['parentPathPartId'] === undefined) return false;
-    if (!('documentType' in value) || value['documentType'] === undefined) return false;
-    if (!('documentOrigin' in value) || value['documentOrigin'] === undefined) return false;
-    if (!('activeVersionId' in value) || value['activeVersionId'] === undefined) return false;
-    if (!('activeVersion' in value) || value['activeVersion'] === undefined) return false;
-    if (!('materializedPath' in value) || value['materializedPath'] === undefined) return false;
-    if (!('systemManaged' in value) || value['systemManaged'] === undefined) return false;
-    if (!('approvalState' in value) || value['approvalState'] === undefined) return false;
-    if (!('excludeFromQdrant' in value) || value['excludeFromQdrant'] === undefined) return false;
-    if (!('tenantId' in value) || value['tenantId'] === undefined) return false;
-    if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
-    if (!('updatedAt' in value) || value['updatedAt'] === undefined) return false;
+    if ((!('parentPathPartId' in (value as Record<string, any>)) && !('parent_path_part_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['parentPathPartId'] === undefined && (value as Record<string, any>)['parent_path_part_id'] === undefined)) return false;
+    if ((!('documentType' in (value as Record<string, any>)) && !('document_type' in (value as Record<string, any>))) || ((value as Record<string, any>)['documentType'] === undefined && (value as Record<string, any>)['document_type'] === undefined)) return false;
+    if ((!('documentOrigin' in (value as Record<string, any>)) && !('document_origin' in (value as Record<string, any>))) || ((value as Record<string, any>)['documentOrigin'] === undefined && (value as Record<string, any>)['document_origin'] === undefined)) return false;
+    if ((!('activeVersionId' in (value as Record<string, any>)) && !('active_version_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['activeVersionId'] === undefined && (value as Record<string, any>)['active_version_id'] === undefined)) return false;
+    if ((!('activeVersion' in (value as Record<string, any>)) && !('active_version' in (value as Record<string, any>))) || ((value as Record<string, any>)['activeVersion'] === undefined && (value as Record<string, any>)['active_version'] === undefined)) return false;
+    if ((!('materializedPath' in (value as Record<string, any>)) && !('materialized_path' in (value as Record<string, any>))) || ((value as Record<string, any>)['materializedPath'] === undefined && (value as Record<string, any>)['materialized_path'] === undefined)) return false;
+    if ((!('systemManaged' in (value as Record<string, any>)) && !('system_managed' in (value as Record<string, any>))) || ((value as Record<string, any>)['systemManaged'] === undefined && (value as Record<string, any>)['system_managed'] === undefined)) return false;
+    if ((!('approvalState' in (value as Record<string, any>)) && !('approval_state' in (value as Record<string, any>))) || ((value as Record<string, any>)['approvalState'] === undefined && (value as Record<string, any>)['approval_state'] === undefined)) return false;
+    if ((!('excludeFromQdrant' in (value as Record<string, any>)) && !('exclude_from_qdrant' in (value as Record<string, any>))) || ((value as Record<string, any>)['excludeFromQdrant'] === undefined && (value as Record<string, any>)['exclude_from_qdrant'] === undefined)) return false;
+    if ((!('tenantId' in (value as Record<string, any>)) && !('tenant_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['tenantId'] === undefined && (value as Record<string, any>)['tenant_id'] === undefined)) return false;
+    if ((!('createdAt' in (value as Record<string, any>)) && !('created_at' in (value as Record<string, any>))) || ((value as Record<string, any>)['createdAt'] === undefined && (value as Record<string, any>)['created_at'] === undefined)) return false;
+    if ((!('updatedAt' in (value as Record<string, any>)) && !('updated_at' in (value as Record<string, any>))) || ((value as Record<string, any>)['updatedAt'] === undefined && (value as Record<string, any>)['updated_at'] === undefined)) return false;
     return true;
 }
 
@@ -272,12 +236,12 @@ export function DocumentResponseFromJSONTyped(json: any, ignoreDiscriminator: bo
         'approvalState': PathPartApprovalStateFromJSON(json['approval_state']),
         'excludeFromQdrant': json['exclude_from_qdrant'],
         'tenantId': json['tenant_id'],
-        'owner': json['owner'] == null ? undefined : UserInfoFromJSON(json['owner']),
-        'createdAt': (new Date(json['created_at'])),
-        'updatedAt': (new Date(json['updated_at'])),
-        'tags': json['tags'] == null ? undefined : ((json['tags'] as Array<any>).map(TagResponseFromJSON)),
-        'permissions': json['permissions'] == null ? undefined : ItemPermissionsFromJSON(json['permissions']),
-        'checkout': json['checkout'] == null ? undefined : DocumentCheckoutResponseFromJSON(json['checkout']),
+        'owner': json['owner'] === undefined ? undefined : json['owner'] === null ? null : UserInfoFromJSON(json['owner']),
+        'createdAt': (json['created_at'] == null ? json['created_at'] : parseDateTime(json['created_at'])),
+        'updatedAt': (json['updated_at'] == null ? json['updated_at'] : parseDateTime(json['updated_at'])),
+        'tags': json['tags'] === undefined ? undefined : json['tags'] === null ? null : ((json['tags'] as Array<any>).map(TagResponseFromJSON)),
+        'permissions': json['permissions'] === undefined ? undefined : json['permissions'] === null ? null : ItemPermissionsFromJSON(json['permissions']),
+        'checkout': json['checkout'] === undefined ? undefined : json['checkout'] === null ? null : DocumentCheckoutResponseFromJSON(json['checkout']),
     };
 }
 
@@ -307,8 +271,8 @@ export function DocumentResponseToJSONTyped(value?: DocumentResponse | null, ign
         'exclude_from_qdrant': value['excludeFromQdrant'],
         'tenant_id': value['tenantId'],
         'owner': UserInfoToJSON(value['owner']),
-        'created_at': value['createdAt'].toISOString(),
-        'updated_at': value['updatedAt'].toISOString(),
+        'created_at': value['createdAt'] == null ? value['createdAt'] : serializeDateTime(value['createdAt']),
+        'updated_at': value['updatedAt'] == null ? value['updatedAt'] : serializeDateTime(value['updatedAt']),
         'tags': value['tags'] == null ? undefined : ((value['tags'] as Array<any>).map(TagResponseToJSON)),
         'permissions': ItemPermissionsToJSON(value['permissions']),
         'checkout': DocumentCheckoutResponseToJSON(value['checkout']),

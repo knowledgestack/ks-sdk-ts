@@ -21,25 +21,21 @@ import { mapValues } from '../runtime';
 export interface UserInfo {
     /**
      * User ID
-     * @type {string}
-     * @memberof UserInfo
      */
     userId: string;
     /**
      * First name (nullable on the user model)
-     * @type {string}
-     * @memberof UserInfo
      */
     firstName: string | null;
     /**
      * Last name (nullable on the user model)
-     * @type {string}
-     * @memberof UserInfo
      */
     lastName: string | null;
 }
 export const UserInfoPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -60,9 +56,9 @@ export const UserInfoPropertyValidationAttributesMap: {
  * Check if a given object implements the UserInfo interface.
  */
 export function instanceOfUserInfo(value: object): value is UserInfo {
-    if (!('userId' in value) || value['userId'] === undefined) return false;
-    if (!('firstName' in value) || value['firstName'] === undefined) return false;
-    if (!('lastName' in value) || value['lastName'] === undefined) return false;
+    if ((!('userId' in (value as Record<string, any>)) && !('user_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['userId'] === undefined && (value as Record<string, any>)['user_id'] === undefined)) return false;
+    if ((!('firstName' in (value as Record<string, any>)) && !('first_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['firstName'] === undefined && (value as Record<string, any>)['first_name'] === undefined)) return false;
+    if ((!('lastName' in (value as Record<string, any>)) && !('last_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['lastName'] === undefined && (value as Record<string, any>)['last_name'] === undefined)) return false;
     return true;
 }
 

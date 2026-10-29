@@ -21,19 +21,17 @@ import { mapValues } from '../runtime';
 export interface TranscriptionResponse {
     /**
      * The transcript. Empty when the clip contained no speech, which is a success, not an error.
-     * @type {string}
-     * @memberof TranscriptionResponse
      */
     text: string;
     /**
      * The language ASR detected, or the one the caller pinned. Null when the backend reports none; the text is still valid.
-     * @type {string}
-     * @memberof TranscriptionResponse
      */
     language?: string | null;
 }
 export const TranscriptionResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -69,7 +67,7 @@ export function TranscriptionResponseFromJSONTyped(json: any, ignoreDiscriminato
     return {
         
         'text': json['text'],
-        'language': json['language'] == null ? undefined : json['language'],
+        'language': json['language'] === undefined ? undefined : json['language'] === null ? null : json['language'],
     };
 }
 

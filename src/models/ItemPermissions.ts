@@ -29,31 +29,25 @@ import { mapValues } from '../runtime';
 export interface ItemPermissions {
     /**
      * False only on a navigation-ancestor row (visible to traverse, not open).
-     * @type {boolean}
-     * @memberof ItemPermissions
      */
     canRead: boolean;
     /**
      * Authorized to create/update. Run: triggerer-or-admin, not path-based.
-     * @type {boolean}
-     * @memberof ItemPermissions
      */
     canWrite: boolean;
     /**
      * Authorized to delete. Run: triggerer-or-admin.
-     * @type {boolean}
-     * @memberof ItemPermissions
      */
     canDelete: boolean;
     /**
      * Authorized to approve/unapprove. Always false for agents (assumed).
-     * @type {boolean}
-     * @memberof ItemPermissions
      */
     canApprove: boolean;
 }
 export const ItemPermissionsPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -74,10 +68,10 @@ export const ItemPermissionsPropertyValidationAttributesMap: {
  * Check if a given object implements the ItemPermissions interface.
  */
 export function instanceOfItemPermissions(value: object): value is ItemPermissions {
-    if (!('canRead' in value) || value['canRead'] === undefined) return false;
-    if (!('canWrite' in value) || value['canWrite'] === undefined) return false;
-    if (!('canDelete' in value) || value['canDelete'] === undefined) return false;
-    if (!('canApprove' in value) || value['canApprove'] === undefined) return false;
+    if ((!('canRead' in (value as Record<string, any>)) && !('can_read' in (value as Record<string, any>))) || ((value as Record<string, any>)['canRead'] === undefined && (value as Record<string, any>)['can_read'] === undefined)) return false;
+    if ((!('canWrite' in (value as Record<string, any>)) && !('can_write' in (value as Record<string, any>))) || ((value as Record<string, any>)['canWrite'] === undefined && (value as Record<string, any>)['can_write'] === undefined)) return false;
+    if ((!('canDelete' in (value as Record<string, any>)) && !('can_delete' in (value as Record<string, any>))) || ((value as Record<string, any>)['canDelete'] === undefined && (value as Record<string, any>)['can_delete'] === undefined)) return false;
+    if ((!('canApprove' in (value as Record<string, any>)) && !('can_approve' in (value as Record<string, any>))) || ((value as Record<string, any>)['canApprove'] === undefined && (value as Record<string, any>)['can_approve'] === undefined)) return false;
     return true;
 }
 

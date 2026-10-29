@@ -21,43 +21,33 @@ import { mapValues } from '../runtime';
 export interface ZipFileResult {
     /**
      * 
-     * @type {string}
-     * @memberof ZipFileResult
      */
     zipPath: string;
     /**
      * 
-     * @type {string}
-     * @memberof ZipFileResult
      */
     documentId?: string | null;
     /**
      * 
-     * @type {string}
-     * @memberof ZipFileResult
      */
     documentVersionId?: string | null;
     /**
      * 
-     * @type {string}
-     * @memberof ZipFileResult
      */
     workflowId?: string | null;
     /**
      * 
-     * @type {boolean}
-     * @memberof ZipFileResult
      */
     skipped?: boolean;
     /**
      * 
-     * @type {string}
-     * @memberof ZipFileResult
      */
     error?: string | null;
 }
 export const ZipFileResultPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -78,7 +68,7 @@ export const ZipFileResultPropertyValidationAttributesMap: {
  * Check if a given object implements the ZipFileResult interface.
  */
 export function instanceOfZipFileResult(value: object): value is ZipFileResult {
-    if (!('zipPath' in value) || value['zipPath'] === undefined) return false;
+    if ((!('zipPath' in (value as Record<string, any>)) && !('zip_path' in (value as Record<string, any>))) || ((value as Record<string, any>)['zipPath'] === undefined && (value as Record<string, any>)['zip_path'] === undefined)) return false;
     return true;
 }
 
@@ -93,11 +83,11 @@ export function ZipFileResultFromJSONTyped(json: any, ignoreDiscriminator: boole
     return {
         
         'zipPath': json['zip_path'],
-        'documentId': json['document_id'] == null ? undefined : json['document_id'],
-        'documentVersionId': json['document_version_id'] == null ? undefined : json['document_version_id'],
-        'workflowId': json['workflow_id'] == null ? undefined : json['workflow_id'],
+        'documentId': json['document_id'] === undefined ? undefined : json['document_id'] === null ? null : json['document_id'],
+        'documentVersionId': json['document_version_id'] === undefined ? undefined : json['document_version_id'] === null ? null : json['document_version_id'],
+        'workflowId': json['workflow_id'] === undefined ? undefined : json['workflow_id'] === null ? null : json['workflow_id'],
         'skipped': json['skipped'] == null ? undefined : json['skipped'],
-        'error': json['error'] == null ? undefined : json['error'],
+        'error': json['error'] === undefined ? undefined : json['error'] === null ? null : json['error'],
     };
 }
 

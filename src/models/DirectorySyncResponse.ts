@@ -21,79 +21,57 @@ import { mapValues } from '../runtime';
 export interface DirectorySyncResponse {
     /**
      * 
-     * @type {number}
-     * @memberof DirectorySyncResponse
      */
     usersCreated?: number;
     /**
      * 
-     * @type {number}
-     * @memberof DirectorySyncResponse
      */
     usersUpdated?: number;
     /**
      * 
-     * @type {number}
-     * @memberof DirectorySyncResponse
      */
     usersActivated?: number;
     /**
      * 
-     * @type {number}
-     * @memberof DirectorySyncResponse
      */
     usersDeactivated?: number;
     /**
      * 
-     * @type {number}
-     * @memberof DirectorySyncResponse
      */
     usersSkipped?: number;
     /**
      * 
-     * @type {number}
-     * @memberof DirectorySyncResponse
      */
     seatCapExcludedNum?: number;
     /**
      * 
-     * @type {number}
-     * @memberof DirectorySyncResponse
      */
     groupsCreated?: number;
     /**
      * 
-     * @type {number}
-     * @memberof DirectorySyncResponse
      */
     groupsUpdated?: number;
     /**
      * 
-     * @type {number}
-     * @memberof DirectorySyncResponse
      */
     groupMembershipsAdded?: number;
     /**
      * 
-     * @type {number}
-     * @memberof DirectorySyncResponse
      */
     groupMembershipsRemoved?: number;
     /**
      * 
-     * @type {Array<string>}
-     * @memberof DirectorySyncResponse
      */
     warnings?: Array<string>;
     /**
      * 
-     * @type {Array<string>}
-     * @memberof DirectorySyncResponse
      */
     errors?: Array<string>;
 }
 export const DirectorySyncResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,

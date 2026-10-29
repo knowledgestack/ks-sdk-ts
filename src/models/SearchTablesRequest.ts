@@ -21,31 +21,25 @@ import { mapValues } from '../runtime';
 export interface SearchTablesRequest {
     /**
      * Natural-language search query
-     * @type {string}
-     * @memberof SearchTablesRequest
      */
     query: string;
     /**
      * Number of tables (1-50)
-     * @type {number}
-     * @memberof SearchTablesRequest
      */
     topK?: number;
     /**
      * Minimum similarity score
-     * @type {number}
-     * @memberof SearchTablesRequest
      */
     scoreThreshold?: number;
     /**
      * Optional: restrict the search to one connector
-     * @type {string}
-     * @memberof SearchTablesRequest
      */
     dataSourceId?: string | null;
 }
 export const SearchTablesRequestPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -60,9 +54,12 @@ export const SearchTablesRequestPropertyValidationAttributesMap: {
     }
 } = {
     query: {
+        dataType: "string",
+        required: true,
         minLength: 1,
     },
     topK: {
+        dataType: "number",
         maximum: 50,
         exclusiveMaximum: false,
         minimum: 1,
@@ -92,7 +89,7 @@ export function SearchTablesRequestFromJSONTyped(json: any, ignoreDiscriminator:
         'query': json['query'],
         'topK': json['top_k'] == null ? undefined : json['top_k'],
         'scoreThreshold': json['score_threshold'] == null ? undefined : json['score_threshold'],
-        'dataSourceId': json['data_source_id'] == null ? undefined : json['data_source_id'],
+        'dataSourceId': json['data_source_id'] === undefined ? undefined : json['data_source_id'] === null ? null : json['data_source_id'],
     };
 }
 

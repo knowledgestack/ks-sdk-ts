@@ -21,25 +21,21 @@ import { mapValues } from '../runtime';
 export interface ChunkDocumentVersionResponse {
     /**
      * DocumentVersion ID
-     * @type {string}
-     * @memberof ChunkDocumentVersionResponse
      */
     id: string;
     /**
      * Version number
-     * @type {number}
-     * @memberof ChunkDocumentVersionResponse
      */
     version: number;
     /**
      * Version path name (e.g. v0)
-     * @type {string}
-     * @memberof ChunkDocumentVersionResponse
      */
     name: string;
 }
 export const ChunkDocumentVersionResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,

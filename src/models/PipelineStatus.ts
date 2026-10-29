@@ -23,7 +23,7 @@ export const PipelineStatus = {
     Completed: 'completed',
     Failed: 'failed',
     Cancelled: 'cancelled',
-    QuotaLimit: 'quota_limit'
+    QuotaLimit: 'quota_limit',
 } as const;
 export type PipelineStatus = typeof PipelineStatus[keyof typeof PipelineStatus];
 

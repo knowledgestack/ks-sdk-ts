@@ -36,31 +36,25 @@ import {
 export interface EnrichedThreadMessageContent {
     /**
      * The text content of the message
-     * @type {string}
-     * @memberof EnrichedThreadMessageContent
      */
     text: string;
     /**
      * Whether this message represents a terminal assistant error
-     * @type {boolean}
-     * @memberof EnrichedThreadMessageContent
      */
     isError?: boolean | null;
     /**
      * A list of citations with document context
-     * @type {Array<EnrichedCitation>}
-     * @memberof EnrichedThreadMessageContent
      */
     citations?: Array<EnrichedCitation> | null;
     /**
      * Resolved inline references attached to this message
-     * @type {Array<ResolvedReferenceOutput>}
-     * @memberof EnrichedThreadMessageContent
      */
     references?: Array<ResolvedReferenceOutput> | null;
 }
 export const EnrichedThreadMessageContentPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -96,9 +90,9 @@ export function EnrichedThreadMessageContentFromJSONTyped(json: any, ignoreDiscr
     return {
         
         'text': json['text'],
-        'isError': json['is_error'] == null ? undefined : json['is_error'],
-        'citations': json['citations'] == null ? undefined : ((json['citations'] as Array<any>).map(EnrichedCitationFromJSON)),
-        'references': json['references'] == null ? undefined : ((json['references'] as Array<any>).map(ResolvedReferenceOutputFromJSON)),
+        'isError': json['is_error'] === undefined ? undefined : json['is_error'] === null ? null : json['is_error'],
+        'citations': json['citations'] === undefined ? undefined : json['citations'] === null ? null : ((json['citations'] as Array<any>).map(EnrichedCitationFromJSON)),
+        'references': json['references'] === undefined ? undefined : json['references'] === null ? null : ((json['references'] as Array<any>).map(ResolvedReferenceOutputFromJSON)),
     };
 }
 

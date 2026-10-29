@@ -30,7 +30,7 @@ export const RepoSaveSkipReason = {
     NoWrite: 'no_write',
     Uncommitted: 'uncommitted',
     Rejected: 'rejected',
-    Failed: 'failed'
+    Failed: 'failed',
 } as const;
 export type RepoSaveSkipReason = typeof RepoSaveSkipReason[keyof typeof RepoSaveSkipReason];
 

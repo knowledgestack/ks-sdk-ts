@@ -19,7 +19,7 @@
  */
 export const GroupPermissionOrder = {
     CreatedAt: 'CREATED_AT',
-    Capability: 'CAPABILITY'
+    Capability: 'CAPABILITY',
 } as const;
 export type GroupPermissionOrder = typeof GroupPermissionOrder[keyof typeof GroupPermissionOrder];
 

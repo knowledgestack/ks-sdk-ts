@@ -21,37 +21,29 @@ import { mapValues } from '../runtime';
 export interface CreateThreadRequest {
     /**
      * Parent PathPart ID. When omitted, auto-provisions and uses the user's /users/{user_id}/threads/ folder.
-     * @type {string}
-     * @memberof CreateThreadRequest
      */
     parentPathPartId?: string | null;
     /**
      * Thread title. Mutually exclusive with message_for_title.
-     * @type {string}
-     * @memberof CreateThreadRequest
      */
     title?: string | null;
     /**
      * Message content used solely for automated title generation. This does NOT create a thread message; it is only used to generate the thread title. Mutually exclusive with title.
-     * @type {string}
-     * @memberof CreateThreadRequest
      */
     messageForTitle?: string | null;
     /**
      * Override the thread path_part name. Defaults to the thread UUID. Used by the workflow runner to enforce one ``main`` thread per run via the structural sibling-name uniqueness index.
-     * @type {string}
-     * @memberof CreateThreadRequest
      */
     pathPartName?: string | null;
     /**
      * Mark the thread's path_part as system-managed (immutable from the public API). Used by the workflow runner.
-     * @type {boolean}
-     * @memberof CreateThreadRequest
      */
     systemManaged?: boolean;
 }
 export const CreateThreadRequestPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -66,14 +58,17 @@ export const CreateThreadRequestPropertyValidationAttributesMap: {
     }
 } = {
     title: {
+        dataType: "string",
         maxLength: 255,
         minLength: 1,
     },
     messageForTitle: {
+        dataType: "string",
         maxLength: 4096,
         minLength: 1,
     },
     pathPartName: {
+        dataType: "string",
         maxLength: 255,
         minLength: 1,
     },
@@ -97,10 +92,10 @@ export function CreateThreadRequestFromJSONTyped(json: any, ignoreDiscriminator:
     }
     return {
         
-        'parentPathPartId': json['parent_path_part_id'] == null ? undefined : json['parent_path_part_id'],
-        'title': json['title'] == null ? undefined : json['title'],
-        'messageForTitle': json['message_for_title'] == null ? undefined : json['message_for_title'],
-        'pathPartName': json['path_part_name'] == null ? undefined : json['path_part_name'],
+        'parentPathPartId': json['parent_path_part_id'] === undefined ? undefined : json['parent_path_part_id'] === null ? null : json['parent_path_part_id'],
+        'title': json['title'] === undefined ? undefined : json['title'] === null ? null : json['title'],
+        'messageForTitle': json['message_for_title'] === undefined ? undefined : json['message_for_title'] === null ? null : json['message_for_title'],
+        'pathPartName': json['path_part_name'] === undefined ? undefined : json['path_part_name'] === null ? null : json['path_part_name'],
         'systemManaged': json['system_managed'] == null ? undefined : json['system_managed'],
     };
 }

@@ -28,13 +28,13 @@ import { mapValues } from '../runtime';
 export interface CloneWorkflowRunRequest {
     /**
      * When True, the new run's input_path_part_ids are pinned from the source run's snapshotted inputs (DOCUMENT_VERSION, FOLDER, DATA_SOURCE, API_CONNECTION path_parts). When False, the new run is created with an empty input scope.
-     * @type {boolean}
-     * @memberof CloneWorkflowRunRequest
      */
     includeInputs: boolean;
 }
 export const CloneWorkflowRunRequestPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -55,7 +55,7 @@ export const CloneWorkflowRunRequestPropertyValidationAttributesMap: {
  * Check if a given object implements the CloneWorkflowRunRequest interface.
  */
 export function instanceOfCloneWorkflowRunRequest(value: object): value is CloneWorkflowRunRequest {
-    if (!('includeInputs' in value) || value['includeInputs'] === undefined) return false;
+    if ((!('includeInputs' in (value as Record<string, any>)) && !('include_inputs' in (value as Record<string, any>))) || ((value as Record<string, any>)['includeInputs'] === undefined && (value as Record<string, any>)['include_inputs'] === undefined)) return false;
     return true;
 }
 

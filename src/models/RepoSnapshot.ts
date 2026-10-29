@@ -21,25 +21,21 @@ import { mapValues } from '../runtime';
 export interface RepoSnapshot {
     /**
      * Commit id of main the run checks out
-     * @type {string}
-     * @memberof RepoSnapshot
      */
     commit: string;
     /**
      * DocumentVersion holding that main's bundle
-     * @type {string}
-     * @memberof RepoSnapshot
      */
     versionId: string;
     /**
      * Instruction version (DOCUMENT_VERSION path_part) that repository version was saved against; the runner compares it with this run's pinned instruction.
-     * @type {string}
-     * @memberof RepoSnapshot
      */
     instructionVersionId?: string | null;
 }
 export const RepoSnapshotPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -61,7 +57,7 @@ export const RepoSnapshotPropertyValidationAttributesMap: {
  */
 export function instanceOfRepoSnapshot(value: object): value is RepoSnapshot {
     if (!('commit' in value) || value['commit'] === undefined) return false;
-    if (!('versionId' in value) || value['versionId'] === undefined) return false;
+    if ((!('versionId' in (value as Record<string, any>)) && !('version_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['versionId'] === undefined && (value as Record<string, any>)['version_id'] === undefined)) return false;
     return true;
 }
 
@@ -77,7 +73,7 @@ export function RepoSnapshotFromJSONTyped(json: any, ignoreDiscriminator: boolea
         
         'commit': json['commit'],
         'versionId': json['version_id'],
-        'instructionVersionId': json['instruction_version_id'] == null ? undefined : json['instruction_version_id'],
+        'instructionVersionId': json['instruction_version_id'] === undefined ? undefined : json['instruction_version_id'] === null ? null : json['instruction_version_id'],
     };
 }
 

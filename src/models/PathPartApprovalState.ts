@@ -26,7 +26,7 @@
 export const PathPartApprovalState = {
     NotRequired: 'not_required',
     Pending: 'pending',
-    Approved: 'approved'
+    Approved: 'approved',
 } as const;
 export type PathPartApprovalState = typeof PathPartApprovalState[keyof typeof PathPartApprovalState];
 

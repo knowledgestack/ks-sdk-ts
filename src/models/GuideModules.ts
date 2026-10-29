@@ -29,91 +29,65 @@ import {
 export interface GuideModules {
     /**
      * 
-     * @type {GuideModuleProgress}
-     * @memberof GuideModules
      */
     core?: GuideModuleProgress | null;
     /**
      * 
-     * @type {GuideModuleProgress}
-     * @memberof GuideModules
      */
     groundedAnswers?: GuideModuleProgress | null;
     /**
      * 
-     * @type {GuideModuleProgress}
-     * @memberof GuideModules
      */
     knowledge?: GuideModuleProgress | null;
     /**
      * 
-     * @type {GuideModuleProgress}
-     * @memberof GuideModules
      */
     repeatableWork?: GuideModuleProgress | null;
     /**
      * 
-     * @type {GuideModuleProgress}
-     * @memberof GuideModules
      */
     access?: GuideModuleProgress | null;
     /**
      * 
-     * @type {GuideModuleProgress}
-     * @memberof GuideModules
      */
     administration?: GuideModuleProgress | null;
     /**
      * 
-     * @type {GuideModuleProgress}
-     * @memberof GuideModules
      */
     documents?: GuideModuleProgress | null;
     /**
      * 
-     * @type {GuideModuleProgress}
-     * @memberof GuideModules
      */
     workflowRuns?: GuideModuleProgress | null;
     /**
      * 
-     * @type {GuideModuleProgress}
-     * @memberof GuideModules
      */
     search?: GuideModuleProgress | null;
     /**
      * 
-     * @type {GuideModuleProgress}
-     * @memberof GuideModules
      */
     workflowSetup?: GuideModuleProgress | null;
     /**
      * 
-     * @type {GuideModuleProgress}
-     * @memberof GuideModules
      */
     skills?: GuideModuleProgress | null;
     /**
      * 
-     * @type {GuideModuleProgress}
-     * @memberof GuideModules
      */
     dashboard?: GuideModuleProgress | null;
     /**
      * 
-     * @type {GuideModuleProgress}
-     * @memberof GuideModules
      */
     groups?: GuideModuleProgress | null;
     /**
      * 
-     * @type {GuideModuleProgress}
-     * @memberof GuideModules
      */
     auditLog?: GuideModuleProgress | null;
 }
 export const GuideModulesPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -147,20 +121,20 @@ export function GuideModulesFromJSONTyped(json: any, ignoreDiscriminator: boolea
     }
     return {
         
-        'core': json['core'] == null ? undefined : GuideModuleProgressFromJSON(json['core']),
-        'groundedAnswers': json['grounded_answers'] == null ? undefined : GuideModuleProgressFromJSON(json['grounded_answers']),
-        'knowledge': json['knowledge'] == null ? undefined : GuideModuleProgressFromJSON(json['knowledge']),
-        'repeatableWork': json['repeatable_work'] == null ? undefined : GuideModuleProgressFromJSON(json['repeatable_work']),
-        'access': json['access'] == null ? undefined : GuideModuleProgressFromJSON(json['access']),
-        'administration': json['administration'] == null ? undefined : GuideModuleProgressFromJSON(json['administration']),
-        'documents': json['documents'] == null ? undefined : GuideModuleProgressFromJSON(json['documents']),
-        'workflowRuns': json['workflow_runs'] == null ? undefined : GuideModuleProgressFromJSON(json['workflow_runs']),
-        'search': json['search'] == null ? undefined : GuideModuleProgressFromJSON(json['search']),
-        'workflowSetup': json['workflow_setup'] == null ? undefined : GuideModuleProgressFromJSON(json['workflow_setup']),
-        'skills': json['skills'] == null ? undefined : GuideModuleProgressFromJSON(json['skills']),
-        'dashboard': json['dashboard'] == null ? undefined : GuideModuleProgressFromJSON(json['dashboard']),
-        'groups': json['groups'] == null ? undefined : GuideModuleProgressFromJSON(json['groups']),
-        'auditLog': json['audit_log'] == null ? undefined : GuideModuleProgressFromJSON(json['audit_log']),
+        'core': json['core'] === undefined ? undefined : json['core'] === null ? null : GuideModuleProgressFromJSON(json['core']),
+        'groundedAnswers': json['grounded_answers'] === undefined ? undefined : json['grounded_answers'] === null ? null : GuideModuleProgressFromJSON(json['grounded_answers']),
+        'knowledge': json['knowledge'] === undefined ? undefined : json['knowledge'] === null ? null : GuideModuleProgressFromJSON(json['knowledge']),
+        'repeatableWork': json['repeatable_work'] === undefined ? undefined : json['repeatable_work'] === null ? null : GuideModuleProgressFromJSON(json['repeatable_work']),
+        'access': json['access'] === undefined ? undefined : json['access'] === null ? null : GuideModuleProgressFromJSON(json['access']),
+        'administration': json['administration'] === undefined ? undefined : json['administration'] === null ? null : GuideModuleProgressFromJSON(json['administration']),
+        'documents': json['documents'] === undefined ? undefined : json['documents'] === null ? null : GuideModuleProgressFromJSON(json['documents']),
+        'workflowRuns': json['workflow_runs'] === undefined ? undefined : json['workflow_runs'] === null ? null : GuideModuleProgressFromJSON(json['workflow_runs']),
+        'search': json['search'] === undefined ? undefined : json['search'] === null ? null : GuideModuleProgressFromJSON(json['search']),
+        'workflowSetup': json['workflow_setup'] === undefined ? undefined : json['workflow_setup'] === null ? null : GuideModuleProgressFromJSON(json['workflow_setup']),
+        'skills': json['skills'] === undefined ? undefined : json['skills'] === null ? null : GuideModuleProgressFromJSON(json['skills']),
+        'dashboard': json['dashboard'] === undefined ? undefined : json['dashboard'] === null ? null : GuideModuleProgressFromJSON(json['dashboard']),
+        'groups': json['groups'] === undefined ? undefined : json['groups'] === null ? null : GuideModuleProgressFromJSON(json['groups']),
+        'auditLog': json['audit_log'] === undefined ? undefined : json['audit_log'] === null ? null : GuideModuleProgressFromJSON(json['audit_log']),
     };
 }
 

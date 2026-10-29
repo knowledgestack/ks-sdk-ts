@@ -20,7 +20,7 @@
 export const MemoryKind = {
     Correction: 'CORRECTION',
     Preference: 'PREFERENCE',
-    Example: 'EXAMPLE'
+    Example: 'EXAMPLE',
 } as const;
 export type MemoryKind = typeof MemoryKind[keyof typeof MemoryKind];
 

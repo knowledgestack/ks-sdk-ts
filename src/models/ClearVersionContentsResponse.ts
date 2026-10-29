@@ -21,13 +21,13 @@ import { mapValues } from '../runtime';
 export interface ClearVersionContentsResponse {
     /**
      * Number of top-level children deleted
-     * @type {number}
-     * @memberof ClearVersionContentsResponse
      */
     deleted: number;
 }
 export const ClearVersionContentsResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,

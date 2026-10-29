@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
 import type { WorkflowAdoptionStats } from './WorkflowAdoptionStats';
 import {
     WorkflowAdoptionStatsFromJSON,
@@ -36,67 +36,49 @@ import {
 export interface WorkflowRunSummaryResponse {
     /**
      * 
-     * @type {Date}
-     * @memberof WorkflowRunSummaryResponse
      */
     windowStart: Date;
     /**
      * 
-     * @type {Date}
-     * @memberof WorkflowRunSummaryResponse
      */
     windowEnd: Date | null;
     /**
      * Runs created in the window.
-     * @type {number}
-     * @memberof WorkflowRunSummaryResponse
      */
     total: number;
     /**
      * Run count per execution_state (all states present).
-     * @type {{ [key: string]: number; }}
-     * @memberof WorkflowRunSummaryResponse
      */
     countsByState: { [key: string]: number; };
     /**
      * FAILED / (COMPLETED + FAILED); null when no terminal runs.
-     * @type {number}
-     * @memberof WorkflowRunSummaryResponse
      */
     failureRate: number | null;
     /**
      * Median run duration over terminal runs; null when none.
-     * @type {number}
-     * @memberof WorkflowRunSummaryResponse
      */
     durationP50Seconds: number | null;
     /**
      * p95 run duration over terminal runs; null when none.
-     * @type {number}
-     * @memberof WorkflowRunSummaryResponse
      */
     durationP95Seconds: number | null;
     /**
      * Runs currently awaiting approval (point-in-time).
-     * @type {number}
-     * @memberof WorkflowRunSummaryResponse
      */
     pendingApprovalCount: number;
     /**
      * Age of the oldest pending-approval request; null when none.
-     * @type {number}
-     * @memberof WorkflowRunSummaryResponse
      */
     oldestPendingAgeSeconds: number | null;
     /**
      * 
-     * @type {WorkflowAdoptionStats}
-     * @memberof WorkflowRunSummaryResponse
      */
     adoption: WorkflowAdoptionStats;
 }
 export const WorkflowRunSummaryResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -117,15 +99,15 @@ export const WorkflowRunSummaryResponsePropertyValidationAttributesMap: {
  * Check if a given object implements the WorkflowRunSummaryResponse interface.
  */
 export function instanceOfWorkflowRunSummaryResponse(value: object): value is WorkflowRunSummaryResponse {
-    if (!('windowStart' in value) || value['windowStart'] === undefined) return false;
-    if (!('windowEnd' in value) || value['windowEnd'] === undefined) return false;
+    if ((!('windowStart' in (value as Record<string, any>)) && !('window_start' in (value as Record<string, any>))) || ((value as Record<string, any>)['windowStart'] === undefined && (value as Record<string, any>)['window_start'] === undefined)) return false;
+    if ((!('windowEnd' in (value as Record<string, any>)) && !('window_end' in (value as Record<string, any>))) || ((value as Record<string, any>)['windowEnd'] === undefined && (value as Record<string, any>)['window_end'] === undefined)) return false;
     if (!('total' in value) || value['total'] === undefined) return false;
-    if (!('countsByState' in value) || value['countsByState'] === undefined) return false;
-    if (!('failureRate' in value) || value['failureRate'] === undefined) return false;
-    if (!('durationP50Seconds' in value) || value['durationP50Seconds'] === undefined) return false;
-    if (!('durationP95Seconds' in value) || value['durationP95Seconds'] === undefined) return false;
-    if (!('pendingApprovalCount' in value) || value['pendingApprovalCount'] === undefined) return false;
-    if (!('oldestPendingAgeSeconds' in value) || value['oldestPendingAgeSeconds'] === undefined) return false;
+    if ((!('countsByState' in (value as Record<string, any>)) && !('counts_by_state' in (value as Record<string, any>))) || ((value as Record<string, any>)['countsByState'] === undefined && (value as Record<string, any>)['counts_by_state'] === undefined)) return false;
+    if ((!('failureRate' in (value as Record<string, any>)) && !('failure_rate' in (value as Record<string, any>))) || ((value as Record<string, any>)['failureRate'] === undefined && (value as Record<string, any>)['failure_rate'] === undefined)) return false;
+    if ((!('durationP50Seconds' in (value as Record<string, any>)) && !('duration_p50_seconds' in (value as Record<string, any>))) || ((value as Record<string, any>)['durationP50Seconds'] === undefined && (value as Record<string, any>)['duration_p50_seconds'] === undefined)) return false;
+    if ((!('durationP95Seconds' in (value as Record<string, any>)) && !('duration_p95_seconds' in (value as Record<string, any>))) || ((value as Record<string, any>)['durationP95Seconds'] === undefined && (value as Record<string, any>)['duration_p95_seconds'] === undefined)) return false;
+    if ((!('pendingApprovalCount' in (value as Record<string, any>)) && !('pending_approval_count' in (value as Record<string, any>))) || ((value as Record<string, any>)['pendingApprovalCount'] === undefined && (value as Record<string, any>)['pending_approval_count'] === undefined)) return false;
+    if ((!('oldestPendingAgeSeconds' in (value as Record<string, any>)) && !('oldest_pending_age_seconds' in (value as Record<string, any>))) || ((value as Record<string, any>)['oldestPendingAgeSeconds'] === undefined && (value as Record<string, any>)['oldest_pending_age_seconds'] === undefined)) return false;
     if (!('adoption' in value) || value['adoption'] === undefined) return false;
     return true;
 }
@@ -140,8 +122,8 @@ export function WorkflowRunSummaryResponseFromJSONTyped(json: any, ignoreDiscrim
     }
     return {
         
-        'windowStart': (new Date(json['window_start'])),
-        'windowEnd': (json['window_end'] == null ? null : new Date(json['window_end'])),
+        'windowStart': (json['window_start'] == null ? json['window_start'] : parseDateTime(json['window_start'])),
+        'windowEnd': (json['window_end'] == null ? null : parseDateTime(json['window_end'])),
         'total': json['total'],
         'countsByState': json['counts_by_state'],
         'failureRate': json['failure_rate'],
@@ -164,8 +146,8 @@ export function WorkflowRunSummaryResponseToJSONTyped(value?: WorkflowRunSummary
 
     return {
         
-        'window_start': value['windowStart'].toISOString(),
-        'window_end': value['windowEnd'] == null ? value['windowEnd'] : value['windowEnd'].toISOString(),
+        'window_start': value['windowStart'] == null ? value['windowStart'] : serializeDateTime(value['windowStart']),
+        'window_end': value['windowEnd'] == null ? value['windowEnd'] : serializeDateTime(value['windowEnd']),
         'total': value['total'],
         'counts_by_state': value['countsByState'],
         'failure_rate': value['failureRate'],

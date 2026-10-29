@@ -21,19 +21,17 @@ import { mapValues } from '../runtime';
 export interface CreateGroupRequest {
     /**
      * 
-     * @type {string}
-     * @memberof CreateGroupRequest
      */
     name: string;
     /**
      * 
-     * @type {string}
-     * @memberof CreateGroupRequest
      */
     description?: string | null;
 }
 export const CreateGroupRequestPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -48,10 +46,13 @@ export const CreateGroupRequestPropertyValidationAttributesMap: {
     }
 } = {
     name: {
+        dataType: "string",
+        required: true,
         maxLength: 255,
         minLength: 1,
     },
     description: {
+        dataType: "string",
         maxLength: 1024,
     },
 }
@@ -76,7 +77,7 @@ export function CreateGroupRequestFromJSONTyped(json: any, ignoreDiscriminator: 
     return {
         
         'name': json['name'],
-        'description': json['description'] == null ? undefined : json['description'],
+        'description': json['description'] === undefined ? undefined : json['description'] === null ? null : json['description'],
     };
 }
 

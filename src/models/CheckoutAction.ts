@@ -21,7 +21,7 @@ export const CheckoutAction = {
     Redirect: 'REDIRECT',
     Credential: 'CREDENTIAL',
     Scheduled: 'SCHEDULED',
-    Applied: 'APPLIED'
+    Applied: 'APPLIED',
 } as const;
 export type CheckoutAction = typeof CheckoutAction[keyof typeof CheckoutAction];
 

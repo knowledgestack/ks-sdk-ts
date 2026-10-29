@@ -32,26 +32,18 @@ import {
 export interface StructuredChange {
     /**
      * 
-     * @type {string}
-     * @memberof StructuredChange
      */
     path: string;
     /**
      * 
-     * @type {string}
-     * @memberof StructuredChange
      */
     old: string | null;
     /**
      * 
-     * @type {string}
-     * @memberof StructuredChange
      */
     _new: string | null;
     /**
      * 
-     * @type {StructuredChangeType}
-     * @memberof StructuredChange
      */
     type: StructuredChangeType;
 }
@@ -59,6 +51,8 @@ export interface StructuredChange {
 
 export const StructuredChangePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -81,7 +75,7 @@ export const StructuredChangePropertyValidationAttributesMap: {
 export function instanceOfStructuredChange(value: object): value is StructuredChange {
     if (!('path' in value) || value['path'] === undefined) return false;
     if (!('old' in value) || value['old'] === undefined) return false;
-    if (!('_new' in value) || value['_new'] === undefined) return false;
+    if ((!('_new' in (value as Record<string, any>)) && !('new' in (value as Record<string, any>))) || ((value as Record<string, any>)['_new'] === undefined && (value as Record<string, any>)['new'] === undefined)) return false;
     if (!('type' in value) || value['type'] === undefined) return false;
     return true;
 }

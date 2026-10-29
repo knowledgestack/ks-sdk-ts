@@ -21,25 +21,21 @@ import { mapValues } from '../runtime';
 export interface BulkMoveRequest {
     /**
      * 
-     * @type {Array<string>}
-     * @memberof BulkMoveRequest
      */
     folderIds?: Array<string>;
     /**
      * 
-     * @type {Array<string>}
-     * @memberof BulkMoveRequest
      */
     documentIds?: Array<string>;
     /**
      * 
-     * @type {string}
-     * @memberof BulkMoveRequest
      */
     targetFolderId: string;
 }
 export const BulkMoveRequestPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -60,7 +56,7 @@ export const BulkMoveRequestPropertyValidationAttributesMap: {
  * Check if a given object implements the BulkMoveRequest interface.
  */
 export function instanceOfBulkMoveRequest(value: object): value is BulkMoveRequest {
-    if (!('targetFolderId' in value) || value['targetFolderId'] === undefined) return false;
+    if ((!('targetFolderId' in (value as Record<string, any>)) && !('target_folder_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['targetFolderId'] === undefined && (value as Record<string, any>)['target_folder_id'] === undefined)) return false;
     return true;
 }
 

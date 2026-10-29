@@ -43,26 +43,18 @@ import {
 export interface CheckoutResponse {
     /**
      * 
-     * @type {CheckoutAction}
-     * @memberof CheckoutResponse
      */
     action: CheckoutAction;
     /**
      * 
-     * @type {BillingSystem}
-     * @memberof CheckoutResponse
      */
     billingSystem?: BillingSystem;
     /**
      * Stripe Checkout URL (action=REDIRECT).
-     * @type {string}
-     * @memberof CheckoutResponse
      */
     url?: string | null;
     /**
      * Ping++ charge credential (action=CREDENTIAL).
-     * @type {{ [key: string]: any; }}
-     * @memberof CheckoutResponse
      */
     credential?: { [key: string]: any; } | null;
 }
@@ -70,6 +62,8 @@ export interface CheckoutResponse {
 
 export const CheckoutResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -106,8 +100,8 @@ export function CheckoutResponseFromJSONTyped(json: any, ignoreDiscriminator: bo
         
         'action': CheckoutActionFromJSON(json['action']),
         'billingSystem': json['billing_system'] == null ? undefined : BillingSystemFromJSON(json['billing_system']),
-        'url': json['url'] == null ? undefined : json['url'],
-        'credential': json['credential'] == null ? undefined : json['credential'],
+        'url': json['url'] === undefined ? undefined : json['url'] === null ? null : json['url'],
+        'credential': json['credential'] === undefined ? undefined : json['credential'] === null ? null : json['credential'],
     };
 }
 

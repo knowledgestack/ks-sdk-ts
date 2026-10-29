@@ -21,31 +21,25 @@ import { mapValues } from '../runtime';
 export interface CreateSectionRequest {
     /**
      * Section name (can contain any characters)
-     * @type {string}
-     * @memberof CreateSectionRequest
      */
     name: string;
     /**
      * Parent PathPart ID (must be DOCUMENT_VERSION or SECTION)
-     * @type {string}
-     * @memberof CreateSectionRequest
      */
     parentPathId: string;
     /**
      * Page number in source document (must be > 0)
-     * @type {number}
-     * @memberof CreateSectionRequest
      */
     pageNumber?: number | null;
     /**
      * PathPart ID to insert after (null = append to tail)
-     * @type {string}
-     * @memberof CreateSectionRequest
      */
     prevSiblingPathId?: string | null;
 }
 export const CreateSectionRequestPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -60,6 +54,8 @@ export const CreateSectionRequestPropertyValidationAttributesMap: {
     }
 } = {
     name: {
+        dataType: "string",
+        required: true,
         maxLength: 255,
         minLength: 1,
     },
@@ -71,7 +67,7 @@ export const CreateSectionRequestPropertyValidationAttributesMap: {
  */
 export function instanceOfCreateSectionRequest(value: object): value is CreateSectionRequest {
     if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('parentPathId' in value) || value['parentPathId'] === undefined) return false;
+    if ((!('parentPathId' in (value as Record<string, any>)) && !('parent_path_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['parentPathId'] === undefined && (value as Record<string, any>)['parent_path_id'] === undefined)) return false;
     return true;
 }
 
@@ -87,8 +83,8 @@ export function CreateSectionRequestFromJSONTyped(json: any, ignoreDiscriminator
         
         'name': json['name'],
         'parentPathId': json['parent_path_id'],
-        'pageNumber': json['page_number'] == null ? undefined : json['page_number'],
-        'prevSiblingPathId': json['prev_sibling_path_id'] == null ? undefined : json['prev_sibling_path_id'],
+        'pageNumber': json['page_number'] === undefined ? undefined : json['page_number'] === null ? null : json['page_number'],
+        'prevSiblingPathId': json['prev_sibling_path_id'] === undefined ? undefined : json['prev_sibling_path_id'] === null ? null : json['prev_sibling_path_id'],
     };
 }
 

@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
 import type { ConnectionSummary } from './ConnectionSummary';
 import {
     ConnectionSummaryFromJSON,
@@ -77,98 +77,66 @@ import {
 export interface DataSourceResponse {
     /**
      * Path part type
-     * @type {DataSourceResponsePartTypeEnum}
-     * @memberof DataSourceResponse
      */
     partType?: DataSourceResponsePartTypeEnum;
     /**
      * 
-     * @type {string}
-     * @memberof DataSourceResponse
      */
     id: string;
     /**
      * DATA_SOURCE path_part of this connector
-     * @type {string}
-     * @memberof DataSourceResponse
      */
     pathPartId: string;
     /**
      * path_part of the containing folder
-     * @type {string}
-     * @memberof DataSourceResponse
      */
     parentPathPartId: string | null;
     /**
      * Full materialized path from root
-     * @type {string}
-     * @memberof DataSourceResponse
      */
     materializedPath: string;
     /**
      * 
-     * @type {string}
-     * @memberof DataSourceResponse
      */
     tenantId: string;
     /**
      * 
-     * @type {string}
-     * @memberof DataSourceResponse
      */
     name: string;
     /**
      * 
-     * @type {DataSourceEngine}
-     * @memberof DataSourceResponse
      */
     engine: DataSourceEngine;
     /**
      * 
-     * @type {SourceType}
-     * @memberof DataSourceResponse
      */
     sourceType: SourceType;
     /**
      * Where the connector points, without the password. Null on a YIDINGSYNC connector until provisioning has built its database, so polling this is how the UI learns the sync is ready.
-     * @type {ConnectionSummary}
-     * @memberof DataSourceResponse
      */
     connectionSummary?: ConnectionSummary | null;
     /**
      * A YIDINGSYNC connector's crawler config without the password: which shop, from when, and the crawl recurrence. Null on DIRECT.
-     * @type {SourceConfigSummary}
-     * @memberof DataSourceResponse
      */
     sourceConfig?: SourceConfigSummary | null;
     /**
      * 
-     * @type {PathPartApprovalState}
-     * @memberof DataSourceResponse
      */
     approvalState: PathPartApprovalState;
     /**
      * Current owner (creator) of the connector, or null if unowned.
-     * @type {UserInfo}
-     * @memberof DataSourceResponse
      */
     owner?: UserInfo | null;
     /**
      * 
-     * @type {ItemPermissions}
-     * @memberof DataSourceResponse
      */
     permissions: ItemPermissions;
     /**
      * 
-     * @type {Date}
-     * @memberof DataSourceResponse
      */
     createdAt: Date;
     /**
      * 
-     * @type {Date}
-     * @memberof DataSourceResponse
      */
     updatedAt: Date;
 }
@@ -178,12 +146,14 @@ export interface DataSourceResponse {
  * @export
  */
 export const DataSourceResponsePartTypeEnum = {
-    DataSource: 'DATA_SOURCE'
+    DataSource: 'DATA_SOURCE',
 } as const;
 export type DataSourceResponsePartTypeEnum = typeof DataSourceResponsePartTypeEnum[keyof typeof DataSourceResponsePartTypeEnum];
 
 export const DataSourceResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -205,17 +175,17 @@ export const DataSourceResponsePropertyValidationAttributesMap: {
  */
 export function instanceOfDataSourceResponse(value: object): value is DataSourceResponse {
     if (!('id' in value) || value['id'] === undefined) return false;
-    if (!('pathPartId' in value) || value['pathPartId'] === undefined) return false;
-    if (!('parentPathPartId' in value) || value['parentPathPartId'] === undefined) return false;
-    if (!('materializedPath' in value) || value['materializedPath'] === undefined) return false;
-    if (!('tenantId' in value) || value['tenantId'] === undefined) return false;
+    if ((!('pathPartId' in (value as Record<string, any>)) && !('path_part_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['pathPartId'] === undefined && (value as Record<string, any>)['path_part_id'] === undefined)) return false;
+    if ((!('parentPathPartId' in (value as Record<string, any>)) && !('parent_path_part_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['parentPathPartId'] === undefined && (value as Record<string, any>)['parent_path_part_id'] === undefined)) return false;
+    if ((!('materializedPath' in (value as Record<string, any>)) && !('materialized_path' in (value as Record<string, any>))) || ((value as Record<string, any>)['materializedPath'] === undefined && (value as Record<string, any>)['materialized_path'] === undefined)) return false;
+    if ((!('tenantId' in (value as Record<string, any>)) && !('tenant_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['tenantId'] === undefined && (value as Record<string, any>)['tenant_id'] === undefined)) return false;
     if (!('name' in value) || value['name'] === undefined) return false;
     if (!('engine' in value) || value['engine'] === undefined) return false;
-    if (!('sourceType' in value) || value['sourceType'] === undefined) return false;
-    if (!('approvalState' in value) || value['approvalState'] === undefined) return false;
+    if ((!('sourceType' in (value as Record<string, any>)) && !('source_type' in (value as Record<string, any>))) || ((value as Record<string, any>)['sourceType'] === undefined && (value as Record<string, any>)['source_type'] === undefined)) return false;
+    if ((!('approvalState' in (value as Record<string, any>)) && !('approval_state' in (value as Record<string, any>))) || ((value as Record<string, any>)['approvalState'] === undefined && (value as Record<string, any>)['approval_state'] === undefined)) return false;
     if (!('permissions' in value) || value['permissions'] === undefined) return false;
-    if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
-    if (!('updatedAt' in value) || value['updatedAt'] === undefined) return false;
+    if ((!('createdAt' in (value as Record<string, any>)) && !('created_at' in (value as Record<string, any>))) || ((value as Record<string, any>)['createdAt'] === undefined && (value as Record<string, any>)['created_at'] === undefined)) return false;
+    if ((!('updatedAt' in (value as Record<string, any>)) && !('updated_at' in (value as Record<string, any>))) || ((value as Record<string, any>)['updatedAt'] === undefined && (value as Record<string, any>)['updated_at'] === undefined)) return false;
     return true;
 }
 
@@ -238,13 +208,13 @@ export function DataSourceResponseFromJSONTyped(json: any, ignoreDiscriminator: 
         'name': json['name'],
         'engine': DataSourceEngineFromJSON(json['engine']),
         'sourceType': SourceTypeFromJSON(json['source_type']),
-        'connectionSummary': json['connection_summary'] == null ? undefined : ConnectionSummaryFromJSON(json['connection_summary']),
-        'sourceConfig': json['source_config'] == null ? undefined : SourceConfigSummaryFromJSON(json['source_config']),
+        'connectionSummary': json['connection_summary'] === undefined ? undefined : json['connection_summary'] === null ? null : ConnectionSummaryFromJSON(json['connection_summary']),
+        'sourceConfig': json['source_config'] === undefined ? undefined : json['source_config'] === null ? null : SourceConfigSummaryFromJSON(json['source_config']),
         'approvalState': PathPartApprovalStateFromJSON(json['approval_state']),
-        'owner': json['owner'] == null ? undefined : UserInfoFromJSON(json['owner']),
+        'owner': json['owner'] === undefined ? undefined : json['owner'] === null ? null : UserInfoFromJSON(json['owner']),
         'permissions': ItemPermissionsFromJSON(json['permissions']),
-        'createdAt': (new Date(json['created_at'])),
-        'updatedAt': (new Date(json['updated_at'])),
+        'createdAt': (json['created_at'] == null ? json['created_at'] : parseDateTime(json['created_at'])),
+        'updatedAt': (json['updated_at'] == null ? json['updated_at'] : parseDateTime(json['updated_at'])),
     };
 }
 
@@ -273,8 +243,8 @@ export function DataSourceResponseToJSONTyped(value?: DataSourceResponse | null,
         'approval_state': PathPartApprovalStateToJSON(value['approvalState']),
         'owner': UserInfoToJSON(value['owner']),
         'permissions': ItemPermissionsToJSON(value['permissions']),
-        'created_at': value['createdAt'].toISOString(),
-        'updated_at': value['updatedAt'].toISOString(),
+        'created_at': value['createdAt'] == null ? value['createdAt'] : serializeDateTime(value['createdAt']),
+        'updated_at': value['updatedAt'] == null ? value['updatedAt'] : serializeDateTime(value['updatedAt']),
     };
 }
 

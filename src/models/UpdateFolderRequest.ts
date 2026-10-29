@@ -21,25 +21,21 @@ import { mapValues } from '../runtime';
 export interface UpdateFolderRequest {
     /**
      * New folder name
-     * @type {string}
-     * @memberof UpdateFolderRequest
      */
     name?: string | null;
     /**
      * New parent PathPart ID for move (must be a FOLDER type)
-     * @type {string}
-     * @memberof UpdateFolderRequest
      */
     parentPathPartId?: string | null;
     /**
      * If set, toggle whether this folder (and its descendants) are excluded from Qdrant vector indexing. True deletes existing points for the subtree; False re-embeds them. Not allowed on system-managed folders.
-     * @type {boolean}
-     * @memberof UpdateFolderRequest
      */
     excludeFromQdrant?: boolean | null;
 }
 export const UpdateFolderRequestPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -54,6 +50,7 @@ export const UpdateFolderRequestPropertyValidationAttributesMap: {
     }
 } = {
     name: {
+        dataType: "string",
         maxLength: 255,
         minLength: 1,
     },
@@ -77,9 +74,9 @@ export function UpdateFolderRequestFromJSONTyped(json: any, ignoreDiscriminator:
     }
     return {
         
-        'name': json['name'] == null ? undefined : json['name'],
-        'parentPathPartId': json['parent_path_part_id'] == null ? undefined : json['parent_path_part_id'],
-        'excludeFromQdrant': json['exclude_from_qdrant'] == null ? undefined : json['exclude_from_qdrant'],
+        'name': json['name'] === undefined ? undefined : json['name'] === null ? null : json['name'],
+        'parentPathPartId': json['parent_path_part_id'] === undefined ? undefined : json['parent_path_part_id'] === null ? null : json['parent_path_part_id'],
+        'excludeFromQdrant': json['exclude_from_qdrant'] === undefined ? undefined : json['exclude_from_qdrant'] === null ? null : json['exclude_from_qdrant'],
     };
 }
 

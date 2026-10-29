@@ -12,27 +12,34 @@
  * Do not edit the class manually.
  */
 
-
 import * as runtime from '../runtime';
-import type {
-  DiagnosticsResponse,
-  ErrorResponse,
-  HTTPValidationError,
-} from '../models/index';
 import {
+    type DiagnosticsResponse,
     DiagnosticsResponseFromJSON,
     DiagnosticsResponseToJSON,
+} from '../models/DiagnosticsResponse';
+import {
+    type ErrorResponse,
     ErrorResponseFromJSON,
     ErrorResponseToJSON,
+} from '../models/ErrorResponse';
+import {
+    type HTTPValidationError,
     HTTPValidationErrorFromJSON,
     HTTPValidationErrorToJSON,
-} from '../models/index';
+} from '../models/HTTPValidationError';
 
 export interface ComputeThreadDiagnosticsRequest {
+    /**
+     * 
+     */
     threadId: string;
 }
 
 export interface ComputeWorkflowRunDiagnosticsRequest {
+    /**
+     * 
+     */
     runId: string;
 }
 
@@ -123,7 +130,7 @@ export class DiagnosticsApi extends runtime.BaseAPI implements DiagnosticsApiInt
         }
 
         let urlPath = `/v1/diagnostics/threads/{thread_id}`;
-        urlPath = urlPath.replace(`{${"thread_id"}}`, encodeURIComponent(String(requestParameters['threadId'])));
+        urlPath = urlPath.replace('{thread_id}', encodeURIComponent(String(requestParameters['threadId'])));
 
         return {
             path: urlPath,
@@ -178,7 +185,7 @@ export class DiagnosticsApi extends runtime.BaseAPI implements DiagnosticsApiInt
         }
 
         let urlPath = `/v1/diagnostics/workflow-runs/{run_id}`;
-        urlPath = urlPath.replace(`{${"run_id"}}`, encodeURIComponent(String(requestParameters['runId'])));
+        urlPath = urlPath.replace('{run_id}', encodeURIComponent(String(requestParameters['runId'])));
 
         return {
             path: urlPath,

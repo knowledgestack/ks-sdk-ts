@@ -29,31 +29,25 @@ import {
 export interface UpdateChunkMetadataRequest {
     /**
      * Metadata to merge into existing chunk_metadata (optional)
-     * @type {ChunkMetadata}
-     * @memberof UpdateChunkMetadataRequest
      */
     chunkMetadata?: ChunkMetadata | null;
     /**
      * Reparent to this PathPart ID (must be DOCUMENT_VERSION or SECTION in the same document version)
-     * @type {string}
-     * @memberof UpdateChunkMetadataRequest
      */
     parentPathPartId?: string | null;
     /**
      * Move after this sibling PathPart ID (within new or current parent)
-     * @type {string}
-     * @memberof UpdateChunkMetadataRequest
      */
     prevSiblingPathId?: string | null;
     /**
      * Set to true to move to head of sibling list
-     * @type {boolean}
-     * @memberof UpdateChunkMetadataRequest
      */
     moveToHead?: boolean;
 }
 export const UpdateChunkMetadataRequestPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -87,9 +81,9 @@ export function UpdateChunkMetadataRequestFromJSONTyped(json: any, ignoreDiscrim
     }
     return {
         
-        'chunkMetadata': json['chunk_metadata'] == null ? undefined : ChunkMetadataFromJSON(json['chunk_metadata']),
-        'parentPathPartId': json['parent_path_part_id'] == null ? undefined : json['parent_path_part_id'],
-        'prevSiblingPathId': json['prev_sibling_path_id'] == null ? undefined : json['prev_sibling_path_id'],
+        'chunkMetadata': json['chunk_metadata'] === undefined ? undefined : json['chunk_metadata'] === null ? null : ChunkMetadataFromJSON(json['chunk_metadata']),
+        'parentPathPartId': json['parent_path_part_id'] === undefined ? undefined : json['parent_path_part_id'] === null ? null : json['parent_path_part_id'],
+        'prevSiblingPathId': json['prev_sibling_path_id'] === undefined ? undefined : json['prev_sibling_path_id'] === null ? null : json['prev_sibling_path_id'],
         'moveToHead': json['move_to_head'] == null ? undefined : json['move_to_head'],
     };
 }

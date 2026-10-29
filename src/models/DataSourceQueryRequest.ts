@@ -24,25 +24,21 @@ import { mapValues } from '../runtime';
 export interface DataSourceQueryRequest {
     /**
      * 
-     * @type {string}
-     * @memberof DataSourceQueryRequest
      */
     sql: string;
     /**
      * 
-     * @type {number}
-     * @memberof DataSourceQueryRequest
      */
     maxRows?: number;
     /**
      * 
-     * @type {number}
-     * @memberof DataSourceQueryRequest
      */
     offset?: number;
 }
 export const DataSourceQueryRequestPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -57,12 +53,14 @@ export const DataSourceQueryRequestPropertyValidationAttributesMap: {
     }
 } = {
     maxRows: {
+        dataType: "number",
         maximum: 10000,
         exclusiveMaximum: false,
         minimum: 1,
         exclusiveMinimum: false,
     },
     offset: {
+        dataType: "number",
         minimum: 0,
         exclusiveMinimum: false,
     },

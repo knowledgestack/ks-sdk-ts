@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
 import type { HybridSearchProfile } from './HybridSearchProfile';
 import {
     HybridSearchProfileFromJSON,
@@ -43,80 +43,54 @@ import {
 export interface ChunkSearchRequest {
     /**
      * Search query text
-     * @type {string}
-     * @memberof ChunkSearchRequest
      */
     query: string;
     /**
      * 
-     * @type {SearchType}
-     * @memberof ChunkSearchRequest
      */
     searchType?: SearchType;
     /**
      * 
-     * @type {HybridSearchProfile}
-     * @memberof ChunkSearchRequest
      */
     hybridProfile?: HybridSearchProfile;
     /**
      * Optional explicit weight for the dense branch. Must be provided together with sparse_weight and overrides hybrid_profile.
-     * @type {number}
-     * @memberof ChunkSearchRequest
      */
     denseWeight?: number | null;
     /**
      * Optional explicit weight for the sparse branch. Must be provided together with dense_weight and overrides hybrid_profile.
-     * @type {number}
-     * @memberof ChunkSearchRequest
      */
     sparseWeight?: number | null;
     /**
      * Path part IDs to search within (non-CHUNK types). Defaults to tenant's /shared.
-     * @type {Array<string>}
-     * @memberof ChunkSearchRequest
      */
     parentPathIds?: Array<string> | null;
     /**
      * Filter by tag IDs (AND logic — chunks must have ALL specified tags)
-     * @type {Array<string>}
-     * @memberof ChunkSearchRequest
      */
     tagIds?: Array<string> | null;
     /**
      * Filter by chunk types (TEXT, TABLE, IMAGE, HTML, UNKNOWN). Only chunks matching one of the listed types are returned.
-     * @type {Array<ChunkType>}
-     * @memberof ChunkSearchRequest
      */
     chunkTypes?: Array<ChunkType> | null;
     /**
      * Only chunks ingested after this timestamp
-     * @type {Date}
-     * @memberof ChunkSearchRequest
      */
     ingestionTimeAfter?: Date | null;
     /**
      * Only return chunks from the active document version
-     * @type {boolean}
-     * @memberof ChunkSearchRequest
      */
     activeVersionOnly?: boolean;
     /**
      * Number of results (1-50)
-     * @type {number}
-     * @memberof ChunkSearchRequest
      */
     topK?: number;
     /**
      * Minimum similarity score
-     * @type {number}
-     * @memberof ChunkSearchRequest
      */
     scoreThreshold?: number;
     /**
      * Include ancestor document_id and document_version_id in each result
-     * @type {boolean}
-     * @memberof ChunkSearchRequest
      */
     withDocument?: boolean;
 }
@@ -124,6 +98,8 @@ export interface ChunkSearchRequest {
 
 export const ChunkSearchRequestPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -138,13 +114,17 @@ export const ChunkSearchRequestPropertyValidationAttributesMap: {
     }
 } = {
     query: {
+        dataType: "string",
+        required: true,
         minLength: 1,
     },
     chunkTypes: {
+        dataType: "Array<ChunkType>",
         minItems: 1,
         uniqueItems: false,
     },
     topK: {
+        dataType: "number",
         maximum: 50,
         exclusiveMaximum: false,
         minimum: 1,
@@ -174,12 +154,12 @@ export function ChunkSearchRequestFromJSONTyped(json: any, ignoreDiscriminator: 
         'query': json['query'],
         'searchType': json['search_type'] == null ? undefined : SearchTypeFromJSON(json['search_type']),
         'hybridProfile': json['hybrid_profile'] == null ? undefined : HybridSearchProfileFromJSON(json['hybrid_profile']),
-        'denseWeight': json['dense_weight'] == null ? undefined : json['dense_weight'],
-        'sparseWeight': json['sparse_weight'] == null ? undefined : json['sparse_weight'],
-        'parentPathIds': json['parent_path_ids'] == null ? undefined : json['parent_path_ids'],
-        'tagIds': json['tag_ids'] == null ? undefined : json['tag_ids'],
-        'chunkTypes': json['chunk_types'] == null ? undefined : ((json['chunk_types'] as Array<any>).map(ChunkTypeFromJSON)),
-        'ingestionTimeAfter': json['ingestion_time_after'] == null ? undefined : (new Date(json['ingestion_time_after'])),
+        'denseWeight': json['dense_weight'] === undefined ? undefined : json['dense_weight'] === null ? null : json['dense_weight'],
+        'sparseWeight': json['sparse_weight'] === undefined ? undefined : json['sparse_weight'] === null ? null : json['sparse_weight'],
+        'parentPathIds': json['parent_path_ids'] === undefined ? undefined : json['parent_path_ids'] === null ? null : json['parent_path_ids'],
+        'tagIds': json['tag_ids'] === undefined ? undefined : json['tag_ids'] === null ? null : json['tag_ids'],
+        'chunkTypes': json['chunk_types'] === undefined ? undefined : json['chunk_types'] === null ? null : ((json['chunk_types'] as Array<any>).map(ChunkTypeFromJSON)),
+        'ingestionTimeAfter': json['ingestion_time_after'] === undefined ? undefined : json['ingestion_time_after'] === null ? null : (parseDateTime(json['ingestion_time_after'])),
         'activeVersionOnly': json['active_version_only'] == null ? undefined : json['active_version_only'],
         'topK': json['top_k'] == null ? undefined : json['top_k'],
         'scoreThreshold': json['score_threshold'] == null ? undefined : json['score_threshold'],
@@ -206,7 +186,7 @@ export function ChunkSearchRequestToJSONTyped(value?: ChunkSearchRequest | null,
         'parent_path_ids': value['parentPathIds'],
         'tag_ids': value['tagIds'],
         'chunk_types': value['chunkTypes'] == null ? undefined : ((value['chunkTypes'] as Array<any>).map(ChunkTypeToJSON)),
-        'ingestion_time_after': value['ingestionTimeAfter'] == null ? value['ingestionTimeAfter'] : value['ingestionTimeAfter'].toISOString(),
+        'ingestion_time_after': value['ingestionTimeAfter'] == null ? value['ingestionTimeAfter'] : serializeDateTime(value['ingestionTimeAfter']),
         'active_version_only': value['activeVersionOnly'],
         'top_k': value['topK'],
         'score_threshold': value['scoreThreshold'],

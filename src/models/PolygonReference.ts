@@ -29,19 +29,17 @@ import {
 export interface PolygonReference {
     /**
      * The page number of the source document where the polygon is located.
-     * @type {number}
-     * @memberof PolygonReference
      */
     page: number;
     /**
      * 
-     * @type {Polygon}
-     * @memberof PolygonReference
      */
     polygon: Polygon;
 }
 export const PolygonReferencePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,

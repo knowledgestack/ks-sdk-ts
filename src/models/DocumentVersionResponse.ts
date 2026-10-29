@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
 import type { UserInfo } from './UserInfo';
 import {
     UserInfoFromJSON,
@@ -39,109 +39,77 @@ import {
 export interface DocumentVersionResponse {
     /**
      * DocumentVersion ID
-     * @type {string}
-     * @memberof DocumentVersionResponse
      */
     id: string;
     /**
      * PathPart ID
-     * @type {string}
-     * @memberof DocumentVersionResponse
      */
     pathPartId: string;
     /**
      * Version number (0, 1, 2...)
-     * @type {number}
-     * @memberof DocumentVersionResponse
      */
     version: number;
     /**
      * Auto-generated name from path_part (v0, v1, ...)
-     * @type {string}
-     * @memberof DocumentVersionResponse
      */
     name: string;
     /**
      * Document's PathPart ID
-     * @type {string}
-     * @memberof DocumentVersionResponse
      */
     parentPathId: string | null;
     /**
      * Full materialized path from root
-     * @type {string}
-     * @memberof DocumentVersionResponse
      */
     materializedPath: string;
     /**
      * Whether this version is system-managed
-     * @type {boolean}
-     * @memberof DocumentVersionResponse
      */
     systemManaged: boolean;
     /**
      * Tenant ID
-     * @type {string}
-     * @memberof DocumentVersionResponse
      */
     tenantId: string;
     /**
      * 
-     * @type {UserInfo}
-     * @memberof DocumentVersionResponse
      */
     uploader: UserInfo;
     /**
      * Creation timestamp
-     * @type {Date}
-     * @memberof DocumentVersionResponse
      */
     createdAt: Date;
     /**
      * Last update timestamp
-     * @type {Date}
-     * @memberof DocumentVersionResponse
      */
     updatedAt: Date;
     /**
      * Presigned URL to download the source document (6-hour validity)
-     * @type {string}
-     * @memberof DocumentVersionResponse
      */
     assetS3Url?: string | null;
     /**
      * Presigned URL (6-hour validity) to the agent's cited copy of the source, with KS Citation comments intact; null unless one was stored. For the agent edit round-trip only — human downloads and the FE viewer use asset_s3_url (clean) and render citations from citation_anchors.
-     * @type {string}
-     * @memberof DocumentVersionResponse
      */
     citedAssetS3Url?: string | null;
     /**
      * Presigned URL to download the fast plaintext export (6-hour validity)
-     * @type {string}
-     * @memberof DocumentVersionResponse
      */
     fastPlaintextUrl?: string | null;
     /**
      * Presigned URL (6-hour validity) to the ASR transcript JSON with per-segment start_ms/end_ms/text; null for non-media. Chunks pack many segments into one, so this is what a client reads to follow a recording line by line.
-     * @type {string}
-     * @memberof DocumentVersionResponse
      */
     transcriptUrl?: string | null;
     /**
      * Presigned URLs (6-hour validity) to per-page WEBP screenshots in page order: index 0 is page 1, index N-1 is page N. Populated only when the request includes include_page_screenshots=true; null otherwise.
-     * @type {Array<string>}
-     * @memberof DocumentVersionResponse
      */
     pageScreenshotUrls?: Array<string> | null;
     /**
      * 
-     * @type {DocumentVersionMetadata}
-     * @memberof DocumentVersionResponse
      */
     systemMetadata?: DocumentVersionMetadata;
 }
 export const DocumentVersionResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -163,16 +131,16 @@ export const DocumentVersionResponsePropertyValidationAttributesMap: {
  */
 export function instanceOfDocumentVersionResponse(value: object): value is DocumentVersionResponse {
     if (!('id' in value) || value['id'] === undefined) return false;
-    if (!('pathPartId' in value) || value['pathPartId'] === undefined) return false;
+    if ((!('pathPartId' in (value as Record<string, any>)) && !('path_part_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['pathPartId'] === undefined && (value as Record<string, any>)['path_part_id'] === undefined)) return false;
     if (!('version' in value) || value['version'] === undefined) return false;
     if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('parentPathId' in value) || value['parentPathId'] === undefined) return false;
-    if (!('materializedPath' in value) || value['materializedPath'] === undefined) return false;
-    if (!('systemManaged' in value) || value['systemManaged'] === undefined) return false;
-    if (!('tenantId' in value) || value['tenantId'] === undefined) return false;
+    if ((!('parentPathId' in (value as Record<string, any>)) && !('parent_path_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['parentPathId'] === undefined && (value as Record<string, any>)['parent_path_id'] === undefined)) return false;
+    if ((!('materializedPath' in (value as Record<string, any>)) && !('materialized_path' in (value as Record<string, any>))) || ((value as Record<string, any>)['materializedPath'] === undefined && (value as Record<string, any>)['materialized_path'] === undefined)) return false;
+    if ((!('systemManaged' in (value as Record<string, any>)) && !('system_managed' in (value as Record<string, any>))) || ((value as Record<string, any>)['systemManaged'] === undefined && (value as Record<string, any>)['system_managed'] === undefined)) return false;
+    if ((!('tenantId' in (value as Record<string, any>)) && !('tenant_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['tenantId'] === undefined && (value as Record<string, any>)['tenant_id'] === undefined)) return false;
     if (!('uploader' in value) || value['uploader'] === undefined) return false;
-    if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
-    if (!('updatedAt' in value) || value['updatedAt'] === undefined) return false;
+    if ((!('createdAt' in (value as Record<string, any>)) && !('created_at' in (value as Record<string, any>))) || ((value as Record<string, any>)['createdAt'] === undefined && (value as Record<string, any>)['created_at'] === undefined)) return false;
+    if ((!('updatedAt' in (value as Record<string, any>)) && !('updated_at' in (value as Record<string, any>))) || ((value as Record<string, any>)['updatedAt'] === undefined && (value as Record<string, any>)['updated_at'] === undefined)) return false;
     return true;
 }
 
@@ -195,13 +163,13 @@ export function DocumentVersionResponseFromJSONTyped(json: any, ignoreDiscrimina
         'systemManaged': json['system_managed'],
         'tenantId': json['tenant_id'],
         'uploader': UserInfoFromJSON(json['uploader']),
-        'createdAt': (new Date(json['created_at'])),
-        'updatedAt': (new Date(json['updated_at'])),
-        'assetS3Url': json['asset_s3_url'] == null ? undefined : json['asset_s3_url'],
-        'citedAssetS3Url': json['cited_asset_s3_url'] == null ? undefined : json['cited_asset_s3_url'],
-        'fastPlaintextUrl': json['fast_plaintext_url'] == null ? undefined : json['fast_plaintext_url'],
-        'transcriptUrl': json['transcript_url'] == null ? undefined : json['transcript_url'],
-        'pageScreenshotUrls': json['page_screenshot_urls'] == null ? undefined : json['page_screenshot_urls'],
+        'createdAt': (json['created_at'] == null ? json['created_at'] : parseDateTime(json['created_at'])),
+        'updatedAt': (json['updated_at'] == null ? json['updated_at'] : parseDateTime(json['updated_at'])),
+        'assetS3Url': json['asset_s3_url'] === undefined ? undefined : json['asset_s3_url'] === null ? null : json['asset_s3_url'],
+        'citedAssetS3Url': json['cited_asset_s3_url'] === undefined ? undefined : json['cited_asset_s3_url'] === null ? null : json['cited_asset_s3_url'],
+        'fastPlaintextUrl': json['fast_plaintext_url'] === undefined ? undefined : json['fast_plaintext_url'] === null ? null : json['fast_plaintext_url'],
+        'transcriptUrl': json['transcript_url'] === undefined ? undefined : json['transcript_url'] === null ? null : json['transcript_url'],
+        'pageScreenshotUrls': json['page_screenshot_urls'] === undefined ? undefined : json['page_screenshot_urls'] === null ? null : json['page_screenshot_urls'],
         'systemMetadata': json['system_metadata'] == null ? undefined : DocumentVersionMetadataFromJSON(json['system_metadata']),
     };
 }
@@ -226,8 +194,8 @@ export function DocumentVersionResponseToJSONTyped(value?: DocumentVersionRespon
         'system_managed': value['systemManaged'],
         'tenant_id': value['tenantId'],
         'uploader': UserInfoToJSON(value['uploader']),
-        'created_at': value['createdAt'].toISOString(),
-        'updated_at': value['updatedAt'].toISOString(),
+        'created_at': value['createdAt'] == null ? value['createdAt'] : serializeDateTime(value['createdAt']),
+        'updated_at': value['updatedAt'] == null ? value['updatedAt'] : serializeDateTime(value['updatedAt']),
         'asset_s3_url': value['assetS3Url'],
         'cited_asset_s3_url': value['citedAssetS3Url'],
         'fast_plaintext_url': value['fastPlaintextUrl'],

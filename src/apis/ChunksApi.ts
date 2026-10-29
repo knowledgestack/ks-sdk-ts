@@ -12,89 +12,156 @@
  * Do not edit the class manually.
  */
 
-
 import * as runtime from '../runtime';
-import type {
-  ChunkBulkResponse,
-  ChunkNeighborsResponse,
-  ChunkResponse,
-  ChunkSearchRequest,
-  CreateChunkRequest,
-  ErrorResponse,
-  HTTPValidationError,
-  PartType,
-  ScoredChunkResponse,
-  UpdateChunkContentRequest,
-  UpdateChunkMetadataRequest,
-  VersionChunkIdsResponse,
-} from '../models/index';
 import {
+    type ChunkBulkResponse,
     ChunkBulkResponseFromJSON,
     ChunkBulkResponseToJSON,
+} from '../models/ChunkBulkResponse';
+import {
+    type ChunkNeighborsResponse,
     ChunkNeighborsResponseFromJSON,
     ChunkNeighborsResponseToJSON,
+} from '../models/ChunkNeighborsResponse';
+import {
+    type ChunkResponse,
     ChunkResponseFromJSON,
     ChunkResponseToJSON,
+} from '../models/ChunkResponse';
+import {
+    type ChunkSearchRequest,
     ChunkSearchRequestFromJSON,
     ChunkSearchRequestToJSON,
+} from '../models/ChunkSearchRequest';
+import {
+    type CreateChunkRequest,
     CreateChunkRequestFromJSON,
     CreateChunkRequestToJSON,
+} from '../models/CreateChunkRequest';
+import {
+    type ErrorResponse,
     ErrorResponseFromJSON,
     ErrorResponseToJSON,
+} from '../models/ErrorResponse';
+import {
+    type HTTPValidationError,
     HTTPValidationErrorFromJSON,
     HTTPValidationErrorToJSON,
+} from '../models/HTTPValidationError';
+import {
+    type PartType,
     PartTypeFromJSON,
     PartTypeToJSON,
+} from '../models/PartType';
+import {
+    type ScoredChunkResponse,
     ScoredChunkResponseFromJSON,
     ScoredChunkResponseToJSON,
+} from '../models/ScoredChunkResponse';
+import {
+    type UpdateChunkContentRequest,
     UpdateChunkContentRequestFromJSON,
     UpdateChunkContentRequestToJSON,
+} from '../models/UpdateChunkContentRequest';
+import {
+    type UpdateChunkMetadataRequest,
     UpdateChunkMetadataRequestFromJSON,
     UpdateChunkMetadataRequestToJSON,
+} from '../models/UpdateChunkMetadataRequest';
+import {
+    type VersionChunkIdsResponse,
     VersionChunkIdsResponseFromJSON,
     VersionChunkIdsResponseToJSON,
-} from '../models/index';
+} from '../models/VersionChunkIdsResponse';
 
 export interface CreateChunkOperationRequest {
+    /**
+     * 
+     */
     createChunkRequest: CreateChunkRequest;
 }
 
 export interface DeleteChunkRequest {
+    /**
+     * 
+     */
     chunkId: string;
 }
 
 export interface GetChunkRequest {
+    /**
+     * 
+     */
     chunkId: string;
+    /**
+     * Include ancestor document_id and document_version_id (default: false)
+     */
     withDocument?: boolean;
 }
 
 export interface GetChunkNeighborsRequest {
+    /**
+     * 
+     */
     chunkId: string;
+    /**
+     * Number of preceding items to include (max 50).
+     */
     prev?: number;
+    /**
+     * Number of succeeding items to include (max 50).
+     */
     next?: number;
+    /**
+     * Filter by content type: SECTION or CHUNK. Omit to return both. SECTION is rejected when the anchor is a chunk (always).
+     */
     contentType?: PartType;
+    /**
+     * When true (default), traverse only the anchor's sibling chain under the same parent. When false, traverse the entire document version in DFS order, crossing section boundaries.
+     */
     withinSection?: boolean;
 }
 
 export interface GetChunksBulkRequest {
+    /**
+     * Chunk IDs to resolve (max 200)
+     */
     chunkIds?: Array<string> | null;
 }
 
 export interface GetVersionChunkIdsRequest {
+    /**
+     * Document version ID
+     */
     documentVersionId: string;
 }
 
 export interface SearchChunksRequest {
+    /**
+     * 
+     */
     chunkSearchRequest: ChunkSearchRequest;
 }
 
 export interface UpdateChunkContentOperationRequest {
+    /**
+     * 
+     */
     chunkId: string;
+    /**
+     * 
+     */
     updateChunkContentRequest: UpdateChunkContentRequest;
 }
 
 export interface UpdateChunkMetadataOperationRequest {
+    /**
+     * 
+     */
     chunkId: string;
+    /**
+     * 
+     */
     updateChunkMetadataRequest: UpdateChunkMetadataRequest;
 }
 
@@ -424,7 +491,7 @@ export class ChunksApi extends runtime.BaseAPI implements ChunksApiInterface {
         }
 
         let urlPath = `/v1/chunks/{chunk_id}`;
-        urlPath = urlPath.replace(`{${"chunk_id"}}`, encodeURIComponent(String(requestParameters['chunkId'])));
+        urlPath = urlPath.replace('{chunk_id}', encodeURIComponent(String(requestParameters['chunkId'])));
 
         return {
             path: urlPath,
@@ -482,7 +549,7 @@ export class ChunksApi extends runtime.BaseAPI implements ChunksApiInterface {
         }
 
         let urlPath = `/v1/chunks/{chunk_id}`;
-        urlPath = urlPath.replace(`{${"chunk_id"}}`, encodeURIComponent(String(requestParameters['chunkId'])));
+        urlPath = urlPath.replace('{chunk_id}', encodeURIComponent(String(requestParameters['chunkId'])));
 
         return {
             path: urlPath,
@@ -553,7 +620,7 @@ export class ChunksApi extends runtime.BaseAPI implements ChunksApiInterface {
         }
 
         let urlPath = `/v1/chunks/{chunk_id}/neighbors`;
-        urlPath = urlPath.replace(`{${"chunk_id"}}`, encodeURIComponent(String(requestParameters['chunkId'])));
+        urlPath = urlPath.replace('{chunk_id}', encodeURIComponent(String(requestParameters['chunkId'])));
 
         return {
             path: urlPath,
@@ -783,7 +850,7 @@ export class ChunksApi extends runtime.BaseAPI implements ChunksApiInterface {
         }
 
         let urlPath = `/v1/chunks/{chunk_id}/content`;
-        urlPath = urlPath.replace(`{${"chunk_id"}}`, encodeURIComponent(String(requestParameters['chunkId'])));
+        urlPath = urlPath.replace('{chunk_id}', encodeURIComponent(String(requestParameters['chunkId'])));
 
         return {
             path: urlPath,
@@ -848,7 +915,7 @@ export class ChunksApi extends runtime.BaseAPI implements ChunksApiInterface {
         }
 
         let urlPath = `/v1/chunks/{chunk_id}`;
-        urlPath = urlPath.replace(`{${"chunk_id"}}`, encodeURIComponent(String(requestParameters['chunkId'])));
+        urlPath = urlPath.replace('{chunk_id}', encodeURIComponent(String(requestParameters['chunkId'])));
 
         return {
             path: urlPath,

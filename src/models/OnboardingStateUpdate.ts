@@ -36,20 +36,14 @@ import {
 export interface OnboardingStateUpdate {
     /**
      * 
-     * @type {OnboardingStep}
-     * @memberof OnboardingStateUpdate
      */
     currentStep?: OnboardingStep;
     /**
      * Guide module progress to merge in. A completed or dismissed module only moves back to in progress under a newer module version.
-     * @type {GuideModules}
-     * @memberof OnboardingStateUpdate
      */
     guideModules?: GuideModules | null;
     /**
      * Whether the setup checklist is dismissed
-     * @type {boolean}
-     * @memberof OnboardingStateUpdate
      */
     setupChecklistDismissed?: boolean | null;
 }
@@ -57,6 +51,8 @@ export interface OnboardingStateUpdate {
 
 export const OnboardingStateUpdatePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -91,8 +87,8 @@ export function OnboardingStateUpdateFromJSONTyped(json: any, ignoreDiscriminato
     return {
         
         'currentStep': json['current_step'] == null ? undefined : OnboardingStepFromJSON(json['current_step']),
-        'guideModules': json['guide_modules'] == null ? undefined : GuideModulesFromJSON(json['guide_modules']),
-        'setupChecklistDismissed': json['setup_checklist_dismissed'] == null ? undefined : json['setup_checklist_dismissed'],
+        'guideModules': json['guide_modules'] === undefined ? undefined : json['guide_modules'] === null ? null : GuideModulesFromJSON(json['guide_modules']),
+        'setupChecklistDismissed': json['setup_checklist_dismissed'] === undefined ? undefined : json['setup_checklist_dismissed'] === null ? null : json['setup_checklist_dismissed'],
     };
 }
 

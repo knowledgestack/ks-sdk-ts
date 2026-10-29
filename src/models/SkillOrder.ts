@@ -20,7 +20,7 @@
 export const SkillOrder = {
     Name: 'NAME',
     CreatedAt: 'CREATED_AT',
-    UpdatedAt: 'UPDATED_AT'
+    UpdatedAt: 'UPDATED_AT',
 } as const;
 export type SkillOrder = typeof SkillOrder[keyof typeof SkillOrder];
 

@@ -12,26 +12,32 @@
  * Do not edit the class manually.
  */
 
-
 import * as runtime from '../runtime';
-import type {
-  BulkMoveRequest,
-  BulkOperationResponse,
-  ErrorResponse,
-  HTTPValidationError,
-} from '../models/index';
 import {
+    type BulkMoveRequest,
     BulkMoveRequestFromJSON,
     BulkMoveRequestToJSON,
+} from '../models/BulkMoveRequest';
+import {
+    type BulkOperationResponse,
     BulkOperationResponseFromJSON,
     BulkOperationResponseToJSON,
+} from '../models/BulkOperationResponse';
+import {
+    type ErrorResponse,
     ErrorResponseFromJSON,
     ErrorResponseToJSON,
+} from '../models/ErrorResponse';
+import {
+    type HTTPValidationError,
     HTTPValidationErrorFromJSON,
     HTTPValidationErrorToJSON,
-} from '../models/index';
+} from '../models/HTTPValidationError';
 
 export interface BulkMoveOperationRequest {
+    /**
+     * 
+     */
     bulkMoveRequest: BulkMoveRequest;
 }
 

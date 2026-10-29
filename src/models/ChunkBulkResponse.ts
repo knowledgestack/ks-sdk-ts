@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
 import type { ChunkMetadata } from './ChunkMetadata';
 import {
     ChunkMetadataFromJSON,
@@ -50,116 +50,78 @@ import {
 export interface ChunkBulkResponse {
     /**
      * Chunk ID
-     * @type {string}
-     * @memberof ChunkBulkResponse
      */
     id: string;
     /**
      * PathPart ID
-     * @type {string}
-     * @memberof ChunkBulkResponse
      */
     pathPartId: string;
     /**
      * ChunkContent ID
-     * @type {string}
-     * @memberof ChunkBulkResponse
      */
     contentId: string;
     /**
      * Chunk text content
-     * @type {string}
-     * @memberof ChunkBulkResponse
      */
     content: string;
     /**
      * 
-     * @type {ChunkType}
-     * @memberof ChunkBulkResponse
      */
     chunkType: ChunkType;
     /**
      * 
-     * @type {ChunkMetadata}
-     * @memberof ChunkBulkResponse
      */
     chunkMetadata: ChunkMetadata;
     /**
      * Number of tokens in chunk content
-     * @type {number}
-     * @memberof ChunkBulkResponse
      */
     numTokens?: number | null;
     /**
      * Parent PathPart ID
-     * @type {string}
-     * @memberof ChunkBulkResponse
      */
     parentPathId: string;
     /**
      * Previous sibling PathPart ID
-     * @type {string}
-     * @memberof ChunkBulkResponse
      */
     prevSiblingPathId?: string | null;
     /**
      * Next sibling PathPart ID
-     * @type {string}
-     * @memberof ChunkBulkResponse
      */
     nextSiblingPathId?: string | null;
     /**
      * Full materialized path from root
-     * @type {string}
-     * @memberof ChunkBulkResponse
      */
     materializedPath: string;
     /**
      * Whether this chunk is system-managed
-     * @type {boolean}
-     * @memberof ChunkBulkResponse
      */
     systemManaged: boolean;
     /**
      * Tenant ID
-     * @type {string}
-     * @memberof ChunkBulkResponse
      */
     tenantId: string;
     /**
      * Creation timestamp
-     * @type {Date}
-     * @memberof ChunkBulkResponse
      */
     createdAt: Date;
     /**
      * Last update timestamp
-     * @type {Date}
-     * @memberof ChunkBulkResponse
      */
     updatedAt: Date;
     /**
      * Presigned URLs to download the chunk's visual assets (6-hour validity)
-     * @type {Array<string>}
-     * @memberof ChunkBulkResponse
      */
     assetS3Urls?: Array<string>;
     /**
      * Ancestor document info (populated when with_document=true)
-     * @type {ChunkDocumentResponse}
-     * @memberof ChunkBulkResponse
      */
     document?: ChunkDocumentResponse | null;
     /**
      * Ancestor document version info (populated when with_document=true)
-     * @type {ChunkDocumentVersionResponse}
-     * @memberof ChunkBulkResponse
      */
     documentVersion?: ChunkDocumentVersionResponse | null;
     /**
      * Ordered ancestor PathPart IDs from root to chunk
-     * @type {Array<string>}
-     * @memberof ChunkBulkResponse
      */
     pathPartIdSegments: Array<string>;
 }
@@ -167,6 +129,8 @@ export interface ChunkBulkResponse {
 
 export const ChunkBulkResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -188,18 +152,18 @@ export const ChunkBulkResponsePropertyValidationAttributesMap: {
  */
 export function instanceOfChunkBulkResponse(value: object): value is ChunkBulkResponse {
     if (!('id' in value) || value['id'] === undefined) return false;
-    if (!('pathPartId' in value) || value['pathPartId'] === undefined) return false;
-    if (!('contentId' in value) || value['contentId'] === undefined) return false;
+    if ((!('pathPartId' in (value as Record<string, any>)) && !('path_part_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['pathPartId'] === undefined && (value as Record<string, any>)['path_part_id'] === undefined)) return false;
+    if ((!('contentId' in (value as Record<string, any>)) && !('content_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['contentId'] === undefined && (value as Record<string, any>)['content_id'] === undefined)) return false;
     if (!('content' in value) || value['content'] === undefined) return false;
-    if (!('chunkType' in value) || value['chunkType'] === undefined) return false;
-    if (!('chunkMetadata' in value) || value['chunkMetadata'] === undefined) return false;
-    if (!('parentPathId' in value) || value['parentPathId'] === undefined) return false;
-    if (!('materializedPath' in value) || value['materializedPath'] === undefined) return false;
-    if (!('systemManaged' in value) || value['systemManaged'] === undefined) return false;
-    if (!('tenantId' in value) || value['tenantId'] === undefined) return false;
-    if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
-    if (!('updatedAt' in value) || value['updatedAt'] === undefined) return false;
-    if (!('pathPartIdSegments' in value) || value['pathPartIdSegments'] === undefined) return false;
+    if ((!('chunkType' in (value as Record<string, any>)) && !('chunk_type' in (value as Record<string, any>))) || ((value as Record<string, any>)['chunkType'] === undefined && (value as Record<string, any>)['chunk_type'] === undefined)) return false;
+    if ((!('chunkMetadata' in (value as Record<string, any>)) && !('chunk_metadata' in (value as Record<string, any>))) || ((value as Record<string, any>)['chunkMetadata'] === undefined && (value as Record<string, any>)['chunk_metadata'] === undefined)) return false;
+    if ((!('parentPathId' in (value as Record<string, any>)) && !('parent_path_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['parentPathId'] === undefined && (value as Record<string, any>)['parent_path_id'] === undefined)) return false;
+    if ((!('materializedPath' in (value as Record<string, any>)) && !('materialized_path' in (value as Record<string, any>))) || ((value as Record<string, any>)['materializedPath'] === undefined && (value as Record<string, any>)['materialized_path'] === undefined)) return false;
+    if ((!('systemManaged' in (value as Record<string, any>)) && !('system_managed' in (value as Record<string, any>))) || ((value as Record<string, any>)['systemManaged'] === undefined && (value as Record<string, any>)['system_managed'] === undefined)) return false;
+    if ((!('tenantId' in (value as Record<string, any>)) && !('tenant_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['tenantId'] === undefined && (value as Record<string, any>)['tenant_id'] === undefined)) return false;
+    if ((!('createdAt' in (value as Record<string, any>)) && !('created_at' in (value as Record<string, any>))) || ((value as Record<string, any>)['createdAt'] === undefined && (value as Record<string, any>)['created_at'] === undefined)) return false;
+    if ((!('updatedAt' in (value as Record<string, any>)) && !('updated_at' in (value as Record<string, any>))) || ((value as Record<string, any>)['updatedAt'] === undefined && (value as Record<string, any>)['updated_at'] === undefined)) return false;
+    if ((!('pathPartIdSegments' in (value as Record<string, any>)) && !('path_part_id_segments' in (value as Record<string, any>))) || ((value as Record<string, any>)['pathPartIdSegments'] === undefined && (value as Record<string, any>)['path_part_id_segments'] === undefined)) return false;
     return true;
 }
 
@@ -219,18 +183,18 @@ export function ChunkBulkResponseFromJSONTyped(json: any, ignoreDiscriminator: b
         'content': json['content'],
         'chunkType': ChunkTypeFromJSON(json['chunk_type']),
         'chunkMetadata': ChunkMetadataFromJSON(json['chunk_metadata']),
-        'numTokens': json['num_tokens'] == null ? undefined : json['num_tokens'],
+        'numTokens': json['num_tokens'] === undefined ? undefined : json['num_tokens'] === null ? null : json['num_tokens'],
         'parentPathId': json['parent_path_id'],
-        'prevSiblingPathId': json['prev_sibling_path_id'] == null ? undefined : json['prev_sibling_path_id'],
-        'nextSiblingPathId': json['next_sibling_path_id'] == null ? undefined : json['next_sibling_path_id'],
+        'prevSiblingPathId': json['prev_sibling_path_id'] === undefined ? undefined : json['prev_sibling_path_id'] === null ? null : json['prev_sibling_path_id'],
+        'nextSiblingPathId': json['next_sibling_path_id'] === undefined ? undefined : json['next_sibling_path_id'] === null ? null : json['next_sibling_path_id'],
         'materializedPath': json['materialized_path'],
         'systemManaged': json['system_managed'],
         'tenantId': json['tenant_id'],
-        'createdAt': (new Date(json['created_at'])),
-        'updatedAt': (new Date(json['updated_at'])),
+        'createdAt': (json['created_at'] == null ? json['created_at'] : parseDateTime(json['created_at'])),
+        'updatedAt': (json['updated_at'] == null ? json['updated_at'] : parseDateTime(json['updated_at'])),
         'assetS3Urls': json['asset_s3_urls'] == null ? undefined : json['asset_s3_urls'],
-        'document': json['document'] == null ? undefined : ChunkDocumentResponseFromJSON(json['document']),
-        'documentVersion': json['document_version'] == null ? undefined : ChunkDocumentVersionResponseFromJSON(json['document_version']),
+        'document': json['document'] === undefined ? undefined : json['document'] === null ? null : ChunkDocumentResponseFromJSON(json['document']),
+        'documentVersion': json['document_version'] === undefined ? undefined : json['document_version'] === null ? null : ChunkDocumentVersionResponseFromJSON(json['document_version']),
         'pathPartIdSegments': json['path_part_id_segments'],
     };
 }
@@ -259,8 +223,8 @@ export function ChunkBulkResponseToJSONTyped(value?: ChunkBulkResponse | null, i
         'materialized_path': value['materializedPath'],
         'system_managed': value['systemManaged'],
         'tenant_id': value['tenantId'],
-        'created_at': value['createdAt'].toISOString(),
-        'updated_at': value['updatedAt'].toISOString(),
+        'created_at': value['createdAt'] == null ? value['createdAt'] : serializeDateTime(value['createdAt']),
+        'updated_at': value['updatedAt'] == null ? value['updatedAt'] : serializeDateTime(value['updatedAt']),
         'asset_s3_urls': value['assetS3Urls'],
         'document': ChunkDocumentResponseToJSON(value['document']),
         'document_version': ChunkDocumentVersionResponseToJSON(value['documentVersion']),

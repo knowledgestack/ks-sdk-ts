@@ -29,19 +29,17 @@ import {
 export interface BulkOperationResponse {
     /**
      * 
-     * @type {Array<string>}
-     * @memberof BulkOperationResponse
      */
     succeeded?: Array<string>;
     /**
      * 
-     * @type {Array<BulkItemFailure>}
-     * @memberof BulkOperationResponse
      */
     failed?: Array<BulkItemFailure>;
 }
 export const BulkOperationResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,

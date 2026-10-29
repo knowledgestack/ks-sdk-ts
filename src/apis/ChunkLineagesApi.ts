@@ -12,39 +12,59 @@
  * Do not edit the class manually.
  */
 
-
 import * as runtime from '../runtime';
-import type {
-  ChunkLineageResponse,
-  CreateChunkLineageRequest,
-  ErrorResponse,
-  HTTPValidationError,
-  LineageGraphResponse,
-} from '../models/index';
 import {
+    type ChunkLineageResponse,
     ChunkLineageResponseFromJSON,
     ChunkLineageResponseToJSON,
+} from '../models/ChunkLineageResponse';
+import {
+    type CreateChunkLineageRequest,
     CreateChunkLineageRequestFromJSON,
     CreateChunkLineageRequestToJSON,
+} from '../models/CreateChunkLineageRequest';
+import {
+    type ErrorResponse,
     ErrorResponseFromJSON,
     ErrorResponseToJSON,
+} from '../models/ErrorResponse';
+import {
+    type HTTPValidationError,
     HTTPValidationErrorFromJSON,
     HTTPValidationErrorToJSON,
+} from '../models/HTTPValidationError';
+import {
+    type LineageGraphResponse,
     LineageGraphResponseFromJSON,
     LineageGraphResponseToJSON,
-} from '../models/index';
+} from '../models/LineageGraphResponse';
 
 export interface CreateChunkLineageOperationRequest {
+    /**
+     * 
+     */
     createChunkLineageRequest: CreateChunkLineageRequest;
 }
 
 export interface DeleteChunkLineageRequest {
+    /**
+     * Parent chunk ID
+     */
     parentChunkId: string;
+    /**
+     * Child chunk ID
+     */
     chunkId: string;
 }
 
 export interface GetChunkLineageRequest {
+    /**
+     * 
+     */
     chunkId: string;
+    /**
+     * 
+     */
     maxDepth?: number;
 }
 
@@ -292,7 +312,7 @@ export class ChunkLineagesApi extends runtime.BaseAPI implements ChunkLineagesAp
         }
 
         let urlPath = `/v1/chunk-lineages/{chunk_id}`;
-        urlPath = urlPath.replace(`{${"chunk_id"}}`, encodeURIComponent(String(requestParameters['chunkId'])));
+        urlPath = urlPath.replace('{chunk_id}', encodeURIComponent(String(requestParameters['chunkId'])));
 
         return {
             path: urlPath,

@@ -21,13 +21,13 @@ import { mapValues } from '../runtime';
 export interface ExportSkillsRequest {
     /**
      * Skills whose frozen active versions are packed together; duplicates are ignored. Every skill must exist and be readable.
-     * @type {Array<string>}
-     * @memberof ExportSkillsRequest
      */
     skillIds: Array<string>;
 }
 export const ExportSkillsRequestPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -42,6 +42,8 @@ export const ExportSkillsRequestPropertyValidationAttributesMap: {
     }
 } = {
     skillIds: {
+        dataType: "Array<string>",
+        required: true,
         maxItems: 50,
         minItems: 1,
         uniqueItems: false,
@@ -53,7 +55,7 @@ export const ExportSkillsRequestPropertyValidationAttributesMap: {
  * Check if a given object implements the ExportSkillsRequest interface.
  */
 export function instanceOfExportSkillsRequest(value: object): value is ExportSkillsRequest {
-    if (!('skillIds' in value) || value['skillIds'] === undefined) return false;
+    if ((!('skillIds' in (value as Record<string, any>)) && !('skill_ids' in (value as Record<string, any>))) || ((value as Record<string, any>)['skillIds'] === undefined && (value as Record<string, any>)['skill_ids'] === undefined)) return false;
     return true;
 }
 

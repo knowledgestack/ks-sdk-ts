@@ -40,44 +40,30 @@ import {
 export interface UpdateApiConnectionRequest {
     /**
      * 
-     * @type {string}
-     * @memberof UpdateApiConnectionRequest
      */
     name?: string | null;
     /**
      * New parent FOLDER path_part to move the connection under.
-     * @type {string}
-     * @memberof UpdateApiConnectionRequest
      */
     parentPathPartId?: string | null;
     /**
      * 
-     * @type {string}
-     * @memberof UpdateApiConnectionRequest
      */
     baseUrl?: string | null;
     /**
      * 
-     * @type {NetworkClass}
-     * @memberof UpdateApiConnectionRequest
      */
     networkClass?: NetworkClass;
     /**
      * 
-     * @type {boolean}
-     * @memberof UpdateApiConnectionRequest
      */
     verifyTls?: boolean | null;
     /**
      * 
-     * @type {ApiAuthConfig}
-     * @memberof UpdateApiConnectionRequest
      */
     authConfig?: ApiAuthConfig | null;
     /**
      * 
-     * @type {string}
-     * @memberof UpdateApiConnectionRequest
      */
     apiDocs?: string | null;
 }
@@ -85,6 +71,8 @@ export interface UpdateApiConnectionRequest {
 
 export const UpdateApiConnectionRequestPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -99,13 +87,16 @@ export const UpdateApiConnectionRequestPropertyValidationAttributesMap: {
     }
 } = {
     name: {
+        dataType: "string",
         maxLength: 255,
         minLength: 1,
     },
     baseUrl: {
+        dataType: "string",
         maxLength: 2048,
     },
     apiDocs: {
+        dataType: "string",
         maxLength: 100000,
     },
 }
@@ -128,13 +119,13 @@ export function UpdateApiConnectionRequestFromJSONTyped(json: any, ignoreDiscrim
     }
     return {
         
-        'name': json['name'] == null ? undefined : json['name'],
-        'parentPathPartId': json['parent_path_part_id'] == null ? undefined : json['parent_path_part_id'],
-        'baseUrl': json['base_url'] == null ? undefined : json['base_url'],
+        'name': json['name'] === undefined ? undefined : json['name'] === null ? null : json['name'],
+        'parentPathPartId': json['parent_path_part_id'] === undefined ? undefined : json['parent_path_part_id'] === null ? null : json['parent_path_part_id'],
+        'baseUrl': json['base_url'] === undefined ? undefined : json['base_url'] === null ? null : json['base_url'],
         'networkClass': json['network_class'] == null ? undefined : NetworkClassFromJSON(json['network_class']),
-        'verifyTls': json['verify_tls'] == null ? undefined : json['verify_tls'],
-        'authConfig': json['auth_config'] == null ? undefined : ApiAuthConfigFromJSON(json['auth_config']),
-        'apiDocs': json['api_docs'] == null ? undefined : json['api_docs'],
+        'verifyTls': json['verify_tls'] === undefined ? undefined : json['verify_tls'] === null ? null : json['verify_tls'],
+        'authConfig': json['auth_config'] === undefined ? undefined : json['auth_config'] === null ? null : ApiAuthConfigFromJSON(json['auth_config']),
+        'apiDocs': json['api_docs'] === undefined ? undefined : json['api_docs'] === null ? null : json['api_docs'],
     };
 }
 

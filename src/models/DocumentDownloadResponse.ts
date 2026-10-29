@@ -29,32 +29,22 @@ import {
 export interface DocumentDownloadResponse {
     /**
      * 
-     * @type {string}
-     * @memberof DocumentDownloadResponse
      */
     url: string;
     /**
      * 
-     * @type {number}
-     * @memberof DocumentDownloadResponse
      */
     expiresIn: number;
     /**
      * 
-     * @type {string}
-     * @memberof DocumentDownloadResponse
      */
     documentId: string;
     /**
      * 
-     * @type {string}
-     * @memberof DocumentDownloadResponse
      */
     versionId: string;
     /**
      * 
-     * @type {DownloadArtifact}
-     * @memberof DocumentDownloadResponse
      */
     artifact: DownloadArtifact;
 }
@@ -62,6 +52,8 @@ export interface DocumentDownloadResponse {
 
 export const DocumentDownloadResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -83,9 +75,9 @@ export const DocumentDownloadResponsePropertyValidationAttributesMap: {
  */
 export function instanceOfDocumentDownloadResponse(value: object): value is DocumentDownloadResponse {
     if (!('url' in value) || value['url'] === undefined) return false;
-    if (!('expiresIn' in value) || value['expiresIn'] === undefined) return false;
-    if (!('documentId' in value) || value['documentId'] === undefined) return false;
-    if (!('versionId' in value) || value['versionId'] === undefined) return false;
+    if ((!('expiresIn' in (value as Record<string, any>)) && !('expires_in' in (value as Record<string, any>))) || ((value as Record<string, any>)['expiresIn'] === undefined && (value as Record<string, any>)['expires_in'] === undefined)) return false;
+    if ((!('documentId' in (value as Record<string, any>)) && !('document_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['documentId'] === undefined && (value as Record<string, any>)['document_id'] === undefined)) return false;
+    if ((!('versionId' in (value as Record<string, any>)) && !('version_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['versionId'] === undefined && (value as Record<string, any>)['version_id'] === undefined)) return false;
     if (!('artifact' in value) || value['artifact'] === undefined) return false;
     return true;
 }

@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
 import type { RepoCommitSummary } from './RepoCommitSummary';
 import {
     RepoCommitSummaryFromJSON,
@@ -29,67 +29,49 @@ import {
 export interface WorkflowRepoResponse {
     /**
      * Directory name runs check the repository out under (`/work/<name>`); fixed by the first save.
-     * @type {string}
-     * @memberof WorkflowRepoResponse
      */
     name: string;
     /**
      * 
-     * @type {boolean}
-     * @memberof WorkflowRepoResponse
      */
     _exists: boolean;
     /**
      * DocumentVersion holding the current main; null before any save.
-     * @type {string}
-     * @memberof WorkflowRepoResponse
      */
     versionId: string | null;
     /**
      * 
-     * @type {RepoCommitSummary}
-     * @memberof WorkflowRepoResponse
      */
     head: RepoCommitSummary | null;
     /**
      * 
-     * @type {number}
-     * @memberof WorkflowRepoResponse
      */
     fileCount: number;
     /**
      * 
-     * @type {number}
-     * @memberof WorkflowRepoResponse
      */
     totalBytes: number;
     /**
      * 
-     * @type {number}
-     * @memberof WorkflowRepoResponse
      */
     commitCount: number;
     /**
      * 
-     * @type {Date}
-     * @memberof WorkflowRepoResponse
      */
     updatedAt: Date | null;
     /**
      * Whether the caller may save new versions (write on the workflow).
-     * @type {boolean}
-     * @memberof WorkflowRepoResponse
      */
     writableByMe: boolean;
     /**
      * Instruction version (DOCUMENT_VERSION path_part) the current main was saved against.
-     * @type {string}
-     * @memberof WorkflowRepoResponse
      */
     instructionVersionId: string | null;
 }
 export const WorkflowRepoResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -111,15 +93,15 @@ export const WorkflowRepoResponsePropertyValidationAttributesMap: {
  */
 export function instanceOfWorkflowRepoResponse(value: object): value is WorkflowRepoResponse {
     if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('_exists' in value) || value['_exists'] === undefined) return false;
-    if (!('versionId' in value) || value['versionId'] === undefined) return false;
+    if ((!('_exists' in (value as Record<string, any>)) && !('exists' in (value as Record<string, any>))) || ((value as Record<string, any>)['_exists'] === undefined && (value as Record<string, any>)['exists'] === undefined)) return false;
+    if ((!('versionId' in (value as Record<string, any>)) && !('version_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['versionId'] === undefined && (value as Record<string, any>)['version_id'] === undefined)) return false;
     if (!('head' in value) || value['head'] === undefined) return false;
-    if (!('fileCount' in value) || value['fileCount'] === undefined) return false;
-    if (!('totalBytes' in value) || value['totalBytes'] === undefined) return false;
-    if (!('commitCount' in value) || value['commitCount'] === undefined) return false;
-    if (!('updatedAt' in value) || value['updatedAt'] === undefined) return false;
-    if (!('writableByMe' in value) || value['writableByMe'] === undefined) return false;
-    if (!('instructionVersionId' in value) || value['instructionVersionId'] === undefined) return false;
+    if ((!('fileCount' in (value as Record<string, any>)) && !('file_count' in (value as Record<string, any>))) || ((value as Record<string, any>)['fileCount'] === undefined && (value as Record<string, any>)['file_count'] === undefined)) return false;
+    if ((!('totalBytes' in (value as Record<string, any>)) && !('total_bytes' in (value as Record<string, any>))) || ((value as Record<string, any>)['totalBytes'] === undefined && (value as Record<string, any>)['total_bytes'] === undefined)) return false;
+    if ((!('commitCount' in (value as Record<string, any>)) && !('commit_count' in (value as Record<string, any>))) || ((value as Record<string, any>)['commitCount'] === undefined && (value as Record<string, any>)['commit_count'] === undefined)) return false;
+    if ((!('updatedAt' in (value as Record<string, any>)) && !('updated_at' in (value as Record<string, any>))) || ((value as Record<string, any>)['updatedAt'] === undefined && (value as Record<string, any>)['updated_at'] === undefined)) return false;
+    if ((!('writableByMe' in (value as Record<string, any>)) && !('writable_by_me' in (value as Record<string, any>))) || ((value as Record<string, any>)['writableByMe'] === undefined && (value as Record<string, any>)['writable_by_me'] === undefined)) return false;
+    if ((!('instructionVersionId' in (value as Record<string, any>)) && !('instruction_version_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['instructionVersionId'] === undefined && (value as Record<string, any>)['instruction_version_id'] === undefined)) return false;
     return true;
 }
 
@@ -140,7 +122,7 @@ export function WorkflowRepoResponseFromJSONTyped(json: any, ignoreDiscriminator
         'fileCount': json['file_count'],
         'totalBytes': json['total_bytes'],
         'commitCount': json['commit_count'],
-        'updatedAt': (json['updated_at'] == null ? null : new Date(json['updated_at'])),
+        'updatedAt': (json['updated_at'] == null ? null : parseDateTime(json['updated_at'])),
         'writableByMe': json['writable_by_me'],
         'instructionVersionId': json['instruction_version_id'],
     };
@@ -164,7 +146,7 @@ export function WorkflowRepoResponseToJSONTyped(value?: WorkflowRepoResponse | n
         'file_count': value['fileCount'],
         'total_bytes': value['totalBytes'],
         'commit_count': value['commitCount'],
-        'updated_at': value['updatedAt'] == null ? value['updatedAt'] : value['updatedAt'].toISOString(),
+        'updated_at': value['updatedAt'] == null ? value['updatedAt'] : serializeDateTime(value['updatedAt']),
         'writable_by_me': value['writableByMe'],
         'instruction_version_id': value['instructionVersionId'],
     };

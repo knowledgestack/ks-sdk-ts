@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
 import type { FeedbackTargetType } from './FeedbackTargetType';
 import {
     FeedbackTargetTypeFromJSON,
@@ -43,62 +43,42 @@ import {
 export interface FeedbackEventResponse {
     /**
      * 
-     * @type {string}
-     * @memberof FeedbackEventResponse
      */
     id: string;
     /**
      * 
-     * @type {FeedbackTargetType}
-     * @memberof FeedbackEventResponse
      */
     targetType: FeedbackTargetType;
     /**
      * 
-     * @type {string}
-     * @memberof FeedbackEventResponse
      */
     targetId: string;
     /**
      * 
-     * @type {string}
-     * @memberof FeedbackEventResponse
      */
     userId: string;
     /**
      * 
-     * @type {FeedbackRating}
-     * @memberof FeedbackEventResponse
      */
     rating: FeedbackRating;
     /**
      * 
-     * @type {FeedbackReason}
-     * @memberof FeedbackEventResponse
      */
     reason?: FeedbackReason;
     /**
      * 
-     * @type {string}
-     * @memberof FeedbackEventResponse
      */
     comment?: string | null;
     /**
      * 
-     * @type {{ [key: string]: any; }}
-     * @memberof FeedbackEventResponse
      */
     extraMetadata: { [key: string]: any; };
     /**
      * 
-     * @type {Date}
-     * @memberof FeedbackEventResponse
      */
     createdAt: Date;
     /**
      * 
-     * @type {Date}
-     * @memberof FeedbackEventResponse
      */
     updatedAt: Date;
 }
@@ -106,6 +86,8 @@ export interface FeedbackEventResponse {
 
 export const FeedbackEventResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -127,13 +109,13 @@ export const FeedbackEventResponsePropertyValidationAttributesMap: {
  */
 export function instanceOfFeedbackEventResponse(value: object): value is FeedbackEventResponse {
     if (!('id' in value) || value['id'] === undefined) return false;
-    if (!('targetType' in value) || value['targetType'] === undefined) return false;
-    if (!('targetId' in value) || value['targetId'] === undefined) return false;
-    if (!('userId' in value) || value['userId'] === undefined) return false;
+    if ((!('targetType' in (value as Record<string, any>)) && !('target_type' in (value as Record<string, any>))) || ((value as Record<string, any>)['targetType'] === undefined && (value as Record<string, any>)['target_type'] === undefined)) return false;
+    if ((!('targetId' in (value as Record<string, any>)) && !('target_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['targetId'] === undefined && (value as Record<string, any>)['target_id'] === undefined)) return false;
+    if ((!('userId' in (value as Record<string, any>)) && !('user_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['userId'] === undefined && (value as Record<string, any>)['user_id'] === undefined)) return false;
     if (!('rating' in value) || value['rating'] === undefined) return false;
-    if (!('extraMetadata' in value) || value['extraMetadata'] === undefined) return false;
-    if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
-    if (!('updatedAt' in value) || value['updatedAt'] === undefined) return false;
+    if ((!('extraMetadata' in (value as Record<string, any>)) && !('extra_metadata' in (value as Record<string, any>))) || ((value as Record<string, any>)['extraMetadata'] === undefined && (value as Record<string, any>)['extra_metadata'] === undefined)) return false;
+    if ((!('createdAt' in (value as Record<string, any>)) && !('created_at' in (value as Record<string, any>))) || ((value as Record<string, any>)['createdAt'] === undefined && (value as Record<string, any>)['created_at'] === undefined)) return false;
+    if ((!('updatedAt' in (value as Record<string, any>)) && !('updated_at' in (value as Record<string, any>))) || ((value as Record<string, any>)['updatedAt'] === undefined && (value as Record<string, any>)['updated_at'] === undefined)) return false;
     return true;
 }
 
@@ -153,10 +135,10 @@ export function FeedbackEventResponseFromJSONTyped(json: any, ignoreDiscriminato
         'userId': json['user_id'],
         'rating': FeedbackRatingFromJSON(json['rating']),
         'reason': json['reason'] == null ? undefined : FeedbackReasonFromJSON(json['reason']),
-        'comment': json['comment'] == null ? undefined : json['comment'],
+        'comment': json['comment'] === undefined ? undefined : json['comment'] === null ? null : json['comment'],
         'extraMetadata': json['extra_metadata'],
-        'createdAt': (new Date(json['created_at'])),
-        'updatedAt': (new Date(json['updated_at'])),
+        'createdAt': (json['created_at'] == null ? json['created_at'] : parseDateTime(json['created_at'])),
+        'updatedAt': (json['updated_at'] == null ? json['updated_at'] : parseDateTime(json['updated_at'])),
     };
 }
 
@@ -179,8 +161,8 @@ export function FeedbackEventResponseToJSONTyped(value?: FeedbackEventResponse |
         'reason': FeedbackReasonToJSON(value['reason']),
         'comment': value['comment'],
         'extra_metadata': value['extraMetadata'],
-        'created_at': value['createdAt'].toISOString(),
-        'updated_at': value['updatedAt'].toISOString(),
+        'created_at': value['createdAt'] == null ? value['createdAt'] : serializeDateTime(value['createdAt']),
+        'updated_at': value['updatedAt'] == null ? value['updatedAt'] : serializeDateTime(value['updatedAt']),
     };
 }
 

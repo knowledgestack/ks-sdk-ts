@@ -18,7 +18,7 @@
  * @export
  */
 export const DocumentVersionAction = {
-    Reembed: 'reembed'
+    Reembed: 'reembed',
 } as const;
 export type DocumentVersionAction = typeof DocumentVersionAction[keyof typeof DocumentVersionAction];
 

@@ -34,7 +34,7 @@ export const BulkFailureReason = {
     PermissionLimit: 'permission_limit',
     AlreadyIngested: 'already_ingested',
     UnsupportedDocumentType: 'unsupported_document_type',
-    Superseded: 'superseded'
+    Superseded: 'superseded',
 } as const;
 export type BulkFailureReason = typeof BulkFailureReason[keyof typeof BulkFailureReason];
 

@@ -33,20 +33,14 @@ import {
 export interface IdpConfig {
     /**
      * 
-     * @type {SupportedIdP}
-     * @memberof IdpConfig
      */
     provider: SupportedIdP;
     /**
      * Provider-specific configuration
-     * @type {{ [key: string]: any; }}
-     * @memberof IdpConfig
      */
     _configuration: { [key: string]: any; };
     /**
      * Crontab string for directory sync
-     * @type {string}
-     * @memberof IdpConfig
      */
     syncCrontab?: string | null;
 }
@@ -54,6 +48,8 @@ export interface IdpConfig {
 
 export const IdpConfigPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -68,9 +64,12 @@ export const IdpConfigPropertyValidationAttributesMap: {
     }
 } = {
     _configuration: {
+        dataType: "{ [key: string]: any; }",
+        required: true,
         minItems: 1,
     },
     syncCrontab: {
+        dataType: "string",
         minLength: 9,
     },
 }
@@ -81,7 +80,7 @@ export const IdpConfigPropertyValidationAttributesMap: {
  */
 export function instanceOfIdpConfig(value: object): value is IdpConfig {
     if (!('provider' in value) || value['provider'] === undefined) return false;
-    if (!('_configuration' in value) || value['_configuration'] === undefined) return false;
+    if ((!('_configuration' in (value as Record<string, any>)) && !('configuration' in (value as Record<string, any>))) || ((value as Record<string, any>)['_configuration'] === undefined && (value as Record<string, any>)['configuration'] === undefined)) return false;
     return true;
 }
 
@@ -97,7 +96,7 @@ export function IdpConfigFromJSONTyped(json: any, ignoreDiscriminator: boolean):
         
         'provider': SupportedIdPFromJSON(json['provider']),
         '_configuration': json['configuration'],
-        'syncCrontab': json['sync_crontab'] == null ? undefined : json['sync_crontab'],
+        'syncCrontab': json['sync_crontab'] === undefined ? undefined : json['sync_crontab'] === null ? null : json['sync_crontab'],
     };
 }
 

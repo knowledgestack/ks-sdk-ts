@@ -32,37 +32,29 @@ import {
 export interface ChunkNeighborsResponse {
     /**
      * Ordered siblings: preceding → anchor → succeeding
-     * @type {Array<SectionContentItemOrChunkContentItem>}
-     * @memberof ChunkNeighborsResponse
      */
     items: Array<SectionContentItemOrChunkContentItem>;
     /**
      * Index of the anchor chunk in items
-     * @type {number}
-     * @memberof ChunkNeighborsResponse
      */
     anchorIndex: number;
     /**
      * 0-based position of the anchor in the traversal scope under the active content_type filter. With within_section=true the scope is the parent's filtered sibling chain; with within_section=false it is the entire document version in DFS order.
-     * @type {number}
-     * @memberof ChunkNeighborsResponse
      */
     anchorOffset: number;
     /**
      * Total items in the traversal scope under the active filter. Within-section: filtered direct children of the anchor's parent. Cross-section: filtered DFS items in the document version.
-     * @type {number}
-     * @memberof ChunkNeighborsResponse
      */
     total: number;
     /**
      * ID of the enclosing document version. Populated only when within_section=false (where it is required to scope the DFS traversal); null when within_section=true.
-     * @type {string}
-     * @memberof ChunkNeighborsResponse
      */
     documentVersionId?: string | null;
 }
 export const ChunkNeighborsResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -84,8 +76,8 @@ export const ChunkNeighborsResponsePropertyValidationAttributesMap: {
  */
 export function instanceOfChunkNeighborsResponse(value: object): value is ChunkNeighborsResponse {
     if (!('items' in value) || value['items'] === undefined) return false;
-    if (!('anchorIndex' in value) || value['anchorIndex'] === undefined) return false;
-    if (!('anchorOffset' in value) || value['anchorOffset'] === undefined) return false;
+    if ((!('anchorIndex' in (value as Record<string, any>)) && !('anchor_index' in (value as Record<string, any>))) || ((value as Record<string, any>)['anchorIndex'] === undefined && (value as Record<string, any>)['anchor_index'] === undefined)) return false;
+    if ((!('anchorOffset' in (value as Record<string, any>)) && !('anchor_offset' in (value as Record<string, any>))) || ((value as Record<string, any>)['anchorOffset'] === undefined && (value as Record<string, any>)['anchor_offset'] === undefined)) return false;
     if (!('total' in value) || value['total'] === undefined) return false;
     return true;
 }
@@ -104,7 +96,7 @@ export function ChunkNeighborsResponseFromJSONTyped(json: any, ignoreDiscriminat
         'anchorIndex': json['anchor_index'],
         'anchorOffset': json['anchor_offset'],
         'total': json['total'],
-        'documentVersionId': json['document_version_id'] == null ? undefined : json['document_version_id'],
+        'documentVersionId': json['document_version_id'] === undefined ? undefined : json['document_version_id'] === null ? null : json['document_version_id'],
     };
 }
 

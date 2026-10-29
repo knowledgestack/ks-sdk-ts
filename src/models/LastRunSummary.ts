@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
 import type { WorkflowExecutionState } from './WorkflowExecutionState';
 import {
     WorkflowExecutionStateFromJSON,
@@ -40,44 +40,30 @@ import {
 export interface LastRunSummary {
     /**
      * 
-     * @type {string}
-     * @memberof LastRunSummary
      */
     id: string;
     /**
      * 
-     * @type {WorkflowExecutionState}
-     * @memberof LastRunSummary
      */
     executionState: WorkflowExecutionState;
     /**
      * 
-     * @type {PathPartApprovalState}
-     * @memberof LastRunSummary
      */
     approvalState: PathPartApprovalState;
     /**
      * 
-     * @type {Date}
-     * @memberof LastRunSummary
      */
     createdAt: Date;
     /**
      * 
-     * @type {Date}
-     * @memberof LastRunSummary
      */
     startedAt?: Date | null;
     /**
      * 
-     * @type {Date}
-     * @memberof LastRunSummary
      */
     completedAt?: Date | null;
     /**
      * 
-     * @type {string}
-     * @memberof LastRunSummary
      */
     error?: string | null;
 }
@@ -85,6 +71,8 @@ export interface LastRunSummary {
 
 export const LastRunSummaryPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -106,9 +94,9 @@ export const LastRunSummaryPropertyValidationAttributesMap: {
  */
 export function instanceOfLastRunSummary(value: object): value is LastRunSummary {
     if (!('id' in value) || value['id'] === undefined) return false;
-    if (!('executionState' in value) || value['executionState'] === undefined) return false;
-    if (!('approvalState' in value) || value['approvalState'] === undefined) return false;
-    if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
+    if ((!('executionState' in (value as Record<string, any>)) && !('execution_state' in (value as Record<string, any>))) || ((value as Record<string, any>)['executionState'] === undefined && (value as Record<string, any>)['execution_state'] === undefined)) return false;
+    if ((!('approvalState' in (value as Record<string, any>)) && !('approval_state' in (value as Record<string, any>))) || ((value as Record<string, any>)['approvalState'] === undefined && (value as Record<string, any>)['approval_state'] === undefined)) return false;
+    if ((!('createdAt' in (value as Record<string, any>)) && !('created_at' in (value as Record<string, any>))) || ((value as Record<string, any>)['createdAt'] === undefined && (value as Record<string, any>)['created_at'] === undefined)) return false;
     return true;
 }
 
@@ -125,10 +113,10 @@ export function LastRunSummaryFromJSONTyped(json: any, ignoreDiscriminator: bool
         'id': json['id'],
         'executionState': WorkflowExecutionStateFromJSON(json['execution_state']),
         'approvalState': PathPartApprovalStateFromJSON(json['approval_state']),
-        'createdAt': (new Date(json['created_at'])),
-        'startedAt': json['started_at'] == null ? undefined : (new Date(json['started_at'])),
-        'completedAt': json['completed_at'] == null ? undefined : (new Date(json['completed_at'])),
-        'error': json['error'] == null ? undefined : json['error'],
+        'createdAt': (json['created_at'] == null ? json['created_at'] : parseDateTime(json['created_at'])),
+        'startedAt': json['started_at'] === undefined ? undefined : json['started_at'] === null ? null : (parseDateTime(json['started_at'])),
+        'completedAt': json['completed_at'] === undefined ? undefined : json['completed_at'] === null ? null : (parseDateTime(json['completed_at'])),
+        'error': json['error'] === undefined ? undefined : json['error'] === null ? null : json['error'],
     };
 }
 
@@ -146,9 +134,9 @@ export function LastRunSummaryToJSONTyped(value?: LastRunSummary | null, ignoreD
         'id': value['id'],
         'execution_state': WorkflowExecutionStateToJSON(value['executionState']),
         'approval_state': PathPartApprovalStateToJSON(value['approvalState']),
-        'created_at': value['createdAt'].toISOString(),
-        'started_at': value['startedAt'] == null ? value['startedAt'] : value['startedAt'].toISOString(),
-        'completed_at': value['completedAt'] == null ? value['completedAt'] : value['completedAt'].toISOString(),
+        'created_at': value['createdAt'] == null ? value['createdAt'] : serializeDateTime(value['createdAt']),
+        'started_at': value['startedAt'] == null ? value['startedAt'] : serializeDateTime(value['startedAt']),
+        'completed_at': value['completedAt'] == null ? value['completedAt'] : serializeDateTime(value['completedAt']),
         'error': value['error'],
     };
 }

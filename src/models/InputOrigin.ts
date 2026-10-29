@@ -24,7 +24,7 @@
 export const InputOrigin = {
     DefinitionCommon: 'DEFINITION_COMMON',
     RunReference: 'RUN_REFERENCE',
-    RunUpload: 'RUN_UPLOAD'
+    RunUpload: 'RUN_UPLOAD',
 } as const;
 export type InputOrigin = typeof InputOrigin[keyof typeof InputOrigin];
 

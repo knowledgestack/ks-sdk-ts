@@ -21,25 +21,21 @@ import { mapValues } from '../runtime';
 export interface UploadFormat {
     /**
      * 
-     * @type {string}
-     * @memberof UploadFormat
      */
     extension: string;
     /**
      * 
-     * @type {string}
-     * @memberof UploadFormat
      */
     contentType: string;
     /**
      * Largest file of this format the buffered uploads accept (new document, new version, ZIP member, workflow-run file). A new audio/video document uses the resumable upload, capped at upload.max_media_bytes
-     * @type {number}
-     * @memberof UploadFormat
      */
     maxBytes: number;
 }
 export const UploadFormatPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -61,8 +57,8 @@ export const UploadFormatPropertyValidationAttributesMap: {
  */
 export function instanceOfUploadFormat(value: object): value is UploadFormat {
     if (!('extension' in value) || value['extension'] === undefined) return false;
-    if (!('contentType' in value) || value['contentType'] === undefined) return false;
-    if (!('maxBytes' in value) || value['maxBytes'] === undefined) return false;
+    if ((!('contentType' in (value as Record<string, any>)) && !('content_type' in (value as Record<string, any>))) || ((value as Record<string, any>)['contentType'] === undefined && (value as Record<string, any>)['content_type'] === undefined)) return false;
+    if ((!('maxBytes' in (value as Record<string, any>)) && !('max_bytes' in (value as Record<string, any>))) || ((value as Record<string, any>)['maxBytes'] === undefined && (value as Record<string, any>)['max_bytes'] === undefined)) return false;
     return true;
 }
 

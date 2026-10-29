@@ -29,31 +29,25 @@ import {
 export interface CatalogColumnResponse {
     /**
      * 
-     * @type {string}
-     * @memberof CatalogColumnResponse
      */
     name: string;
     /**
      * 
-     * @type {string}
-     * @memberof CatalogColumnResponse
      */
     dataType: string;
     /**
      * 
-     * @type {boolean}
-     * @memberof CatalogColumnResponse
      */
     isPk: boolean;
     /**
      * 
-     * @type {ColumnReference}
-     * @memberof CatalogColumnResponse
      */
     references?: ColumnReference | null;
 }
 export const CatalogColumnResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -75,8 +69,8 @@ export const CatalogColumnResponsePropertyValidationAttributesMap: {
  */
 export function instanceOfCatalogColumnResponse(value: object): value is CatalogColumnResponse {
     if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('dataType' in value) || value['dataType'] === undefined) return false;
-    if (!('isPk' in value) || value['isPk'] === undefined) return false;
+    if ((!('dataType' in (value as Record<string, any>)) && !('data_type' in (value as Record<string, any>))) || ((value as Record<string, any>)['dataType'] === undefined && (value as Record<string, any>)['data_type'] === undefined)) return false;
+    if ((!('isPk' in (value as Record<string, any>)) && !('is_pk' in (value as Record<string, any>))) || ((value as Record<string, any>)['isPk'] === undefined && (value as Record<string, any>)['is_pk'] === undefined)) return false;
     return true;
 }
 
@@ -93,7 +87,7 @@ export function CatalogColumnResponseFromJSONTyped(json: any, ignoreDiscriminato
         'name': json['name'],
         'dataType': json['data_type'],
         'isPk': json['is_pk'],
-        'references': json['references'] == null ? undefined : ColumnReferenceFromJSON(json['references']),
+        'references': json['references'] === undefined ? undefined : json['references'] === null ? null : ColumnReferenceFromJSON(json['references']),
     };
 }
 

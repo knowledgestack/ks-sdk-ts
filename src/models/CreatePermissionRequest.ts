@@ -29,32 +29,22 @@ import {
 export interface CreatePermissionRequest {
     /**
      * 
-     * @type {string}
-     * @memberof CreatePermissionRequest
      */
     tenantId: string;
     /**
      * 
-     * @type {string}
-     * @memberof CreatePermissionRequest
      */
     userId: string;
     /**
      * 
-     * @type {string}
-     * @memberof CreatePermissionRequest
      */
     pathPartId: string;
     /**
      * 
-     * @type {PermissionCapability}
-     * @memberof CreatePermissionRequest
      */
     capability: PermissionCapability;
     /**
      * 
-     * @type {boolean}
-     * @memberof CreatePermissionRequest
      */
     canApprove?: boolean;
 }
@@ -62,6 +52,8 @@ export interface CreatePermissionRequest {
 
 export const CreatePermissionRequestPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -82,9 +74,9 @@ export const CreatePermissionRequestPropertyValidationAttributesMap: {
  * Check if a given object implements the CreatePermissionRequest interface.
  */
 export function instanceOfCreatePermissionRequest(value: object): value is CreatePermissionRequest {
-    if (!('tenantId' in value) || value['tenantId'] === undefined) return false;
-    if (!('userId' in value) || value['userId'] === undefined) return false;
-    if (!('pathPartId' in value) || value['pathPartId'] === undefined) return false;
+    if ((!('tenantId' in (value as Record<string, any>)) && !('tenant_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['tenantId'] === undefined && (value as Record<string, any>)['tenant_id'] === undefined)) return false;
+    if ((!('userId' in (value as Record<string, any>)) && !('user_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['userId'] === undefined && (value as Record<string, any>)['user_id'] === undefined)) return false;
+    if ((!('pathPartId' in (value as Record<string, any>)) && !('path_part_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['pathPartId'] === undefined && (value as Record<string, any>)['path_part_id'] === undefined)) return false;
     if (!('capability' in value) || value['capability'] === undefined) return false;
     return true;
 }

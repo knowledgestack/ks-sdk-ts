@@ -19,7 +19,7 @@
  */
 export const FeedbackRating = {
     Up: 'UP',
-    Down: 'DOWN'
+    Down: 'DOWN',
 } as const;
 export type FeedbackRating = typeof FeedbackRating[keyof typeof FeedbackRating];
 

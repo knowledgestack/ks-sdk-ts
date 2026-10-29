@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
 import type { BillingInterval } from './BillingInterval';
 import {
     BillingIntervalFromJSON,
@@ -43,44 +43,30 @@ import {
 export interface TenantSubscriptionResponse {
     /**
      * 
-     * @type {SubscriptionPlanResponse}
-     * @memberof TenantSubscriptionResponse
      */
     plan: SubscriptionPlanResponse;
     /**
      * Seats in force for this period.
-     * @type {number}
-     * @memberof TenantSubscriptionResponse
      */
     numSeats: number;
     /**
      * Inclusive period start.
-     * @type {Date}
-     * @memberof TenantSubscriptionResponse
      */
     startDate: Date;
     /**
      * Exclusive period end. Unbilled subscriptions carry a 100-year horizon; billed ones the paid-through date.
-     * @type {Date}
-     * @memberof TenantSubscriptionResponse
      */
     endDate: Date;
     /**
      * 
-     * @type {BillingSystem}
-     * @memberof TenantSubscriptionResponse
      */
     billingSystem?: BillingSystem;
     /**
      * 
-     * @type {BillingInterval}
-     * @memberof TenantSubscriptionResponse
      */
     interval?: BillingInterval;
     /**
      * True when the subscription auto-renews at period end (a Stripe subscription with no cancellation scheduled). False for Ping++ prepay (renewal = buying again), unbilled subscriptions, and Stripe periods with a scheduled cancellation.
-     * @type {boolean}
-     * @memberof TenantSubscriptionResponse
      */
     willRenew: boolean;
 }
@@ -88,6 +74,8 @@ export interface TenantSubscriptionResponse {
 
 export const TenantSubscriptionResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -109,10 +97,10 @@ export const TenantSubscriptionResponsePropertyValidationAttributesMap: {
  */
 export function instanceOfTenantSubscriptionResponse(value: object): value is TenantSubscriptionResponse {
     if (!('plan' in value) || value['plan'] === undefined) return false;
-    if (!('numSeats' in value) || value['numSeats'] === undefined) return false;
-    if (!('startDate' in value) || value['startDate'] === undefined) return false;
-    if (!('endDate' in value) || value['endDate'] === undefined) return false;
-    if (!('willRenew' in value) || value['willRenew'] === undefined) return false;
+    if ((!('numSeats' in (value as Record<string, any>)) && !('num_seats' in (value as Record<string, any>))) || ((value as Record<string, any>)['numSeats'] === undefined && (value as Record<string, any>)['num_seats'] === undefined)) return false;
+    if ((!('startDate' in (value as Record<string, any>)) && !('start_date' in (value as Record<string, any>))) || ((value as Record<string, any>)['startDate'] === undefined && (value as Record<string, any>)['start_date'] === undefined)) return false;
+    if ((!('endDate' in (value as Record<string, any>)) && !('end_date' in (value as Record<string, any>))) || ((value as Record<string, any>)['endDate'] === undefined && (value as Record<string, any>)['end_date'] === undefined)) return false;
+    if ((!('willRenew' in (value as Record<string, any>)) && !('will_renew' in (value as Record<string, any>))) || ((value as Record<string, any>)['willRenew'] === undefined && (value as Record<string, any>)['will_renew'] === undefined)) return false;
     return true;
 }
 
@@ -128,8 +116,8 @@ export function TenantSubscriptionResponseFromJSONTyped(json: any, ignoreDiscrim
         
         'plan': SubscriptionPlanResponseFromJSON(json['plan']),
         'numSeats': json['num_seats'],
-        'startDate': (new Date(json['start_date'])),
-        'endDate': (new Date(json['end_date'])),
+        'startDate': (json['start_date'] == null ? json['start_date'] : parseDateTime(json['start_date'])),
+        'endDate': (json['end_date'] == null ? json['end_date'] : parseDateTime(json['end_date'])),
         'billingSystem': json['billing_system'] == null ? undefined : BillingSystemFromJSON(json['billing_system']),
         'interval': json['interval'] == null ? undefined : BillingIntervalFromJSON(json['interval']),
         'willRenew': json['will_renew'],
@@ -149,8 +137,8 @@ export function TenantSubscriptionResponseToJSONTyped(value?: TenantSubscription
         
         'plan': SubscriptionPlanResponseToJSON(value['plan']),
         'num_seats': value['numSeats'],
-        'start_date': value['startDate'].toISOString(),
-        'end_date': value['endDate'].toISOString(),
+        'start_date': value['startDate'] == null ? value['startDate'] : serializeDateTime(value['startDate']),
+        'end_date': value['endDate'] == null ? value['endDate'] : serializeDateTime(value['endDate']),
         'billing_system': BillingSystemToJSON(value['billingSystem']),
         'interval': BillingIntervalToJSON(value['interval']),
         'will_renew': value['willRenew'],

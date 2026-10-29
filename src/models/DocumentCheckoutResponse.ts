@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
 import type { UserInfo } from './UserInfo';
 import {
     UserInfoFromJSON,
@@ -29,31 +29,25 @@ import {
 export interface DocumentCheckoutResponse {
     /**
      * Tenant ID
-     * @type {string}
-     * @memberof DocumentCheckoutResponse
      */
     tenantId: string;
     /**
      * Document ID
-     * @type {string}
-     * @memberof DocumentCheckoutResponse
      */
     documentId: string;
     /**
      * 
-     * @type {UserInfo}
-     * @memberof DocumentCheckoutResponse
      */
     holder: UserInfo;
     /**
      * When the checkout was acquired
-     * @type {Date}
-     * @memberof DocumentCheckoutResponse
      */
     acquiredAt: Date;
 }
 export const DocumentCheckoutResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -74,10 +68,10 @@ export const DocumentCheckoutResponsePropertyValidationAttributesMap: {
  * Check if a given object implements the DocumentCheckoutResponse interface.
  */
 export function instanceOfDocumentCheckoutResponse(value: object): value is DocumentCheckoutResponse {
-    if (!('tenantId' in value) || value['tenantId'] === undefined) return false;
-    if (!('documentId' in value) || value['documentId'] === undefined) return false;
+    if ((!('tenantId' in (value as Record<string, any>)) && !('tenant_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['tenantId'] === undefined && (value as Record<string, any>)['tenant_id'] === undefined)) return false;
+    if ((!('documentId' in (value as Record<string, any>)) && !('document_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['documentId'] === undefined && (value as Record<string, any>)['document_id'] === undefined)) return false;
     if (!('holder' in value) || value['holder'] === undefined) return false;
-    if (!('acquiredAt' in value) || value['acquiredAt'] === undefined) return false;
+    if ((!('acquiredAt' in (value as Record<string, any>)) && !('acquired_at' in (value as Record<string, any>))) || ((value as Record<string, any>)['acquiredAt'] === undefined && (value as Record<string, any>)['acquired_at'] === undefined)) return false;
     return true;
 }
 
@@ -94,7 +88,7 @@ export function DocumentCheckoutResponseFromJSONTyped(json: any, ignoreDiscrimin
         'tenantId': json['tenant_id'],
         'documentId': json['document_id'],
         'holder': UserInfoFromJSON(json['holder']),
-        'acquiredAt': (new Date(json['acquired_at'])),
+        'acquiredAt': (json['acquired_at'] == null ? json['acquired_at'] : parseDateTime(json['acquired_at'])),
     };
 }
 
@@ -112,7 +106,7 @@ export function DocumentCheckoutResponseToJSONTyped(value?: DocumentCheckoutResp
         'tenant_id': value['tenantId'],
         'document_id': value['documentId'],
         'holder': UserInfoToJSON(value['holder']),
-        'acquired_at': value['acquiredAt'].toISOString(),
+        'acquired_at': value['acquiredAt'] == null ? value['acquiredAt'] : serializeDateTime(value['acquiredAt']),
     };
 }
 

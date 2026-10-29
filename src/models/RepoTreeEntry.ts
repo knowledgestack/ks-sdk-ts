@@ -21,25 +21,21 @@ import { mapValues } from '../runtime';
 export interface RepoTreeEntry {
     /**
      * 
-     * @type {string}
-     * @memberof RepoTreeEntry
      */
     path: string;
     /**
      * 
-     * @type {number}
-     * @memberof RepoTreeEntry
      */
     size: number;
     /**
      * 
-     * @type {boolean}
-     * @memberof RepoTreeEntry
      */
     isBinary: boolean;
 }
 export const RepoTreeEntryPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -62,7 +58,7 @@ export const RepoTreeEntryPropertyValidationAttributesMap: {
 export function instanceOfRepoTreeEntry(value: object): value is RepoTreeEntry {
     if (!('path' in value) || value['path'] === undefined) return false;
     if (!('size' in value) || value['size'] === undefined) return false;
-    if (!('isBinary' in value) || value['isBinary'] === undefined) return false;
+    if ((!('isBinary' in (value as Record<string, any>)) && !('is_binary' in (value as Record<string, any>))) || ((value as Record<string, any>)['isBinary'] === undefined && (value as Record<string, any>)['is_binary'] === undefined)) return false;
     return true;
 }
 

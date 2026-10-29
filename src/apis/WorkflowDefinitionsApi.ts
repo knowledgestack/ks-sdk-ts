@@ -12,108 +12,241 @@
  * Do not edit the class manually.
  */
 
-
 import * as runtime from '../runtime';
-import type {
-  CreateWorkflowDefinitionRequest,
-  ErrorResponse,
-  HTTPValidationError,
-  InstantiateWorkflowTemplateRequest,
-  PaginatedResponseWorkflowDefinitionResponse,
-  PaginatedResponseWorkflowRunResponse,
-  SortDirection,
-  UpdateWorkflowDefinitionRequest,
-  WorkflowDefinitionOrder,
-  WorkflowDefinitionResponse,
-  WorkflowRunOrder,
-  WorkflowRunResponse,
-} from '../models/index';
 import {
+    type CreateWorkflowDefinitionRequest,
     CreateWorkflowDefinitionRequestFromJSON,
     CreateWorkflowDefinitionRequestToJSON,
+} from '../models/CreateWorkflowDefinitionRequest';
+import {
+    type ErrorResponse,
     ErrorResponseFromJSON,
     ErrorResponseToJSON,
+} from '../models/ErrorResponse';
+import {
+    type HTTPValidationError,
     HTTPValidationErrorFromJSON,
     HTTPValidationErrorToJSON,
+} from '../models/HTTPValidationError';
+import {
+    type InstantiateWorkflowTemplateRequest,
     InstantiateWorkflowTemplateRequestFromJSON,
     InstantiateWorkflowTemplateRequestToJSON,
+} from '../models/InstantiateWorkflowTemplateRequest';
+import {
+    type PaginatedResponseWorkflowDefinitionResponse,
     PaginatedResponseWorkflowDefinitionResponseFromJSON,
     PaginatedResponseWorkflowDefinitionResponseToJSON,
+} from '../models/PaginatedResponseWorkflowDefinitionResponse';
+import {
+    type PaginatedResponseWorkflowRunResponse,
     PaginatedResponseWorkflowRunResponseFromJSON,
     PaginatedResponseWorkflowRunResponseToJSON,
+} from '../models/PaginatedResponseWorkflowRunResponse';
+import {
+    type SortDirection,
     SortDirectionFromJSON,
     SortDirectionToJSON,
+} from '../models/SortDirection';
+import {
+    type UpdateWorkflowDefinitionRequest,
     UpdateWorkflowDefinitionRequestFromJSON,
     UpdateWorkflowDefinitionRequestToJSON,
+} from '../models/UpdateWorkflowDefinitionRequest';
+import {
+    type WorkflowDefinitionOrder,
     WorkflowDefinitionOrderFromJSON,
     WorkflowDefinitionOrderToJSON,
+} from '../models/WorkflowDefinitionOrder';
+import {
+    type WorkflowDefinitionResponse,
     WorkflowDefinitionResponseFromJSON,
     WorkflowDefinitionResponseToJSON,
+} from '../models/WorkflowDefinitionResponse';
+import {
+    type WorkflowRunOrder,
     WorkflowRunOrderFromJSON,
     WorkflowRunOrderToJSON,
+} from '../models/WorkflowRunOrder';
+import {
+    type WorkflowRunResponse,
     WorkflowRunResponseFromJSON,
     WorkflowRunResponseToJSON,
-} from '../models/index';
+} from '../models/WorkflowRunResponse';
 
 export interface CreateWorkflowDefinitionOperationRequest {
+    /**
+     * 
+     */
     createWorkflowDefinitionRequest: CreateWorkflowDefinitionRequest;
 }
 
 export interface CreateWorkflowRunRequest {
+    /**
+     * 
+     */
     definitionId: string;
+    /**
+     * DEPRECATED — do not send files here. Carrying file bytes on run creation makes the call block on synchronous S3 upload (the ~30s \'Create run\' wait). Instead create an empty draft (omit this field), then upload each file to the run\'s ``inputs/`` folder via ``POST /v1/documents/ingest`` with ``path_part_id`` set to the run\'s ``inputs_path_part_id``; that path ingests asynchronously and auto-syncs the run\'s state. This field will be removed once the FE has migrated.
+     */
     files?: Array<Blob>;
+    /**
+     * JSON array of ``DOCUMENT`` or ``FOLDER`` path_part UUIDs referenced from the existing knowledge base, pinned onto the new draft\'s input scope. Optional — omit for an empty draft and add references later via PATCH.
+     */
     inputScope?: string | null;
+    /**
+     * Optional key to prevent duplicate runs from retries.
+     */
     idempotencyKey?: string | null;
+    /**
+     * When true, the run starts itself once its ``inputs/`` uploads finish ingesting — eliminating the separate Start call. If an upload\'s ingestion fails, the run is marked FAILED. Default false (two-step flow). Arm only after all uploads are queued; a synchronously-completing first upload would otherwise start the run before later uploads are added.
+     */
     autoStart?: boolean;
+    /**
+     * Optional note carried to the auto-start dispatch (the equivalent of the Start endpoint\'s ``user_message`` for a self-starting run). Applied only when ``auto_start`` fires.
+     */
     userMessage?: string | null;
+    /**
+     * Optional display name for the run. Omit to default to the run\'s UUID; rename later via PATCH. Must be unique among sibling runs under this definition\'s ``runs/`` folder — a collision returns 409.
+     */
     name?: string | null;
+    /**
+     * JSON array of SKILL PDO UUIDs to force-load into this run ON TOP of the definition\'s prefill — the run\'s skills are the definition\'s list plus these additions. Each must be a SKILL the caller can read (else 400/403). Optional; omit to run with just the definition\'s skills.
+     */
     selectedSkillIds?: string | null;
 }
 
 export interface DeleteWorkflowDefinitionRequest {
+    /**
+     * 
+     */
     definitionId: string;
 }
 
 export interface GetWorkflowDefinitionRequest {
+    /**
+     * 
+     */
     definitionId: string;
 }
 
 export interface InstantiateWorkflowTemplateOperationRequest {
+    /**
+     * 
+     */
     templateId: string;
+    /**
+     * 
+     */
     instantiateWorkflowTemplateRequest: InstantiateWorkflowTemplateRequest;
 }
 
 export interface ListWorkflowDefinitionsRequest {
+    /**
+     * Only definitions the caller created (owner).
+     */
     mine?: boolean;
+    /**
+     * Case-insensitive substring over name and description.
+     */
     search?: string | null;
+    /**
+     * Field to sort definitions by (default: CREATED_AT)
+     */
     sortBy?: WorkflowDefinitionOrder;
+    /**
+     * Sort direction; overrides the field's natural default
+     */
     sortDir?: SortDirection;
+    /**
+     * 
+     */
     isTemplate?: boolean;
+    /**
+     * Only definitions with a run awaiting approval.
+     */
     needsApproval?: boolean;
+    /**
+     * Number of items per page
+     */
     limit?: number;
+    /**
+     * Number of items to skip
+     */
     offset?: number;
+    /**
+     * Only items created at or after this timestamp (inclusive)
+     */
     createdAfter?: Date | null;
+    /**
+     * Only items created strictly before this timestamp
+     */
     createdBefore?: Date | null;
+    /**
+     * Only items updated at or after this timestamp (inclusive)
+     */
     updatedAfter?: Date | null;
+    /**
+     * Only items updated strictly before this timestamp
+     */
     updatedBefore?: Date | null;
+    /**
+     * Keep only items that carry at least one of these tags on the item itself or any ancestor folder (repeatable, OR / tag inheritance).
+     */
     includeTagIds?: Array<string> | null;
+    /**
+     * Drop items that carry any of these tags on the item itself or any ancestor folder (repeatable). Takes precedence over include_tag_ids.
+     */
     excludeTagIds?: Array<string> | null;
 }
 
 export interface ListWorkflowRunsRequest {
+    /**
+     * 
+     */
     definitionId: string;
+    /**
+     * Field to sort runs by (default: STARTED_AT)
+     */
     sortBy?: WorkflowRunOrder;
+    /**
+     * Sort direction; overrides the field's natural default
+     */
     sortDir?: SortDirection;
+    /**
+     * Number of items per page
+     */
     limit?: number;
+    /**
+     * Number of items to skip
+     */
     offset?: number;
+    /**
+     * Only items created at or after this timestamp (inclusive)
+     */
     createdAfter?: Date | null;
+    /**
+     * Only items created strictly before this timestamp
+     */
     createdBefore?: Date | null;
+    /**
+     * Only items updated at or after this timestamp (inclusive)
+     */
     updatedAfter?: Date | null;
+    /**
+     * Only items updated strictly before this timestamp
+     */
     updatedBefore?: Date | null;
 }
 
 export interface UpdateWorkflowDefinitionOperationRequest {
+    /**
+     * 
+     */
     definitionId: string;
+    /**
+     * 
+     */
     updateWorkflowDefinitionRequest: UpdateWorkflowDefinitionRequest;
 }
 
@@ -503,7 +636,7 @@ export class WorkflowDefinitionsApi extends runtime.BaseAPI implements WorkflowD
 
 
         let urlPath = `/v1/workflow-definitions/{definition_id}/runs`;
-        urlPath = urlPath.replace(`{${"definition_id"}}`, encodeURIComponent(String(requestParameters['definitionId'])));
+        urlPath = urlPath.replace('{definition_id}', encodeURIComponent(String(requestParameters['definitionId'])));
 
         return {
             path: urlPath,
@@ -559,7 +692,7 @@ export class WorkflowDefinitionsApi extends runtime.BaseAPI implements WorkflowD
         }
 
         let urlPath = `/v1/workflow-definitions/{definition_id}`;
-        urlPath = urlPath.replace(`{${"definition_id"}}`, encodeURIComponent(String(requestParameters['definitionId'])));
+        urlPath = urlPath.replace('{definition_id}', encodeURIComponent(String(requestParameters['definitionId'])));
 
         return {
             path: urlPath,
@@ -611,7 +744,7 @@ export class WorkflowDefinitionsApi extends runtime.BaseAPI implements WorkflowD
         }
 
         let urlPath = `/v1/workflow-definitions/{definition_id}`;
-        urlPath = urlPath.replace(`{${"definition_id"}}`, encodeURIComponent(String(requestParameters['definitionId'])));
+        urlPath = urlPath.replace('{definition_id}', encodeURIComponent(String(requestParameters['definitionId'])));
 
         return {
             path: urlPath,
@@ -673,7 +806,7 @@ export class WorkflowDefinitionsApi extends runtime.BaseAPI implements WorkflowD
         }
 
         let urlPath = `/v1/workflow-definitions/{template_id}/instantiate`;
-        urlPath = urlPath.replace(`{${"template_id"}}`, encodeURIComponent(String(requestParameters['templateId'])));
+        urlPath = urlPath.replace('{template_id}', encodeURIComponent(String(requestParameters['templateId'])));
 
         return {
             path: urlPath,
@@ -741,19 +874,19 @@ export class WorkflowDefinitionsApi extends runtime.BaseAPI implements WorkflowD
         }
 
         if (requestParameters['createdAfter'] != null) {
-            queryParameters['created_after'] = (requestParameters['createdAfter'] as any).toISOString();
+            queryParameters['created_after'] = runtime.serializeDateTime(requestParameters['createdAfter'] as any);
         }
 
         if (requestParameters['createdBefore'] != null) {
-            queryParameters['created_before'] = (requestParameters['createdBefore'] as any).toISOString();
+            queryParameters['created_before'] = runtime.serializeDateTime(requestParameters['createdBefore'] as any);
         }
 
         if (requestParameters['updatedAfter'] != null) {
-            queryParameters['updated_after'] = (requestParameters['updatedAfter'] as any).toISOString();
+            queryParameters['updated_after'] = runtime.serializeDateTime(requestParameters['updatedAfter'] as any);
         }
 
         if (requestParameters['updatedBefore'] != null) {
-            queryParameters['updated_before'] = (requestParameters['updatedBefore'] as any).toISOString();
+            queryParameters['updated_before'] = runtime.serializeDateTime(requestParameters['updatedBefore'] as any);
         }
 
         if (requestParameters['includeTagIds'] != null) {
@@ -833,19 +966,19 @@ export class WorkflowDefinitionsApi extends runtime.BaseAPI implements WorkflowD
         }
 
         if (requestParameters['createdAfter'] != null) {
-            queryParameters['created_after'] = (requestParameters['createdAfter'] as any).toISOString();
+            queryParameters['created_after'] = runtime.serializeDateTime(requestParameters['createdAfter'] as any);
         }
 
         if (requestParameters['createdBefore'] != null) {
-            queryParameters['created_before'] = (requestParameters['createdBefore'] as any).toISOString();
+            queryParameters['created_before'] = runtime.serializeDateTime(requestParameters['createdBefore'] as any);
         }
 
         if (requestParameters['updatedAfter'] != null) {
-            queryParameters['updated_after'] = (requestParameters['updatedAfter'] as any).toISOString();
+            queryParameters['updated_after'] = runtime.serializeDateTime(requestParameters['updatedAfter'] as any);
         }
 
         if (requestParameters['updatedBefore'] != null) {
-            queryParameters['updated_before'] = (requestParameters['updatedBefore'] as any).toISOString();
+            queryParameters['updated_before'] = runtime.serializeDateTime(requestParameters['updatedBefore'] as any);
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -860,7 +993,7 @@ export class WorkflowDefinitionsApi extends runtime.BaseAPI implements WorkflowD
         }
 
         let urlPath = `/v1/workflow-definitions/{definition_id}/runs`;
-        urlPath = urlPath.replace(`{${"definition_id"}}`, encodeURIComponent(String(requestParameters['definitionId'])));
+        urlPath = urlPath.replace('{definition_id}', encodeURIComponent(String(requestParameters['definitionId'])));
 
         return {
             path: urlPath,
@@ -922,7 +1055,7 @@ export class WorkflowDefinitionsApi extends runtime.BaseAPI implements WorkflowD
         }
 
         let urlPath = `/v1/workflow-definitions/{definition_id}`;
-        urlPath = urlPath.replace(`{${"definition_id"}}`, encodeURIComponent(String(requestParameters['definitionId'])));
+        urlPath = urlPath.replace('{definition_id}', encodeURIComponent(String(requestParameters['definitionId'])));
 
         return {
             path: urlPath,

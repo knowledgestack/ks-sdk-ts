@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
 import type { PipelineStatus } from './PipelineStatus';
 import {
     PipelineStatusFromJSON,
@@ -50,74 +50,50 @@ import {
 export interface PipelineState {
     /**
      * Zero-based retry count for the current stage; maximum across fan-out activities. Managed by ingestion.
-     * @type {number}
-     * @memberof PipelineState
      */
     readonly lastStageRetryAttempt?: number;
     /**
      * 
-     * @type {PipelineStatus}
-     * @memberof PipelineState
      */
     status: PipelineStatus;
     /**
      * Timestamp of the last pipeline execution attempt (set once when a run starts)
-     * @type {Date}
-     * @memberof PipelineState
      */
     lastRunTimestamp?: Date | null;
     /**
      * Timestamp of the last pipeline state change (set by activities)
-     * @type {Date}
-     * @memberof PipelineState
      */
     lastStateUpdateTimestamp?: Date | null;
     /**
      * Current ingestion stage, recorded before its activity starts
-     * @type {string}
-     * @memberof PipelineState
      */
     lastActivity?: string | null;
     /**
      * Latest stage failure; retained during retries and cleared on the next stage or success
-     * @type {string}
-     * @memberof PipelineState
      */
     error?: string | null;
     /**
      * Temporal workflow ID for tracking the ingestion run
-     * @type {string}
-     * @memberof PipelineState
      */
     temporalWorkflowId?: string | null;
     /**
      * Number of chunks processed (for progress tracking)
-     * @type {number}
-     * @memberof PipelineState
      */
     chunksProcessed?: number | null;
     /**
      * DPI used for PDF page screenshots during ingestion
-     * @type {number}
-     * @memberof PipelineState
      */
     pageDpi?: number | null;
     /**
      * 
-     * @type {IngestionMode}
-     * @memberof PipelineState
      */
     ingestionMode?: IngestionMode;
     /**
      * 
-     * @type {ChunkType}
-     * @memberof PipelineState
      */
     chunkType?: ChunkType;
     /**
      * 
-     * @type {ImageTaxonomy}
-     * @memberof PipelineState
      */
     secondaryTaxonomy?: ImageTaxonomy;
 }
@@ -125,6 +101,8 @@ export interface PipelineState {
 
 export const PipelineStatePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -139,6 +117,7 @@ export const PipelineStatePropertyValidationAttributesMap: {
     }
 } = {
     lastStageRetryAttempt: {
+        dataType: "number",
         minimum: 0,
         exclusiveMinimum: false,
     },
@@ -165,13 +144,13 @@ export function PipelineStateFromJSONTyped(json: any, ignoreDiscriminator: boole
         
         'lastStageRetryAttempt': json['last_stage_retry_attempt'] == null ? undefined : json['last_stage_retry_attempt'],
         'status': PipelineStatusFromJSON(json['status']),
-        'lastRunTimestamp': json['last_run_timestamp'] == null ? undefined : (new Date(json['last_run_timestamp'])),
-        'lastStateUpdateTimestamp': json['last_state_update_timestamp'] == null ? undefined : (new Date(json['last_state_update_timestamp'])),
-        'lastActivity': json['last_activity'] == null ? undefined : json['last_activity'],
-        'error': json['error'] == null ? undefined : json['error'],
-        'temporalWorkflowId': json['temporal_workflow_id'] == null ? undefined : json['temporal_workflow_id'],
-        'chunksProcessed': json['chunks_processed'] == null ? undefined : json['chunks_processed'],
-        'pageDpi': json['page_dpi'] == null ? undefined : json['page_dpi'],
+        'lastRunTimestamp': json['last_run_timestamp'] === undefined ? undefined : json['last_run_timestamp'] === null ? null : (parseDateTime(json['last_run_timestamp'])),
+        'lastStateUpdateTimestamp': json['last_state_update_timestamp'] === undefined ? undefined : json['last_state_update_timestamp'] === null ? null : (parseDateTime(json['last_state_update_timestamp'])),
+        'lastActivity': json['last_activity'] === undefined ? undefined : json['last_activity'] === null ? null : json['last_activity'],
+        'error': json['error'] === undefined ? undefined : json['error'] === null ? null : json['error'],
+        'temporalWorkflowId': json['temporal_workflow_id'] === undefined ? undefined : json['temporal_workflow_id'] === null ? null : json['temporal_workflow_id'],
+        'chunksProcessed': json['chunks_processed'] === undefined ? undefined : json['chunks_processed'] === null ? null : json['chunks_processed'],
+        'pageDpi': json['page_dpi'] === undefined ? undefined : json['page_dpi'] === null ? null : json['page_dpi'],
         'ingestionMode': json['ingestion_mode'] == null ? undefined : IngestionModeFromJSON(json['ingestion_mode']),
         'chunkType': json['chunk_type'] == null ? undefined : ChunkTypeFromJSON(json['chunk_type']),
         'secondaryTaxonomy': json['secondary_taxonomy'] == null ? undefined : ImageTaxonomyFromJSON(json['secondary_taxonomy']),
@@ -182,7 +161,7 @@ export function PipelineStateToJSON(json: any): PipelineState {
     return PipelineStateToJSONTyped(json, false);
 }
 
-export function PipelineStateToJSONTyped(value?: Omit<PipelineState, 'last_stage_retry_attempt'> | null, ignoreDiscriminator: boolean = false): any {
+export function PipelineStateToJSONTyped(value?: Omit<PipelineState, 'lastStageRetryAttempt'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
@@ -190,8 +169,8 @@ export function PipelineStateToJSONTyped(value?: Omit<PipelineState, 'last_stage
     return {
         
         'status': PipelineStatusToJSON(value['status']),
-        'last_run_timestamp': value['lastRunTimestamp'] == null ? value['lastRunTimestamp'] : value['lastRunTimestamp'].toISOString(),
-        'last_state_update_timestamp': value['lastStateUpdateTimestamp'] == null ? value['lastStateUpdateTimestamp'] : value['lastStateUpdateTimestamp'].toISOString(),
+        'last_run_timestamp': value['lastRunTimestamp'] == null ? value['lastRunTimestamp'] : serializeDateTime(value['lastRunTimestamp']),
+        'last_state_update_timestamp': value['lastStateUpdateTimestamp'] == null ? value['lastStateUpdateTimestamp'] : serializeDateTime(value['lastStateUpdateTimestamp']),
         'last_activity': value['lastActivity'],
         'error': value['error'],
         'temporal_workflow_id': value['temporalWorkflowId'],

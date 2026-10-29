@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
 /**
  * 
  * @export
@@ -21,38 +21,26 @@ import { mapValues } from '../runtime';
 export interface ReasoningPart {
     /**
      * Stable per-message part id (uuid)
-     * @type {string}
-     * @memberof ReasoningPart
      */
     id: string;
     /**
      * 0-based order within the message
-     * @type {number}
-     * @memberof ReasoningPart
      */
     seq: number;
     /**
      * 
-     * @type {Date}
-     * @memberof ReasoningPart
      */
     startTime: Date;
     /**
      * 
-     * @type {Date}
-     * @memberof ReasoningPart
      */
     endTime?: Date | null;
     /**
      * 
-     * @type {ReasoningPartKindEnum}
-     * @memberof ReasoningPart
      */
     kind?: ReasoningPartKindEnum;
     /**
      * 
-     * @type {string}
-     * @memberof ReasoningPart
      */
     text: string;
 }
@@ -62,12 +50,14 @@ export interface ReasoningPart {
  * @export
  */
 export const ReasoningPartKindEnum = {
-    Reasoning: 'reasoning'
+    Reasoning: 'reasoning',
 } as const;
 export type ReasoningPartKindEnum = typeof ReasoningPartKindEnum[keyof typeof ReasoningPartKindEnum];
 
 export const ReasoningPartPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -82,6 +72,8 @@ export const ReasoningPartPropertyValidationAttributesMap: {
     }
 } = {
     seq: {
+        dataType: "number",
+        required: true,
         minimum: 0,
         exclusiveMinimum: false,
     },
@@ -94,7 +86,7 @@ export const ReasoningPartPropertyValidationAttributesMap: {
 export function instanceOfReasoningPart(value: object): value is ReasoningPart {
     if (!('id' in value) || value['id'] === undefined) return false;
     if (!('seq' in value) || value['seq'] === undefined) return false;
-    if (!('startTime' in value) || value['startTime'] === undefined) return false;
+    if ((!('startTime' in (value as Record<string, any>)) && !('start_time' in (value as Record<string, any>))) || ((value as Record<string, any>)['startTime'] === undefined && (value as Record<string, any>)['start_time'] === undefined)) return false;
     if (!('text' in value) || value['text'] === undefined) return false;
     return true;
 }
@@ -111,8 +103,8 @@ export function ReasoningPartFromJSONTyped(json: any, ignoreDiscriminator: boole
         
         'id': json['id'],
         'seq': json['seq'],
-        'startTime': (new Date(json['start_time'])),
-        'endTime': json['end_time'] == null ? undefined : (new Date(json['end_time'])),
+        'startTime': (json['start_time'] == null ? json['start_time'] : parseDateTime(json['start_time'])),
+        'endTime': json['end_time'] === undefined ? undefined : json['end_time'] === null ? null : (parseDateTime(json['end_time'])),
         'kind': json['kind'] == null ? undefined : json['kind'],
         'text': json['text'],
     };
@@ -131,8 +123,8 @@ export function ReasoningPartToJSONTyped(value?: ReasoningPart | null, ignoreDis
         
         'id': value['id'],
         'seq': value['seq'],
-        'start_time': value['startTime'].toISOString(),
-        'end_time': value['endTime'] == null ? value['endTime'] : value['endTime'].toISOString(),
+        'start_time': value['startTime'] == null ? value['startTime'] : serializeDateTime(value['startTime']),
+        'end_time': value['endTime'] == null ? value['endTime'] : serializeDateTime(value['endTime']),
         'kind': value['kind'],
         'text': value['text'],
     };

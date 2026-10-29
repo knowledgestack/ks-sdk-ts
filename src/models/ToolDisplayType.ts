@@ -35,7 +35,7 @@ export const ToolDisplayType = {
     Image: 'image',
     ApiResponse: 'api_response',
     WorkflowRun: 'workflow_run',
-    NodeInfo: 'node_info'
+    NodeInfo: 'node_info',
 } as const;
 export type ToolDisplayType = typeof ToolDisplayType[keyof typeof ToolDisplayType];
 

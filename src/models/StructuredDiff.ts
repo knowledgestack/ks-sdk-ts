@@ -33,43 +33,33 @@ import {
 export interface StructuredDiff {
     /**
      * 
-     * @type {Array<StructuredChange>}
-     * @memberof StructuredDiff
      */
     changes: Array<StructuredChange>;
     /**
      * 
-     * @type {number}
-     * @memberof StructuredDiff
      */
     added: number;
     /**
      * 
-     * @type {number}
-     * @memberof StructuredDiff
      */
     removed: number;
     /**
      * 
-     * @type {number}
-     * @memberof StructuredDiff
      */
     modified: number;
     /**
      * 
-     * @type {boolean}
-     * @memberof StructuredDiff
      */
     truncated: boolean;
     /**
      * 
-     * @type {number}
-     * @memberof StructuredDiff
      */
     omitted: number;
 }
 export const StructuredDiffPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,

@@ -19,7 +19,7 @@
  */
 export const BillingInterval = {
     Monthly: 'MONTHLY',
-    Annual: 'ANNUAL'
+    Annual: 'ANNUAL',
 } as const;
 export type BillingInterval = typeof BillingInterval[keyof typeof BillingInterval];
 

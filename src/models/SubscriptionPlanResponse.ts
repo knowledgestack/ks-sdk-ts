@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
 /**
  * Public-facing plan description.
  * 
@@ -27,91 +27,65 @@ import { mapValues } from '../runtime';
 export interface SubscriptionPlanResponse {
     /**
      * Plan ID.
-     * @type {string}
-     * @memberof SubscriptionPlanResponse
      */
     id: string;
     /**
      * Human-readable plan name.
-     * @type {string}
-     * @memberof SubscriptionPlanResponse
      */
     name: string;
     /**
      * Per-period cap on ingested pages (PAGE).
-     * @type {number}
-     * @memberof SubscriptionPlanResponse
      */
     ingestedPages: number;
     /**
      * Per-period cap on agent messages (MESSAGE).
-     * @type {number}
-     * @memberof SubscriptionPlanResponse
      */
     messages: number;
     /**
      * Per-period cap on searches (SEARCH).
-     * @type {number}
-     * @memberof SubscriptionPlanResponse
      */
     searches: number;
     /**
      * Per-period cap on transcribed media minutes (MEDIA_MINUTE).
-     * @type {number}
-     * @memberof SubscriptionPlanResponse
      */
     mediaMinutes: number;
     /**
      * Upper bound on num_seats accepted by the upgrade endpoint. Admin PATCH may set tenant.seats above this value.
-     * @type {number}
-     * @memberof SubscriptionPlanResponse
      */
     maxSeats: number;
     /**
      * Whether this plan appears in the public listing. Private plans (custom enterprise tiers) are excluded from ``GET /public/subscriptions`` but their tenant members can still read them via ``GET /v1/tenants/{tenant_id}/subscriptions``.
-     * @type {boolean}
-     * @memberof SubscriptionPlanResponse
      */
     _public: boolean;
     /**
      * Per-seat monthly price in USD cents (Stripe / NA). NULL = not self-serve purchasable in this currency/interval.
-     * @type {number}
-     * @memberof SubscriptionPlanResponse
      */
     priceMonthlyUsdCents?: number | null;
     /**
      * Per-seat annual price in USD cents (Stripe / NA).
-     * @type {number}
-     * @memberof SubscriptionPlanResponse
      */
     priceAnnualUsdCents?: number | null;
     /**
      * Per-seat monthly price in CNY fen (Ping++ / CN).
-     * @type {number}
-     * @memberof SubscriptionPlanResponse
      */
     priceMonthlyCnyFen?: number | null;
     /**
      * Per-seat annual price in CNY fen (Ping++ / CN).
-     * @type {number}
-     * @memberof SubscriptionPlanResponse
      */
     priceAnnualCnyFen?: number | null;
     /**
      * Plan creation timestamp.
-     * @type {Date}
-     * @memberof SubscriptionPlanResponse
      */
     createdAt: Date;
     /**
      * Last-update timestamp.
-     * @type {Date}
-     * @memberof SubscriptionPlanResponse
      */
     updatedAt: Date;
 }
 export const SubscriptionPlanResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -134,14 +108,14 @@ export const SubscriptionPlanResponsePropertyValidationAttributesMap: {
 export function instanceOfSubscriptionPlanResponse(value: object): value is SubscriptionPlanResponse {
     if (!('id' in value) || value['id'] === undefined) return false;
     if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('ingestedPages' in value) || value['ingestedPages'] === undefined) return false;
+    if ((!('ingestedPages' in (value as Record<string, any>)) && !('ingested_pages' in (value as Record<string, any>))) || ((value as Record<string, any>)['ingestedPages'] === undefined && (value as Record<string, any>)['ingested_pages'] === undefined)) return false;
     if (!('messages' in value) || value['messages'] === undefined) return false;
     if (!('searches' in value) || value['searches'] === undefined) return false;
-    if (!('mediaMinutes' in value) || value['mediaMinutes'] === undefined) return false;
-    if (!('maxSeats' in value) || value['maxSeats'] === undefined) return false;
-    if (!('_public' in value) || value['_public'] === undefined) return false;
-    if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
-    if (!('updatedAt' in value) || value['updatedAt'] === undefined) return false;
+    if ((!('mediaMinutes' in (value as Record<string, any>)) && !('media_minutes' in (value as Record<string, any>))) || ((value as Record<string, any>)['mediaMinutes'] === undefined && (value as Record<string, any>)['media_minutes'] === undefined)) return false;
+    if ((!('maxSeats' in (value as Record<string, any>)) && !('max_seats' in (value as Record<string, any>))) || ((value as Record<string, any>)['maxSeats'] === undefined && (value as Record<string, any>)['max_seats'] === undefined)) return false;
+    if ((!('_public' in (value as Record<string, any>)) && !('public' in (value as Record<string, any>))) || ((value as Record<string, any>)['_public'] === undefined && (value as Record<string, any>)['public'] === undefined)) return false;
+    if ((!('createdAt' in (value as Record<string, any>)) && !('created_at' in (value as Record<string, any>))) || ((value as Record<string, any>)['createdAt'] === undefined && (value as Record<string, any>)['created_at'] === undefined)) return false;
+    if ((!('updatedAt' in (value as Record<string, any>)) && !('updated_at' in (value as Record<string, any>))) || ((value as Record<string, any>)['updatedAt'] === undefined && (value as Record<string, any>)['updated_at'] === undefined)) return false;
     return true;
 }
 
@@ -163,12 +137,12 @@ export function SubscriptionPlanResponseFromJSONTyped(json: any, ignoreDiscrimin
         'mediaMinutes': json['media_minutes'],
         'maxSeats': json['max_seats'],
         '_public': json['public'],
-        'priceMonthlyUsdCents': json['price_monthly_usd_cents'] == null ? undefined : json['price_monthly_usd_cents'],
-        'priceAnnualUsdCents': json['price_annual_usd_cents'] == null ? undefined : json['price_annual_usd_cents'],
-        'priceMonthlyCnyFen': json['price_monthly_cny_fen'] == null ? undefined : json['price_monthly_cny_fen'],
-        'priceAnnualCnyFen': json['price_annual_cny_fen'] == null ? undefined : json['price_annual_cny_fen'],
-        'createdAt': (new Date(json['created_at'])),
-        'updatedAt': (new Date(json['updated_at'])),
+        'priceMonthlyUsdCents': json['price_monthly_usd_cents'] === undefined ? undefined : json['price_monthly_usd_cents'] === null ? null : json['price_monthly_usd_cents'],
+        'priceAnnualUsdCents': json['price_annual_usd_cents'] === undefined ? undefined : json['price_annual_usd_cents'] === null ? null : json['price_annual_usd_cents'],
+        'priceMonthlyCnyFen': json['price_monthly_cny_fen'] === undefined ? undefined : json['price_monthly_cny_fen'] === null ? null : json['price_monthly_cny_fen'],
+        'priceAnnualCnyFen': json['price_annual_cny_fen'] === undefined ? undefined : json['price_annual_cny_fen'] === null ? null : json['price_annual_cny_fen'],
+        'createdAt': (json['created_at'] == null ? json['created_at'] : parseDateTime(json['created_at'])),
+        'updatedAt': (json['updated_at'] == null ? json['updated_at'] : parseDateTime(json['updated_at'])),
     };
 }
 
@@ -195,8 +169,8 @@ export function SubscriptionPlanResponseToJSONTyped(value?: SubscriptionPlanResp
         'price_annual_usd_cents': value['priceAnnualUsdCents'],
         'price_monthly_cny_fen': value['priceMonthlyCnyFen'],
         'price_annual_cny_fen': value['priceAnnualCnyFen'],
-        'created_at': value['createdAt'].toISOString(),
-        'updated_at': value['updatedAt'].toISOString(),
+        'created_at': value['createdAt'] == null ? value['createdAt'] : serializeDateTime(value['createdAt']),
+        'updated_at': value['updatedAt'] == null ? value['updatedAt'] : serializeDateTime(value['updatedAt']),
     };
 }
 

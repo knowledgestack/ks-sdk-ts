@@ -19,7 +19,7 @@
  */
 export const DataSourceEngine = {
     Mysql: 'MYSQL',
-    Postgresql: 'POSTGRESQL'
+    Postgresql: 'POSTGRESQL',
 } as const;
 export type DataSourceEngine = typeof DataSourceEngine[keyof typeof DataSourceEngine];
 

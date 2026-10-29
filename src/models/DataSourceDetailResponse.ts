@@ -36,19 +36,17 @@ import {
 export interface DataSourceDetailResponse {
     /**
      * 
-     * @type {DataSourceResponse}
-     * @memberof DataSourceDetailResponse
      */
     dataSource: DataSourceResponse;
     /**
      * 
-     * @type {Array<DataSourceSchemaResponse>}
-     * @memberof DataSourceDetailResponse
      */
     schemas: Array<DataSourceSchemaResponse>;
 }
 export const DataSourceDetailResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -69,7 +67,7 @@ export const DataSourceDetailResponsePropertyValidationAttributesMap: {
  * Check if a given object implements the DataSourceDetailResponse interface.
  */
 export function instanceOfDataSourceDetailResponse(value: object): value is DataSourceDetailResponse {
-    if (!('dataSource' in value) || value['dataSource'] === undefined) return false;
+    if ((!('dataSource' in (value as Record<string, any>)) && !('data_source' in (value as Record<string, any>))) || ((value as Record<string, any>)['dataSource'] === undefined && (value as Record<string, any>)['data_source'] === undefined)) return false;
     if (!('schemas' in value) || value['schemas'] === undefined) return false;
     return true;
 }

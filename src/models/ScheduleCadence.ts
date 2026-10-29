@@ -26,7 +26,7 @@
 export const ScheduleCadence = {
     Daily: 'DAILY',
     Weekly: 'WEEKLY',
-    Monthly: 'MONTHLY'
+    Monthly: 'MONTHLY',
 } as const;
 export type ScheduleCadence = typeof ScheduleCadence[keyof typeof ScheduleCadence];
 

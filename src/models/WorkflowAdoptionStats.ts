@@ -25,25 +25,21 @@ import { mapValues } from '../runtime';
 export interface WorkflowAdoptionStats {
     /**
      * Runs created in the window.
-     * @type {number}
-     * @memberof WorkflowAdoptionStats
      */
     runs: number;
     /**
      * Currently-active workflow definitions in scope (not windowed).
-     * @type {number}
-     * @memberof WorkflowAdoptionStats
      */
     activeDefinitions: number;
     /**
      * Distinct run owners in the window.
-     * @type {number}
-     * @memberof WorkflowAdoptionStats
      */
     distinctTriggerers: number;
 }
 export const WorkflowAdoptionStatsPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -65,8 +61,8 @@ export const WorkflowAdoptionStatsPropertyValidationAttributesMap: {
  */
 export function instanceOfWorkflowAdoptionStats(value: object): value is WorkflowAdoptionStats {
     if (!('runs' in value) || value['runs'] === undefined) return false;
-    if (!('activeDefinitions' in value) || value['activeDefinitions'] === undefined) return false;
-    if (!('distinctTriggerers' in value) || value['distinctTriggerers'] === undefined) return false;
+    if ((!('activeDefinitions' in (value as Record<string, any>)) && !('active_definitions' in (value as Record<string, any>))) || ((value as Record<string, any>)['activeDefinitions'] === undefined && (value as Record<string, any>)['active_definitions'] === undefined)) return false;
+    if ((!('distinctTriggerers' in (value as Record<string, any>)) && !('distinct_triggerers' in (value as Record<string, any>))) || ((value as Record<string, any>)['distinctTriggerers'] === undefined && (value as Record<string, any>)['distinct_triggerers'] === undefined)) return false;
     return true;
 }
 

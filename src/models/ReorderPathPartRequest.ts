@@ -21,19 +21,17 @@ import { mapValues } from '../runtime';
 export interface ReorderPathPartRequest {
     /**
      * Place this node immediately after the given sibling PathPart id (must share the same parent). Pass the current tail's id to move to the end. Requires move_to_head=false.
-     * @type {string}
-     * @memberof ReorderPathPartRequest
      */
     prevSiblingPathId?: string | null;
     /**
      * Move this node to the head of its sibling list.
-     * @type {boolean}
-     * @memberof ReorderPathPartRequest
      */
     moveToHead?: boolean;
 }
 export const ReorderPathPartRequestPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -67,7 +65,7 @@ export function ReorderPathPartRequestFromJSONTyped(json: any, ignoreDiscriminat
     }
     return {
         
-        'prevSiblingPathId': json['prev_sibling_path_id'] == null ? undefined : json['prev_sibling_path_id'],
+        'prevSiblingPathId': json['prev_sibling_path_id'] === undefined ? undefined : json['prev_sibling_path_id'] === null ? null : json['prev_sibling_path_id'],
         'moveToHead': json['move_to_head'] == null ? undefined : json['move_to_head'],
     };
 }

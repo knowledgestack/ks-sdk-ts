@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
 import type { Citation } from './Citation';
 import {
     CitationFromJSON,
@@ -29,44 +29,30 @@ import {
 export interface TextPart {
     /**
      * Stable per-message part id (uuid)
-     * @type {string}
-     * @memberof TextPart
      */
     id: string;
     /**
      * 0-based order within the message
-     * @type {number}
-     * @memberof TextPart
      */
     seq: number;
     /**
      * 
-     * @type {Date}
-     * @memberof TextPart
      */
     startTime: Date;
     /**
      * 
-     * @type {Date}
-     * @memberof TextPart
      */
     endTime?: Date | null;
     /**
      * 
-     * @type {TextPartKindEnum}
-     * @memberof TextPart
      */
     kind?: TextPartKindEnum;
     /**
      * 
-     * @type {string}
-     * @memberof TextPart
      */
     text: string;
     /**
      * 
-     * @type {Array<Citation>}
-     * @memberof TextPart
      */
     citations?: Array<Citation> | null;
 }
@@ -76,12 +62,14 @@ export interface TextPart {
  * @export
  */
 export const TextPartKindEnum = {
-    Text: 'text'
+    Text: 'text',
 } as const;
 export type TextPartKindEnum = typeof TextPartKindEnum[keyof typeof TextPartKindEnum];
 
 export const TextPartPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -96,6 +84,8 @@ export const TextPartPropertyValidationAttributesMap: {
     }
 } = {
     seq: {
+        dataType: "number",
+        required: true,
         minimum: 0,
         exclusiveMinimum: false,
     },
@@ -108,7 +98,7 @@ export const TextPartPropertyValidationAttributesMap: {
 export function instanceOfTextPart(value: object): value is TextPart {
     if (!('id' in value) || value['id'] === undefined) return false;
     if (!('seq' in value) || value['seq'] === undefined) return false;
-    if (!('startTime' in value) || value['startTime'] === undefined) return false;
+    if ((!('startTime' in (value as Record<string, any>)) && !('start_time' in (value as Record<string, any>))) || ((value as Record<string, any>)['startTime'] === undefined && (value as Record<string, any>)['start_time'] === undefined)) return false;
     if (!('text' in value) || value['text'] === undefined) return false;
     return true;
 }
@@ -125,11 +115,11 @@ export function TextPartFromJSONTyped(json: any, ignoreDiscriminator: boolean): 
         
         'id': json['id'],
         'seq': json['seq'],
-        'startTime': (new Date(json['start_time'])),
-        'endTime': json['end_time'] == null ? undefined : (new Date(json['end_time'])),
+        'startTime': (json['start_time'] == null ? json['start_time'] : parseDateTime(json['start_time'])),
+        'endTime': json['end_time'] === undefined ? undefined : json['end_time'] === null ? null : (parseDateTime(json['end_time'])),
         'kind': json['kind'] == null ? undefined : json['kind'],
         'text': json['text'],
-        'citations': json['citations'] == null ? undefined : ((json['citations'] as Array<any>).map(CitationFromJSON)),
+        'citations': json['citations'] === undefined ? undefined : json['citations'] === null ? null : ((json['citations'] as Array<any>).map(CitationFromJSON)),
     };
 }
 
@@ -146,8 +136,8 @@ export function TextPartToJSONTyped(value?: TextPart | null, ignoreDiscriminator
         
         'id': value['id'],
         'seq': value['seq'],
-        'start_time': value['startTime'].toISOString(),
-        'end_time': value['endTime'] == null ? value['endTime'] : value['endTime'].toISOString(),
+        'start_time': value['startTime'] == null ? value['startTime'] : serializeDateTime(value['startTime']),
+        'end_time': value['endTime'] == null ? value['endTime'] : serializeDateTime(value['endTime']),
         'kind': value['kind'],
         'text': value['text'],
         'citations': value['citations'] == null ? undefined : ((value['citations'] as Array<any>).map(CitationToJSON)),

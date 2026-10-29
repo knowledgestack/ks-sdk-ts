@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
 import type { TextDiff } from './TextDiff';
 import {
     TextDiffFromJSON,
@@ -69,110 +69,74 @@ import {
 export interface VersionDiffResponse {
     /**
      * 
-     * @type {string}
-     * @memberof VersionDiffResponse
      */
     fromVersionId: string | null;
     /**
      * 
-     * @type {string}
-     * @memberof VersionDiffResponse
      */
     toVersionId: string;
     /**
      * 
-     * @type {number}
-     * @memberof VersionDiffResponse
      */
     fromVersion?: number | null;
     /**
      * 
-     * @type {number}
-     * @memberof VersionDiffResponse
      */
     toVersion?: number | null;
     /**
      * 
-     * @type {DiffFormat}
-     * @memberof VersionDiffResponse
      */
     format: DiffFormat;
     /**
      * 
-     * @type {TextDiff}
-     * @memberof VersionDiffResponse
      */
     text?: TextDiff | null;
     /**
      * 
-     * @type {CellDiff}
-     * @memberof VersionDiffResponse
      */
     cells?: CellDiff | null;
     /**
      * 
-     * @type {StructuredDiff}
-     * @memberof VersionDiffResponse
      */
     structured?: StructuredDiff | null;
     /**
      * 
-     * @type {DocumentDiff}
-     * @memberof VersionDiffResponse
      */
     document?: DocumentDiff | null;
     /**
      * 
-     * @type {boolean}
-     * @memberof VersionDiffResponse
      */
     degraded?: boolean;
     /**
      * 
-     * @type {string}
-     * @memberof VersionDiffResponse
      */
     degradedReason?: string | null;
     /**
      * 
-     * @type {string}
-     * @memberof VersionDiffResponse
      */
     algorithmVersion?: string;
     /**
      * 
-     * @type {string}
-     * @memberof VersionDiffResponse
      */
     fromContentHash?: string | null;
     /**
      * 
-     * @type {string}
-     * @memberof VersionDiffResponse
      */
     toContentHash?: string | null;
     /**
      * 
-     * @type {UserInfo}
-     * @memberof VersionDiffResponse
      */
     fromUploader?: UserInfo | null;
     /**
      * 
-     * @type {UserInfo}
-     * @memberof VersionDiffResponse
      */
     toUploader?: UserInfo | null;
     /**
      * 
-     * @type {Date}
-     * @memberof VersionDiffResponse
      */
     fromUploadedAt?: Date | null;
     /**
      * 
-     * @type {Date}
-     * @memberof VersionDiffResponse
      */
     toUploadedAt?: Date | null;
 }
@@ -180,6 +144,8 @@ export interface VersionDiffResponse {
 
 export const VersionDiffResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -200,8 +166,8 @@ export const VersionDiffResponsePropertyValidationAttributesMap: {
  * Check if a given object implements the VersionDiffResponse interface.
  */
 export function instanceOfVersionDiffResponse(value: object): value is VersionDiffResponse {
-    if (!('fromVersionId' in value) || value['fromVersionId'] === undefined) return false;
-    if (!('toVersionId' in value) || value['toVersionId'] === undefined) return false;
+    if ((!('fromVersionId' in (value as Record<string, any>)) && !('from_version_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['fromVersionId'] === undefined && (value as Record<string, any>)['from_version_id'] === undefined)) return false;
+    if ((!('toVersionId' in (value as Record<string, any>)) && !('to_version_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['toVersionId'] === undefined && (value as Record<string, any>)['to_version_id'] === undefined)) return false;
     if (!('format' in value) || value['format'] === undefined) return false;
     return true;
 }
@@ -218,22 +184,22 @@ export function VersionDiffResponseFromJSONTyped(json: any, ignoreDiscriminator:
         
         'fromVersionId': json['from_version_id'],
         'toVersionId': json['to_version_id'],
-        'fromVersion': json['from_version'] == null ? undefined : json['from_version'],
-        'toVersion': json['to_version'] == null ? undefined : json['to_version'],
+        'fromVersion': json['from_version'] === undefined ? undefined : json['from_version'] === null ? null : json['from_version'],
+        'toVersion': json['to_version'] === undefined ? undefined : json['to_version'] === null ? null : json['to_version'],
         'format': DiffFormatFromJSON(json['format']),
-        'text': json['text'] == null ? undefined : TextDiffFromJSON(json['text']),
-        'cells': json['cells'] == null ? undefined : CellDiffFromJSON(json['cells']),
-        'structured': json['structured'] == null ? undefined : StructuredDiffFromJSON(json['structured']),
-        'document': json['document'] == null ? undefined : DocumentDiffFromJSON(json['document']),
+        'text': json['text'] === undefined ? undefined : json['text'] === null ? null : TextDiffFromJSON(json['text']),
+        'cells': json['cells'] === undefined ? undefined : json['cells'] === null ? null : CellDiffFromJSON(json['cells']),
+        'structured': json['structured'] === undefined ? undefined : json['structured'] === null ? null : StructuredDiffFromJSON(json['structured']),
+        'document': json['document'] === undefined ? undefined : json['document'] === null ? null : DocumentDiffFromJSON(json['document']),
         'degraded': json['degraded'] == null ? undefined : json['degraded'],
-        'degradedReason': json['degraded_reason'] == null ? undefined : json['degraded_reason'],
+        'degradedReason': json['degraded_reason'] === undefined ? undefined : json['degraded_reason'] === null ? null : json['degraded_reason'],
         'algorithmVersion': json['algorithm_version'] == null ? undefined : json['algorithm_version'],
-        'fromContentHash': json['from_content_hash'] == null ? undefined : json['from_content_hash'],
-        'toContentHash': json['to_content_hash'] == null ? undefined : json['to_content_hash'],
-        'fromUploader': json['from_uploader'] == null ? undefined : UserInfoFromJSON(json['from_uploader']),
-        'toUploader': json['to_uploader'] == null ? undefined : UserInfoFromJSON(json['to_uploader']),
-        'fromUploadedAt': json['from_uploaded_at'] == null ? undefined : (new Date(json['from_uploaded_at'])),
-        'toUploadedAt': json['to_uploaded_at'] == null ? undefined : (new Date(json['to_uploaded_at'])),
+        'fromContentHash': json['from_content_hash'] === undefined ? undefined : json['from_content_hash'] === null ? null : json['from_content_hash'],
+        'toContentHash': json['to_content_hash'] === undefined ? undefined : json['to_content_hash'] === null ? null : json['to_content_hash'],
+        'fromUploader': json['from_uploader'] === undefined ? undefined : json['from_uploader'] === null ? null : UserInfoFromJSON(json['from_uploader']),
+        'toUploader': json['to_uploader'] === undefined ? undefined : json['to_uploader'] === null ? null : UserInfoFromJSON(json['to_uploader']),
+        'fromUploadedAt': json['from_uploaded_at'] === undefined ? undefined : json['from_uploaded_at'] === null ? null : (parseDateTime(json['from_uploaded_at'])),
+        'toUploadedAt': json['to_uploaded_at'] === undefined ? undefined : json['to_uploaded_at'] === null ? null : (parseDateTime(json['to_uploaded_at'])),
     };
 }
 
@@ -264,8 +230,8 @@ export function VersionDiffResponseToJSONTyped(value?: VersionDiffResponse | nul
         'to_content_hash': value['toContentHash'],
         'from_uploader': UserInfoToJSON(value['fromUploader']),
         'to_uploader': UserInfoToJSON(value['toUploader']),
-        'from_uploaded_at': value['fromUploadedAt'] == null ? value['fromUploadedAt'] : value['fromUploadedAt'].toISOString(),
-        'to_uploaded_at': value['toUploadedAt'] == null ? value['toUploadedAt'] : value['toUploadedAt'].toISOString(),
+        'from_uploaded_at': value['fromUploadedAt'] == null ? value['fromUploadedAt'] : serializeDateTime(value['fromUploadedAt']),
+        'to_uploaded_at': value['toUploadedAt'] == null ? value['toUploadedAt'] : serializeDateTime(value['toUploadedAt']),
     };
 }
 

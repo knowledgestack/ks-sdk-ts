@@ -24,7 +24,7 @@
  */
 export const BillingSystem = {
     Stripe: 'STRIPE',
-    PingPp: 'PING_PP'
+    PingPp: 'PING_PP',
 } as const;
 export type BillingSystem = typeof BillingSystem[keyof typeof BillingSystem];
 

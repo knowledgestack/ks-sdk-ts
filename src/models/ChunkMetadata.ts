@@ -43,128 +43,86 @@ import {
 export interface ChunkMetadata {
     /**
      * List of bounding boxes in the source document for the chunk, potentially from multiple areas of multiple pages.
-     * @type {Array<PolygonReference>}
-     * @memberof ChunkMetadata
      */
     polygons?: Array<PolygonReference>;
     /**
      * Ordered s3:// URIs to visual assets for this chunk. Single-element for standard IMAGE/TABLE/HTML chunks, multi-element for multi-page single-chunk ingestion.
-     * @type {Array<string>}
-     * @memberof ChunkMetadata
      */
     s3Urls?: Array<string>;
     /**
      * LLM-generated summary of the chunk content. Used for TABLE and HTML chunks to enrich embedding text, and for JSON/YAML chunks (with summarize_for_embedding) as the sole dense embedding text.
-     * @type {string}
-     * @memberof ChunkMetadata
      */
     summary?: string | null;
     /**
      * When True, this chunk's dense embedding is built from its LLM-generated summary (see summary) instead of its raw content. Set for parsed JSON/YAML single chunks so noisy structured text does not dominate the vector; the raw content is still kept for display and sparse (keyword) retrieval. Enrichment generates the summary when this is set and summary is empty.
-     * @type {boolean}
-     * @memberof ChunkMetadata
      */
     summarizeForEmbedding?: boolean;
     /**
      * S3 URI to extracted PDF text used for LLM grounding during enrichment
-     * @type {string}
-     * @memberof ChunkMetadata
      */
     extractedTextS3Uri?: string | null;
     /**
      * Caption and footnote lines MinerU extracted next to a visual, joined by newlines. IMAGE chunks only: their content is a generated description that enrichment overwrites, so the caption cannot live there — enrichment appends it to the description it writes. TABLE captions are appended to table_body directly, because a table's content is extracted text rather than generated.
-     * @type {string}
-     * @memberof ChunkMetadata
      */
     caption?: string | null;
     /**
      * 
-     * @type {ImageTaxonomy}
-     * @memberof ChunkMetadata
      */
     secondaryTaxonomy?: ImageTaxonomy;
     /**
      * Start time of this chunk in the source media (ms from start).
-     * @type {number}
-     * @memberof ChunkMetadata
      */
     startMs?: number | null;
     /**
      * End time of this chunk in the source media (ms from start).
-     * @type {number}
-     * @memberof ChunkMetadata
      */
     endMs?: number | null;
     /**
      * Every speaker label appearing in this chunk's segments, sorted. Lets a citation say which turn it came from. None when the provider does not diarize.
-     * @type {Array<number>}
-     * @memberof ChunkMetadata
      */
     speakers?: Array<number> | null;
     /**
      * Every language the ASR recognised across this chunk's segments, sorted. A meeting routinely code-switches, so a chunk can hold more than one; the document-level language is only the majority label and misreports a bilingual recording. None for non-media chunks and for media ingested before this field existed.
-     * @type {Array<string>}
-     * @memberof ChunkMetadata
      */
     languages?: Array<string> | null;
     /**
      * Per-ASR-segment spans inside this media chunk, in order, each carrying its char offset in the chunk content. Lets citation resolution narrow a chunk-level timeframe to the enclosing segment. None for non-media chunks and media ingested before this field existed.
-     * @type {Array<SegmentSpan>}
-     * @memberof ChunkMetadata
      */
     segments?: Array<SegmentSpan> | null;
     /**
      * Worksheet name this chunk was extracted from (XLSX only)
-     * @type {string}
-     * @memberof ChunkMetadata
      */
     sheetName?: string | null;
     /**
      * XLSXParser block type (e.g. table, calculation_block, chart_anchor)
-     * @type {string}
-     * @memberof ChunkMetadata
      */
     blockType?: string | null;
     /**
      * Cell range URI reference in the source workbook (XLSX only)
-     * @type {string}
-     * @memberof ChunkMetadata
      */
     sourceUri?: string | null;
     /**
      * Rendered HTML for non-table XLSX chunks (tables use render_html as content)
-     * @type {string}
-     * @memberof ChunkMetadata
      */
     enrichedHtml?: string | null;
     /**
      * Cell address range, e.g. 'A1:D10' (XLSX only)
-     * @type {string}
-     * @memberof ChunkMetadata
      */
     cellRange?: string | null;
     /**
      * Upstream/downstream/cross-sheet cell references for audit reasoning (XLSX only)
-     * @type {{ [key: string]: any; }}
-     * @memberof ChunkMetadata
      */
     dependencySummary?: { [key: string]: any; } | null;
     /**
      * Formula cells in this chunk as [{address, formula, value}] (XLSX only)
-     * @type {Array<{ [key: string]: string; }>}
-     * @memberof ChunkMetadata
      */
     formulas?: Array<{ [key: string]: string; }> | null;
     /**
      * Notable output/header cells as A1 refs, e.g. 'Sheet1!A1' (XLSX only)
-     * @type {Array<string>}
-     * @memberof ChunkMetadata
      */
     keyCells?: Array<string> | null;
     /**
      * Names of named ranges overlapping this chunk (XLSX only)
-     * @type {Array<string>}
-     * @memberof ChunkMetadata
      */
     namedRanges?: Array<string> | null;
 }
@@ -172,6 +130,8 @@ export interface ChunkMetadata {
 
 export const ChunkMetadataPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -207,25 +167,25 @@ export function ChunkMetadataFromJSONTyped(json: any, ignoreDiscriminator: boole
         
         'polygons': json['polygons'] == null ? undefined : ((json['polygons'] as Array<any>).map(PolygonReferenceFromJSON)),
         's3Urls': json['s3_urls'] == null ? undefined : json['s3_urls'],
-        'summary': json['summary'] == null ? undefined : json['summary'],
+        'summary': json['summary'] === undefined ? undefined : json['summary'] === null ? null : json['summary'],
         'summarizeForEmbedding': json['summarize_for_embedding'] == null ? undefined : json['summarize_for_embedding'],
-        'extractedTextS3Uri': json['extracted_text_s3_uri'] == null ? undefined : json['extracted_text_s3_uri'],
-        'caption': json['caption'] == null ? undefined : json['caption'],
+        'extractedTextS3Uri': json['extracted_text_s3_uri'] === undefined ? undefined : json['extracted_text_s3_uri'] === null ? null : json['extracted_text_s3_uri'],
+        'caption': json['caption'] === undefined ? undefined : json['caption'] === null ? null : json['caption'],
         'secondaryTaxonomy': json['secondary_taxonomy'] == null ? undefined : ImageTaxonomyFromJSON(json['secondary_taxonomy']),
-        'startMs': json['start_ms'] == null ? undefined : json['start_ms'],
-        'endMs': json['end_ms'] == null ? undefined : json['end_ms'],
-        'speakers': json['speakers'] == null ? undefined : json['speakers'],
-        'languages': json['languages'] == null ? undefined : json['languages'],
-        'segments': json['segments'] == null ? undefined : ((json['segments'] as Array<any>).map(SegmentSpanFromJSON)),
-        'sheetName': json['sheet_name'] == null ? undefined : json['sheet_name'],
-        'blockType': json['block_type'] == null ? undefined : json['block_type'],
-        'sourceUri': json['source_uri'] == null ? undefined : json['source_uri'],
-        'enrichedHtml': json['enriched_html'] == null ? undefined : json['enriched_html'],
-        'cellRange': json['cell_range'] == null ? undefined : json['cell_range'],
-        'dependencySummary': json['dependency_summary'] == null ? undefined : json['dependency_summary'],
-        'formulas': json['formulas'] == null ? undefined : json['formulas'],
-        'keyCells': json['key_cells'] == null ? undefined : json['key_cells'],
-        'namedRanges': json['named_ranges'] == null ? undefined : json['named_ranges'],
+        'startMs': json['start_ms'] === undefined ? undefined : json['start_ms'] === null ? null : json['start_ms'],
+        'endMs': json['end_ms'] === undefined ? undefined : json['end_ms'] === null ? null : json['end_ms'],
+        'speakers': json['speakers'] === undefined ? undefined : json['speakers'] === null ? null : json['speakers'],
+        'languages': json['languages'] === undefined ? undefined : json['languages'] === null ? null : json['languages'],
+        'segments': json['segments'] === undefined ? undefined : json['segments'] === null ? null : ((json['segments'] as Array<any>).map(SegmentSpanFromJSON)),
+        'sheetName': json['sheet_name'] === undefined ? undefined : json['sheet_name'] === null ? null : json['sheet_name'],
+        'blockType': json['block_type'] === undefined ? undefined : json['block_type'] === null ? null : json['block_type'],
+        'sourceUri': json['source_uri'] === undefined ? undefined : json['source_uri'] === null ? null : json['source_uri'],
+        'enrichedHtml': json['enriched_html'] === undefined ? undefined : json['enriched_html'] === null ? null : json['enriched_html'],
+        'cellRange': json['cell_range'] === undefined ? undefined : json['cell_range'] === null ? null : json['cell_range'],
+        'dependencySummary': json['dependency_summary'] === undefined ? undefined : json['dependency_summary'] === null ? null : json['dependency_summary'],
+        'formulas': json['formulas'] === undefined ? undefined : json['formulas'] === null ? null : json['formulas'],
+        'keyCells': json['key_cells'] === undefined ? undefined : json['key_cells'] === null ? null : json['key_cells'],
+        'namedRanges': json['named_ranges'] === undefined ? undefined : json['named_ranges'] === null ? null : json['named_ranges'],
     };
 }
 

@@ -21,25 +21,21 @@ import { mapValues } from '../runtime';
 export interface ExtractRequest {
     /**
      * User prompt passed directly to the agent
-     * @type {string}
-     * @memberof ExtractRequest
      */
     prompt: string;
     /**
      * PathPart ID of a KS document whose content is a JSON schema.
-     * @type {string}
-     * @memberof ExtractRequest
      */
     schemaPathPartId?: string | null;
     /**
      * JSON schema provided inline as a dict. Mutually exclusive with schema_path_part_id; exactly one is required.
-     * @type {{ [key: string]: any; }}
-     * @memberof ExtractRequest
      */
     outputSchema?: { [key: string]: any; } | null;
 }
 export const ExtractRequestPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -75,8 +71,8 @@ export function ExtractRequestFromJSONTyped(json: any, ignoreDiscriminator: bool
     return {
         
         'prompt': json['prompt'],
-        'schemaPathPartId': json['schema_path_part_id'] == null ? undefined : json['schema_path_part_id'],
-        'outputSchema': json['output_schema'] == null ? undefined : json['output_schema'],
+        'schemaPathPartId': json['schema_path_part_id'] === undefined ? undefined : json['schema_path_part_id'] === null ? null : json['schema_path_part_id'],
+        'outputSchema': json['output_schema'] === undefined ? undefined : json['output_schema'] === null ? null : json['output_schema'],
     };
 }
 

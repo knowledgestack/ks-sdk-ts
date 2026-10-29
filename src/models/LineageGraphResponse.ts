@@ -36,19 +36,17 @@ import {
 export interface LineageGraphResponse {
     /**
      * Chunk nodes in the graph
-     * @type {Array<LineageNodeResponse>}
-     * @memberof LineageGraphResponse
      */
     nodes: Array<LineageNodeResponse>;
     /**
      * Lineage edges in the graph
-     * @type {Array<LineageEdgeResponse>}
-     * @memberof LineageGraphResponse
      */
     edges: Array<LineageEdgeResponse>;
 }
 export const LineageGraphResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,

@@ -29,37 +29,29 @@ import {
 export interface ValidationError {
     /**
      * 
-     * @type {Array<LocationInner>}
-     * @memberof ValidationError
      */
     loc: Array<LocationInner>;
     /**
      * 
-     * @type {string}
-     * @memberof ValidationError
      */
     msg: string;
     /**
      * 
-     * @type {string}
-     * @memberof ValidationError
      */
     type: string;
     /**
      * 
-     * @type {any}
-     * @memberof ValidationError
      */
     input?: any | null;
     /**
      * 
-     * @type {object}
-     * @memberof ValidationError
      */
     ctx?: object;
 }
 export const ValidationErrorPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -99,7 +91,7 @@ export function ValidationErrorFromJSONTyped(json: any, ignoreDiscriminator: boo
         'loc': ((json['loc'] as Array<any>).map(LocationInnerFromJSON)),
         'msg': json['msg'],
         'type': json['type'],
-        'input': json['input'] == null ? undefined : json['input'],
+        'input': json['input'] === undefined ? undefined : json['input'] === null ? null : json['input'],
         'ctx': json['ctx'] == null ? undefined : json['ctx'],
     };
 }

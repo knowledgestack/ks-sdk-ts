@@ -12,136 +12,275 @@
  * Do not edit the class manually.
  */
 
-
 import * as runtime from '../runtime';
-import type {
-  AccessCheckResponse,
-  AncestryResponse,
-  AppendEventRequest,
-  BulkTagRequest,
-  ErrorResponse,
-  EventResponse,
-  HTTPValidationError,
-  PaginatedResponseEventResponse,
-  PaginatedResponsePathPartResponse,
-  PathOrder,
-  PathPartResponse,
-  PathPartTagsResponse,
-  PermissionCapability,
-  ReorderPathPartRequest,
-  SortDirection,
-  SubtreeChunksResponse,
-  TransferOwnerRequest,
-  TransferOwnerResponse,
-} from '../models/index';
 import {
+    type AccessCheckResponse,
     AccessCheckResponseFromJSON,
     AccessCheckResponseToJSON,
+} from '../models/AccessCheckResponse';
+import {
+    type AncestryResponse,
     AncestryResponseFromJSON,
     AncestryResponseToJSON,
+} from '../models/AncestryResponse';
+import {
+    type AppendEventRequest,
     AppendEventRequestFromJSON,
     AppendEventRequestToJSON,
+} from '../models/AppendEventRequest';
+import {
+    type BulkTagRequest,
     BulkTagRequestFromJSON,
     BulkTagRequestToJSON,
+} from '../models/BulkTagRequest';
+import {
+    type ErrorResponse,
     ErrorResponseFromJSON,
     ErrorResponseToJSON,
+} from '../models/ErrorResponse';
+import {
+    type EventResponse,
     EventResponseFromJSON,
     EventResponseToJSON,
+} from '../models/EventResponse';
+import {
+    type HTTPValidationError,
     HTTPValidationErrorFromJSON,
     HTTPValidationErrorToJSON,
+} from '../models/HTTPValidationError';
+import {
+    type PaginatedResponseEventResponse,
     PaginatedResponseEventResponseFromJSON,
     PaginatedResponseEventResponseToJSON,
+} from '../models/PaginatedResponseEventResponse';
+import {
+    type PaginatedResponsePathPartResponse,
     PaginatedResponsePathPartResponseFromJSON,
     PaginatedResponsePathPartResponseToJSON,
+} from '../models/PaginatedResponsePathPartResponse';
+import {
+    type PathOrder,
     PathOrderFromJSON,
     PathOrderToJSON,
+} from '../models/PathOrder';
+import {
+    type PathPartResponse,
     PathPartResponseFromJSON,
     PathPartResponseToJSON,
+} from '../models/PathPartResponse';
+import {
+    type PathPartTagsResponse,
     PathPartTagsResponseFromJSON,
     PathPartTagsResponseToJSON,
+} from '../models/PathPartTagsResponse';
+import {
+    type PermissionCapability,
     PermissionCapabilityFromJSON,
     PermissionCapabilityToJSON,
+} from '../models/PermissionCapability';
+import {
+    type ReorderPathPartRequest,
     ReorderPathPartRequestFromJSON,
     ReorderPathPartRequestToJSON,
+} from '../models/ReorderPathPartRequest';
+import {
+    type SortDirection,
     SortDirectionFromJSON,
     SortDirectionToJSON,
+} from '../models/SortDirection';
+import {
+    type SubtreeChunksResponse,
     SubtreeChunksResponseFromJSON,
     SubtreeChunksResponseToJSON,
+} from '../models/SubtreeChunksResponse';
+import {
+    type TransferOwnerRequest,
     TransferOwnerRequestFromJSON,
     TransferOwnerRequestToJSON,
+} from '../models/TransferOwnerRequest';
+import {
+    type TransferOwnerResponse,
     TransferOwnerResponseFromJSON,
     TransferOwnerResponseToJSON,
-} from '../models/index';
+} from '../models/TransferOwnerResponse';
 
 export interface AppendPathPartEventRequest {
+    /**
+     * 
+     */
     pathPartId: string;
+    /**
+     * 
+     */
     appendEventRequest: AppendEventRequest;
 }
 
 export interface BulkRemovePathPartTagsRequest {
+    /**
+     * 
+     */
     pathPartId: string;
+    /**
+     * 
+     */
     bulkTagRequest: BulkTagRequest;
 }
 
 export interface CheckPathPartAccessRequest {
+    /**
+     * 
+     */
     pathPartId: string;
+    /**
+     * The user whose access is being explained
+     */
     userId: string;
+    /**
+     * Capability to check (READ_ONLY or READ_WRITE)
+     */
     capability?: PermissionCapability;
 }
 
 export interface GetPathPartRequest {
+    /**
+     * 
+     */
     pathPartId: string;
 }
 
 export interface GetPathPartAncestryRequest {
+    /**
+     * 
+     */
     pathPartId: string;
 }
 
 export interface GetPathPartSubtreeChunksRequest {
+    /**
+     * 
+     */
     pathPartId: string;
 }
 
 export interface GetPathPartTagsRequest {
+    /**
+     * 
+     */
     pathPartId: string;
+    /**
+     * Include tags inherited from ancestor path parts
+     */
     includeInherited?: boolean;
 }
 
 export interface ListPathPartEventsRequest {
+    /**
+     * 
+     */
     pathPartId: string;
+    /**
+     * Filter to a single event kind
+     */
     kind?: string | null;
+    /**
+     * Only events at or after this timestamp
+     */
     since?: Date | null;
+    /**
+     * Only events strictly before this timestamp
+     */
     until?: Date | null;
+    /**
+     * Include events from descendant path_parts as well as the subject itself
+     */
     recursive?: boolean;
+    /**
+     * Include intra-document churn hidden by default (raw chunk/section edits, version-metadata updates, and the v0 version-created row). Off by default so one upload / one logical edit shows as one event; ignored when an explicit kind is set.
+     */
     includeChurn?: boolean;
+    /**
+     * Number of items per page
+     */
     limit?: number;
+    /**
+     * Number of items to skip
+     */
     offset?: number;
 }
 
 export interface ListPathPartsRequest {
+    /**
+     * Parent PathPart ID (defaults to root)
+     */
     parentPathId?: string | null;
+    /**
+     * Maximum depth to traverse (1 = direct children, default: 1)
+     */
     maxDepth?: number;
+    /**
+     * Sort order for results (default: LOGICAL)
+     */
     sortOrder?: PathOrder;
+    /**
+     * Sort direction; overrides the column's natural default
+     */
     sortDir?: SortDirection;
+    /**
+     * Number of items per page
+     */
     limit?: number;
+    /**
+     * Number of items to skip
+     */
     offset?: number;
+    /**
+     * Only items created at or after this timestamp (inclusive)
+     */
     createdAfter?: Date | null;
+    /**
+     * Only items created strictly before this timestamp
+     */
     createdBefore?: Date | null;
+    /**
+     * Only items updated at or after this timestamp (inclusive)
+     */
     updatedAfter?: Date | null;
+    /**
+     * Only items updated strictly before this timestamp
+     */
     updatedBefore?: Date | null;
 }
 
 export interface ReorderPathPartOperationRequest {
+    /**
+     * 
+     */
     pathPartId: string;
+    /**
+     * 
+     */
     reorderPathPartRequest: ReorderPathPartRequest;
 }
 
 export interface SetPathPartTagsRequest {
+    /**
+     * 
+     */
     pathPartId: string;
+    /**
+     * 
+     */
     bulkTagRequest: BulkTagRequest;
 }
 
 export interface TransferPathPartOwnerRequest {
+    /**
+     * 
+     */
     pathPartId: string;
+    /**
+     * 
+     */
     transferOwnerRequest: TransferOwnerRequest;
 }
 
@@ -529,7 +668,7 @@ export class PathPartsApi extends runtime.BaseAPI implements PathPartsApiInterfa
         }
 
         let urlPath = `/v1/path-parts/{path_part_id}/events`;
-        urlPath = urlPath.replace(`{${"path_part_id"}}`, encodeURIComponent(String(requestParameters['pathPartId'])));
+        urlPath = urlPath.replace('{path_part_id}', encodeURIComponent(String(requestParameters['pathPartId'])));
 
         return {
             path: urlPath,
@@ -594,7 +733,7 @@ export class PathPartsApi extends runtime.BaseAPI implements PathPartsApiInterfa
         }
 
         let urlPath = `/v1/path-parts/{path_part_id}/tags`;
-        urlPath = urlPath.replace(`{${"path_part_id"}}`, encodeURIComponent(String(requestParameters['pathPartId'])));
+        urlPath = urlPath.replace('{path_part_id}', encodeURIComponent(String(requestParameters['pathPartId'])));
 
         return {
             path: urlPath,
@@ -665,7 +804,7 @@ export class PathPartsApi extends runtime.BaseAPI implements PathPartsApiInterfa
         }
 
         let urlPath = `/v1/path-parts/{path_part_id}/access-check`;
-        urlPath = urlPath.replace(`{${"path_part_id"}}`, encodeURIComponent(String(requestParameters['pathPartId'])));
+        urlPath = urlPath.replace('{path_part_id}', encodeURIComponent(String(requestParameters['pathPartId'])));
 
         return {
             path: urlPath,
@@ -720,7 +859,7 @@ export class PathPartsApi extends runtime.BaseAPI implements PathPartsApiInterfa
         }
 
         let urlPath = `/v1/path-parts/{path_part_id}`;
-        urlPath = urlPath.replace(`{${"path_part_id"}}`, encodeURIComponent(String(requestParameters['pathPartId'])));
+        urlPath = urlPath.replace('{path_part_id}', encodeURIComponent(String(requestParameters['pathPartId'])));
 
         return {
             path: urlPath,
@@ -775,7 +914,7 @@ export class PathPartsApi extends runtime.BaseAPI implements PathPartsApiInterfa
         }
 
         let urlPath = `/v1/path-parts/{path_part_id}/ancestry`;
-        urlPath = urlPath.replace(`{${"path_part_id"}}`, encodeURIComponent(String(requestParameters['pathPartId'])));
+        urlPath = urlPath.replace('{path_part_id}', encodeURIComponent(String(requestParameters['pathPartId'])));
 
         return {
             path: urlPath,
@@ -830,7 +969,7 @@ export class PathPartsApi extends runtime.BaseAPI implements PathPartsApiInterfa
         }
 
         let urlPath = `/v1/path-parts/{path_part_id}/subtree_chunks`;
-        urlPath = urlPath.replace(`{${"path_part_id"}}`, encodeURIComponent(String(requestParameters['pathPartId'])));
+        urlPath = urlPath.replace('{path_part_id}', encodeURIComponent(String(requestParameters['pathPartId'])));
 
         return {
             path: urlPath,
@@ -889,7 +1028,7 @@ export class PathPartsApi extends runtime.BaseAPI implements PathPartsApiInterfa
         }
 
         let urlPath = `/v1/path-parts/{path_part_id}/tags`;
-        urlPath = urlPath.replace(`{${"path_part_id"}}`, encodeURIComponent(String(requestParameters['pathPartId'])));
+        urlPath = urlPath.replace('{path_part_id}', encodeURIComponent(String(requestParameters['pathPartId'])));
 
         return {
             path: urlPath,
@@ -937,11 +1076,11 @@ export class PathPartsApi extends runtime.BaseAPI implements PathPartsApiInterfa
         }
 
         if (requestParameters['since'] != null) {
-            queryParameters['since'] = (requestParameters['since'] as any).toISOString();
+            queryParameters['since'] = runtime.serializeDateTime(requestParameters['since'] as any);
         }
 
         if (requestParameters['until'] != null) {
-            queryParameters['until'] = (requestParameters['until'] as any).toISOString();
+            queryParameters['until'] = runtime.serializeDateTime(requestParameters['until'] as any);
         }
 
         if (requestParameters['recursive'] != null) {
@@ -972,7 +1111,7 @@ export class PathPartsApi extends runtime.BaseAPI implements PathPartsApiInterfa
         }
 
         let urlPath = `/v1/path-parts/{path_part_id}/events`;
-        urlPath = urlPath.replace(`{${"path_part_id"}}`, encodeURIComponent(String(requestParameters['pathPartId'])));
+        urlPath = urlPath.replace('{path_part_id}', encodeURIComponent(String(requestParameters['pathPartId'])));
 
         return {
             path: urlPath,
@@ -1033,19 +1172,19 @@ export class PathPartsApi extends runtime.BaseAPI implements PathPartsApiInterfa
         }
 
         if (requestParameters['createdAfter'] != null) {
-            queryParameters['created_after'] = (requestParameters['createdAfter'] as any).toISOString();
+            queryParameters['created_after'] = runtime.serializeDateTime(requestParameters['createdAfter'] as any);
         }
 
         if (requestParameters['createdBefore'] != null) {
-            queryParameters['created_before'] = (requestParameters['createdBefore'] as any).toISOString();
+            queryParameters['created_before'] = runtime.serializeDateTime(requestParameters['createdBefore'] as any);
         }
 
         if (requestParameters['updatedAfter'] != null) {
-            queryParameters['updated_after'] = (requestParameters['updatedAfter'] as any).toISOString();
+            queryParameters['updated_after'] = runtime.serializeDateTime(requestParameters['updatedAfter'] as any);
         }
 
         if (requestParameters['updatedBefore'] != null) {
-            queryParameters['updated_before'] = (requestParameters['updatedBefore'] as any).toISOString();
+            queryParameters['updated_before'] = runtime.serializeDateTime(requestParameters['updatedBefore'] as any);
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -1123,7 +1262,7 @@ export class PathPartsApi extends runtime.BaseAPI implements PathPartsApiInterfa
         }
 
         let urlPath = `/v1/path-parts/{path_part_id}/reorder`;
-        urlPath = urlPath.replace(`{${"path_part_id"}}`, encodeURIComponent(String(requestParameters['pathPartId'])));
+        urlPath = urlPath.replace('{path_part_id}', encodeURIComponent(String(requestParameters['pathPartId'])));
 
         return {
             path: urlPath,
@@ -1188,7 +1327,7 @@ export class PathPartsApi extends runtime.BaseAPI implements PathPartsApiInterfa
         }
 
         let urlPath = `/v1/path-parts/{path_part_id}/tags`;
-        urlPath = urlPath.replace(`{${"path_part_id"}}`, encodeURIComponent(String(requestParameters['pathPartId'])));
+        urlPath = urlPath.replace('{path_part_id}', encodeURIComponent(String(requestParameters['pathPartId'])));
 
         return {
             path: urlPath,
@@ -1253,7 +1392,7 @@ export class PathPartsApi extends runtime.BaseAPI implements PathPartsApiInterfa
         }
 
         let urlPath = `/v1/path-parts/{path_part_id}/owner`;
-        urlPath = urlPath.replace(`{${"path_part_id"}}`, encodeURIComponent(String(requestParameters['pathPartId'])));
+        urlPath = urlPath.replace('{path_part_id}', encodeURIComponent(String(requestParameters['pathPartId'])));
 
         return {
             path: urlPath,

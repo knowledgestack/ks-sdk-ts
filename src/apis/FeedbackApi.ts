@@ -12,60 +12,115 @@
  * Do not edit the class manually.
  */
 
-
 import * as runtime from '../runtime';
-import type {
-  ErrorResponse,
-  FeedbackEventResponse,
-  FeedbackOrder,
-  FeedbackRating,
-  FeedbackTargetType,
-  HTTPValidationError,
-  PaginatedResponseFeedbackEventResponse,
-  SortDirection,
-  SubmitFeedbackRequest,
-} from '../models/index';
 import {
+    type ErrorResponse,
     ErrorResponseFromJSON,
     ErrorResponseToJSON,
+} from '../models/ErrorResponse';
+import {
+    type FeedbackEventResponse,
     FeedbackEventResponseFromJSON,
     FeedbackEventResponseToJSON,
+} from '../models/FeedbackEventResponse';
+import {
+    type FeedbackOrder,
     FeedbackOrderFromJSON,
     FeedbackOrderToJSON,
+} from '../models/FeedbackOrder';
+import {
+    type FeedbackRating,
     FeedbackRatingFromJSON,
     FeedbackRatingToJSON,
+} from '../models/FeedbackRating';
+import {
+    type FeedbackTargetType,
     FeedbackTargetTypeFromJSON,
     FeedbackTargetTypeToJSON,
+} from '../models/FeedbackTargetType';
+import {
+    type HTTPValidationError,
     HTTPValidationErrorFromJSON,
     HTTPValidationErrorToJSON,
+} from '../models/HTTPValidationError';
+import {
+    type PaginatedResponseFeedbackEventResponse,
     PaginatedResponseFeedbackEventResponseFromJSON,
     PaginatedResponseFeedbackEventResponseToJSON,
+} from '../models/PaginatedResponseFeedbackEventResponse';
+import {
+    type SortDirection,
     SortDirectionFromJSON,
     SortDirectionToJSON,
+} from '../models/SortDirection';
+import {
+    type SubmitFeedbackRequest,
     SubmitFeedbackRequestFromJSON,
     SubmitFeedbackRequestToJSON,
-} from '../models/index';
+} from '../models/SubmitFeedbackRequest';
 
 export interface DeleteFeedbackRequest {
+    /**
+     * 
+     */
     feedbackId: string;
 }
 
 export interface ListFeedbackRequest {
+    /**
+     * 
+     */
     targetType?: FeedbackTargetType;
+    /**
+     * Repeatable. Feedback on any of these targets, so a thread page reads every visible message's feedback in one call; more than 200 ids is a 422 (send the page you render, not the thread).
+     */
     targetId?: Array<string> | null;
+    /**
+     * 
+     */
     rating?: FeedbackRating;
+    /**
+     * Only the caller's own feedback, whatever their role, so an owner or admin reading a thread sees their own vote on each message.
+     */
     mine?: boolean;
+    /**
+     * Field to sort feedback by (default: CREATED_AT)
+     */
     sortBy?: FeedbackOrder;
+    /**
+     * Sort direction; overrides the field's natural default
+     */
     sortDir?: SortDirection;
+    /**
+     * Number of items per page
+     */
     limit?: number;
+    /**
+     * Number of items to skip
+     */
     offset?: number;
+    /**
+     * Only items created at or after this timestamp (inclusive)
+     */
     createdAfter?: Date | null;
+    /**
+     * Only items created strictly before this timestamp
+     */
     createdBefore?: Date | null;
+    /**
+     * Only items updated at or after this timestamp (inclusive)
+     */
     updatedAfter?: Date | null;
+    /**
+     * Only items updated strictly before this timestamp
+     */
     updatedBefore?: Date | null;
 }
 
 export interface SubmitFeedbackOperationRequest {
+    /**
+     * 
+     */
     submitFeedbackRequest: SubmitFeedbackRequest;
 }
 
@@ -202,7 +257,7 @@ export class FeedbackApi extends runtime.BaseAPI implements FeedbackApiInterface
         }
 
         let urlPath = `/v1/feedback/{feedback_id}`;
-        urlPath = urlPath.replace(`{${"feedback_id"}}`, encodeURIComponent(String(requestParameters['feedbackId'])));
+        urlPath = urlPath.replace('{feedback_id}', encodeURIComponent(String(requestParameters['feedbackId'])));
 
         return {
             path: urlPath,
@@ -270,19 +325,19 @@ export class FeedbackApi extends runtime.BaseAPI implements FeedbackApiInterface
         }
 
         if (requestParameters['createdAfter'] != null) {
-            queryParameters['created_after'] = (requestParameters['createdAfter'] as any).toISOString();
+            queryParameters['created_after'] = runtime.serializeDateTime(requestParameters['createdAfter'] as any);
         }
 
         if (requestParameters['createdBefore'] != null) {
-            queryParameters['created_before'] = (requestParameters['createdBefore'] as any).toISOString();
+            queryParameters['created_before'] = runtime.serializeDateTime(requestParameters['createdBefore'] as any);
         }
 
         if (requestParameters['updatedAfter'] != null) {
-            queryParameters['updated_after'] = (requestParameters['updatedAfter'] as any).toISOString();
+            queryParameters['updated_after'] = runtime.serializeDateTime(requestParameters['updatedAfter'] as any);
         }
 
         if (requestParameters['updatedBefore'] != null) {
-            queryParameters['updated_before'] = (requestParameters['updatedBefore'] as any).toISOString();
+            queryParameters['updated_before'] = runtime.serializeDateTime(requestParameters['updatedBefore'] as any);
         }
 
         const headerParameters: runtime.HTTPHeaders = {};

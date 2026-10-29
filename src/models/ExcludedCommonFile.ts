@@ -33,14 +33,10 @@ import {
 export interface ExcludedCommonFile {
     /**
      * The common file's path_part id, as set on the definition
-     * @type {string}
-     * @memberof ExcludedCommonFile
      */
     pathPartId: string;
     /**
      * 
-     * @type {CommonFileExclusionReason}
-     * @memberof ExcludedCommonFile
      */
     reason: CommonFileExclusionReason;
 }
@@ -48,6 +44,8 @@ export interface ExcludedCommonFile {
 
 export const ExcludedCommonFilePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -68,7 +66,7 @@ export const ExcludedCommonFilePropertyValidationAttributesMap: {
  * Check if a given object implements the ExcludedCommonFile interface.
  */
 export function instanceOfExcludedCommonFile(value: object): value is ExcludedCommonFile {
-    if (!('pathPartId' in value) || value['pathPartId'] === undefined) return false;
+    if ((!('pathPartId' in (value as Record<string, any>)) && !('path_part_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['pathPartId'] === undefined && (value as Record<string, any>)['path_part_id'] === undefined)) return false;
     if (!('reason' in value) || value['reason'] === undefined) return false;
     return true;
 }

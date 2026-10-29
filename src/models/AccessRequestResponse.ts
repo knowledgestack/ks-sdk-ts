@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
 /**
  * 
  * @export
@@ -21,13 +21,13 @@ import { mapValues } from '../runtime';
 export interface AccessRequestResponse {
     /**
      * When this member's request was recorded. A repeat inside the daily window returns the original request and sends no second email.
-     * @type {Date}
-     * @memberof AccessRequestResponse
      */
     requestedAt: Date;
 }
 export const AccessRequestResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -48,7 +48,7 @@ export const AccessRequestResponsePropertyValidationAttributesMap: {
  * Check if a given object implements the AccessRequestResponse interface.
  */
 export function instanceOfAccessRequestResponse(value: object): value is AccessRequestResponse {
-    if (!('requestedAt' in value) || value['requestedAt'] === undefined) return false;
+    if ((!('requestedAt' in (value as Record<string, any>)) && !('requested_at' in (value as Record<string, any>))) || ((value as Record<string, any>)['requestedAt'] === undefined && (value as Record<string, any>)['requested_at'] === undefined)) return false;
     return true;
 }
 
@@ -62,7 +62,7 @@ export function AccessRequestResponseFromJSONTyped(json: any, ignoreDiscriminato
     }
     return {
         
-        'requestedAt': (new Date(json['requested_at'])),
+        'requestedAt': (json['requested_at'] == null ? json['requested_at'] : parseDateTime(json['requested_at'])),
     };
 }
 
@@ -77,7 +77,7 @@ export function AccessRequestResponseToJSONTyped(value?: AccessRequestResponse |
 
     return {
         
-        'requested_at': value['requestedAt'].toISOString(),
+        'requested_at': value['requestedAt'] == null ? value['requestedAt'] : serializeDateTime(value['requestedAt']),
     };
 }
 

@@ -29,31 +29,25 @@ import {
 export interface ModelTableRequest {
     /**
      * 
-     * @type {string}
-     * @memberof ModelTableRequest
      */
     tableName: string;
     /**
      * Schema/namespace of the table; omit for the default schema
-     * @type {string}
-     * @memberof ModelTableRequest
      */
     schemaName?: string | null;
     /**
      * Display name; defaults to table_name
-     * @type {string}
-     * @memberof ModelTableRequest
      */
     name?: string | null;
     /**
      * Omit to auto-introspect all columns as exposed
-     * @type {Array<ColumnConfig>}
-     * @memberof ModelTableRequest
      */
     columnConfig?: Array<ColumnConfig> | null;
 }
 export const ModelTableRequestPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -74,7 +68,7 @@ export const ModelTableRequestPropertyValidationAttributesMap: {
  * Check if a given object implements the ModelTableRequest interface.
  */
 export function instanceOfModelTableRequest(value: object): value is ModelTableRequest {
-    if (!('tableName' in value) || value['tableName'] === undefined) return false;
+    if ((!('tableName' in (value as Record<string, any>)) && !('table_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['tableName'] === undefined && (value as Record<string, any>)['table_name'] === undefined)) return false;
     return true;
 }
 
@@ -89,9 +83,9 @@ export function ModelTableRequestFromJSONTyped(json: any, ignoreDiscriminator: b
     return {
         
         'tableName': json['table_name'],
-        'schemaName': json['schema_name'] == null ? undefined : json['schema_name'],
-        'name': json['name'] == null ? undefined : json['name'],
-        'columnConfig': json['column_config'] == null ? undefined : ((json['column_config'] as Array<any>).map(ColumnConfigFromJSON)),
+        'schemaName': json['schema_name'] === undefined ? undefined : json['schema_name'] === null ? null : json['schema_name'],
+        'name': json['name'] === undefined ? undefined : json['name'] === null ? null : json['name'],
+        'columnConfig': json['column_config'] === undefined ? undefined : json['column_config'] === null ? null : ((json['column_config'] as Array<any>).map(ColumnConfigFromJSON)),
     };
 }
 

@@ -29,25 +29,21 @@ import {
 export interface UpdateSkillRequest {
     /**
      * New skill name (its folder name), unique within the tenant and never a built-in name; the working copy's SKILL.md frontmatter follows it.
-     * @type {string}
-     * @memberof UpdateSkillRequest
      */
     name?: string | null;
     /**
      * Replacement SKILL.md, written to the working copy in place; null leaves it unchanged. Publish a version to snapshot; the active version is unchanged until then.
-     * @type {string}
-     * @memberof UpdateSkillRequest
      */
     skillMd?: string | null;
     /**
      * Replace the whole bundle below SKILL.md (add/overwrite/remove to match); null leaves the tree unchanged, [] removes every file.
-     * @type {Array<SkillFile>}
-     * @memberof UpdateSkillRequest
      */
     files?: Array<SkillFile> | null;
 }
 export const UpdateSkillRequestPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -62,9 +58,11 @@ export const UpdateSkillRequestPropertyValidationAttributesMap: {
     }
 } = {
     name: {
+        dataType: "string",
         maxLength: 255,
     },
     files: {
+        dataType: "Array<SkillFile>",
         maxItems: 2000,
         uniqueItems: false,
     },
@@ -88,9 +86,9 @@ export function UpdateSkillRequestFromJSONTyped(json: any, ignoreDiscriminator: 
     }
     return {
         
-        'name': json['name'] == null ? undefined : json['name'],
-        'skillMd': json['skill_md'] == null ? undefined : json['skill_md'],
-        'files': json['files'] == null ? undefined : ((json['files'] as Array<any>).map(SkillFileFromJSON)),
+        'name': json['name'] === undefined ? undefined : json['name'] === null ? null : json['name'],
+        'skillMd': json['skill_md'] === undefined ? undefined : json['skill_md'] === null ? null : json['skill_md'],
+        'files': json['files'] === undefined ? undefined : json['files'] === null ? null : ((json['files'] as Array<any>).map(SkillFileFromJSON)),
     };
 }
 

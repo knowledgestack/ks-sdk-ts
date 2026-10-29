@@ -21,19 +21,17 @@ import { mapValues } from '../runtime';
 export interface CreateFolderRequest {
     /**
      * Folder name
-     * @type {string}
-     * @memberof CreateFolderRequest
      */
     name: string;
     /**
      * Parent PathPart ID (must be a FOLDER type)
-     * @type {string}
-     * @memberof CreateFolderRequest
      */
     parentPathPartId: string;
 }
 export const CreateFolderRequestPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -48,6 +46,8 @@ export const CreateFolderRequestPropertyValidationAttributesMap: {
     }
 } = {
     name: {
+        dataType: "string",
+        required: true,
         maxLength: 255,
         minLength: 1,
     },
@@ -59,7 +59,7 @@ export const CreateFolderRequestPropertyValidationAttributesMap: {
  */
 export function instanceOfCreateFolderRequest(value: object): value is CreateFolderRequest {
     if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('parentPathPartId' in value) || value['parentPathPartId'] === undefined) return false;
+    if ((!('parentPathPartId' in (value as Record<string, any>)) && !('parent_path_part_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['parentPathPartId'] === undefined && (value as Record<string, any>)['parent_path_part_id'] === undefined)) return false;
     return true;
 }
 

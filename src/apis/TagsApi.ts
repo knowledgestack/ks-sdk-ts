@@ -12,63 +12,116 @@
  * Do not edit the class manually.
  */
 
-
 import * as runtime from '../runtime';
-import type {
-  CreateTagRequest,
-  ErrorResponse,
-  HTTPValidationError,
-  PaginatedResponseTagResponse,
-  SortDirection,
-  TagOrder,
-  TagResponse,
-  UpdateTagRequest,
-} from '../models/index';
 import {
+    type CreateTagRequest,
     CreateTagRequestFromJSON,
     CreateTagRequestToJSON,
+} from '../models/CreateTagRequest';
+import {
+    type ErrorResponse,
     ErrorResponseFromJSON,
     ErrorResponseToJSON,
+} from '../models/ErrorResponse';
+import {
+    type HTTPValidationError,
     HTTPValidationErrorFromJSON,
     HTTPValidationErrorToJSON,
+} from '../models/HTTPValidationError';
+import {
+    type PaginatedResponseTagResponse,
     PaginatedResponseTagResponseFromJSON,
     PaginatedResponseTagResponseToJSON,
+} from '../models/PaginatedResponseTagResponse';
+import {
+    type SortDirection,
     SortDirectionFromJSON,
     SortDirectionToJSON,
+} from '../models/SortDirection';
+import {
+    type TagOrder,
     TagOrderFromJSON,
     TagOrderToJSON,
+} from '../models/TagOrder';
+import {
+    type TagResponse,
     TagResponseFromJSON,
     TagResponseToJSON,
+} from '../models/TagResponse';
+import {
+    type UpdateTagRequest,
     UpdateTagRequestFromJSON,
     UpdateTagRequestToJSON,
-} from '../models/index';
+} from '../models/UpdateTagRequest';
 
 export interface CreateTagOperationRequest {
+    /**
+     * 
+     */
     createTagRequest: CreateTagRequest;
 }
 
 export interface DeleteTagRequest {
+    /**
+     * 
+     */
     tagId: string;
 }
 
 export interface GetTagRequest {
+    /**
+     * 
+     */
     tagId: string;
 }
 
 export interface ListTagsRequest {
+    /**
+     * Field to sort tags by (default: NAME)
+     */
     sortBy?: TagOrder;
+    /**
+     * Sort direction; overrides the field's natural default
+     */
     sortDir?: SortDirection;
+    /**
+     * Case-insensitive substring filter on name
+     */
     nameLike?: string | null;
+    /**
+     * Number of items per page
+     */
     limit?: number;
+    /**
+     * Number of items to skip
+     */
     offset?: number;
+    /**
+     * Only items created at or after this timestamp (inclusive)
+     */
     createdAfter?: Date | null;
+    /**
+     * Only items created strictly before this timestamp
+     */
     createdBefore?: Date | null;
+    /**
+     * Only items updated at or after this timestamp (inclusive)
+     */
     updatedAfter?: Date | null;
+    /**
+     * Only items updated strictly before this timestamp
+     */
     updatedBefore?: Date | null;
 }
 
 export interface UpdateTagOperationRequest {
+    /**
+     * 
+     */
     tagId: string;
+    /**
+     * 
+     */
     updateTagRequest: UpdateTagRequest;
 }
 
@@ -306,7 +359,7 @@ export class TagsApi extends runtime.BaseAPI implements TagsApiInterface {
         }
 
         let urlPath = `/v1/tags/{tag_id}`;
-        urlPath = urlPath.replace(`{${"tag_id"}}`, encodeURIComponent(String(requestParameters['tagId'])));
+        urlPath = urlPath.replace('{tag_id}', encodeURIComponent(String(requestParameters['tagId'])));
 
         return {
             path: urlPath,
@@ -360,7 +413,7 @@ export class TagsApi extends runtime.BaseAPI implements TagsApiInterface {
         }
 
         let urlPath = `/v1/tags/{tag_id}`;
-        urlPath = urlPath.replace(`{${"tag_id"}}`, encodeURIComponent(String(requestParameters['tagId'])));
+        urlPath = urlPath.replace('{tag_id}', encodeURIComponent(String(requestParameters['tagId'])));
 
         return {
             path: urlPath,
@@ -417,19 +470,19 @@ export class TagsApi extends runtime.BaseAPI implements TagsApiInterface {
         }
 
         if (requestParameters['createdAfter'] != null) {
-            queryParameters['created_after'] = (requestParameters['createdAfter'] as any).toISOString();
+            queryParameters['created_after'] = runtime.serializeDateTime(requestParameters['createdAfter'] as any);
         }
 
         if (requestParameters['createdBefore'] != null) {
-            queryParameters['created_before'] = (requestParameters['createdBefore'] as any).toISOString();
+            queryParameters['created_before'] = runtime.serializeDateTime(requestParameters['createdBefore'] as any);
         }
 
         if (requestParameters['updatedAfter'] != null) {
-            queryParameters['updated_after'] = (requestParameters['updatedAfter'] as any).toISOString();
+            queryParameters['updated_after'] = runtime.serializeDateTime(requestParameters['updatedAfter'] as any);
         }
 
         if (requestParameters['updatedBefore'] != null) {
-            queryParameters['updated_before'] = (requestParameters['updatedBefore'] as any).toISOString();
+            queryParameters['updated_before'] = runtime.serializeDateTime(requestParameters['updatedBefore'] as any);
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -507,7 +560,7 @@ export class TagsApi extends runtime.BaseAPI implements TagsApiInterface {
         }
 
         let urlPath = `/v1/tags/{tag_id}`;
-        urlPath = urlPath.replace(`{${"tag_id"}}`, encodeURIComponent(String(requestParameters['tagId'])));
+        urlPath = urlPath.replace('{tag_id}', encodeURIComponent(String(requestParameters['tagId'])));
 
         return {
             path: urlPath,

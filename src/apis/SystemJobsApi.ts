@@ -12,93 +12,174 @@
  * Do not edit the class manually.
  */
 
-
 import * as runtime from '../runtime';
-import type {
-  BulkOperationResponse,
-  BulkRerunRequest,
-  ErrorResponse,
-  HTTPValidationError,
-  PaginatedResponseUserInfo,
-  PaginatedResponseWorkflowSummaryResponse,
-  PipelineStatus,
-  SortDirection,
-  TemporalWorkflowStatusResponse,
-  WorkflowActionResponse,
-  WorkflowCancelResponse,
-  WorkflowDetailResponse,
-  ZipIngestionStatusResponse,
-} from '../models/index';
 import {
+    type BulkOperationResponse,
     BulkOperationResponseFromJSON,
     BulkOperationResponseToJSON,
+} from '../models/BulkOperationResponse';
+import {
+    type BulkRerunRequest,
     BulkRerunRequestFromJSON,
     BulkRerunRequestToJSON,
+} from '../models/BulkRerunRequest';
+import {
+    type ErrorResponse,
     ErrorResponseFromJSON,
     ErrorResponseToJSON,
+} from '../models/ErrorResponse';
+import {
+    type HTTPValidationError,
     HTTPValidationErrorFromJSON,
     HTTPValidationErrorToJSON,
+} from '../models/HTTPValidationError';
+import {
+    type PaginatedResponseUserInfo,
     PaginatedResponseUserInfoFromJSON,
     PaginatedResponseUserInfoToJSON,
+} from '../models/PaginatedResponseUserInfo';
+import {
+    type PaginatedResponseWorkflowSummaryResponse,
     PaginatedResponseWorkflowSummaryResponseFromJSON,
     PaginatedResponseWorkflowSummaryResponseToJSON,
+} from '../models/PaginatedResponseWorkflowSummaryResponse';
+import {
+    type PipelineStatus,
     PipelineStatusFromJSON,
     PipelineStatusToJSON,
+} from '../models/PipelineStatus';
+import {
+    type SortDirection,
     SortDirectionFromJSON,
     SortDirectionToJSON,
+} from '../models/SortDirection';
+import {
+    type TemporalWorkflowStatusResponse,
     TemporalWorkflowStatusResponseFromJSON,
     TemporalWorkflowStatusResponseToJSON,
+} from '../models/TemporalWorkflowStatusResponse';
+import {
+    type WorkflowActionResponse,
     WorkflowActionResponseFromJSON,
     WorkflowActionResponseToJSON,
+} from '../models/WorkflowActionResponse';
+import {
+    type WorkflowCancelResponse,
     WorkflowCancelResponseFromJSON,
     WorkflowCancelResponseToJSON,
+} from '../models/WorkflowCancelResponse';
+import {
+    type WorkflowDetailResponse,
     WorkflowDetailResponseFromJSON,
     WorkflowDetailResponseToJSON,
+} from '../models/WorkflowDetailResponse';
+import {
+    type ZipIngestionStatusResponse,
     ZipIngestionStatusResponseFromJSON,
     ZipIngestionStatusResponseToJSON,
-} from '../models/index';
+} from '../models/ZipIngestionStatusResponse';
 
 export interface BulkRerunDvWorkflowsRequest {
+    /**
+     * 
+     */
     bulkRerunRequest: BulkRerunRequest;
 }
 
 export interface CancelTemporalWorkflowRequest {
+    /**
+     * 
+     */
     workflowId: string;
 }
 
 export interface DvWorkflowRerunRequest {
+    /**
+     * 
+     */
     workflowId: string;
 }
 
 export interface GetDvWorkflowRequest {
+    /**
+     * 
+     */
     workflowId: string;
 }
 
 export interface GetTemporalWorkflowStatusRequest {
+    /**
+     * 
+     */
     workflowId: string;
 }
 
 export interface GetZipIngestionStatusRequest {
+    /**
+     * 
+     */
     workflowId: string;
 }
 
 export interface ListDvWorkflowUploadersRequest {
+    /**
+     * Case-insensitive substring of the first or last name
+     */
     usernameLike?: string | null;
+    /**
+     * Number of items per page
+     */
     limit?: number;
+    /**
+     * Number of items to skip
+     */
     offset?: number;
 }
 
 export interface ListDvWorkflowsRequest {
+    /**
+     * Number of items per page
+     */
     limit?: number;
+    /**
+     * Number of items to skip
+     */
     offset?: number;
+    /**
+     * Sort direction (ASC or DESC); overrides the field's natural default. Every sort field supports both directions.
+     */
     sortDir?: SortDirection;
+    /**
+     * Only versions in one of these pipeline statuses
+     */
     status?: Array<PipelineStatus> | null;
+    /**
+     * Case-insensitive substring filter on document name
+     */
     nameLike?: string | null;
+    /**
+     * Skip versions superseded by a newer version
+     */
     latestVersionOnly?: boolean;
+    /**
+     * Filter to versions uploaded by this user
+     */
     uploaderUserId?: string | null;
+    /**
+     * Only items created at or after this timestamp (inclusive)
+     */
     createdAfter?: Date | null;
+    /**
+     * Only items created strictly before this timestamp
+     */
     createdBefore?: Date | null;
+    /**
+     * Only items updated at or after this timestamp (inclusive)
+     */
     updatedAfter?: Date | null;
+    /**
+     * Only items updated strictly before this timestamp
+     */
     updatedBefore?: Date | null;
 }
 
@@ -414,7 +495,7 @@ export class SystemJobsApi extends runtime.BaseAPI implements SystemJobsApiInter
         }
 
         let urlPath = `/v1/system-jobs/{workflow_id}`;
-        urlPath = urlPath.replace(`{${"workflow_id"}}`, encodeURIComponent(String(requestParameters['workflowId'])));
+        urlPath = urlPath.replace('{workflow_id}', encodeURIComponent(String(requestParameters['workflowId'])));
 
         return {
             path: urlPath,
@@ -469,7 +550,7 @@ export class SystemJobsApi extends runtime.BaseAPI implements SystemJobsApiInter
         }
 
         let urlPath = `/v1/system-jobs/document_versions/{workflow_id}`;
-        urlPath = urlPath.replace(`{${"workflow_id"}}`, encodeURIComponent(String(requestParameters['workflowId'])));
+        urlPath = urlPath.replace('{workflow_id}', encodeURIComponent(String(requestParameters['workflowId'])));
 
         return {
             path: urlPath,
@@ -524,7 +605,7 @@ export class SystemJobsApi extends runtime.BaseAPI implements SystemJobsApiInter
         }
 
         let urlPath = `/v1/system-jobs/document_versions/{workflow_id}`;
-        urlPath = urlPath.replace(`{${"workflow_id"}}`, encodeURIComponent(String(requestParameters['workflowId'])));
+        urlPath = urlPath.replace('{workflow_id}', encodeURIComponent(String(requestParameters['workflowId'])));
 
         return {
             path: urlPath,
@@ -579,7 +660,7 @@ export class SystemJobsApi extends runtime.BaseAPI implements SystemJobsApiInter
         }
 
         let urlPath = `/v1/system-jobs/{workflow_id}`;
-        urlPath = urlPath.replace(`{${"workflow_id"}}`, encodeURIComponent(String(requestParameters['workflowId'])));
+        urlPath = urlPath.replace('{workflow_id}', encodeURIComponent(String(requestParameters['workflowId'])));
 
         return {
             path: urlPath,
@@ -634,7 +715,7 @@ export class SystemJobsApi extends runtime.BaseAPI implements SystemJobsApiInter
         }
 
         let urlPath = `/v1/system-jobs/zip-ingestions/{workflow_id}`;
-        urlPath = urlPath.replace(`{${"workflow_id"}}`, encodeURIComponent(String(requestParameters['workflowId'])));
+        urlPath = urlPath.replace('{workflow_id}', encodeURIComponent(String(requestParameters['workflowId'])));
 
         return {
             path: urlPath,
@@ -758,19 +839,19 @@ export class SystemJobsApi extends runtime.BaseAPI implements SystemJobsApiInter
         }
 
         if (requestParameters['createdAfter'] != null) {
-            queryParameters['created_after'] = (requestParameters['createdAfter'] as any).toISOString();
+            queryParameters['created_after'] = runtime.serializeDateTime(requestParameters['createdAfter'] as any);
         }
 
         if (requestParameters['createdBefore'] != null) {
-            queryParameters['created_before'] = (requestParameters['createdBefore'] as any).toISOString();
+            queryParameters['created_before'] = runtime.serializeDateTime(requestParameters['createdBefore'] as any);
         }
 
         if (requestParameters['updatedAfter'] != null) {
-            queryParameters['updated_after'] = (requestParameters['updatedAfter'] as any).toISOString();
+            queryParameters['updated_after'] = runtime.serializeDateTime(requestParameters['updatedAfter'] as any);
         }
 
         if (requestParameters['updatedBefore'] != null) {
-            queryParameters['updated_before'] = (requestParameters['updatedBefore'] as any).toISOString();
+            queryParameters['updated_before'] = runtime.serializeDateTime(requestParameters['updatedBefore'] as any);
         }
 
         const headerParameters: runtime.HTTPHeaders = {};

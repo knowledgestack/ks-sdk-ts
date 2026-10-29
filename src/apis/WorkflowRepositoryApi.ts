@@ -12,90 +12,181 @@
  * Do not edit the class manually.
  */
 
-
 import * as runtime from '../runtime';
-import type {
-  ErrorResponse,
-  EventResponse,
-  HTTPValidationError,
-  PaginatedResponseRepoVersionResponse,
-  RecordRepoSaveSkipRequest,
-  RepoBranchResponse,
-  RepoTreeResponse,
-  RepoVersionResponse,
-  WorkflowRepoResponse,
-} from '../models/index';
 import {
+    type ErrorResponse,
     ErrorResponseFromJSON,
     ErrorResponseToJSON,
+} from '../models/ErrorResponse';
+import {
+    type EventResponse,
     EventResponseFromJSON,
     EventResponseToJSON,
+} from '../models/EventResponse';
+import {
+    type HTTPValidationError,
     HTTPValidationErrorFromJSON,
     HTTPValidationErrorToJSON,
+} from '../models/HTTPValidationError';
+import {
+    type PaginatedResponseRepoVersionResponse,
     PaginatedResponseRepoVersionResponseFromJSON,
     PaginatedResponseRepoVersionResponseToJSON,
+} from '../models/PaginatedResponseRepoVersionResponse';
+import {
+    type RecordRepoSaveSkipRequest,
     RecordRepoSaveSkipRequestFromJSON,
     RecordRepoSaveSkipRequestToJSON,
+} from '../models/RecordRepoSaveSkipRequest';
+import {
+    type RepoBranchResponse,
     RepoBranchResponseFromJSON,
     RepoBranchResponseToJSON,
+} from '../models/RepoBranchResponse';
+import {
+    type RepoTreeResponse,
     RepoTreeResponseFromJSON,
     RepoTreeResponseToJSON,
+} from '../models/RepoTreeResponse';
+import {
+    type RepoVersionResponse,
     RepoVersionResponseFromJSON,
     RepoVersionResponseToJSON,
+} from '../models/RepoVersionResponse';
+import {
+    type WorkflowRepoResponse,
     WorkflowRepoResponseFromJSON,
     WorkflowRepoResponseToJSON,
-} from '../models/index';
+} from '../models/WorkflowRepoResponse';
 
 export interface DownloadWorkflowRepoBranchBundleRequest {
+    /**
+     * 
+     */
     definitionId: string;
+    /**
+     * 
+     */
     runId: string;
+    /**
+     * Retained branch version
+     */
     versionId?: string | null;
 }
 
 export interface DownloadWorkflowRepoBundleRequest {
+    /**
+     * 
+     */
     definitionId: string;
+    /**
+     * Saved version; default: main
+     */
     versionId?: string | null;
 }
 
 export interface GetWorkflowRepoRequest {
+    /**
+     * 
+     */
     definitionId: string;
 }
 
 export interface GetWorkflowRepoBranchRequest {
+    /**
+     * 
+     */
     definitionId: string;
+    /**
+     * 
+     */
     runId: string;
 }
 
 export interface GetWorkflowRepoTreeRequest {
+    /**
+     * 
+     */
     definitionId: string;
+    /**
+     * 
+     */
     commit?: string | null;
 }
 
 export interface ListWorkflowRepoVersionsRequest {
+    /**
+     * 
+     */
     definitionId: string;
+    /**
+     * Only versions saved by this run
+     */
     runId?: string | null;
+    /**
+     * Number of items per page
+     */
     limit?: number;
+    /**
+     * Number of items to skip
+     */
     offset?: number;
 }
 
 export interface RecordWorkflowRepoSkippedSaveRequest {
+    /**
+     * 
+     */
     definitionId: string;
+    /**
+     * 
+     */
     recordRepoSaveSkipRequest: RecordRepoSaveSkipRequest;
 }
 
 export interface SaveWorkflowRepoBranchRequest {
+    /**
+     * 
+     */
     definitionId: string;
+    /**
+     * 
+     */
     runId: string;
+    /**
+     * Full git bundle of runs/<run-id>
+     */
     bundle: Blob;
+    /**
+     * Previous retained version of this run branch
+     */
     expectedVersionId?: string | null;
+    /**
+     * Accepted main version this branch started from
+     */
     baseVersionId?: string | null;
 }
 
 export interface SaveWorkflowRepoVersionRequest {
+    /**
+     * 
+     */
     definitionId: string;
+    /**
+     * Full git bundle of main
+     */
     bundle: Blob;
+    /**
+     * The run saving this version
+     */
     runId: string;
+    /**
+     * The version this save is based on; omit for the first save
+     */
     expectedVersionId?: string | null;
+    /**
+     * Retained run branch being integrated
+     */
     candidateVersionId?: string | null;
 }
 
@@ -126,13 +217,13 @@ export interface WorkflowRepositoryApiInterface {
      * @throws {RequiredError}
      * @memberof WorkflowRepositoryApiInterface
      */
-    downloadWorkflowRepoBranchBundleRaw(requestParameters: DownloadWorkflowRepoBranchBundleRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Blob>>;
+    downloadWorkflowRepoBranchBundleRaw(requestParameters: DownloadWorkflowRepoBranchBundleRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<runtime.HttpFile>>;
 
     /**
      * Download a run branch; a named version must belong to that run.
      * Download Workflow Repo Branch Bundle Handler
      */
-    downloadWorkflowRepoBranchBundle(requestParameters: DownloadWorkflowRepoBranchBundleRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Blob>;
+    downloadWorkflowRepoBranchBundle(requestParameters: DownloadWorkflowRepoBranchBundleRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.HttpFile>;
 
     /**
      * Creates request options for downloadWorkflowRepoBundle without sending the request
@@ -152,13 +243,13 @@ export interface WorkflowRepositoryApiInterface {
      * @throws {RequiredError}
      * @memberof WorkflowRepositoryApiInterface
      */
-    downloadWorkflowRepoBundleRaw(requestParameters: DownloadWorkflowRepoBundleRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Blob>>;
+    downloadWorkflowRepoBundleRaw(requestParameters: DownloadWorkflowRepoBundleRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<runtime.HttpFile>>;
 
     /**
      * Download a saved version as a git bundle (what a run clones).
      * Download Workflow Repo Bundle Handler
      */
-    downloadWorkflowRepoBundle(requestParameters: DownloadWorkflowRepoBundleRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Blob>;
+    downloadWorkflowRepoBundle(requestParameters: DownloadWorkflowRepoBundleRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.HttpFile>;
 
     /**
      * Creates request options for getWorkflowRepo without sending the request
@@ -399,8 +490,8 @@ export class WorkflowRepositoryApi extends runtime.BaseAPI implements WorkflowRe
         }
 
         let urlPath = `/v1/workflow-definitions/{definition_id}/memory/repo/branches/{run_id}/bundle`;
-        urlPath = urlPath.replace(`{${"definition_id"}}`, encodeURIComponent(String(requestParameters['definitionId'])));
-        urlPath = urlPath.replace(`{${"run_id"}}`, encodeURIComponent(String(requestParameters['runId'])));
+        urlPath = urlPath.replace('{definition_id}', encodeURIComponent(String(requestParameters['definitionId'])));
+        urlPath = urlPath.replace('{run_id}', encodeURIComponent(String(requestParameters['runId'])));
 
         return {
             path: urlPath,
@@ -414,7 +505,7 @@ export class WorkflowRepositoryApi extends runtime.BaseAPI implements WorkflowRe
      * Download a run branch; a named version must belong to that run.
      * Download Workflow Repo Branch Bundle Handler
      */
-    async downloadWorkflowRepoBranchBundleRaw(requestParameters: DownloadWorkflowRepoBranchBundleRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Blob>> {
+    async downloadWorkflowRepoBranchBundleRaw(requestParameters: DownloadWorkflowRepoBranchBundleRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<runtime.HttpFile>> {
         const requestOptions = await this.downloadWorkflowRepoBranchBundleRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -425,7 +516,7 @@ export class WorkflowRepositoryApi extends runtime.BaseAPI implements WorkflowRe
      * Download a run branch; a named version must belong to that run.
      * Download Workflow Repo Branch Bundle Handler
      */
-    async downloadWorkflowRepoBranchBundle(requestParameters: DownloadWorkflowRepoBranchBundleRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Blob> {
+    async downloadWorkflowRepoBranchBundle(requestParameters: DownloadWorkflowRepoBranchBundleRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.HttpFile> {
         const response = await this.downloadWorkflowRepoBranchBundleRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -459,7 +550,7 @@ export class WorkflowRepositoryApi extends runtime.BaseAPI implements WorkflowRe
         }
 
         let urlPath = `/v1/workflow-definitions/{definition_id}/memory/repo/bundle`;
-        urlPath = urlPath.replace(`{${"definition_id"}}`, encodeURIComponent(String(requestParameters['definitionId'])));
+        urlPath = urlPath.replace('{definition_id}', encodeURIComponent(String(requestParameters['definitionId'])));
 
         return {
             path: urlPath,
@@ -473,7 +564,7 @@ export class WorkflowRepositoryApi extends runtime.BaseAPI implements WorkflowRe
      * Download a saved version as a git bundle (what a run clones).
      * Download Workflow Repo Bundle Handler
      */
-    async downloadWorkflowRepoBundleRaw(requestParameters: DownloadWorkflowRepoBundleRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Blob>> {
+    async downloadWorkflowRepoBundleRaw(requestParameters: DownloadWorkflowRepoBundleRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<runtime.HttpFile>> {
         const requestOptions = await this.downloadWorkflowRepoBundleRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -484,7 +575,7 @@ export class WorkflowRepositoryApi extends runtime.BaseAPI implements WorkflowRe
      * Download a saved version as a git bundle (what a run clones).
      * Download Workflow Repo Bundle Handler
      */
-    async downloadWorkflowRepoBundle(requestParameters: DownloadWorkflowRepoBundleRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Blob> {
+    async downloadWorkflowRepoBundle(requestParameters: DownloadWorkflowRepoBundleRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.HttpFile> {
         const response = await this.downloadWorkflowRepoBundleRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -514,7 +605,7 @@ export class WorkflowRepositoryApi extends runtime.BaseAPI implements WorkflowRe
         }
 
         let urlPath = `/v1/workflow-definitions/{definition_id}/memory/repo`;
-        urlPath = urlPath.replace(`{${"definition_id"}}`, encodeURIComponent(String(requestParameters['definitionId'])));
+        urlPath = urlPath.replace('{definition_id}', encodeURIComponent(String(requestParameters['definitionId'])));
 
         return {
             path: urlPath,
@@ -576,8 +667,8 @@ export class WorkflowRepositoryApi extends runtime.BaseAPI implements WorkflowRe
         }
 
         let urlPath = `/v1/workflow-definitions/{definition_id}/memory/repo/branches/{run_id}`;
-        urlPath = urlPath.replace(`{${"definition_id"}}`, encodeURIComponent(String(requestParameters['definitionId'])));
-        urlPath = urlPath.replace(`{${"run_id"}}`, encodeURIComponent(String(requestParameters['runId'])));
+        urlPath = urlPath.replace('{definition_id}', encodeURIComponent(String(requestParameters['definitionId'])));
+        urlPath = urlPath.replace('{run_id}', encodeURIComponent(String(requestParameters['runId'])));
 
         return {
             path: urlPath,
@@ -636,7 +727,7 @@ export class WorkflowRepositoryApi extends runtime.BaseAPI implements WorkflowRe
         }
 
         let urlPath = `/v1/workflow-definitions/{definition_id}/memory/repo/tree`;
-        urlPath = urlPath.replace(`{${"definition_id"}}`, encodeURIComponent(String(requestParameters['definitionId'])));
+        urlPath = urlPath.replace('{definition_id}', encodeURIComponent(String(requestParameters['definitionId'])));
 
         return {
             path: urlPath,
@@ -703,7 +794,7 @@ export class WorkflowRepositoryApi extends runtime.BaseAPI implements WorkflowRe
         }
 
         let urlPath = `/v1/workflow-definitions/{definition_id}/memory/repo/versions`;
-        urlPath = urlPath.replace(`{${"definition_id"}}`, encodeURIComponent(String(requestParameters['definitionId'])));
+        urlPath = urlPath.replace('{definition_id}', encodeURIComponent(String(requestParameters['definitionId'])));
 
         return {
             path: urlPath,
@@ -767,7 +858,7 @@ export class WorkflowRepositoryApi extends runtime.BaseAPI implements WorkflowRe
         }
 
         let urlPath = `/v1/workflow-definitions/{definition_id}/memory/repo/skipped-saves`;
-        urlPath = urlPath.replace(`{${"definition_id"}}`, encodeURIComponent(String(requestParameters['definitionId'])));
+        urlPath = urlPath.replace('{definition_id}', encodeURIComponent(String(requestParameters['definitionId'])));
 
         return {
             path: urlPath,
@@ -865,8 +956,8 @@ export class WorkflowRepositoryApi extends runtime.BaseAPI implements WorkflowRe
 
 
         let urlPath = `/v1/workflow-definitions/{definition_id}/memory/repo/branches/{run_id}/versions`;
-        urlPath = urlPath.replace(`{${"definition_id"}}`, encodeURIComponent(String(requestParameters['definitionId'])));
-        urlPath = urlPath.replace(`{${"run_id"}}`, encodeURIComponent(String(requestParameters['runId'])));
+        urlPath = urlPath.replace('{definition_id}', encodeURIComponent(String(requestParameters['definitionId'])));
+        urlPath = urlPath.replace('{run_id}', encodeURIComponent(String(requestParameters['runId'])));
 
         return {
             path: urlPath,
@@ -968,7 +1059,7 @@ export class WorkflowRepositoryApi extends runtime.BaseAPI implements WorkflowRe
 
 
         let urlPath = `/v1/workflow-definitions/{definition_id}/memory/repo/versions`;
-        urlPath = urlPath.replace(`{${"definition_id"}}`, encodeURIComponent(String(requestParameters['definitionId'])));
+        urlPath = urlPath.replace('{definition_id}', encodeURIComponent(String(requestParameters['definitionId'])));
 
         return {
             path: urlPath,

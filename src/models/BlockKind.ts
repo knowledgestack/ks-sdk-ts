@@ -22,7 +22,7 @@ export const BlockKind = {
     Heading: 'heading',
     ListItem: 'list_item',
     Table: 'table',
-    Image: 'image'
+    Image: 'image',
 } as const;
 export type BlockKind = typeof BlockKind[keyof typeof BlockKind];
 

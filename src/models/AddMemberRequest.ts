@@ -21,13 +21,13 @@ import { mapValues } from '../runtime';
 export interface AddMemberRequest {
     /**
      * 
-     * @type {string}
-     * @memberof AddMemberRequest
      */
     userId: string;
 }
 export const AddMemberRequestPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -48,7 +48,7 @@ export const AddMemberRequestPropertyValidationAttributesMap: {
  * Check if a given object implements the AddMemberRequest interface.
  */
 export function instanceOfAddMemberRequest(value: object): value is AddMemberRequest {
-    if (!('userId' in value) || value['userId'] === undefined) return false;
+    if ((!('userId' in (value as Record<string, any>)) && !('user_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['userId'] === undefined && (value as Record<string, any>)['user_id'] === undefined)) return false;
     return true;
 }
 

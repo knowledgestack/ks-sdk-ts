@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
 import type { ItemPermissions } from './ItemPermissions';
 import {
     ItemPermissionsFromJSON,
@@ -63,164 +63,110 @@ import {
 export interface WorkflowDefinitionResponse {
     /**
      * Path part type
-     * @type {WorkflowDefinitionResponsePartTypeEnum}
-     * @memberof WorkflowDefinitionResponse
      */
     partType?: WorkflowDefinitionResponsePartTypeEnum;
     /**
      * 
-     * @type {string}
-     * @memberof WorkflowDefinitionResponse
      */
     id: string;
     /**
      * WORKFLOW_DEFINITION path_part of this definition
-     * @type {string}
-     * @memberof WorkflowDefinitionResponse
      */
     pathPartId: string;
     /**
      * FOLDER path_part of the containing folder
-     * @type {string}
-     * @memberof WorkflowDefinitionResponse
      */
     parentPathPartId: string | null;
     /**
      * Full materialized path from root
-     * @type {string}
-     * @memberof WorkflowDefinitionResponse
      */
     materializedPath: string;
     /**
      * 
-     * @type {string}
-     * @memberof WorkflowDefinitionResponse
      */
     tenantId: string;
     /**
      * 
-     * @type {string}
-     * @memberof WorkflowDefinitionResponse
      */
     name: string;
     /**
      * 
-     * @type {string}
-     * @memberof WorkflowDefinitionResponse
      */
     description: string | null;
     /**
      * 
-     * @type {number}
-     * @memberof WorkflowDefinitionResponse
      */
     maxRunDurationSeconds: number;
     /**
      * DOCUMENT path_part of the instruction document
-     * @type {string}
-     * @memberof WorkflowDefinitionResponse
      */
     instructionPathPartId: string;
     /**
      * 
-     * @type {boolean}
-     * @memberof WorkflowDefinitionResponse
      */
     isActive: boolean;
     /**
      * 
-     * @type {boolean}
-     * @memberof WorkflowDefinitionResponse
      */
     approvalRequired: boolean;
     /**
      * Whether this definition is a non-runnable template
-     * @type {boolean}
-     * @memberof WorkflowDefinitionResponse
      */
     isTemplate: boolean;
     /**
      * Skill PDO ids force-loaded into every run by default. The FE prefills these as the run's selected skills.
-     * @type {Array<string>}
-     * @memberof WorkflowDefinitionResponse
      */
     selectedSkillIds?: Array<string>;
     /**
      * Common files attached to every run (path_part ids). The FE renders these as 'attached to every run' on the workflow page.
-     * @type {Array<string>}
-     * @memberof WorkflowDefinitionResponse
      */
     commonFilePathPartIds?: Array<string>;
     /**
      * Source definition this workflow was copied from (a template or any other workflow); null if hand-authored.
-     * @type {string}
-     * @memberof WorkflowDefinitionResponse
      */
     createdFromId: string | null;
     /**
      * Number of workflows copied from this definition.
-     * @type {number}
-     * @memberof WorkflowDefinitionResponse
      */
     copyCount?: number;
     /**
      * The definition's most recent run, or null if never run.
-     * @type {LastRunSummary}
-     * @memberof WorkflowDefinitionResponse
      */
     lastRun?: LastRunSummary | null;
     /**
      * Number of this definition's runs awaiting approval.
-     * @type {number}
-     * @memberof WorkflowDefinitionResponse
      */
     pendingApprovalCount?: number;
     /**
      * 
-     * @type {PathPartApprovalState}
-     * @memberof WorkflowDefinitionResponse
      */
     approvalState: PathPartApprovalState;
     /**
      * Current owner (creator) of the workflow, or null if unowned.
-     * @type {UserInfo}
-     * @memberof WorkflowDefinitionResponse
      */
     owner?: UserInfo | null;
     /**
      * 
-     * @type {ScheduleCadence}
-     * @memberof WorkflowDefinitionResponse
      */
     scheduleCadence?: ScheduleCadence;
     /**
      * First occurrence, read in ``schedule_timezone``.
-     * @type {Date}
-     * @memberof WorkflowDefinitionResponse
      */
     scheduleStartAt?: Date | null;
     /**
      * IANA zone the schedule fires in, e.g. ``Asia/Shanghai``. Resolved at arm time: the tenant timezone unless the caller overrode it. Null only when unscheduled.
-     * @type {string}
-     * @memberof WorkflowDefinitionResponse
      */
     scheduleTimezone?: string | null;
     /**
      * 
-     * @type {Date}
-     * @memberof WorkflowDefinitionResponse
      */
     createdAt: Date;
     /**
      * 
-     * @type {Date}
-     * @memberof WorkflowDefinitionResponse
      */
     updatedAt: Date;
     /**
      * Caller's effective rights; null on mutation responses.
-     * @type {ItemPermissions}
-     * @memberof WorkflowDefinitionResponse
      */
     permissions?: ItemPermissions | null;
 }
@@ -230,12 +176,14 @@ export interface WorkflowDefinitionResponse {
  * @export
  */
 export const WorkflowDefinitionResponsePartTypeEnum = {
-    WorkflowDefinition: 'WORKFLOW_DEFINITION'
+    WorkflowDefinition: 'WORKFLOW_DEFINITION',
 } as const;
 export type WorkflowDefinitionResponsePartTypeEnum = typeof WorkflowDefinitionResponsePartTypeEnum[keyof typeof WorkflowDefinitionResponsePartTypeEnum];
 
 export const WorkflowDefinitionResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -257,21 +205,21 @@ export const WorkflowDefinitionResponsePropertyValidationAttributesMap: {
  */
 export function instanceOfWorkflowDefinitionResponse(value: object): value is WorkflowDefinitionResponse {
     if (!('id' in value) || value['id'] === undefined) return false;
-    if (!('pathPartId' in value) || value['pathPartId'] === undefined) return false;
-    if (!('parentPathPartId' in value) || value['parentPathPartId'] === undefined) return false;
-    if (!('materializedPath' in value) || value['materializedPath'] === undefined) return false;
-    if (!('tenantId' in value) || value['tenantId'] === undefined) return false;
+    if ((!('pathPartId' in (value as Record<string, any>)) && !('path_part_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['pathPartId'] === undefined && (value as Record<string, any>)['path_part_id'] === undefined)) return false;
+    if ((!('parentPathPartId' in (value as Record<string, any>)) && !('parent_path_part_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['parentPathPartId'] === undefined && (value as Record<string, any>)['parent_path_part_id'] === undefined)) return false;
+    if ((!('materializedPath' in (value as Record<string, any>)) && !('materialized_path' in (value as Record<string, any>))) || ((value as Record<string, any>)['materializedPath'] === undefined && (value as Record<string, any>)['materialized_path'] === undefined)) return false;
+    if ((!('tenantId' in (value as Record<string, any>)) && !('tenant_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['tenantId'] === undefined && (value as Record<string, any>)['tenant_id'] === undefined)) return false;
     if (!('name' in value) || value['name'] === undefined) return false;
     if (!('description' in value) || value['description'] === undefined) return false;
-    if (!('maxRunDurationSeconds' in value) || value['maxRunDurationSeconds'] === undefined) return false;
-    if (!('instructionPathPartId' in value) || value['instructionPathPartId'] === undefined) return false;
-    if (!('isActive' in value) || value['isActive'] === undefined) return false;
-    if (!('approvalRequired' in value) || value['approvalRequired'] === undefined) return false;
-    if (!('isTemplate' in value) || value['isTemplate'] === undefined) return false;
-    if (!('createdFromId' in value) || value['createdFromId'] === undefined) return false;
-    if (!('approvalState' in value) || value['approvalState'] === undefined) return false;
-    if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
-    if (!('updatedAt' in value) || value['updatedAt'] === undefined) return false;
+    if ((!('maxRunDurationSeconds' in (value as Record<string, any>)) && !('max_run_duration_seconds' in (value as Record<string, any>))) || ((value as Record<string, any>)['maxRunDurationSeconds'] === undefined && (value as Record<string, any>)['max_run_duration_seconds'] === undefined)) return false;
+    if ((!('instructionPathPartId' in (value as Record<string, any>)) && !('instruction_path_part_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['instructionPathPartId'] === undefined && (value as Record<string, any>)['instruction_path_part_id'] === undefined)) return false;
+    if ((!('isActive' in (value as Record<string, any>)) && !('is_active' in (value as Record<string, any>))) || ((value as Record<string, any>)['isActive'] === undefined && (value as Record<string, any>)['is_active'] === undefined)) return false;
+    if ((!('approvalRequired' in (value as Record<string, any>)) && !('approval_required' in (value as Record<string, any>))) || ((value as Record<string, any>)['approvalRequired'] === undefined && (value as Record<string, any>)['approval_required'] === undefined)) return false;
+    if ((!('isTemplate' in (value as Record<string, any>)) && !('is_template' in (value as Record<string, any>))) || ((value as Record<string, any>)['isTemplate'] === undefined && (value as Record<string, any>)['is_template'] === undefined)) return false;
+    if ((!('createdFromId' in (value as Record<string, any>)) && !('created_from_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['createdFromId'] === undefined && (value as Record<string, any>)['created_from_id'] === undefined)) return false;
+    if ((!('approvalState' in (value as Record<string, any>)) && !('approval_state' in (value as Record<string, any>))) || ((value as Record<string, any>)['approvalState'] === undefined && (value as Record<string, any>)['approval_state'] === undefined)) return false;
+    if ((!('createdAt' in (value as Record<string, any>)) && !('created_at' in (value as Record<string, any>))) || ((value as Record<string, any>)['createdAt'] === undefined && (value as Record<string, any>)['created_at'] === undefined)) return false;
+    if ((!('updatedAt' in (value as Record<string, any>)) && !('updated_at' in (value as Record<string, any>))) || ((value as Record<string, any>)['updatedAt'] === undefined && (value as Record<string, any>)['updated_at'] === undefined)) return false;
     return true;
 }
 
@@ -302,16 +250,16 @@ export function WorkflowDefinitionResponseFromJSONTyped(json: any, ignoreDiscrim
         'commonFilePathPartIds': json['common_file_path_part_ids'] == null ? undefined : json['common_file_path_part_ids'],
         'createdFromId': json['created_from_id'],
         'copyCount': json['copy_count'] == null ? undefined : json['copy_count'],
-        'lastRun': json['last_run'] == null ? undefined : LastRunSummaryFromJSON(json['last_run']),
+        'lastRun': json['last_run'] === undefined ? undefined : json['last_run'] === null ? null : LastRunSummaryFromJSON(json['last_run']),
         'pendingApprovalCount': json['pending_approval_count'] == null ? undefined : json['pending_approval_count'],
         'approvalState': PathPartApprovalStateFromJSON(json['approval_state']),
-        'owner': json['owner'] == null ? undefined : UserInfoFromJSON(json['owner']),
+        'owner': json['owner'] === undefined ? undefined : json['owner'] === null ? null : UserInfoFromJSON(json['owner']),
         'scheduleCadence': json['schedule_cadence'] == null ? undefined : ScheduleCadenceFromJSON(json['schedule_cadence']),
-        'scheduleStartAt': json['schedule_start_at'] == null ? undefined : (new Date(json['schedule_start_at'])),
-        'scheduleTimezone': json['schedule_timezone'] == null ? undefined : json['schedule_timezone'],
-        'createdAt': (new Date(json['created_at'])),
-        'updatedAt': (new Date(json['updated_at'])),
-        'permissions': json['permissions'] == null ? undefined : ItemPermissionsFromJSON(json['permissions']),
+        'scheduleStartAt': json['schedule_start_at'] === undefined ? undefined : json['schedule_start_at'] === null ? null : (parseDateTime(json['schedule_start_at'])),
+        'scheduleTimezone': json['schedule_timezone'] === undefined ? undefined : json['schedule_timezone'] === null ? null : json['schedule_timezone'],
+        'createdAt': (json['created_at'] == null ? json['created_at'] : parseDateTime(json['created_at'])),
+        'updatedAt': (json['updated_at'] == null ? json['updated_at'] : parseDateTime(json['updated_at'])),
+        'permissions': json['permissions'] === undefined ? undefined : json['permissions'] === null ? null : ItemPermissionsFromJSON(json['permissions']),
     };
 }
 
@@ -348,10 +296,10 @@ export function WorkflowDefinitionResponseToJSONTyped(value?: WorkflowDefinition
         'approval_state': PathPartApprovalStateToJSON(value['approvalState']),
         'owner': UserInfoToJSON(value['owner']),
         'schedule_cadence': ScheduleCadenceToJSON(value['scheduleCadence']),
-        'schedule_start_at': value['scheduleStartAt'] == null ? value['scheduleStartAt'] : value['scheduleStartAt'].toISOString(),
+        'schedule_start_at': value['scheduleStartAt'] == null ? value['scheduleStartAt'] : serializeDateTime(value['scheduleStartAt']),
         'schedule_timezone': value['scheduleTimezone'],
-        'created_at': value['createdAt'].toISOString(),
-        'updated_at': value['updatedAt'].toISOString(),
+        'created_at': value['createdAt'] == null ? value['createdAt'] : serializeDateTime(value['createdAt']),
+        'updated_at': value['updatedAt'] == null ? value['updatedAt'] : serializeDateTime(value['updatedAt']),
         'permissions': ItemPermissionsToJSON(value['permissions']),
     };
 }

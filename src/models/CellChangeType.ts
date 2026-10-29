@@ -20,7 +20,7 @@
 export const CellChangeType = {
     Added: 'added',
     Removed: 'removed',
-    Modified: 'modified'
+    Modified: 'modified',
 } as const;
 export type CellChangeType = typeof CellChangeType[keyof typeof CellChangeType];
 

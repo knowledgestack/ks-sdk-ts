@@ -43,38 +43,26 @@ import {
 export interface TenantSettingsResponse {
     /**
      * 
-     * @type {SupportedLanguage}
-     * @memberof TenantSettingsResponse
      */
     language: SupportedLanguage;
     /**
      * Tenant description
-     * @type {string}
-     * @memberof TenantSettingsResponse
      */
     description: string;
     /**
      * Industry / company type captured during onboarding
-     * @type {string}
-     * @memberof TenantSettingsResponse
      */
     industry?: string | null;
     /**
      * IANA timezone (e.g. 'America/New_York')
-     * @type {string}
-     * @memberof TenantSettingsResponse
      */
     timezone: string;
     /**
      * 
-     * @type {DisplayNameFormat}
-     * @memberof TenantSettingsResponse
      */
     displayName: DisplayNameFormat;
     /**
      * 
-     * @type {InviteLinkSettingsResponse}
-     * @memberof TenantSettingsResponse
      */
     inviteLink: InviteLinkSettingsResponse;
 }
@@ -82,6 +70,8 @@ export interface TenantSettingsResponse {
 
 export const TenantSettingsResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -105,8 +95,8 @@ export function instanceOfTenantSettingsResponse(value: object): value is Tenant
     if (!('language' in value) || value['language'] === undefined) return false;
     if (!('description' in value) || value['description'] === undefined) return false;
     if (!('timezone' in value) || value['timezone'] === undefined) return false;
-    if (!('displayName' in value) || value['displayName'] === undefined) return false;
-    if (!('inviteLink' in value) || value['inviteLink'] === undefined) return false;
+    if ((!('displayName' in (value as Record<string, any>)) && !('display_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['displayName'] === undefined && (value as Record<string, any>)['display_name'] === undefined)) return false;
+    if ((!('inviteLink' in (value as Record<string, any>)) && !('invite_link' in (value as Record<string, any>))) || ((value as Record<string, any>)['inviteLink'] === undefined && (value as Record<string, any>)['invite_link'] === undefined)) return false;
     return true;
 }
 
@@ -122,7 +112,7 @@ export function TenantSettingsResponseFromJSONTyped(json: any, ignoreDiscriminat
         
         'language': SupportedLanguageFromJSON(json['language']),
         'description': json['description'],
-        'industry': json['industry'] == null ? undefined : json['industry'],
+        'industry': json['industry'] === undefined ? undefined : json['industry'] === null ? null : json['industry'],
         'timezone': json['timezone'],
         'displayName': DisplayNameFormatFromJSON(json['display_name']),
         'inviteLink': InviteLinkSettingsResponseFromJSON(json['invite_link']),

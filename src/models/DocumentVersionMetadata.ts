@@ -52,163 +52,113 @@ import {
 export interface DocumentVersionMetadata {
     /**
      * S3 URL to the source document (set by API on upload)
-     * @type {string}
-     * @memberof DocumentVersionMetadata
      */
     sourceS3?: string | null;
     /**
      * S3 URL to watermark-removed source document
-     * @type {string}
-     * @memberof DocumentVersionMetadata
      */
     cleanedSourceS3?: string | null;
     /**
      * S3 URL to the original pre-conversion legacy Office file; null unless this version was converted from a legacy binary format. After conversion source_s3 points at the modern OOXML file and this field preserves the original for traceability.
-     * @type {string}
-     * @memberof DocumentVersionMetadata
      */
     preconversionSourceS3?: string | null;
     /**
      * S3 URL to the agent's cited copy of the source (KS Citation comments intact); null unless the agent uploaded a file carrying citations. Read only for the agent edit round-trip so a follow-up chat re-extracts citation anchors instead of losing them; source_s3 stays the clean artifact served to chunking, the FE viewer, and downloads.
-     * @type {string}
-     * @memberof DocumentVersionMetadata
      */
     citedSourceS3?: string | null;
     /**
      * S3 URL to the fast plaintext export of the document
-     * @type {string}
-     * @memberof DocumentVersionMetadata
      */
     fastPlaintextS3?: string | null;
     /**
      * S3 URI of the ASR transcript JSON (per-segment start_ms/end_ms/text); null for non-media. Chunks carry timings too, but at merged-chunk granularity, so this is the only per-segment source.
-     * @type {string}
-     * @memberof DocumentVersionMetadata
      */
     transcriptS3?: string | null;
     /**
      * Base64-encoded SHA256 hash of the uploaded source file
-     * @type {string}
-     * @memberof DocumentVersionMetadata
      */
     hash?: string | null;
     /**
      * Current state of the ingestion pipeline workflow
-     * @type {PipelineState}
-     * @memberof DocumentVersionMetadata
      */
     pipelineState?: PipelineState | null;
     /**
      * Total number of pages in the document
-     * @type {number}
-     * @memberof DocumentVersionMetadata
      */
     totalPages?: number | null;
     /**
      * Total number of sections created
-     * @type {number}
-     * @memberof DocumentVersionMetadata
      */
     totalSections?: number | null;
     /**
      * Total number of chunks created
-     * @type {number}
-     * @memberof DocumentVersionMetadata
      */
     totalChunks?: number | null;
     /**
      * Media (audio/video) duration in milliseconds; null for non-media
-     * @type {number}
-     * @memberof DocumentVersionMetadata
      */
     durationMs?: number | null;
     /**
      * ASR-detected language of the media transcript, as returned by the ASR provider; null for non-media or when the provider omits it
-     * @type {string}
-     * @memberof DocumentVersionMetadata
      */
     language?: string | null;
     /**
      * Number of transcript segments produced by ASR; null for non-media
-     * @type {number}
-     * @memberof DocumentVersionMetadata
      */
     segmentCount?: number | null;
     /**
      * Total formula cells in the workbook (XLSX only)
-     * @type {number}
-     * @memberof DocumentVersionMetadata
      */
     totalFormulas?: number | null;
     /**
      * S3 URI to the full XLSX parse result JSON containing dependency graph, named ranges, and KPI catalog
-     * @type {string}
-     * @memberof DocumentVersionMetadata
      */
     xlsxParseResultS3?: string | null;
     /**
      * Named ranges defined in the workbook (name, ref_string, scope)
-     * @type {Array<{ [key: string]: any; }>}
-     * @memberof DocumentVersionMetadata
      */
     xlsxNamedRanges?: Array<{ [key: string]: any; }> | null;
     /**
      * KPI (Key Performance Indicator) cells detected by the XLSX parser. Each entry contains a label, computed value, cell address, and driver cell references. Applicable to financial models and operational spreadsheets; not populated for template spreadsheets that lack computed KPI cells.
-     * @type {Array<{ [key: string]: any; }>}
-     * @memberof DocumentVersionMetadata
      */
     xlsxKpiCatalog?: Array<{ [key: string]: any; }> | null;
     /**
      * In-file citation anchors for agent-generated .xlsx/.docx deliverables. Each anchor binds an in-file location (cell or paragraph) to the chunk IDs cited there. Populated by ks_upload_from_sandbox during upload; ``null`` for versions ingested before this field shipped or for files re-uploaded outside the agent flow. FE enriches chunks via /v1/chunks/bulk.
-     * @type {Array<XlsxCellAnchorOutputOrDocxParagraphAnchorOutput>}
-     * @memberof DocumentVersionMetadata
      */
     citationAnchors?: Array<XlsxCellAnchorOutputOrDocxParagraphAnchorOutput> | null;
     /**
      * Aggregate statistics for the document version (tokens, chunk counts, depth)
-     * @type {InformationStatistics}
-     * @memberof DocumentVersionMetadata
      */
     informationStatistics?: InformationStatistics | null;
     /**
      * Diagnostics only — nothing reads it and nothing refunds. Kept for pre-existing rows that carry it.
-     * @type {boolean}
-     * @memberof DocumentVersionMetadata
      */
     quotaCharged?: boolean;
     /**
      * Page quantity charged at conversion start; 0 if not yet charged
-     * @type {number}
-     * @memberof DocumentVersionMetadata
      */
     quotaPageCount?: number;
     /**
      * MEDIA_MINUTE quantity charged at media preparation; 0 if not yet charged
-     * @type {number}
-     * @memberof DocumentVersionMetadata
      */
     quotaMediaMinutes?: number;
     /**
      * Stable consume key (matches workflow_id) written for diagnostics/audit; 'UNSET' when no consume was committed
-     * @type {string}
-     * @memberof DocumentVersionMetadata
      */
     quotaIdempotencyKey?: string;
     /**
      * MD5 of source bytes; 'UNSET' for pre-Phase-2 docs, real hex digest after first prep run
-     * @type {string}
-     * @memberof DocumentVersionMetadata
      */
     fileMd5?: string;
     /**
      * Opt-in create key. A repeat ingest with the same key at the same (parent, name) replays this document instead of colliding — makes a ZIP fan-out member retry idempotent.
-     * @type {string}
-     * @memberof DocumentVersionMetadata
      */
     idempotencyKey?: string | null;
 }
 export const DocumentVersionMetadataPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -242,32 +192,32 @@ export function DocumentVersionMetadataFromJSONTyped(json: any, ignoreDiscrimina
     }
     return {
         
-        'sourceS3': json['source_s3'] == null ? undefined : json['source_s3'],
-        'cleanedSourceS3': json['cleaned_source_s3'] == null ? undefined : json['cleaned_source_s3'],
-        'preconversionSourceS3': json['preconversion_source_s3'] == null ? undefined : json['preconversion_source_s3'],
-        'citedSourceS3': json['cited_source_s3'] == null ? undefined : json['cited_source_s3'],
-        'fastPlaintextS3': json['fast_plaintext_s3'] == null ? undefined : json['fast_plaintext_s3'],
-        'transcriptS3': json['transcript_s3'] == null ? undefined : json['transcript_s3'],
-        'hash': json['hash'] == null ? undefined : json['hash'],
-        'pipelineState': json['pipeline_state'] == null ? undefined : PipelineStateFromJSON(json['pipeline_state']),
-        'totalPages': json['total_pages'] == null ? undefined : json['total_pages'],
-        'totalSections': json['total_sections'] == null ? undefined : json['total_sections'],
-        'totalChunks': json['total_chunks'] == null ? undefined : json['total_chunks'],
-        'durationMs': json['duration_ms'] == null ? undefined : json['duration_ms'],
-        'language': json['language'] == null ? undefined : json['language'],
-        'segmentCount': json['segment_count'] == null ? undefined : json['segment_count'],
-        'totalFormulas': json['total_formulas'] == null ? undefined : json['total_formulas'],
-        'xlsxParseResultS3': json['xlsx_parse_result_s3'] == null ? undefined : json['xlsx_parse_result_s3'],
-        'xlsxNamedRanges': json['xlsx_named_ranges'] == null ? undefined : json['xlsx_named_ranges'],
-        'xlsxKpiCatalog': json['xlsx_kpi_catalog'] == null ? undefined : json['xlsx_kpi_catalog'],
-        'citationAnchors': json['citation_anchors'] == null ? undefined : ((json['citation_anchors'] as Array<any>).map(XlsxCellAnchorOutputOrDocxParagraphAnchorOutputFromJSON)),
-        'informationStatistics': json['information_statistics'] == null ? undefined : InformationStatisticsFromJSON(json['information_statistics']),
+        'sourceS3': json['source_s3'] === undefined ? undefined : json['source_s3'] === null ? null : json['source_s3'],
+        'cleanedSourceS3': json['cleaned_source_s3'] === undefined ? undefined : json['cleaned_source_s3'] === null ? null : json['cleaned_source_s3'],
+        'preconversionSourceS3': json['preconversion_source_s3'] === undefined ? undefined : json['preconversion_source_s3'] === null ? null : json['preconversion_source_s3'],
+        'citedSourceS3': json['cited_source_s3'] === undefined ? undefined : json['cited_source_s3'] === null ? null : json['cited_source_s3'],
+        'fastPlaintextS3': json['fast_plaintext_s3'] === undefined ? undefined : json['fast_plaintext_s3'] === null ? null : json['fast_plaintext_s3'],
+        'transcriptS3': json['transcript_s3'] === undefined ? undefined : json['transcript_s3'] === null ? null : json['transcript_s3'],
+        'hash': json['hash'] === undefined ? undefined : json['hash'] === null ? null : json['hash'],
+        'pipelineState': json['pipeline_state'] === undefined ? undefined : json['pipeline_state'] === null ? null : PipelineStateFromJSON(json['pipeline_state']),
+        'totalPages': json['total_pages'] === undefined ? undefined : json['total_pages'] === null ? null : json['total_pages'],
+        'totalSections': json['total_sections'] === undefined ? undefined : json['total_sections'] === null ? null : json['total_sections'],
+        'totalChunks': json['total_chunks'] === undefined ? undefined : json['total_chunks'] === null ? null : json['total_chunks'],
+        'durationMs': json['duration_ms'] === undefined ? undefined : json['duration_ms'] === null ? null : json['duration_ms'],
+        'language': json['language'] === undefined ? undefined : json['language'] === null ? null : json['language'],
+        'segmentCount': json['segment_count'] === undefined ? undefined : json['segment_count'] === null ? null : json['segment_count'],
+        'totalFormulas': json['total_formulas'] === undefined ? undefined : json['total_formulas'] === null ? null : json['total_formulas'],
+        'xlsxParseResultS3': json['xlsx_parse_result_s3'] === undefined ? undefined : json['xlsx_parse_result_s3'] === null ? null : json['xlsx_parse_result_s3'],
+        'xlsxNamedRanges': json['xlsx_named_ranges'] === undefined ? undefined : json['xlsx_named_ranges'] === null ? null : json['xlsx_named_ranges'],
+        'xlsxKpiCatalog': json['xlsx_kpi_catalog'] === undefined ? undefined : json['xlsx_kpi_catalog'] === null ? null : json['xlsx_kpi_catalog'],
+        'citationAnchors': json['citation_anchors'] === undefined ? undefined : json['citation_anchors'] === null ? null : ((json['citation_anchors'] as Array<any>).map(XlsxCellAnchorOutputOrDocxParagraphAnchorOutputFromJSON)),
+        'informationStatistics': json['information_statistics'] === undefined ? undefined : json['information_statistics'] === null ? null : InformationStatisticsFromJSON(json['information_statistics']),
         'quotaCharged': json['quota_charged'] == null ? undefined : json['quota_charged'],
         'quotaPageCount': json['quota_page_count'] == null ? undefined : json['quota_page_count'],
         'quotaMediaMinutes': json['quota_media_minutes'] == null ? undefined : json['quota_media_minutes'],
         'quotaIdempotencyKey': json['quota_idempotency_key'] == null ? undefined : json['quota_idempotency_key'],
         'fileMd5': json['file_md5'] == null ? undefined : json['file_md5'],
-        'idempotencyKey': json['idempotency_key'] == null ? undefined : json['idempotency_key'],
+        'idempotencyKey': json['idempotency_key'] === undefined ? undefined : json['idempotency_key'] === null ? null : json['idempotency_key'],
     };
 }
 

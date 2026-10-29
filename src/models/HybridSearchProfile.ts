@@ -20,7 +20,7 @@
 export const HybridSearchProfile = {
     Hybrid: 'hybrid',
     Dense: 'dense',
-    Sparse: 'sparse'
+    Sparse: 'sparse',
 } as const;
 export type HybridSearchProfile = typeof HybridSearchProfile[keyof typeof HybridSearchProfile];
 

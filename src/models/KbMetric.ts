@@ -22,7 +22,7 @@ export const KbMetric = {
     IngestionCompleted: 'ingestion_completed',
     IngestionFailed: 'ingestion_failed',
     Message: 'message',
-    Search: 'search'
+    Search: 'search',
 } as const;
 export type KbMetric = typeof KbMetric[keyof typeof KbMetric];
 

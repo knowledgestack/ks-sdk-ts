@@ -21,31 +21,25 @@ import { mapValues } from '../runtime';
 export interface ConnectionSummary {
     /**
      * 
-     * @type {string}
-     * @memberof ConnectionSummary
      */
     host: string;
     /**
      * 
-     * @type {number}
-     * @memberof ConnectionSummary
      */
     port?: number | null;
     /**
      * 
-     * @type {string}
-     * @memberof ConnectionSummary
      */
     database: string;
     /**
      * 
-     * @type {string}
-     * @memberof ConnectionSummary
      */
     username: string;
 }
 export const ConnectionSummaryPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -83,7 +77,7 @@ export function ConnectionSummaryFromJSONTyped(json: any, ignoreDiscriminator: b
     return {
         
         'host': json['host'],
-        'port': json['port'] == null ? undefined : json['port'],
+        'port': json['port'] === undefined ? undefined : json['port'] === null ? null : json['port'],
         'database': json['database'],
         'username': json['username'],
     };

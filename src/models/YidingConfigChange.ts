@@ -21,19 +21,17 @@ import { mapValues } from '../runtime';
 export interface YidingConfigChange {
     /**
      * Crawl recurrence, in the tenant's timezone
-     * @type {string}
-     * @memberof YidingConfigChange
      */
     cron?: string | null;
     /**
      * Write-only: omit it to keep the stored one
-     * @type {string}
-     * @memberof YidingConfigChange
      */
     password?: string | null;
 }
 export const YidingConfigChangePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -48,6 +46,7 @@ export const YidingConfigChangePropertyValidationAttributesMap: {
     }
 } = {
     password: {
+        dataType: "string",
         minLength: 1,
     },
 }
@@ -70,8 +69,8 @@ export function YidingConfigChangeFromJSONTyped(json: any, ignoreDiscriminator: 
     }
     return {
         
-        'cron': json['cron'] == null ? undefined : json['cron'],
-        'password': json['password'] == null ? undefined : json['password'],
+        'cron': json['cron'] === undefined ? undefined : json['cron'] === null ? null : json['cron'],
+        'password': json['password'] === undefined ? undefined : json['password'] === null ? null : json['password'],
     };
 }
 

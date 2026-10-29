@@ -21,37 +21,29 @@ import { mapValues } from '../runtime';
 export interface ApiConnectionRequestRequest {
     /**
      * 
-     * @type {string}
-     * @memberof ApiConnectionRequestRequest
      */
     method: string;
     /**
      * 
-     * @type {string}
-     * @memberof ApiConnectionRequestRequest
      */
     path?: string;
     /**
      * 
-     * @type {{ [key: string]: string; }}
-     * @memberof ApiConnectionRequestRequest
      */
     query?: { [key: string]: string; } | null;
     /**
      * 
-     * @type {{ [key: string]: string; }}
-     * @memberof ApiConnectionRequestRequest
      */
     headers?: { [key: string]: string; } | null;
     /**
      * 
-     * @type {any}
-     * @memberof ApiConnectionRequestRequest
      */
     body?: any | null;
 }
 export const ApiConnectionRequestRequestPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -66,9 +58,12 @@ export const ApiConnectionRequestRequestPropertyValidationAttributesMap: {
     }
 } = {
     method: {
+        dataType: "string",
+        required: true,
         maxLength: 16,
     },
     path: {
+        dataType: "string",
         maxLength: 4096,
     },
 }
@@ -94,9 +89,9 @@ export function ApiConnectionRequestRequestFromJSONTyped(json: any, ignoreDiscri
         
         'method': json['method'],
         'path': json['path'] == null ? undefined : json['path'],
-        'query': json['query'] == null ? undefined : json['query'],
-        'headers': json['headers'] == null ? undefined : json['headers'],
-        'body': json['body'] == null ? undefined : json['body'],
+        'query': json['query'] === undefined ? undefined : json['query'] === null ? null : json['query'],
+        'headers': json['headers'] === undefined ? undefined : json['headers'] === null ? null : json['headers'],
+        'body': json['body'] === undefined ? undefined : json['body'] === null ? null : json['body'],
     };
 }
 

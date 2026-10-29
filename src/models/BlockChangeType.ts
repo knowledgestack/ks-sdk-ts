@@ -20,7 +20,7 @@
 export const BlockChangeType = {
     Added: 'added',
     Removed: 'removed',
-    Modified: 'modified'
+    Modified: 'modified',
 } as const;
 export type BlockChangeType = typeof BlockChangeType[keyof typeof BlockChangeType];
 

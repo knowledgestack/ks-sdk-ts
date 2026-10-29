@@ -21,7 +21,7 @@ export const ToolStatus = {
     Running: 'running',
     Success: 'success',
     Error: 'error',
-    Canceled: 'canceled'
+    Canceled: 'canceled',
 } as const;
 export type ToolStatus = typeof ToolStatus[keyof typeof ToolStatus];
 

@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
 /**
  * Request to create a new API key.
  * @export
@@ -21,19 +21,17 @@ import { mapValues } from '../runtime';
 export interface CreateApiKeyRequest {
     /**
      * 
-     * @type {string}
-     * @memberof CreateApiKeyRequest
      */
     name: string;
     /**
      * Optional absolute expiry. Null means the key never expires.
-     * @type {Date}
-     * @memberof CreateApiKeyRequest
      */
     expiresAt?: Date | null;
 }
 export const CreateApiKeyRequestPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -48,6 +46,8 @@ export const CreateApiKeyRequestPropertyValidationAttributesMap: {
     }
 } = {
     name: {
+        dataType: "string",
+        required: true,
         maxLength: 100,
         minLength: 1,
     },
@@ -73,7 +73,7 @@ export function CreateApiKeyRequestFromJSONTyped(json: any, ignoreDiscriminator:
     return {
         
         'name': json['name'],
-        'expiresAt': json['expires_at'] == null ? undefined : (new Date(json['expires_at'])),
+        'expiresAt': json['expires_at'] === undefined ? undefined : json['expires_at'] === null ? null : (parseDateTime(json['expires_at'])),
     };
 }
 
@@ -89,7 +89,7 @@ export function CreateApiKeyRequestToJSONTyped(value?: CreateApiKeyRequest | nul
     return {
         
         'name': value['name'],
-        'expires_at': value['expiresAt'] == null ? value['expiresAt'] : value['expiresAt'].toISOString(),
+        'expires_at': value['expiresAt'] == null ? value['expiresAt'] : serializeDateTime(value['expiresAt']),
     };
 }
 

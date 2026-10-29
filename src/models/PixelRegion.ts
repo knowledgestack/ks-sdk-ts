@@ -21,31 +21,25 @@ import { mapValues } from '../runtime';
 export interface PixelRegion {
     /**
      * 
-     * @type {number}
-     * @memberof PixelRegion
      */
     x: number;
     /**
      * 
-     * @type {number}
-     * @memberof PixelRegion
      */
     y: number;
     /**
      * 
-     * @type {number}
-     * @memberof PixelRegion
      */
     width: number;
     /**
      * 
-     * @type {number}
-     * @memberof PixelRegion
      */
     height: number;
 }
 export const PixelRegionPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,

@@ -28,7 +28,7 @@ export const FeedbackReason = {
     StructureIssue: 'STRUCTURE_ISSUE',
     TableError: 'TABLE_ERROR',
     Formatting: 'FORMATTING',
-    Other: 'OTHER'
+    Other: 'OTHER',
 } as const;
 export type FeedbackReason = typeof FeedbackReason[keyof typeof FeedbackReason];
 

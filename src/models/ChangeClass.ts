@@ -23,7 +23,7 @@ export const ChangeClass = {
     Formatting: 'formatting',
     Structural: 'structural',
     Image: 'image',
-    Revision: 'revision'
+    Revision: 'revision',
 } as const;
 export type ChangeClass = typeof ChangeClass[keyof typeof ChangeClass];
 

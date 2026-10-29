@@ -36,19 +36,17 @@ import {
 export interface TenantQuotaStateResponse {
     /**
      * One entry per metered resource
-     * @type {Array<MeteredQuotaStatus>}
-     * @memberof TenantQuotaStateResponse
      */
     metered: Array<MeteredQuotaStatus>;
     /**
      * 
-     * @type {SeatQuotaStatus}
-     * @memberof TenantQuotaStateResponse
      */
     seats: SeatQuotaStatus;
 }
 export const TenantQuotaStateResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,

@@ -21,14 +21,10 @@ import { mapValues } from '../runtime';
 export interface WorkflowRunCallbackRequest {
     /**
      * 
-     * @type {WorkflowRunCallbackRequestStatusEnum}
-     * @memberof WorkflowRunCallbackRequest
      */
     status: WorkflowRunCallbackRequestStatusEnum;
     /**
      * 
-     * @type {string}
-     * @memberof WorkflowRunCallbackRequest
      */
     error?: string | null;
 }
@@ -39,12 +35,14 @@ export interface WorkflowRunCallbackRequest {
  */
 export const WorkflowRunCallbackRequestStatusEnum = {
     Completed: 'COMPLETED',
-    Failed: 'FAILED'
+    Failed: 'FAILED',
 } as const;
 export type WorkflowRunCallbackRequestStatusEnum = typeof WorkflowRunCallbackRequestStatusEnum[keyof typeof WorkflowRunCallbackRequestStatusEnum];
 
 export const WorkflowRunCallbackRequestPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -59,6 +57,7 @@ export const WorkflowRunCallbackRequestPropertyValidationAttributesMap: {
     }
 } = {
     error: {
+        dataType: "string",
         maxLength: 8192,
     },
 }
@@ -83,7 +82,7 @@ export function WorkflowRunCallbackRequestFromJSONTyped(json: any, ignoreDiscrim
     return {
         
         'status': json['status'],
-        'error': json['error'] == null ? undefined : json['error'],
+        'error': json['error'] === undefined ? undefined : json['error'] === null ? null : json['error'],
     };
 }
 

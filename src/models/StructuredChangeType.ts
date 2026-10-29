@@ -20,7 +20,7 @@
 export const StructuredChangeType = {
     Added: 'added',
     Removed: 'removed',
-    Modified: 'modified'
+    Modified: 'modified',
 } as const;
 export type StructuredChangeType = typeof StructuredChangeType[keyof typeof StructuredChangeType];
 

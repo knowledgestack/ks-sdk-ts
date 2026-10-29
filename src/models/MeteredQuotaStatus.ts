@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
 import type { UsageMetric } from './UsageMetric';
 import {
     UsageMetricFromJSON,
@@ -29,38 +29,26 @@ import {
 export interface MeteredQuotaStatus {
     /**
      * 
-     * @type {UsageMetric}
-     * @memberof MeteredQuotaStatus
      */
     metric: UsageMetric;
     /**
      * Counter for the active period. May be negative if a refund crossed period boundaries.
-     * @type {number}
-     * @memberof MeteredQuotaStatus
      */
     used: number;
     /**
      * Snapshot of the cap at period start
-     * @type {number}
-     * @memberof MeteredQuotaStatus
      */
     limit: number;
     /**
      * Active period start (UTC)
-     * @type {Date}
-     * @memberof MeteredQuotaStatus
      */
     periodStart: Date;
     /**
      * Active period end (UTC)
-     * @type {Date}
-     * @memberof MeteredQuotaStatus
      */
     periodEnd: Date;
     /**
      * Persistent additional-quota balance for this metric. Unchanged by period rollover; decremented when included is exhausted, incremented on refund or top-up.
-     * @type {number}
-     * @memberof MeteredQuotaStatus
      */
     additionalBalance?: number;
 }
@@ -68,6 +56,8 @@ export interface MeteredQuotaStatus {
 
 export const MeteredQuotaStatusPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -91,8 +81,8 @@ export function instanceOfMeteredQuotaStatus(value: object): value is MeteredQuo
     if (!('metric' in value) || value['metric'] === undefined) return false;
     if (!('used' in value) || value['used'] === undefined) return false;
     if (!('limit' in value) || value['limit'] === undefined) return false;
-    if (!('periodStart' in value) || value['periodStart'] === undefined) return false;
-    if (!('periodEnd' in value) || value['periodEnd'] === undefined) return false;
+    if ((!('periodStart' in (value as Record<string, any>)) && !('period_start' in (value as Record<string, any>))) || ((value as Record<string, any>)['periodStart'] === undefined && (value as Record<string, any>)['period_start'] === undefined)) return false;
+    if ((!('periodEnd' in (value as Record<string, any>)) && !('period_end' in (value as Record<string, any>))) || ((value as Record<string, any>)['periodEnd'] === undefined && (value as Record<string, any>)['period_end'] === undefined)) return false;
     return true;
 }
 
@@ -109,8 +99,8 @@ export function MeteredQuotaStatusFromJSONTyped(json: any, ignoreDiscriminator: 
         'metric': UsageMetricFromJSON(json['metric']),
         'used': json['used'],
         'limit': json['limit'],
-        'periodStart': (new Date(json['period_start'])),
-        'periodEnd': (new Date(json['period_end'])),
+        'periodStart': (json['period_start'] == null ? json['period_start'] : parseDateTime(json['period_start'])),
+        'periodEnd': (json['period_end'] == null ? json['period_end'] : parseDateTime(json['period_end'])),
         'additionalBalance': json['additional_balance'] == null ? undefined : json['additional_balance'],
     };
 }
@@ -129,8 +119,8 @@ export function MeteredQuotaStatusToJSONTyped(value?: MeteredQuotaStatus | null,
         'metric': UsageMetricToJSON(value['metric']),
         'used': value['used'],
         'limit': value['limit'],
-        'period_start': value['periodStart'].toISOString(),
-        'period_end': value['periodEnd'].toISOString(),
+        'period_start': value['periodStart'] == null ? value['periodStart'] : serializeDateTime(value['periodStart']),
+        'period_end': value['periodEnd'] == null ? value['periodEnd'] : serializeDateTime(value['periodEnd']),
         'additional_balance': value['additionalBalance'],
     };
 }

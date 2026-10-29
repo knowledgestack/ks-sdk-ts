@@ -19,7 +19,7 @@
  */
 export const DocumentOrigin = {
     Source: 'SOURCE',
-    Generated: 'GENERATED'
+    Generated: 'GENERATED',
 } as const;
 export type DocumentOrigin = typeof DocumentOrigin[keyof typeof DocumentOrigin];
 

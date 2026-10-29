@@ -29,26 +29,18 @@ import {
 export interface BulkGrantItem {
     /**
      * 
-     * @type {string}
-     * @memberof BulkGrantItem
      */
     userId: string;
     /**
      * 
-     * @type {string}
-     * @memberof BulkGrantItem
      */
     objectId: string;
     /**
      * 
-     * @type {PermissionCapability}
-     * @memberof BulkGrantItem
      */
     capability: PermissionCapability;
     /**
      * 
-     * @type {boolean}
-     * @memberof BulkGrantItem
      */
     canApprove?: boolean;
 }
@@ -56,6 +48,8 @@ export interface BulkGrantItem {
 
 export const BulkGrantItemPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -76,8 +70,8 @@ export const BulkGrantItemPropertyValidationAttributesMap: {
  * Check if a given object implements the BulkGrantItem interface.
  */
 export function instanceOfBulkGrantItem(value: object): value is BulkGrantItem {
-    if (!('userId' in value) || value['userId'] === undefined) return false;
-    if (!('objectId' in value) || value['objectId'] === undefined) return false;
+    if ((!('userId' in (value as Record<string, any>)) && !('user_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['userId'] === undefined && (value as Record<string, any>)['user_id'] === undefined)) return false;
+    if ((!('objectId' in (value as Record<string, any>)) && !('object_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['objectId'] === undefined && (value as Record<string, any>)['object_id'] === undefined)) return false;
     if (!('capability' in value) || value['capability'] === undefined) return false;
     return true;
 }

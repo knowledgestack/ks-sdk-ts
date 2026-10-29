@@ -21,13 +21,13 @@ import { mapValues } from '../runtime';
 export interface EmailSentResponse {
     /**
      * 
-     * @type {string}
-     * @memberof EmailSentResponse
      */
     emailId: string;
 }
 export const EmailSentResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -48,7 +48,7 @@ export const EmailSentResponsePropertyValidationAttributesMap: {
  * Check if a given object implements the EmailSentResponse interface.
  */
 export function instanceOfEmailSentResponse(value: object): value is EmailSentResponse {
-    if (!('emailId' in value) || value['emailId'] === undefined) return false;
+    if ((!('emailId' in (value as Record<string, any>)) && !('email_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['emailId'] === undefined && (value as Record<string, any>)['email_id'] === undefined)) return false;
     return true;
 }
 

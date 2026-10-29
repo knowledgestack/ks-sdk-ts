@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
 /**
  * 
  * @export
@@ -21,37 +21,29 @@ import { mapValues } from '../runtime';
 export interface RepoCommitSummary {
     /**
      * 
-     * @type {string}
-     * @memberof RepoCommitSummary
      */
     sha: string;
     /**
      * First line of the commit message.
-     * @type {string}
-     * @memberof RepoCommitSummary
      */
     subject: string;
     /**
      * 
-     * @type {Date}
-     * @memberof RepoCommitSummary
      */
     authoredAt: Date;
     /**
      * The run saving this repository snapshot.
-     * @type {string}
-     * @memberof RepoCommitSummary
      */
     runId: string | null;
     /**
      * 
-     * @type {string}
-     * @memberof RepoCommitSummary
      */
     savedByUserId: string;
 }
 export const RepoCommitSummaryPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -74,9 +66,9 @@ export const RepoCommitSummaryPropertyValidationAttributesMap: {
 export function instanceOfRepoCommitSummary(value: object): value is RepoCommitSummary {
     if (!('sha' in value) || value['sha'] === undefined) return false;
     if (!('subject' in value) || value['subject'] === undefined) return false;
-    if (!('authoredAt' in value) || value['authoredAt'] === undefined) return false;
-    if (!('runId' in value) || value['runId'] === undefined) return false;
-    if (!('savedByUserId' in value) || value['savedByUserId'] === undefined) return false;
+    if ((!('authoredAt' in (value as Record<string, any>)) && !('authored_at' in (value as Record<string, any>))) || ((value as Record<string, any>)['authoredAt'] === undefined && (value as Record<string, any>)['authored_at'] === undefined)) return false;
+    if ((!('runId' in (value as Record<string, any>)) && !('run_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['runId'] === undefined && (value as Record<string, any>)['run_id'] === undefined)) return false;
+    if ((!('savedByUserId' in (value as Record<string, any>)) && !('saved_by_user_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['savedByUserId'] === undefined && (value as Record<string, any>)['saved_by_user_id'] === undefined)) return false;
     return true;
 }
 
@@ -92,7 +84,7 @@ export function RepoCommitSummaryFromJSONTyped(json: any, ignoreDiscriminator: b
         
         'sha': json['sha'],
         'subject': json['subject'],
-        'authoredAt': (new Date(json['authored_at'])),
+        'authoredAt': (json['authored_at'] == null ? json['authored_at'] : parseDateTime(json['authored_at'])),
         'runId': json['run_id'],
         'savedByUserId': json['saved_by_user_id'],
     };
@@ -111,7 +103,7 @@ export function RepoCommitSummaryToJSONTyped(value?: RepoCommitSummary | null, i
         
         'sha': value['sha'],
         'subject': value['subject'],
-        'authored_at': value['authoredAt'].toISOString(),
+        'authored_at': value['authoredAt'] == null ? value['authoredAt'] : serializeDateTime(value['authoredAt']),
         'run_id': value['runId'],
         'saved_by_user_id': value['savedByUserId'],
     };

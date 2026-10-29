@@ -36,19 +36,17 @@ import {
 export interface BulkGrantResponse {
     /**
      * 
-     * @type {Array<BulkGrantSuccess>}
-     * @memberof BulkGrantResponse
      */
     succeeded?: Array<BulkGrantSuccess>;
     /**
      * 
-     * @type {Array<BulkGrantItemFailure>}
-     * @memberof BulkGrantResponse
      */
     failed?: Array<BulkGrantItemFailure>;
 }
 export const BulkGrantResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,

@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
 /**
  * Partial update for an invite (admin/owner only).
  * @export
@@ -21,19 +21,17 @@ import { mapValues } from '../runtime';
 export interface UpdateInviteRequest {
     /**
      * 
-     * @type {Date}
-     * @memberof UpdateInviteRequest
      */
     expiresAt?: Date | null;
     /**
      * 
-     * @type {Array<string>}
-     * @memberof UpdateInviteRequest
      */
     groups?: Array<string> | null;
 }
 export const UpdateInviteRequestPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -48,6 +46,7 @@ export const UpdateInviteRequestPropertyValidationAttributesMap: {
     }
 } = {
     groups: {
+        dataType: "Array<string>",
         maxItems: 10,
         uniqueItems: false,
     },
@@ -71,8 +70,8 @@ export function UpdateInviteRequestFromJSONTyped(json: any, ignoreDiscriminator:
     }
     return {
         
-        'expiresAt': json['expires_at'] == null ? undefined : (new Date(json['expires_at'])),
-        'groups': json['groups'] == null ? undefined : json['groups'],
+        'expiresAt': json['expires_at'] === undefined ? undefined : json['expires_at'] === null ? null : (parseDateTime(json['expires_at'])),
+        'groups': json['groups'] === undefined ? undefined : json['groups'] === null ? null : json['groups'],
     };
 }
 
@@ -87,7 +86,7 @@ export function UpdateInviteRequestToJSONTyped(value?: UpdateInviteRequest | nul
 
     return {
         
-        'expires_at': value['expiresAt'] == null ? value['expiresAt'] : value['expiresAt'].toISOString(),
+        'expires_at': value['expiresAt'] == null ? value['expiresAt'] : serializeDateTime(value['expiresAt']),
         'groups': value['groups'],
     };
 }

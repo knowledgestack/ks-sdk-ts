@@ -20,7 +20,7 @@
 export const TenantUserJoinMethod = {
     Creator: 'CREATOR',
     Invited: 'INVITED',
-    Added: 'ADDED'
+    Added: 'ADDED',
 } as const;
 export type TenantUserJoinMethod = typeof TenantUserJoinMethod[keyof typeof TenantUserJoinMethod];
 

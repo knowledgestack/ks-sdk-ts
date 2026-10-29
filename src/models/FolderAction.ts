@@ -18,7 +18,7 @@
  * @export
  */
 export const FolderAction = {
-    Reembed: 'reembed'
+    Reembed: 'reembed',
 } as const;
 export type FolderAction = typeof FolderAction[keyof typeof FolderAction];
 

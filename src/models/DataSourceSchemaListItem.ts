@@ -21,19 +21,17 @@ import { mapValues } from '../runtime';
 export interface DataSourceSchemaListItem {
     /**
      * 
-     * @type {string}
-     * @memberof DataSourceSchemaListItem
      */
     name: string;
     /**
      * 
-     * @type {boolean}
-     * @memberof DataSourceSchemaListItem
      */
     isDefault: boolean;
 }
 export const DataSourceSchemaListItemPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -55,7 +53,7 @@ export const DataSourceSchemaListItemPropertyValidationAttributesMap: {
  */
 export function instanceOfDataSourceSchemaListItem(value: object): value is DataSourceSchemaListItem {
     if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('isDefault' in value) || value['isDefault'] === undefined) return false;
+    if ((!('isDefault' in (value as Record<string, any>)) && !('is_default' in (value as Record<string, any>))) || ((value as Record<string, any>)['isDefault'] === undefined && (value as Record<string, any>)['is_default'] === undefined)) return false;
     return true;
 }
 

@@ -29,32 +29,22 @@ import {
 export interface DocxParagraphAnchorInput {
     /**
      * 
-     * @type {DocxParagraphAnchorInputTypeEnum}
-     * @memberof DocxParagraphAnchorInput
      */
     type?: DocxParagraphAnchorInputTypeEnum;
     /**
      * 0-based position of the <w:p> in word/document.xml body.
-     * @type {number}
-     * @memberof DocxParagraphAnchorInput
      */
     paragraphIndex: number;
     /**
      * w:id of the comment in word/comments.xml.
-     * @type {number}
-     * @memberof DocxParagraphAnchorInput
      */
     commentId: number;
     /**
      * Cited chunks in the order they appeared in the comment body, each with the source-document snapshot resolved at save time.
-     * @type {Array<CitedChunk>}
-     * @memberof DocxParagraphAnchorInput
      */
     citations: Array<CitedChunk>;
     /**
      * Paragraph text at this anchor (first 160 chars), for FE display. NOT the cited quote.
-     * @type {string}
-     * @memberof DocxParagraphAnchorInput
      */
     anchorText?: string;
 }
@@ -64,12 +54,14 @@ export interface DocxParagraphAnchorInput {
  * @export
  */
 export const DocxParagraphAnchorInputTypeEnum = {
-    DocxParagraph: 'docx_paragraph'
+    DocxParagraph: 'docx_paragraph',
 } as const;
 export type DocxParagraphAnchorInputTypeEnum = typeof DocxParagraphAnchorInputTypeEnum[keyof typeof DocxParagraphAnchorInputTypeEnum];
 
 export const DocxParagraphAnchorInputPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -84,10 +76,13 @@ export const DocxParagraphAnchorInputPropertyValidationAttributesMap: {
     }
 } = {
     paragraphIndex: {
+        dataType: "number",
+        required: true,
         minimum: 0,
         exclusiveMinimum: false,
     },
     anchorText: {
+        dataType: "string",
         maxLength: 160,
     },
 }
@@ -97,8 +92,8 @@ export const DocxParagraphAnchorInputPropertyValidationAttributesMap: {
  * Check if a given object implements the DocxParagraphAnchorInput interface.
  */
 export function instanceOfDocxParagraphAnchorInput(value: object): value is DocxParagraphAnchorInput {
-    if (!('paragraphIndex' in value) || value['paragraphIndex'] === undefined) return false;
-    if (!('commentId' in value) || value['commentId'] === undefined) return false;
+    if ((!('paragraphIndex' in (value as Record<string, any>)) && !('paragraph_index' in (value as Record<string, any>))) || ((value as Record<string, any>)['paragraphIndex'] === undefined && (value as Record<string, any>)['paragraph_index'] === undefined)) return false;
+    if ((!('commentId' in (value as Record<string, any>)) && !('comment_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['commentId'] === undefined && (value as Record<string, any>)['comment_id'] === undefined)) return false;
     if (!('citations' in value) || value['citations'] === undefined) return false;
     return true;
 }

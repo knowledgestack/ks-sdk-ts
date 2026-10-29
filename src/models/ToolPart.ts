@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
 import type { ToolStatus } from './ToolStatus';
 import {
     ToolStatusFromJSON,
@@ -43,86 +43,58 @@ import {
 export interface ToolPart {
     /**
      * Stable per-message part id (uuid)
-     * @type {string}
-     * @memberof ToolPart
      */
     id: string;
     /**
      * 0-based order within the message
-     * @type {number}
-     * @memberof ToolPart
      */
     seq: number;
     /**
      * 
-     * @type {Date}
-     * @memberof ToolPart
      */
     startTime: Date;
     /**
      * 
-     * @type {Date}
-     * @memberof ToolPart
      */
     endTime?: Date | null;
     /**
      * 
-     * @type {ToolPartKindEnum}
-     * @memberof ToolPart
      */
     kind?: ToolPartKindEnum;
     /**
      * 
-     * @type {string}
-     * @memberof ToolPart
      */
     toolCallId: string;
     /**
      * 
-     * @type {string}
-     * @memberof ToolPart
      */
     toolName: string;
     /**
      * 
-     * @type {Input}
-     * @memberof ToolPart
      */
     input?: Input | null;
     /**
      * 
-     * @type {ToolStatus}
-     * @memberof ToolPart
      */
     status?: ToolStatus;
     /**
      * 
-     * @type {any}
-     * @memberof ToolPart
      */
     result?: any | null;
     /**
      * 
-     * @type {boolean}
-     * @memberof ToolPart
      */
     isError?: boolean;
     /**
      * 
-     * @type {number}
-     * @memberof ToolPart
      */
     durationMs?: number | null;
     /**
      * 
-     * @type {{ [key: string]: any; }}
-     * @memberof ToolPart
      */
     extras?: { [key: string]: any; } | null;
     /**
      * 
-     * @type {ToolDisplayType}
-     * @memberof ToolPart
      */
     displayType?: ToolDisplayType;
 }
@@ -132,12 +104,14 @@ export interface ToolPart {
  * @export
  */
 export const ToolPartKindEnum = {
-    Tool: 'tool'
+    Tool: 'tool',
 } as const;
 export type ToolPartKindEnum = typeof ToolPartKindEnum[keyof typeof ToolPartKindEnum];
 
 export const ToolPartPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -152,6 +126,8 @@ export const ToolPartPropertyValidationAttributesMap: {
     }
 } = {
     seq: {
+        dataType: "number",
+        required: true,
         minimum: 0,
         exclusiveMinimum: false,
     },
@@ -164,9 +140,9 @@ export const ToolPartPropertyValidationAttributesMap: {
 export function instanceOfToolPart(value: object): value is ToolPart {
     if (!('id' in value) || value['id'] === undefined) return false;
     if (!('seq' in value) || value['seq'] === undefined) return false;
-    if (!('startTime' in value) || value['startTime'] === undefined) return false;
-    if (!('toolCallId' in value) || value['toolCallId'] === undefined) return false;
-    if (!('toolName' in value) || value['toolName'] === undefined) return false;
+    if ((!('startTime' in (value as Record<string, any>)) && !('start_time' in (value as Record<string, any>))) || ((value as Record<string, any>)['startTime'] === undefined && (value as Record<string, any>)['start_time'] === undefined)) return false;
+    if ((!('toolCallId' in (value as Record<string, any>)) && !('tool_call_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['toolCallId'] === undefined && (value as Record<string, any>)['tool_call_id'] === undefined)) return false;
+    if ((!('toolName' in (value as Record<string, any>)) && !('tool_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['toolName'] === undefined && (value as Record<string, any>)['tool_name'] === undefined)) return false;
     return true;
 }
 
@@ -182,17 +158,17 @@ export function ToolPartFromJSONTyped(json: any, ignoreDiscriminator: boolean): 
         
         'id': json['id'],
         'seq': json['seq'],
-        'startTime': (new Date(json['start_time'])),
-        'endTime': json['end_time'] == null ? undefined : (new Date(json['end_time'])),
+        'startTime': (json['start_time'] == null ? json['start_time'] : parseDateTime(json['start_time'])),
+        'endTime': json['end_time'] === undefined ? undefined : json['end_time'] === null ? null : (parseDateTime(json['end_time'])),
         'kind': json['kind'] == null ? undefined : json['kind'],
         'toolCallId': json['tool_call_id'],
         'toolName': json['tool_name'],
-        'input': json['input'] == null ? undefined : InputFromJSON(json['input']),
+        'input': json['input'] === undefined ? undefined : json['input'] === null ? null : InputFromJSON(json['input']),
         'status': json['status'] == null ? undefined : ToolStatusFromJSON(json['status']),
-        'result': json['result'] == null ? undefined : json['result'],
+        'result': json['result'] === undefined ? undefined : json['result'] === null ? null : json['result'],
         'isError': json['is_error'] == null ? undefined : json['is_error'],
-        'durationMs': json['duration_ms'] == null ? undefined : json['duration_ms'],
-        'extras': json['extras'] == null ? undefined : json['extras'],
+        'durationMs': json['duration_ms'] === undefined ? undefined : json['duration_ms'] === null ? null : json['duration_ms'],
+        'extras': json['extras'] === undefined ? undefined : json['extras'] === null ? null : json['extras'],
         'displayType': json['display_type'] == null ? undefined : ToolDisplayTypeFromJSON(json['display_type']),
     };
 }
@@ -210,8 +186,8 @@ export function ToolPartToJSONTyped(value?: ToolPart | null, ignoreDiscriminator
         
         'id': value['id'],
         'seq': value['seq'],
-        'start_time': value['startTime'].toISOString(),
-        'end_time': value['endTime'] == null ? value['endTime'] : value['endTime'].toISOString(),
+        'start_time': value['startTime'] == null ? value['startTime'] : serializeDateTime(value['startTime']),
+        'end_time': value['endTime'] == null ? value['endTime'] : serializeDateTime(value['endTime']),
         'kind': value['kind'],
         'tool_call_id': value['toolCallId'],
         'tool_name': value['toolName'],

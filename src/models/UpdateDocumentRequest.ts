@@ -21,37 +21,29 @@ import { mapValues } from '../runtime';
 export interface UpdateDocumentRequest {
     /**
      * New document name
-     * @type {string}
-     * @memberof UpdateDocumentRequest
      */
     name?: string | null;
     /**
      * New parent PathPart ID for move (must be a FOLDER type)
-     * @type {string}
-     * @memberof UpdateDocumentRequest
      */
     parentPathPartId?: string | null;
     /**
      * New active version ID
-     * @type {string}
-     * @memberof UpdateDocumentRequest
      */
     activeVersionId?: string | null;
     /**
      * If set, toggle whether this document is excluded from Qdrant vector indexing. True deletes existing points; False re-embeds the active version. Not allowed on system-managed documents.
-     * @type {boolean}
-     * @memberof UpdateDocumentRequest
      */
     excludeFromQdrant?: boolean | null;
     /**
      * Transfer ownership to another active tenant_user. Allowed only when the caller is the current owner or has ADMIN/OWNER role.
-     * @type {string}
-     * @memberof UpdateDocumentRequest
      */
     ownerTenantUserId?: string | null;
 }
 export const UpdateDocumentRequestPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -66,6 +58,7 @@ export const UpdateDocumentRequestPropertyValidationAttributesMap: {
     }
 } = {
     name: {
+        dataType: "string",
         maxLength: 255,
         minLength: 1,
     },
@@ -89,11 +82,11 @@ export function UpdateDocumentRequestFromJSONTyped(json: any, ignoreDiscriminato
     }
     return {
         
-        'name': json['name'] == null ? undefined : json['name'],
-        'parentPathPartId': json['parent_path_part_id'] == null ? undefined : json['parent_path_part_id'],
-        'activeVersionId': json['active_version_id'] == null ? undefined : json['active_version_id'],
-        'excludeFromQdrant': json['exclude_from_qdrant'] == null ? undefined : json['exclude_from_qdrant'],
-        'ownerTenantUserId': json['owner_tenant_user_id'] == null ? undefined : json['owner_tenant_user_id'],
+        'name': json['name'] === undefined ? undefined : json['name'] === null ? null : json['name'],
+        'parentPathPartId': json['parent_path_part_id'] === undefined ? undefined : json['parent_path_part_id'] === null ? null : json['parent_path_part_id'],
+        'activeVersionId': json['active_version_id'] === undefined ? undefined : json['active_version_id'] === null ? null : json['active_version_id'],
+        'excludeFromQdrant': json['exclude_from_qdrant'] === undefined ? undefined : json['exclude_from_qdrant'] === null ? null : json['exclude_from_qdrant'],
+        'ownerTenantUserId': json['owner_tenant_user_id'] === undefined ? undefined : json['owner_tenant_user_id'] === null ? null : json['owner_tenant_user_id'],
     };
 }
 

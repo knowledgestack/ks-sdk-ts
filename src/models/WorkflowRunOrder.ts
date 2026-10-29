@@ -20,7 +20,7 @@
 export const WorkflowRunOrder = {
     StartedAt: 'STARTED_AT',
     CreatedAt: 'CREATED_AT',
-    CompletedAt: 'COMPLETED_AT'
+    CompletedAt: 'COMPLETED_AT',
 } as const;
 export type WorkflowRunOrder = typeof WorkflowRunOrder[keyof typeof WorkflowRunOrder];
 

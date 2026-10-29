@@ -24,19 +24,17 @@ import { mapValues } from '../runtime';
 export interface TestConnectionResponse {
     /**
      * 
-     * @type {boolean}
-     * @memberof TestConnectionResponse
      */
     success: boolean;
     /**
      * 
-     * @type {string}
-     * @memberof TestConnectionResponse
      */
     error?: string | null;
 }
 export const TestConnectionResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -72,7 +70,7 @@ export function TestConnectionResponseFromJSONTyped(json: any, ignoreDiscriminat
     return {
         
         'success': json['success'],
-        'error': json['error'] == null ? undefined : json['error'],
+        'error': json['error'] === undefined ? undefined : json['error'] === null ? null : json['error'],
     };
 }
 

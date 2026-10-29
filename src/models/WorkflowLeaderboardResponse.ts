@@ -29,19 +29,17 @@ import {
 export interface WorkflowLeaderboardResponse {
     /**
      * 
-     * @type {Array<LeaderboardEntry>}
-     * @memberof WorkflowLeaderboardResponse
      */
     topWorkflows?: Array<LeaderboardEntry>;
     /**
      * 
-     * @type {Array<LeaderboardEntry>}
-     * @memberof WorkflowLeaderboardResponse
      */
     topUsers?: Array<LeaderboardEntry>;
 }
 export const WorkflowLeaderboardResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,

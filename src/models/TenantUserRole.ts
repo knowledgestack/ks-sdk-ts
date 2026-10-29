@@ -20,7 +20,7 @@
 export const TenantUserRole = {
     User: 'USER',
     Owner: 'OWNER',
-    Admin: 'ADMIN'
+    Admin: 'ADMIN',
 } as const;
 export type TenantUserRole = typeof TenantUserRole[keyof typeof TenantUserRole];
 

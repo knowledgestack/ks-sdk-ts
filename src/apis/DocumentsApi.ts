@@ -12,167 +12,360 @@
  * Do not edit the class manually.
  */
 
-
 import * as runtime from '../runtime';
-import type {
-  ChunkType,
-  CompleteUploadRequest,
-  CreateDocumentRequest,
-  CreateUploadRequest,
-  CreateUploadResponse,
-  DocumentDownloadResponse,
-  DocumentResponse,
-  DocumentType,
-  DownloadArtifact,
-  ErrorResponse,
-  HTTPValidationError,
-  ImageTaxonomy,
-  IngestDocumentResponse,
-  IngestZipResponse,
-  IngestionMode,
-  PaginatedResponseDocumentResponse,
-  PathOrder,
-  SortDirection,
-  UpdateDocumentRequest,
-  UploadPartResponse,
-  UploadStatusResponse,
-} from '../models/index';
 import {
+    type ChunkType,
     ChunkTypeFromJSON,
     ChunkTypeToJSON,
+} from '../models/ChunkType';
+import {
+    type CompleteUploadRequest,
     CompleteUploadRequestFromJSON,
     CompleteUploadRequestToJSON,
+} from '../models/CompleteUploadRequest';
+import {
+    type CreateDocumentRequest,
     CreateDocumentRequestFromJSON,
     CreateDocumentRequestToJSON,
+} from '../models/CreateDocumentRequest';
+import {
+    type CreateUploadRequest,
     CreateUploadRequestFromJSON,
     CreateUploadRequestToJSON,
+} from '../models/CreateUploadRequest';
+import {
+    type CreateUploadResponse,
     CreateUploadResponseFromJSON,
     CreateUploadResponseToJSON,
+} from '../models/CreateUploadResponse';
+import {
+    type DocumentDownloadResponse,
     DocumentDownloadResponseFromJSON,
     DocumentDownloadResponseToJSON,
+} from '../models/DocumentDownloadResponse';
+import {
+    type DocumentResponse,
     DocumentResponseFromJSON,
     DocumentResponseToJSON,
+} from '../models/DocumentResponse';
+import {
+    type DocumentType,
     DocumentTypeFromJSON,
     DocumentTypeToJSON,
+} from '../models/DocumentType';
+import {
+    type DownloadArtifact,
     DownloadArtifactFromJSON,
     DownloadArtifactToJSON,
+} from '../models/DownloadArtifact';
+import {
+    type ErrorResponse,
     ErrorResponseFromJSON,
     ErrorResponseToJSON,
+} from '../models/ErrorResponse';
+import {
+    type HTTPValidationError,
     HTTPValidationErrorFromJSON,
     HTTPValidationErrorToJSON,
+} from '../models/HTTPValidationError';
+import {
+    type ImageTaxonomy,
     ImageTaxonomyFromJSON,
     ImageTaxonomyToJSON,
+} from '../models/ImageTaxonomy';
+import {
+    type IngestDocumentResponse,
     IngestDocumentResponseFromJSON,
     IngestDocumentResponseToJSON,
+} from '../models/IngestDocumentResponse';
+import {
+    type IngestZipResponse,
     IngestZipResponseFromJSON,
     IngestZipResponseToJSON,
+} from '../models/IngestZipResponse';
+import {
+    type IngestionMode,
     IngestionModeFromJSON,
     IngestionModeToJSON,
+} from '../models/IngestionMode';
+import {
+    type PaginatedResponseDocumentResponse,
     PaginatedResponseDocumentResponseFromJSON,
     PaginatedResponseDocumentResponseToJSON,
+} from '../models/PaginatedResponseDocumentResponse';
+import {
+    type PathOrder,
     PathOrderFromJSON,
     PathOrderToJSON,
+} from '../models/PathOrder';
+import {
+    type SortDirection,
     SortDirectionFromJSON,
     SortDirectionToJSON,
+} from '../models/SortDirection';
+import {
+    type UpdateDocumentRequest,
     UpdateDocumentRequestFromJSON,
     UpdateDocumentRequestToJSON,
+} from '../models/UpdateDocumentRequest';
+import {
+    type UploadPartResponse,
     UploadPartResponseFromJSON,
     UploadPartResponseToJSON,
+} from '../models/UploadPartResponse';
+import {
+    type UploadStatusResponse,
     UploadStatusResponseFromJSON,
     UploadStatusResponseToJSON,
-} from '../models/index';
+} from '../models/UploadStatusResponse';
 
 export interface AbortDocumentUploadRequest {
+    /**
+     * 
+     */
     xUploadToken: string;
 }
 
 export interface CompleteDocumentUploadRequest {
+    /**
+     * 
+     */
     completeUploadRequest: CompleteUploadRequest;
 }
 
 export interface CreateDocumentOperationRequest {
+    /**
+     * 
+     */
     createDocumentRequest: CreateDocumentRequest;
 }
 
 export interface CreateDocumentUploadRequest {
+    /**
+     * 
+     */
     createUploadRequest: CreateUploadRequest;
 }
 
 export interface DeleteDocumentRequest {
+    /**
+     * 
+     */
     documentId: string;
 }
 
 export interface DownloadDocumentRequest {
+    /**
+     * 
+     */
     documentId: string;
+    /**
+     * Artifact to download: source, fast_plaintext, or transcript (media only)
+     */
     artifact?: DownloadArtifact;
 }
 
 export interface GetDocumentRequest {
+    /**
+     * 
+     */
     documentId: string;
+    /**
+     * Include tags in the response (default: false)
+     */
     withTags?: boolean;
 }
 
 export interface GetDocumentUploadStatusRequest {
+    /**
+     * 
+     */
     xUploadToken: string;
 }
 
 export interface IngestDocumentRequest {
+    /**
+     * 
+     */
     file: Blob;
+    /**
+     * Parent path part ID (must be a FOLDER type)
+     */
     pathPartId: string;
+    /**
+     * Document name (defaults to filename)
+     */
     name?: string | null;
+    /**
+     * Tag IDs applied to the created document.
+     */
     tagIds?: Array<string>;
+    /**
+     * Opt-in key: a repeat with the same key at the same (parent, name) replays the existing document instead of a 409.
+     */
     idempotencyKey?: string | null;
+    /**
+     * 
+     */
     ingestionMode?: IngestionMode;
+    /**
+     * 
+     */
     chunkType?: ChunkType;
+    /**
+     * 
+     */
     secondaryTaxonomy?: ImageTaxonomy;
+    /**
+     * DPI for PDF page screenshots (default 72, min 36, max 216).
+     */
     pageDpi?: number;
+    /**
+     * Workflow run context for assumed agent uploads.
+     */
     workflowRunId?: string | null;
+    /**
+     * Workflow definition context for assumed agent uploads.
+     */
     workflowDefinitionId?: string | null;
 }
 
 export interface IngestDocumentVersionRequest {
+    /**
+     * Document ID
+     */
     documentId: string;
+    /**
+     * 
+     */
     file: Blob;
+    /**
+     * 
+     */
     ingestionMode?: IngestionMode;
+    /**
+     * 
+     */
     chunkType?: ChunkType;
+    /**
+     * 
+     */
     secondaryTaxonomy?: ImageTaxonomy;
+    /**
+     * DPI for PDF page screenshots (default 72, min 36, max 216).
+     */
     pageDpi?: number;
+    /**
+     * Workflow run context for assumed agent uploads.
+     */
     workflowRunId?: string | null;
+    /**
+     * Workflow definition context for assumed agent uploads.
+     */
     workflowDefinitionId?: string | null;
 }
 
 export interface IngestZipRequest {
+    /**
+     * 
+     */
     file: Blob;
+    /**
+     * Parent path part ID (must be a FOLDER type)
+     */
     pathPartId: string;
+    /**
+     * 
+     */
     ingestionMode?: IngestionMode;
+    /**
+     * Tag IDs applied to every ingested member document.
+     */
     tagIds?: Array<string>;
 }
 
 export interface ListDocumentsRequest {
+    /**
+     * Parent PathPart ID (defaults to root)
+     */
     parentPathPartId?: string | null;
+    /**
+     * Sort order for results (default: LOGICAL)
+     */
     sortOrder?: PathOrder;
+    /**
+     * Sort direction; overrides the column's natural default
+     */
     sortDir?: SortDirection;
+    /**
+     * Filter to documents owned by this user
+     */
     ownerId?: string | null;
+    /**
+     * Filter to documents of this type
+     */
     documentType?: DocumentType;
+    /**
+     * Only media whose active version is at least this long (milliseconds). Non-media documents have no duration and are excluded.
+     */
     durationMinMs?: number | null;
+    /**
+     * Only media whose active version is at most this long.
+     */
     durationMaxMs?: number | null;
+    /**
+     * Include tags in the response (default: false)
+     */
     withTags?: boolean;
+    /**
+     * Number of items per page
+     */
     limit?: number;
+    /**
+     * Number of items to skip
+     */
     offset?: number;
+    /**
+     * Only items created at or after this timestamp (inclusive)
+     */
     createdAfter?: Date | null;
+    /**
+     * Only items created strictly before this timestamp
+     */
     createdBefore?: Date | null;
+    /**
+     * Only items updated at or after this timestamp (inclusive)
+     */
     updatedAfter?: Date | null;
+    /**
+     * Only items updated strictly before this timestamp
+     */
     updatedBefore?: Date | null;
 }
 
 export interface UpdateDocumentOperationRequest {
+    /**
+     * 
+     */
     documentId: string;
+    /**
+     * 
+     */
     updateDocumentRequest: UpdateDocumentRequest;
 }
 
 export interface UploadDocumentPartRequest {
+    /**
+     * 
+     */
     partNumber: number;
+    /**
+     * 
+     */
     xUploadToken: string;
+    /**
+     * 
+     */
     body: Blob;
 }
 
@@ -854,7 +1047,7 @@ export class DocumentsApi extends runtime.BaseAPI implements DocumentsApiInterfa
         }
 
         let urlPath = `/v1/documents/{document_id}`;
-        urlPath = urlPath.replace(`{${"document_id"}}`, encodeURIComponent(String(requestParameters['documentId'])));
+        urlPath = urlPath.replace('{document_id}', encodeURIComponent(String(requestParameters['documentId'])));
 
         return {
             path: urlPath,
@@ -912,7 +1105,7 @@ export class DocumentsApi extends runtime.BaseAPI implements DocumentsApiInterfa
         }
 
         let urlPath = `/v1/documents/{document_id}/download`;
-        urlPath = urlPath.replace(`{${"document_id"}}`, encodeURIComponent(String(requestParameters['documentId'])));
+        urlPath = urlPath.replace('{document_id}', encodeURIComponent(String(requestParameters['documentId'])));
 
         return {
             path: urlPath,
@@ -971,7 +1164,7 @@ export class DocumentsApi extends runtime.BaseAPI implements DocumentsApiInterfa
         }
 
         let urlPath = `/v1/documents/{document_id}`;
-        urlPath = urlPath.replace(`{${"document_id"}}`, encodeURIComponent(String(requestParameters['documentId'])));
+        urlPath = urlPath.replace('{document_id}', encodeURIComponent(String(requestParameters['documentId'])));
 
         return {
             path: urlPath,
@@ -1255,7 +1448,7 @@ export class DocumentsApi extends runtime.BaseAPI implements DocumentsApiInterfa
 
 
         let urlPath = `/v1/documents/{document_id}/ingest`;
-        urlPath = urlPath.replace(`{${"document_id"}}`, encodeURIComponent(String(requestParameters['documentId'])));
+        urlPath = urlPath.replace('{document_id}', encodeURIComponent(String(requestParameters['documentId'])));
 
         return {
             path: urlPath,
@@ -1427,19 +1620,19 @@ export class DocumentsApi extends runtime.BaseAPI implements DocumentsApiInterfa
         }
 
         if (requestParameters['createdAfter'] != null) {
-            queryParameters['created_after'] = (requestParameters['createdAfter'] as any).toISOString();
+            queryParameters['created_after'] = runtime.serializeDateTime(requestParameters['createdAfter'] as any);
         }
 
         if (requestParameters['createdBefore'] != null) {
-            queryParameters['created_before'] = (requestParameters['createdBefore'] as any).toISOString();
+            queryParameters['created_before'] = runtime.serializeDateTime(requestParameters['createdBefore'] as any);
         }
 
         if (requestParameters['updatedAfter'] != null) {
-            queryParameters['updated_after'] = (requestParameters['updatedAfter'] as any).toISOString();
+            queryParameters['updated_after'] = runtime.serializeDateTime(requestParameters['updatedAfter'] as any);
         }
 
         if (requestParameters['updatedBefore'] != null) {
-            queryParameters['updated_before'] = (requestParameters['updatedBefore'] as any).toISOString();
+            queryParameters['updated_before'] = runtime.serializeDateTime(requestParameters['updatedBefore'] as any);
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -1517,7 +1710,7 @@ export class DocumentsApi extends runtime.BaseAPI implements DocumentsApiInterfa
         }
 
         let urlPath = `/v1/documents/{document_id}`;
-        urlPath = urlPath.replace(`{${"document_id"}}`, encodeURIComponent(String(requestParameters['documentId'])));
+        urlPath = urlPath.replace('{document_id}', encodeURIComponent(String(requestParameters['documentId'])));
 
         return {
             path: urlPath,
@@ -1593,7 +1786,7 @@ export class DocumentsApi extends runtime.BaseAPI implements DocumentsApiInterfa
         }
 
         let urlPath = `/v1/documents/uploads/parts/{part_number}`;
-        urlPath = urlPath.replace(`{${"part_number"}}`, encodeURIComponent(String(requestParameters['partNumber'])));
+        urlPath = urlPath.replace('{part_number}', encodeURIComponent(String(requestParameters['partNumber'])));
 
         return {
             path: urlPath,

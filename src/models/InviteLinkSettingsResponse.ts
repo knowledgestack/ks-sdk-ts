@@ -21,20 +21,14 @@ import { mapValues } from '../runtime';
 export interface InviteLinkSettingsResponse {
     /**
      * Whether the invite link is active
-     * @type {boolean}
-     * @memberof InviteLinkSettingsResponse
      */
     enabled: boolean;
     /**
      * Role assigned to joining users
-     * @type {InviteLinkSettingsResponseRoleEnum}
-     * @memberof InviteLinkSettingsResponse
      */
     role: InviteLinkSettingsResponseRoleEnum;
     /**
      * Groups the joining user is added to
-     * @type {Array<string>}
-     * @memberof InviteLinkSettingsResponse
      */
     groups?: Array<string>;
 }
@@ -45,12 +39,14 @@ export interface InviteLinkSettingsResponse {
  */
 export const InviteLinkSettingsResponseRoleEnum = {
     User: 'USER',
-    Admin: 'ADMIN'
+    Admin: 'ADMIN',
 } as const;
 export type InviteLinkSettingsResponseRoleEnum = typeof InviteLinkSettingsResponseRoleEnum[keyof typeof InviteLinkSettingsResponseRoleEnum];
 
 export const InviteLinkSettingsResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,

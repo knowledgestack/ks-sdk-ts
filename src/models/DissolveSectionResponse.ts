@@ -21,19 +21,17 @@ import { mapValues } from '../runtime';
 export interface DissolveSectionResponse {
     /**
      * ID of the created text chunk
-     * @type {string}
-     * @memberof DissolveSectionResponse
      */
     textChunkId: string;
     /**
      * Number of children reparented to the parent
-     * @type {number}
-     * @memberof DissolveSectionResponse
      */
     reparentedChildren: number;
 }
 export const DissolveSectionResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -54,8 +52,8 @@ export const DissolveSectionResponsePropertyValidationAttributesMap: {
  * Check if a given object implements the DissolveSectionResponse interface.
  */
 export function instanceOfDissolveSectionResponse(value: object): value is DissolveSectionResponse {
-    if (!('textChunkId' in value) || value['textChunkId'] === undefined) return false;
-    if (!('reparentedChildren' in value) || value['reparentedChildren'] === undefined) return false;
+    if ((!('textChunkId' in (value as Record<string, any>)) && !('text_chunk_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['textChunkId'] === undefined && (value as Record<string, any>)['text_chunk_id'] === undefined)) return false;
+    if ((!('reparentedChildren' in (value as Record<string, any>)) && !('reparented_children' in (value as Record<string, any>))) || ((value as Record<string, any>)['reparentedChildren'] === undefined && (value as Record<string, any>)['reparented_children'] === undefined)) return false;
     return true;
 }
 

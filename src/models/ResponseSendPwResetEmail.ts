@@ -36,19 +36,17 @@ import {
 export interface ResponseSendPwResetEmail {
     /**
      * 
-     * @type {string}
-     * @memberof ResponseSendPwResetEmail
      */
     emailId: string;
     /**
      * 
-     * @type {string}
-     * @memberof ResponseSendPwResetEmail
      */
     phoneValidationId: string;
 }
 export const ResponseSendPwResetEmailPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -69,8 +67,8 @@ export const ResponseSendPwResetEmailPropertyValidationAttributesMap: {
  * Check if a given object implements the ResponseSendPwResetEmail interface.
  */
 export function instanceOfResponseSendPwResetEmail(value: object): value is ResponseSendPwResetEmail {
-    if (!('emailId' in value) || value['emailId'] === undefined) return false;
-    if (!('phoneValidationId' in value) || value['phoneValidationId'] === undefined) return false;
+    if ((!('emailId' in (value as Record<string, any>)) && !('email_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['emailId'] === undefined && (value as Record<string, any>)['email_id'] === undefined)) return false;
+    if ((!('phoneValidationId' in (value as Record<string, any>)) && !('phone_validation_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['phoneValidationId'] === undefined && (value as Record<string, any>)['phone_validation_id'] === undefined)) return false;
     return true;
 }
 

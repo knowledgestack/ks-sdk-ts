@@ -26,26 +26,18 @@ import { mapValues } from '../runtime';
 export interface InstructionSnapshot {
     /**
      * DOCUMENT_VERSION path_part of the instruction version
-     * @type {string}
-     * @memberof InstructionSnapshot
      */
     pathPartId: string;
     /**
      * 
-     * @type {string}
-     * @memberof InstructionSnapshot
      */
     materializedPath: string;
     /**
      * 
-     * @type {InstructionSnapshotPartTypeEnum}
-     * @memberof InstructionSnapshot
      */
     partType: InstructionSnapshotPartTypeEnum;
     /**
      * S3 URI of the instruction file's source bytes (flat UTF-8 markdown), read directly by the agent at startup. ``None`` when the instruction is empty — the run still starts and completes with empty output.
-     * @type {string}
-     * @memberof InstructionSnapshot
      */
     sourceS3Uri: string | null;
 }
@@ -55,12 +47,14 @@ export interface InstructionSnapshot {
  * @export
  */
 export const InstructionSnapshotPartTypeEnum = {
-    DocumentVersion: 'DOCUMENT_VERSION'
+    DocumentVersion: 'DOCUMENT_VERSION',
 } as const;
 export type InstructionSnapshotPartTypeEnum = typeof InstructionSnapshotPartTypeEnum[keyof typeof InstructionSnapshotPartTypeEnum];
 
 export const InstructionSnapshotPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -81,10 +75,12 @@ export const InstructionSnapshotPropertyValidationAttributesMap: {
  * Check if a given object implements the InstructionSnapshot interface.
  */
 export function instanceOfInstructionSnapshot(value: object): value is InstructionSnapshot {
-    if (!('pathPartId' in value) || value['pathPartId'] === undefined) return false;
-    if (!('materializedPath' in value) || value['materializedPath'] === undefined) return false;
-    if (!('partType' in value) || value['partType'] === undefined) return false;
-    if (!('sourceS3Uri' in value) || value['sourceS3Uri'] === undefined) return false;
+    if ((!('pathPartId' in (value as Record<string, any>)) && !('path_part_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['pathPartId'] === undefined && (value as Record<string, any>)['path_part_id'] === undefined)) return false;
+    if ((!('materializedPath' in (value as Record<string, any>)) && !('materialized_path' in (value as Record<string, any>))) || ((value as Record<string, any>)['materializedPath'] === undefined && (value as Record<string, any>)['materialized_path'] === undefined)) return false;
+    if ((!('partType' in (value as Record<string, any>)) && !('part_type' in (value as Record<string, any>))) || ((value as Record<string, any>)['partType'] === undefined && (value as Record<string, any>)['part_type'] === undefined)) return false;
+    if ((value as Record<string, any>)['partType'] !== 'DOCUMENT_VERSION' && (value as Record<string, any>)['part_type'] !== 'DOCUMENT_VERSION') return false;
+    
+    if ((!('sourceS3Uri' in (value as Record<string, any>)) && !('source_s3_uri' in (value as Record<string, any>))) || ((value as Record<string, any>)['sourceS3Uri'] === undefined && (value as Record<string, any>)['source_s3_uri'] === undefined)) return false;
     return true;
 }
 

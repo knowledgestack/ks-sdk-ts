@@ -29,32 +29,22 @@ import {
 export interface XlsxCellAnchorOutput {
     /**
      * 
-     * @type {XlsxCellAnchorOutputTypeEnum}
-     * @memberof XlsxCellAnchorOutput
      */
     type?: XlsxCellAnchorOutputTypeEnum;
     /**
      * 
-     * @type {string}
-     * @memberof XlsxCellAnchorOutput
      */
     sheetName: string;
     /**
      * Coordinate like 'B23'.
-     * @type {string}
-     * @memberof XlsxCellAnchorOutput
      */
     cellAddress: string;
     /**
      * Cited chunks in the order they appeared in the comment body, each with the source-document snapshot resolved at save time.
-     * @type {Array<CitedChunk>}
-     * @memberof XlsxCellAnchorOutput
      */
     citations: Array<CitedChunk>;
     /**
      * Cached cell value at this anchor, for FE display. NOT the cited quote. Empty when the cell holds a formula whose cache has not been refreshed.
-     * @type {string}
-     * @memberof XlsxCellAnchorOutput
      */
     anchorText?: string;
     /**
@@ -64,8 +54,6 @@ export interface XlsxCellAnchorOutput {
      * source-document context the Citations panel needs, no follow-up
      * ``/v1/chunks/bulk`` call required. Derived-only — ``citations`` is
      * the single source of truth.
-     * @type {Array<string>}
-     * @memberof XlsxCellAnchorOutput
      */
     readonly chunkIds: Array<string>;
 }
@@ -75,12 +63,14 @@ export interface XlsxCellAnchorOutput {
  * @export
  */
 export const XlsxCellAnchorOutputTypeEnum = {
-    XlsxCell: 'xlsx_cell'
+    XlsxCell: 'xlsx_cell',
 } as const;
 export type XlsxCellAnchorOutputTypeEnum = typeof XlsxCellAnchorOutputTypeEnum[keyof typeof XlsxCellAnchorOutputTypeEnum];
 
 export const XlsxCellAnchorOutputPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -95,6 +85,7 @@ export const XlsxCellAnchorOutputPropertyValidationAttributesMap: {
     }
 } = {
     anchorText: {
+        dataType: "string",
         maxLength: 160,
     },
 }
@@ -104,10 +95,10 @@ export const XlsxCellAnchorOutputPropertyValidationAttributesMap: {
  * Check if a given object implements the XlsxCellAnchorOutput interface.
  */
 export function instanceOfXlsxCellAnchorOutput(value: object): value is XlsxCellAnchorOutput {
-    if (!('sheetName' in value) || value['sheetName'] === undefined) return false;
-    if (!('cellAddress' in value) || value['cellAddress'] === undefined) return false;
+    if ((!('sheetName' in (value as Record<string, any>)) && !('sheet_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['sheetName'] === undefined && (value as Record<string, any>)['sheet_name'] === undefined)) return false;
+    if ((!('cellAddress' in (value as Record<string, any>)) && !('cell_address' in (value as Record<string, any>))) || ((value as Record<string, any>)['cellAddress'] === undefined && (value as Record<string, any>)['cell_address'] === undefined)) return false;
     if (!('citations' in value) || value['citations'] === undefined) return false;
-    if (!('chunkIds' in value) || value['chunkIds'] === undefined) return false;
+    if ((!('chunkIds' in (value as Record<string, any>)) && !('chunk_ids' in (value as Record<string, any>))) || ((value as Record<string, any>)['chunkIds'] === undefined && (value as Record<string, any>)['chunk_ids'] === undefined)) return false;
     return true;
 }
 
@@ -134,7 +125,7 @@ export function XlsxCellAnchorOutputToJSON(json: any): XlsxCellAnchorOutput {
     return XlsxCellAnchorOutputToJSONTyped(json, false);
 }
 
-export function XlsxCellAnchorOutputToJSONTyped(value?: Omit<XlsxCellAnchorOutput, 'chunk_ids'> | null, ignoreDiscriminator: boolean = false): any {
+export function XlsxCellAnchorOutputToJSONTyped(value?: Omit<XlsxCellAnchorOutput, 'chunkIds'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }

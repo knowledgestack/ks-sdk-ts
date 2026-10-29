@@ -12,43 +12,91 @@
  * Do not edit the class manually.
  */
 
-
 import * as runtime from '../runtime';
-import type {
-  ErrorResponse,
-  HTTPValidationError,
-  PaginatedResponseEventResponse,
-  SortDirection,
-} from '../models/index';
 import {
+    type ErrorResponse,
     ErrorResponseFromJSON,
     ErrorResponseToJSON,
+} from '../models/ErrorResponse';
+import {
+    type HTTPValidationError,
     HTTPValidationErrorFromJSON,
     HTTPValidationErrorToJSON,
+} from '../models/HTTPValidationError';
+import {
+    type PaginatedResponseEventResponse,
     PaginatedResponseEventResponseFromJSON,
     PaginatedResponseEventResponseToJSON,
+} from '../models/PaginatedResponseEventResponse';
+import {
+    type SortDirection,
     SortDirectionFromJSON,
     SortDirectionToJSON,
-} from '../models/index';
+} from '../models/SortDirection';
 
 export interface ExportAuditEventsRequest {
+    /**
+     * Filter to one actor
+     */
     actorUserId?: string | null;
+    /**
+     * Filter to one event kind
+     */
     kind?: string | null;
+    /**
+     * Only events at or after this timestamp (from). Omit to export the entire audit log. Must not be in the future or after `until`.
+     */
     since?: Date | null;
+    /**
+     * Only events strictly before this timestamp (to). Omit for no upper bound. Must not be in the future.
+     */
     until?: Date | null;
+    /**
+     * Scope to one document/folder/run subject
+     */
     subjectPathPartId?: string | null;
+    /**
+     * Include the subject's descendants (needs subject)
+     */
     recursive?: boolean;
 }
 
 export interface ListAuditEventsRequest {
+    /**
+     * Filter to one actor
+     */
     actorUserId?: string | null;
+    /**
+     * Filter to one event kind
+     */
     kind?: string | null;
+    /**
+     * Only events at or after this timestamp (from). Omit for no lower bound. Must not be in the future or after `until`.
+     */
     since?: Date | null;
+    /**
+     * Only events strictly before this timestamp (to). Omit for no upper bound. Must not be in the future.
+     */
     until?: Date | null;
+    /**
+     * Scope to one document/folder/run subject
+     */
     subjectPathPartId?: string | null;
+    /**
+     * Include the subject's descendants (needs subject)
+     */
     recursive?: boolean;
+    /**
+     * Sort by timestamp (default: DESC, newest first)
+     */
     sortDir?: SortDirection;
+    /**
+     * Number of items per page
+     */
     limit?: number;
+    /**
+     * Number of items to skip
+     */
     offset?: number;
 }
 
@@ -85,13 +133,13 @@ export interface AuditEventsApiInterface {
      * @throws {RequiredError}
      * @memberof AuditEventsApiInterface
      */
-    exportAuditEventsRaw(requestParameters: ExportAuditEventsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Blob>>;
+    exportAuditEventsRaw(requestParameters: ExportAuditEventsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<runtime.HttpFile>>;
 
     /**
      * Export the tenant\'s audit events as a CSV download (admin/owner only).  Same filters as ``list_audit_events`` but unpaginated — streams every matching event newest-first. Each row resolves the actor\'s name and the subject\'s name + path so an auditor can read the file directly in Excel.  With no `since`/`until` the export covers the entire audit log; pass either bound to narrow to an optional from/to window.
      * Export Audit Events Handler
      */
-    exportAuditEvents(requestParameters: ExportAuditEventsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Blob>;
+    exportAuditEvents(requestParameters: ExportAuditEventsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.HttpFile>;
 
     /**
      * Creates request options for listAuditEvents without sending the request
@@ -155,11 +203,11 @@ export class AuditEventsApi extends runtime.BaseAPI implements AuditEventsApiInt
         }
 
         if (requestParameters['since'] != null) {
-            queryParameters['since'] = (requestParameters['since'] as any).toISOString();
+            queryParameters['since'] = runtime.serializeDateTime(requestParameters['since'] as any);
         }
 
         if (requestParameters['until'] != null) {
-            queryParameters['until'] = (requestParameters['until'] as any).toISOString();
+            queryParameters['until'] = runtime.serializeDateTime(requestParameters['until'] as any);
         }
 
         if (requestParameters['subjectPathPartId'] != null) {
@@ -195,7 +243,7 @@ export class AuditEventsApi extends runtime.BaseAPI implements AuditEventsApiInt
      * Export the tenant\'s audit events as a CSV download (admin/owner only).  Same filters as ``list_audit_events`` but unpaginated — streams every matching event newest-first. Each row resolves the actor\'s name and the subject\'s name + path so an auditor can read the file directly in Excel.  With no `since`/`until` the export covers the entire audit log; pass either bound to narrow to an optional from/to window.
      * Export Audit Events Handler
      */
-    async exportAuditEventsRaw(requestParameters: ExportAuditEventsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Blob>> {
+    async exportAuditEventsRaw(requestParameters: ExportAuditEventsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<runtime.HttpFile>> {
         const requestOptions = await this.exportAuditEventsRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -206,7 +254,7 @@ export class AuditEventsApi extends runtime.BaseAPI implements AuditEventsApiInt
      * Export the tenant\'s audit events as a CSV download (admin/owner only).  Same filters as ``list_audit_events`` but unpaginated — streams every matching event newest-first. Each row resolves the actor\'s name and the subject\'s name + path so an auditor can read the file directly in Excel.  With no `since`/`until` the export covers the entire audit log; pass either bound to narrow to an optional from/to window.
      * Export Audit Events Handler
      */
-    async exportAuditEvents(requestParameters: ExportAuditEventsRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Blob> {
+    async exportAuditEvents(requestParameters: ExportAuditEventsRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.HttpFile> {
         const response = await this.exportAuditEventsRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -226,11 +274,11 @@ export class AuditEventsApi extends runtime.BaseAPI implements AuditEventsApiInt
         }
 
         if (requestParameters['since'] != null) {
-            queryParameters['since'] = (requestParameters['since'] as any).toISOString();
+            queryParameters['since'] = runtime.serializeDateTime(requestParameters['since'] as any);
         }
 
         if (requestParameters['until'] != null) {
-            queryParameters['until'] = (requestParameters['until'] as any).toISOString();
+            queryParameters['until'] = runtime.serializeDateTime(requestParameters['until'] as any);
         }
 
         if (requestParameters['subjectPathPartId'] != null) {

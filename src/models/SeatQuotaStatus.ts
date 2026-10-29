@@ -23,19 +23,17 @@ import { mapValues } from '../runtime';
 export interface SeatQuotaStatus {
     /**
      * Active seats currently consumed
-     * @type {number}
-     * @memberof SeatQuotaStatus
      */
     used: number;
     /**
      * Maximum seats permitted for the tenant
-     * @type {number}
-     * @memberof SeatQuotaStatus
      */
     limit: number;
 }
 export const SeatQuotaStatusPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,

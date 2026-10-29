@@ -33,25 +33,21 @@ import {
 export interface ZipIngestionStatusResponse {
     /**
      * 
-     * @type {string}
-     * @memberof ZipIngestionStatusResponse
      */
     workflowId: string;
     /**
      * 
-     * @type {string}
-     * @memberof ZipIngestionStatusResponse
      */
     temporalStatus: string;
     /**
      * 
-     * @type {Array<ZipMemberStatusResponse>}
-     * @memberof ZipIngestionStatusResponse
      */
     files: Array<ZipMemberStatusResponse>;
 }
 export const ZipIngestionStatusResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -72,8 +68,8 @@ export const ZipIngestionStatusResponsePropertyValidationAttributesMap: {
  * Check if a given object implements the ZipIngestionStatusResponse interface.
  */
 export function instanceOfZipIngestionStatusResponse(value: object): value is ZipIngestionStatusResponse {
-    if (!('workflowId' in value) || value['workflowId'] === undefined) return false;
-    if (!('temporalStatus' in value) || value['temporalStatus'] === undefined) return false;
+    if ((!('workflowId' in (value as Record<string, any>)) && !('workflow_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['workflowId'] === undefined && (value as Record<string, any>)['workflow_id'] === undefined)) return false;
+    if ((!('temporalStatus' in (value as Record<string, any>)) && !('temporal_status' in (value as Record<string, any>))) || ((value as Record<string, any>)['temporalStatus'] === undefined && (value as Record<string, any>)['temporal_status'] === undefined)) return false;
     if (!('files' in value) || value['files'] === undefined) return false;
     return true;
 }

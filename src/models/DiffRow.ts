@@ -41,44 +41,30 @@ import {
 export interface DiffRow {
     /**
      * 
-     * @type {DiffRowType}
-     * @memberof DiffRow
      */
     type: DiffRowType;
     /**
      * 
-     * @type {number}
-     * @memberof DiffRow
      */
     leftNo?: number | null;
     /**
      * 
-     * @type {string}
-     * @memberof DiffRow
      */
     left?: string | null;
     /**
      * 
-     * @type {number}
-     * @memberof DiffRow
      */
     rightNo?: number | null;
     /**
      * 
-     * @type {string}
-     * @memberof DiffRow
      */
     right?: string | null;
     /**
      * 
-     * @type {Array<DiffSpan>}
-     * @memberof DiffRow
      */
     leftSpans?: Array<DiffSpan> | null;
     /**
      * 
-     * @type {Array<DiffSpan>}
-     * @memberof DiffRow
      */
     rightSpans?: Array<DiffSpan> | null;
 }
@@ -86,6 +72,8 @@ export interface DiffRow {
 
 export const DiffRowPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -121,12 +109,12 @@ export function DiffRowFromJSONTyped(json: any, ignoreDiscriminator: boolean): D
     return {
         
         'type': DiffRowTypeFromJSON(json['type']),
-        'leftNo': json['left_no'] == null ? undefined : json['left_no'],
-        'left': json['left'] == null ? undefined : json['left'],
-        'rightNo': json['right_no'] == null ? undefined : json['right_no'],
-        'right': json['right'] == null ? undefined : json['right'],
-        'leftSpans': json['left_spans'] == null ? undefined : ((json['left_spans'] as Array<any>).map(DiffSpanFromJSON)),
-        'rightSpans': json['right_spans'] == null ? undefined : ((json['right_spans'] as Array<any>).map(DiffSpanFromJSON)),
+        'leftNo': json['left_no'] === undefined ? undefined : json['left_no'] === null ? null : json['left_no'],
+        'left': json['left'] === undefined ? undefined : json['left'] === null ? null : json['left'],
+        'rightNo': json['right_no'] === undefined ? undefined : json['right_no'] === null ? null : json['right_no'],
+        'right': json['right'] === undefined ? undefined : json['right'] === null ? null : json['right'],
+        'leftSpans': json['left_spans'] === undefined ? undefined : json['left_spans'] === null ? null : ((json['left_spans'] as Array<any>).map(DiffSpanFromJSON)),
+        'rightSpans': json['right_spans'] === undefined ? undefined : json['right_spans'] === null ? null : ((json['right_spans'] as Array<any>).map(DiffSpanFromJSON)),
     };
 }
 

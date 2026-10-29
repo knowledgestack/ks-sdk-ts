@@ -21,19 +21,17 @@ import { mapValues } from '../runtime';
 export interface UpdateThreadRequest {
     /**
      * New thread title
-     * @type {string}
-     * @memberof UpdateThreadRequest
      */
     title?: string | null;
     /**
      * Parent thread ID. Set to a UUID to link, or null to clear.
-     * @type {string}
-     * @memberof UpdateThreadRequest
      */
     parentThreadId?: string | null;
 }
 export const UpdateThreadRequestPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -48,6 +46,7 @@ export const UpdateThreadRequestPropertyValidationAttributesMap: {
     }
 } = {
     title: {
+        dataType: "string",
         maxLength: 255,
         minLength: 1,
     },
@@ -71,8 +70,8 @@ export function UpdateThreadRequestFromJSONTyped(json: any, ignoreDiscriminator:
     }
     return {
         
-        'title': json['title'] == null ? undefined : json['title'],
-        'parentThreadId': json['parent_thread_id'] == null ? undefined : json['parent_thread_id'],
+        'title': json['title'] === undefined ? undefined : json['title'] === null ? null : json['title'],
+        'parentThreadId': json['parent_thread_id'] === undefined ? undefined : json['parent_thread_id'] === null ? null : json['parent_thread_id'],
     };
 }
 

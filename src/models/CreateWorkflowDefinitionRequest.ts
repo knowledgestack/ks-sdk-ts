@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
 import type { ScheduleCadence } from './ScheduleCadence';
 import {
     ScheduleCadenceFromJSON,
@@ -33,74 +33,50 @@ import {
 export interface CreateWorkflowDefinitionRequest {
     /**
      * 
-     * @type {ScheduleCadence}
-     * @memberof CreateWorkflowDefinitionRequest
      */
     scheduleCadence?: ScheduleCadence;
     /**
      * First occurrence. Read in ``schedule_timezone``, so its local wall time, weekday and day of month drive the recurrence. A MONTHLY schedule must land on or before the 28th: Temporal silently skips months that are too short.
-     * @type {Date}
-     * @memberof CreateWorkflowDefinitionRequest
      */
     scheduleStartAt?: Date | null;
     /**
      * IANA zone the schedule fires in, e.g. ``Asia/Shanghai``. Optional: omit it to inherit the tenant timezone. Only set it to fire in a different zone than the tenant's. Must be an IANA name, not an ISO offset — an offset stops meaning the same wall clock across DST.
-     * @type {string}
-     * @memberof CreateWorkflowDefinitionRequest
      */
     scheduleTimezone?: string | null;
     /**
      * 
-     * @type {string}
-     * @memberof CreateWorkflowDefinitionRequest
      */
     name: string;
     /**
      * 
-     * @type {string}
-     * @memberof CreateWorkflowDefinitionRequest
      */
     description?: string | null;
     /**
      * 
-     * @type {number}
-     * @memberof CreateWorkflowDefinitionRequest
      */
     maxRunDurationSeconds?: number;
     /**
      * The ``path_part_id`` of the folder the workflow is created under (the folder's PathPart id, not the Folder PDO id). The caller needs write access to it; the workflow may live anywhere in the path tree.
-     * @type {string}
-     * @memberof CreateWorkflowDefinitionRequest
      */
     parentPathPartId: string;
     /**
      * DOCUMENT path_part of the instruction document. Omit (or pass null) to have the server auto-create an empty instruction.md.
-     * @type {string}
-     * @memberof CreateWorkflowDefinitionRequest
      */
     instructionPathPartId?: string | null;
     /**
      * 
-     * @type {boolean}
-     * @memberof CreateWorkflowDefinitionRequest
      */
     approvalRequired: boolean;
     /**
      * Create a non-runnable template. Templates are excluded from the default list and cannot have runs; users instantiate them into their own runnable workflow. Immutable after creation.
-     * @type {boolean}
-     * @memberof CreateWorkflowDefinitionRequest
      */
     isTemplate?: boolean;
     /**
      * Skill PDO ids force-loaded into every run of this workflow by default (prefill). Each run inherits these and may add more; the agent can still discover others via search. Each must be a SKILL the caller can read.
-     * @type {Array<string>}
-     * @memberof CreateWorkflowDefinitionRequest
      */
     selectedSkillIds?: Array<string>;
     /**
      * Optional path_part ids of common files (DOCUMENT / FOLDER / DATA_SOURCE / API_CONNECTION) attached to every run of this workflow — e.g. an output template. Merged with each run's own inputs at Start. The caller must be able to read each one.
-     * @type {Array<string>}
-     * @memberof CreateWorkflowDefinitionRequest
      */
     commonFilePathPartIds?: Array<string>;
 }
@@ -108,6 +84,8 @@ export interface CreateWorkflowDefinitionRequest {
 
 export const CreateWorkflowDefinitionRequestPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -122,22 +100,28 @@ export const CreateWorkflowDefinitionRequestPropertyValidationAttributesMap: {
     }
 } = {
     scheduleTimezone: {
+        dataType: "string",
         maxLength: 64,
     },
     name: {
+        dataType: "string",
+        required: true,
         maxLength: 255,
     },
     maxRunDurationSeconds: {
+        dataType: "number",
         maximum: 7200,
         exclusiveMaximum: false,
         minimum: 60,
         exclusiveMinimum: false,
     },
     selectedSkillIds: {
+        dataType: "Array<string>",
         maxItems: 20,
         uniqueItems: false,
     },
     commonFilePathPartIds: {
+        dataType: "Array<string>",
         maxItems: 20,
         uniqueItems: false,
     },
@@ -149,8 +133,8 @@ export const CreateWorkflowDefinitionRequestPropertyValidationAttributesMap: {
  */
 export function instanceOfCreateWorkflowDefinitionRequest(value: object): value is CreateWorkflowDefinitionRequest {
     if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('parentPathPartId' in value) || value['parentPathPartId'] === undefined) return false;
-    if (!('approvalRequired' in value) || value['approvalRequired'] === undefined) return false;
+    if ((!('parentPathPartId' in (value as Record<string, any>)) && !('parent_path_part_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['parentPathPartId'] === undefined && (value as Record<string, any>)['parent_path_part_id'] === undefined)) return false;
+    if ((!('approvalRequired' in (value as Record<string, any>)) && !('approval_required' in (value as Record<string, any>))) || ((value as Record<string, any>)['approvalRequired'] === undefined && (value as Record<string, any>)['approval_required'] === undefined)) return false;
     return true;
 }
 
@@ -165,13 +149,13 @@ export function CreateWorkflowDefinitionRequestFromJSONTyped(json: any, ignoreDi
     return {
         
         'scheduleCadence': json['schedule_cadence'] == null ? undefined : ScheduleCadenceFromJSON(json['schedule_cadence']),
-        'scheduleStartAt': json['schedule_start_at'] == null ? undefined : (new Date(json['schedule_start_at'])),
-        'scheduleTimezone': json['schedule_timezone'] == null ? undefined : json['schedule_timezone'],
+        'scheduleStartAt': json['schedule_start_at'] === undefined ? undefined : json['schedule_start_at'] === null ? null : (parseDateTime(json['schedule_start_at'])),
+        'scheduleTimezone': json['schedule_timezone'] === undefined ? undefined : json['schedule_timezone'] === null ? null : json['schedule_timezone'],
         'name': json['name'],
-        'description': json['description'] == null ? undefined : json['description'],
+        'description': json['description'] === undefined ? undefined : json['description'] === null ? null : json['description'],
         'maxRunDurationSeconds': json['max_run_duration_seconds'] == null ? undefined : json['max_run_duration_seconds'],
         'parentPathPartId': json['parent_path_part_id'],
-        'instructionPathPartId': json['instruction_path_part_id'] == null ? undefined : json['instruction_path_part_id'],
+        'instructionPathPartId': json['instruction_path_part_id'] === undefined ? undefined : json['instruction_path_part_id'] === null ? null : json['instruction_path_part_id'],
         'approvalRequired': json['approval_required'],
         'isTemplate': json['is_template'] == null ? undefined : json['is_template'],
         'selectedSkillIds': json['selected_skill_ids'] == null ? undefined : json['selected_skill_ids'],
@@ -191,7 +175,7 @@ export function CreateWorkflowDefinitionRequestToJSONTyped(value?: CreateWorkflo
     return {
         
         'schedule_cadence': ScheduleCadenceToJSON(value['scheduleCadence']),
-        'schedule_start_at': value['scheduleStartAt'] == null ? value['scheduleStartAt'] : value['scheduleStartAt'].toISOString(),
+        'schedule_start_at': value['scheduleStartAt'] == null ? value['scheduleStartAt'] : serializeDateTime(value['scheduleStartAt']),
         'schedule_timezone': value['scheduleTimezone'],
         'name': value['name'],
         'description': value['description'],

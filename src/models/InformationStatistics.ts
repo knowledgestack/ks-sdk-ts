@@ -21,31 +21,25 @@ import { mapValues } from '../runtime';
 export interface InformationStatistics {
     /**
      * Count of chunks by type (e.g. {"TEXT": 42, "TABLE": 3})
-     * @type {{ [key: string]: number; }}
-     * @memberof InformationStatistics
      */
     numChunksByType?: { [key: string]: number; };
     /**
      * Sum of all chunk content tokens in subtree
-     * @type {number}
-     * @memberof InformationStatistics
      */
     totalTokens?: number;
     /**
      * Count of immediate children (sections + chunks)
-     * @type {number}
-     * @memberof InformationStatistics
      */
     numDirectChildren?: number;
     /**
      * Max depth to deepest leaf (0 = no children)
-     * @type {number}
-     * @memberof InformationStatistics
      */
     childrenDepth?: number;
 }
 export const InformationStatisticsPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,

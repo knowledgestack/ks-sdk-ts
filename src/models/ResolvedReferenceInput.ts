@@ -40,32 +40,22 @@ import {
 export interface ResolvedReferenceInput {
     /**
      * 
-     * @type {ReferenceType}
-     * @memberof ResolvedReferenceInput
      */
     refType: ReferenceType;
     /**
      * 
-     * @type {string}
-     * @memberof ResolvedReferenceInput
      */
     entityId: string;
     /**
      * Human-readable name for the entity
-     * @type {string}
-     * @memberof ResolvedReferenceInput
      */
     displayName: string;
     /**
      * Full materialized path (None for entities without path parts, e.g. tags, users)
-     * @type {string}
-     * @memberof ResolvedReferenceInput
      */
     materializedPath?: string | null;
     /**
      * 
-     * @type {DocumentType}
-     * @memberof ResolvedReferenceInput
      */
     documentType?: DocumentType;
 }
@@ -73,6 +63,8 @@ export interface ResolvedReferenceInput {
 
 export const ResolvedReferenceInputPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -93,9 +85,9 @@ export const ResolvedReferenceInputPropertyValidationAttributesMap: {
  * Check if a given object implements the ResolvedReferenceInput interface.
  */
 export function instanceOfResolvedReferenceInput(value: object): value is ResolvedReferenceInput {
-    if (!('refType' in value) || value['refType'] === undefined) return false;
-    if (!('entityId' in value) || value['entityId'] === undefined) return false;
-    if (!('displayName' in value) || value['displayName'] === undefined) return false;
+    if ((!('refType' in (value as Record<string, any>)) && !('ref_type' in (value as Record<string, any>))) || ((value as Record<string, any>)['refType'] === undefined && (value as Record<string, any>)['ref_type'] === undefined)) return false;
+    if ((!('entityId' in (value as Record<string, any>)) && !('entity_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['entityId'] === undefined && (value as Record<string, any>)['entity_id'] === undefined)) return false;
+    if ((!('displayName' in (value as Record<string, any>)) && !('display_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['displayName'] === undefined && (value as Record<string, any>)['display_name'] === undefined)) return false;
     return true;
 }
 
@@ -112,7 +104,7 @@ export function ResolvedReferenceInputFromJSONTyped(json: any, ignoreDiscriminat
         'refType': ReferenceTypeFromJSON(json['ref_type']),
         'entityId': json['entity_id'],
         'displayName': json['display_name'],
-        'materializedPath': json['materialized_path'] == null ? undefined : json['materialized_path'],
+        'materializedPath': json['materialized_path'] === undefined ? undefined : json['materialized_path'] === null ? null : json['materialized_path'],
         'documentType': json['document_type'] == null ? undefined : DocumentTypeFromJSON(json['document_type']),
     };
 }

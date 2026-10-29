@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
 /**
  * How far a crawl has read; a missing mark means "never", not "day zero".
  * @export
@@ -21,19 +21,17 @@ import { mapValues } from '../runtime';
 export interface YidingCursor {
     /**
      * Seating time of the last order read
-     * @type {Date}
-     * @memberof YidingCursor
      */
     lastSyncedOrderTs?: Date | null;
     /**
      * When the customer list was last refreshed
-     * @type {Date}
-     * @memberof YidingCursor
      */
     lastSyncedUserTs?: Date | null;
 }
 export const YidingCursorPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -67,8 +65,8 @@ export function YidingCursorFromJSONTyped(json: any, ignoreDiscriminator: boolea
     }
     return {
         
-        'lastSyncedOrderTs': json['last_synced_order_ts'] == null ? undefined : (new Date(json['last_synced_order_ts'])),
-        'lastSyncedUserTs': json['last_synced_user_ts'] == null ? undefined : (new Date(json['last_synced_user_ts'])),
+        'lastSyncedOrderTs': json['last_synced_order_ts'] === undefined ? undefined : json['last_synced_order_ts'] === null ? null : (parseDateTime(json['last_synced_order_ts'])),
+        'lastSyncedUserTs': json['last_synced_user_ts'] === undefined ? undefined : json['last_synced_user_ts'] === null ? null : (parseDateTime(json['last_synced_user_ts'])),
     };
 }
 
@@ -83,8 +81,8 @@ export function YidingCursorToJSONTyped(value?: YidingCursor | null, ignoreDiscr
 
     return {
         
-        'last_synced_order_ts': value['lastSyncedOrderTs'] == null ? value['lastSyncedOrderTs'] : value['lastSyncedOrderTs'].toISOString(),
-        'last_synced_user_ts': value['lastSyncedUserTs'] == null ? value['lastSyncedUserTs'] : value['lastSyncedUserTs'].toISOString(),
+        'last_synced_order_ts': value['lastSyncedOrderTs'] == null ? value['lastSyncedOrderTs'] : serializeDateTime(value['lastSyncedOrderTs']),
+        'last_synced_user_ts': value['lastSyncedUserTs'] == null ? value['lastSyncedUserTs'] : serializeDateTime(value['lastSyncedUserTs']),
     };
 }
 

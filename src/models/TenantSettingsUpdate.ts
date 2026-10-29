@@ -43,56 +43,38 @@ import {
 export interface TenantSettingsUpdate {
     /**
      * 
-     * @type {SupportedLanguage}
-     * @memberof TenantSettingsUpdate
      */
     language?: SupportedLanguage;
     /**
      * Tenant description
-     * @type {string}
-     * @memberof TenantSettingsUpdate
      */
     description?: string | null;
     /**
      * Industry / company type captured during onboarding
-     * @type {string}
-     * @memberof TenantSettingsUpdate
      */
     industry?: string | null;
     /**
      * IANA timezone (e.g. 'America/New_York')
-     * @type {string}
-     * @memberof TenantSettingsUpdate
      */
     timezone?: string | null;
     /**
      * 
-     * @type {DisplayNameFormat}
-     * @memberof TenantSettingsUpdate
      */
     displayName?: DisplayNameFormat;
     /**
      * Custom brand name for logo
-     * @type {string}
-     * @memberof TenantSettingsUpdate
      */
     brandName?: string | null;
     /**
      * Primary brand hex color (e.g. '#2563eb')
-     * @type {string}
-     * @memberof TenantSettingsUpdate
      */
     brandColor?: string | null;
     /**
      * Custom CSS variable overrides
-     * @type {{ [key: string]: string; }}
-     * @memberof TenantSettingsUpdate
      */
     themeOverrides?: { [key: string]: string; } | null;
     /**
      * Tenant-wide invite-link configuration
-     * @type {InviteLinkSettingsRequest}
-     * @memberof TenantSettingsUpdate
      */
     inviteLink?: InviteLinkSettingsRequest | null;
 }
@@ -100,6 +82,8 @@ export interface TenantSettingsUpdate {
 
 export const TenantSettingsUpdatePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -114,9 +98,11 @@ export const TenantSettingsUpdatePropertyValidationAttributesMap: {
     }
 } = {
     description: {
+        dataType: "string",
         maxLength: 5000,
     },
     industry: {
+        dataType: "string",
         maxLength: 120,
     },
 }
@@ -140,14 +126,14 @@ export function TenantSettingsUpdateFromJSONTyped(json: any, ignoreDiscriminator
     return {
         
         'language': json['language'] == null ? undefined : SupportedLanguageFromJSON(json['language']),
-        'description': json['description'] == null ? undefined : json['description'],
-        'industry': json['industry'] == null ? undefined : json['industry'],
-        'timezone': json['timezone'] == null ? undefined : json['timezone'],
+        'description': json['description'] === undefined ? undefined : json['description'] === null ? null : json['description'],
+        'industry': json['industry'] === undefined ? undefined : json['industry'] === null ? null : json['industry'],
+        'timezone': json['timezone'] === undefined ? undefined : json['timezone'] === null ? null : json['timezone'],
         'displayName': json['display_name'] == null ? undefined : DisplayNameFormatFromJSON(json['display_name']),
-        'brandName': json['brand_name'] == null ? undefined : json['brand_name'],
-        'brandColor': json['brand_color'] == null ? undefined : json['brand_color'],
-        'themeOverrides': json['theme_overrides'] == null ? undefined : json['theme_overrides'],
-        'inviteLink': json['invite_link'] == null ? undefined : InviteLinkSettingsRequestFromJSON(json['invite_link']),
+        'brandName': json['brand_name'] === undefined ? undefined : json['brand_name'] === null ? null : json['brand_name'],
+        'brandColor': json['brand_color'] === undefined ? undefined : json['brand_color'] === null ? null : json['brand_color'],
+        'themeOverrides': json['theme_overrides'] === undefined ? undefined : json['theme_overrides'] === null ? null : json['theme_overrides'],
+        'inviteLink': json['invite_link'] === undefined ? undefined : json['invite_link'] === null ? null : InviteLinkSettingsRequestFromJSON(json['invite_link']),
     };
 }
 

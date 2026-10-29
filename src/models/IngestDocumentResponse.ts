@@ -21,25 +21,21 @@ import { mapValues } from '../runtime';
 export interface IngestDocumentResponse {
     /**
      * Temporal workflow ID
-     * @type {string}
-     * @memberof IngestDocumentResponse
      */
     workflowId: string;
     /**
      * 
-     * @type {string}
-     * @memberof IngestDocumentResponse
      */
     documentId: string;
     /**
      * 
-     * @type {string}
-     * @memberof IngestDocumentResponse
      */
     documentVersionId: string;
 }
 export const IngestDocumentResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -60,9 +56,9 @@ export const IngestDocumentResponsePropertyValidationAttributesMap: {
  * Check if a given object implements the IngestDocumentResponse interface.
  */
 export function instanceOfIngestDocumentResponse(value: object): value is IngestDocumentResponse {
-    if (!('workflowId' in value) || value['workflowId'] === undefined) return false;
-    if (!('documentId' in value) || value['documentId'] === undefined) return false;
-    if (!('documentVersionId' in value) || value['documentVersionId'] === undefined) return false;
+    if ((!('workflowId' in (value as Record<string, any>)) && !('workflow_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['workflowId'] === undefined && (value as Record<string, any>)['workflow_id'] === undefined)) return false;
+    if ((!('documentId' in (value as Record<string, any>)) && !('document_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['documentId'] === undefined && (value as Record<string, any>)['document_id'] === undefined)) return false;
+    if ((!('documentVersionId' in (value as Record<string, any>)) && !('document_version_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['documentVersionId'] === undefined && (value as Record<string, any>)['document_version_id'] === undefined)) return false;
     return true;
 }
 

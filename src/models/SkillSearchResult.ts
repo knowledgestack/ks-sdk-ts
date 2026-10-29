@@ -21,37 +21,29 @@ import { mapValues } from '../runtime';
 export interface SkillSearchResult {
     /**
      * 
-     * @type {string}
-     * @memberof SkillSearchResult
      */
     skillId: string;
     /**
      * 
-     * @type {string}
-     * @memberof SkillSearchResult
      */
     name: string;
     /**
      * 
-     * @type {string}
-     * @memberof SkillSearchResult
      */
     description: string;
     /**
      * 
-     * @type {string}
-     * @memberof SkillSearchResult
      */
     materializedPath: string;
     /**
      * 
-     * @type {number}
-     * @memberof SkillSearchResult
      */
     score: number;
 }
 export const SkillSearchResultPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -72,10 +64,10 @@ export const SkillSearchResultPropertyValidationAttributesMap: {
  * Check if a given object implements the SkillSearchResult interface.
  */
 export function instanceOfSkillSearchResult(value: object): value is SkillSearchResult {
-    if (!('skillId' in value) || value['skillId'] === undefined) return false;
+    if ((!('skillId' in (value as Record<string, any>)) && !('skill_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['skillId'] === undefined && (value as Record<string, any>)['skill_id'] === undefined)) return false;
     if (!('name' in value) || value['name'] === undefined) return false;
     if (!('description' in value) || value['description'] === undefined) return false;
-    if (!('materializedPath' in value) || value['materializedPath'] === undefined) return false;
+    if ((!('materializedPath' in (value as Record<string, any>)) && !('materialized_path' in (value as Record<string, any>))) || ((value as Record<string, any>)['materializedPath'] === undefined && (value as Record<string, any>)['materialized_path'] === undefined)) return false;
     if (!('score' in value) || value['score'] === undefined) return false;
     return true;
 }

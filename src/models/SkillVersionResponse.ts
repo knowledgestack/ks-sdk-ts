@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
 /**
  * One published version of a skill.
  * @export
@@ -21,37 +21,29 @@ import { mapValues } from '../runtime';
 export interface SkillVersionResponse {
     /**
      * 
-     * @type {string}
-     * @memberof SkillVersionResponse
      */
     versionId: string;
     /**
      * Monotonic version number (0, 1, 2, …)
-     * @type {number}
-     * @memberof SkillVersionResponse
      */
     version: number;
     /**
      * Content hash of the version bundle.
-     * @type {string}
-     * @memberof SkillVersionResponse
      */
     contentSha256?: string | null;
     /**
      * 
-     * @type {boolean}
-     * @memberof SkillVersionResponse
      */
     isActive: boolean;
     /**
      * 
-     * @type {Date}
-     * @memberof SkillVersionResponse
      */
     createdAt: Date;
 }
 export const SkillVersionResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -72,10 +64,10 @@ export const SkillVersionResponsePropertyValidationAttributesMap: {
  * Check if a given object implements the SkillVersionResponse interface.
  */
 export function instanceOfSkillVersionResponse(value: object): value is SkillVersionResponse {
-    if (!('versionId' in value) || value['versionId'] === undefined) return false;
+    if ((!('versionId' in (value as Record<string, any>)) && !('version_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['versionId'] === undefined && (value as Record<string, any>)['version_id'] === undefined)) return false;
     if (!('version' in value) || value['version'] === undefined) return false;
-    if (!('isActive' in value) || value['isActive'] === undefined) return false;
-    if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
+    if ((!('isActive' in (value as Record<string, any>)) && !('is_active' in (value as Record<string, any>))) || ((value as Record<string, any>)['isActive'] === undefined && (value as Record<string, any>)['is_active'] === undefined)) return false;
+    if ((!('createdAt' in (value as Record<string, any>)) && !('created_at' in (value as Record<string, any>))) || ((value as Record<string, any>)['createdAt'] === undefined && (value as Record<string, any>)['created_at'] === undefined)) return false;
     return true;
 }
 
@@ -91,9 +83,9 @@ export function SkillVersionResponseFromJSONTyped(json: any, ignoreDiscriminator
         
         'versionId': json['version_id'],
         'version': json['version'],
-        'contentSha256': json['content_sha256'] == null ? undefined : json['content_sha256'],
+        'contentSha256': json['content_sha256'] === undefined ? undefined : json['content_sha256'] === null ? null : json['content_sha256'],
         'isActive': json['is_active'],
-        'createdAt': (new Date(json['created_at'])),
+        'createdAt': (json['created_at'] == null ? json['created_at'] : parseDateTime(json['created_at'])),
     };
 }
 
@@ -112,7 +104,7 @@ export function SkillVersionResponseToJSONTyped(value?: SkillVersionResponse | n
         'version': value['version'],
         'content_sha256': value['contentSha256'],
         'is_active': value['isActive'],
-        'created_at': value['createdAt'].toISOString(),
+        'created_at': value['createdAt'] == null ? value['createdAt'] : serializeDateTime(value['createdAt']),
     };
 }
 

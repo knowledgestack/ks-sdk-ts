@@ -29,25 +29,21 @@ import {
 export interface CreateSkillRequest {
     /**
      * Skill machine name (its folder name); unique within the tenant.
-     * @type {string}
-     * @memberof CreateSkillRequest
      */
     name: string;
     /**
      * Full SKILL.md content: YAML frontmatter with name + description, then the markdown instruction body.
-     * @type {string}
-     * @memberof CreateSkillRequest
      */
     skillMd: string;
     /**
      * Optional bundle files at paths relative to the skill root (scripts/, references/, assets/, …). SKILL.md is supplied separately and must not be repeated here.
-     * @type {Array<SkillFile>}
-     * @memberof CreateSkillRequest
      */
     files?: Array<SkillFile>;
 }
 export const CreateSkillRequestPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -62,9 +58,12 @@ export const CreateSkillRequestPropertyValidationAttributesMap: {
     }
 } = {
     name: {
+        dataType: "string",
+        required: true,
         maxLength: 255,
     },
     files: {
+        dataType: "Array<SkillFile>",
         maxItems: 2000,
         uniqueItems: false,
     },
@@ -76,7 +75,7 @@ export const CreateSkillRequestPropertyValidationAttributesMap: {
  */
 export function instanceOfCreateSkillRequest(value: object): value is CreateSkillRequest {
     if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('skillMd' in value) || value['skillMd'] === undefined) return false;
+    if ((!('skillMd' in (value as Record<string, any>)) && !('skill_md' in (value as Record<string, any>))) || ((value as Record<string, any>)['skillMd'] === undefined && (value as Record<string, any>)['skill_md'] === undefined)) return false;
     return true;
 }
 

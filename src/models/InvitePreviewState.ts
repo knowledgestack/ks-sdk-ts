@@ -22,7 +22,7 @@ export const InvitePreviewState = {
     Expired: 'expired',
     Accepted: 'accepted',
     NotFound: 'not_found',
-    TenantUnavailable: 'tenant_unavailable'
+    TenantUnavailable: 'tenant_unavailable',
 } as const;
 export type InvitePreviewState = typeof InvitePreviewState[keyof typeof InvitePreviewState];
 

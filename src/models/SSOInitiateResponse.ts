@@ -21,13 +21,13 @@ import { mapValues } from '../runtime';
 export interface SSOInitiateResponse {
     /**
      * 
-     * @type {string}
-     * @memberof SSOInitiateResponse
      */
     redirectUrl: string;
 }
 export const SSOInitiateResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -48,7 +48,7 @@ export const SSOInitiateResponsePropertyValidationAttributesMap: {
  * Check if a given object implements the SSOInitiateResponse interface.
  */
 export function instanceOfSSOInitiateResponse(value: object): value is SSOInitiateResponse {
-    if (!('redirectUrl' in value) || value['redirectUrl'] === undefined) return false;
+    if ((!('redirectUrl' in (value as Record<string, any>)) && !('redirect_url' in (value as Record<string, any>))) || ((value as Record<string, any>)['redirectUrl'] === undefined && (value as Record<string, any>)['redirect_url'] === undefined)) return false;
     return true;
 }
 

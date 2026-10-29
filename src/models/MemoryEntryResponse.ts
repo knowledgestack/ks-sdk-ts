@@ -29,20 +29,14 @@ import {
 export interface MemoryEntryResponse {
     /**
      * 
-     * @type {string}
-     * @memberof MemoryEntryResponse
      */
     chunkId: string;
     /**
      * 
-     * @type {MemoryKind}
-     * @memberof MemoryEntryResponse
      */
     kind: MemoryKind;
     /**
      * 
-     * @type {string}
-     * @memberof MemoryEntryResponse
      */
     body: string;
 }
@@ -50,6 +44,8 @@ export interface MemoryEntryResponse {
 
 export const MemoryEntryResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -70,7 +66,7 @@ export const MemoryEntryResponsePropertyValidationAttributesMap: {
  * Check if a given object implements the MemoryEntryResponse interface.
  */
 export function instanceOfMemoryEntryResponse(value: object): value is MemoryEntryResponse {
-    if (!('chunkId' in value) || value['chunkId'] === undefined) return false;
+    if ((!('chunkId' in (value as Record<string, any>)) && !('chunk_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['chunkId'] === undefined && (value as Record<string, any>)['chunk_id'] === undefined)) return false;
     if (!('kind' in value) || value['kind'] === undefined) return false;
     if (!('body' in value) || value['body'] === undefined) return false;
     return true;

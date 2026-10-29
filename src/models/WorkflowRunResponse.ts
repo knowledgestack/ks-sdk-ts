@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
 import type { ItemPermissions } from './ItemPermissions';
 import {
     ItemPermissionsFromJSON,
@@ -88,158 +88,106 @@ import {
 export interface WorkflowRunResponse {
     /**
      * Path part type
-     * @type {WorkflowRunResponsePartTypeEnum}
-     * @memberof WorkflowRunResponse
      */
     partType?: WorkflowRunResponsePartTypeEnum;
     /**
      * 
-     * @type {string}
-     * @memberof WorkflowRunResponse
      */
     id: string;
     /**
      * WORKFLOW_RUN path_part of this run
-     * @type {string}
-     * @memberof WorkflowRunResponse
      */
     pathPartId: string;
     /**
      * FOLDER path_part of the containing folder
-     * @type {string}
-     * @memberof WorkflowRunResponse
      */
     parentPathPartId: string | null;
     /**
      * Full materialized path from root
-     * @type {string}
-     * @memberof WorkflowRunResponse
      */
     materializedPath: string;
     /**
      * 
-     * @type {string}
-     * @memberof WorkflowRunResponse
      */
     tenantId: string;
     /**
      * Run display name; mirrors ``path_part.name`` (the run's UUID until a slug feature lands).
-     * @type {string}
-     * @memberof WorkflowRunResponse
      */
     name: string;
     /**
      * 
-     * @type {string}
-     * @memberof WorkflowRunResponse
      */
     workflowDefinitionId: string;
     /**
      * 
-     * @type {UserInfo}
-     * @memberof WorkflowRunResponse
      */
     triggeredBy: UserInfo;
     /**
      * 
-     * @type {WorkflowExecutionState}
-     * @memberof WorkflowRunResponse
      */
     executionState: WorkflowExecutionState;
     /**
      * 
-     * @type {PathPartApprovalState}
-     * @memberof WorkflowRunResponse
      */
     approvalState: PathPartApprovalState;
     /**
      * When Start dispatched the run. NULL while the run is NOT_STARTED.
-     * @type {Date}
-     * @memberof WorkflowRunResponse
      */
     startedAt: Date | null;
     /**
      * 
-     * @type {Date}
-     * @memberof WorkflowRunResponse
      */
     completedAt: Date | null;
     /**
      * Frozen workflow configuration captured at Start time. NULL while the run is NOT_STARTED.
-     * @type {WorkflowRunSnapshot}
-     * @memberof WorkflowRunResponse
      */
     runSnapshot: WorkflowRunSnapshot | null;
     /**
      * 
-     * @type {string}
-     * @memberof WorkflowRunResponse
      */
     error: string | null;
     /**
      * Whether the run dispatches itself once its ``inputs/`` uploads finish ingesting, with no separate Start call.
-     * @type {boolean}
-     * @memberof WorkflowRunResponse
      */
     autoStart: boolean;
     /**
      * The note applied when this run auto-starts (set via create / PATCH ``user_message``); null when none was supplied.
-     * @type {string}
-     * @memberof WorkflowRunResponse
      */
     autoStartUserMessage?: string | null;
     /**
      * 
-     * @type {RunFolder}
-     * @memberof WorkflowRunResponse
      */
     inputs: RunFolder;
     /**
      * 
-     * @type {RunFolder}
-     * @memberof WorkflowRunResponse
      */
     outputs: RunFolder;
     /**
      * 
-     * @type {RunFolderRef}
-     * @memberof WorkflowRunResponse
      */
     discussions: RunFolderRef;
     /**
      * Definition common files that were excluded from this run at Start (deleted or unreadable by the starter). Empty until Start builds the snapshot, and empty for the common happy path.
-     * @type {Array<ExcludedCommonFile>}
-     * @memberof WorkflowRunResponse
      */
     excludedCommonFiles?: Array<ExcludedCommonFile>;
     /**
      * The run's primary chat thread (1:1). NULL while NOT_STARTED; set by Start. The FE opens the run by opening this thread.
-     * @type {string}
-     * @memberof WorkflowRunResponse
      */
     runThreadId?: string | null;
     /**
      * Current owner (creator) of the run, or null if unowned. Usually the same user as ``triggered_by`` unless ownership was transferred.
-     * @type {UserInfo}
-     * @memberof WorkflowRunResponse
      */
     owner?: UserInfo | null;
     /**
      * 
-     * @type {Date}
-     * @memberof WorkflowRunResponse
      */
     createdAt: Date;
     /**
      * 
-     * @type {Date}
-     * @memberof WorkflowRunResponse
      */
     updatedAt: Date;
     /**
      * Caller's effective rights; null on mutation responses.
-     * @type {ItemPermissions}
-     * @memberof WorkflowRunResponse
      */
     permissions?: ItemPermissions | null;
 }
@@ -249,12 +197,14 @@ export interface WorkflowRunResponse {
  * @export
  */
 export const WorkflowRunResponsePartTypeEnum = {
-    WorkflowRun: 'WORKFLOW_RUN'
+    WorkflowRun: 'WORKFLOW_RUN',
 } as const;
 export type WorkflowRunResponsePartTypeEnum = typeof WorkflowRunResponsePartTypeEnum[keyof typeof WorkflowRunResponsePartTypeEnum];
 
 export const WorkflowRunResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -276,25 +226,25 @@ export const WorkflowRunResponsePropertyValidationAttributesMap: {
  */
 export function instanceOfWorkflowRunResponse(value: object): value is WorkflowRunResponse {
     if (!('id' in value) || value['id'] === undefined) return false;
-    if (!('pathPartId' in value) || value['pathPartId'] === undefined) return false;
-    if (!('parentPathPartId' in value) || value['parentPathPartId'] === undefined) return false;
-    if (!('materializedPath' in value) || value['materializedPath'] === undefined) return false;
-    if (!('tenantId' in value) || value['tenantId'] === undefined) return false;
+    if ((!('pathPartId' in (value as Record<string, any>)) && !('path_part_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['pathPartId'] === undefined && (value as Record<string, any>)['path_part_id'] === undefined)) return false;
+    if ((!('parentPathPartId' in (value as Record<string, any>)) && !('parent_path_part_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['parentPathPartId'] === undefined && (value as Record<string, any>)['parent_path_part_id'] === undefined)) return false;
+    if ((!('materializedPath' in (value as Record<string, any>)) && !('materialized_path' in (value as Record<string, any>))) || ((value as Record<string, any>)['materializedPath'] === undefined && (value as Record<string, any>)['materialized_path'] === undefined)) return false;
+    if ((!('tenantId' in (value as Record<string, any>)) && !('tenant_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['tenantId'] === undefined && (value as Record<string, any>)['tenant_id'] === undefined)) return false;
     if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('workflowDefinitionId' in value) || value['workflowDefinitionId'] === undefined) return false;
-    if (!('triggeredBy' in value) || value['triggeredBy'] === undefined) return false;
-    if (!('executionState' in value) || value['executionState'] === undefined) return false;
-    if (!('approvalState' in value) || value['approvalState'] === undefined) return false;
-    if (!('startedAt' in value) || value['startedAt'] === undefined) return false;
-    if (!('completedAt' in value) || value['completedAt'] === undefined) return false;
-    if (!('runSnapshot' in value) || value['runSnapshot'] === undefined) return false;
+    if ((!('workflowDefinitionId' in (value as Record<string, any>)) && !('workflow_definition_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['workflowDefinitionId'] === undefined && (value as Record<string, any>)['workflow_definition_id'] === undefined)) return false;
+    if ((!('triggeredBy' in (value as Record<string, any>)) && !('triggered_by' in (value as Record<string, any>))) || ((value as Record<string, any>)['triggeredBy'] === undefined && (value as Record<string, any>)['triggered_by'] === undefined)) return false;
+    if ((!('executionState' in (value as Record<string, any>)) && !('execution_state' in (value as Record<string, any>))) || ((value as Record<string, any>)['executionState'] === undefined && (value as Record<string, any>)['execution_state'] === undefined)) return false;
+    if ((!('approvalState' in (value as Record<string, any>)) && !('approval_state' in (value as Record<string, any>))) || ((value as Record<string, any>)['approvalState'] === undefined && (value as Record<string, any>)['approval_state'] === undefined)) return false;
+    if ((!('startedAt' in (value as Record<string, any>)) && !('started_at' in (value as Record<string, any>))) || ((value as Record<string, any>)['startedAt'] === undefined && (value as Record<string, any>)['started_at'] === undefined)) return false;
+    if ((!('completedAt' in (value as Record<string, any>)) && !('completed_at' in (value as Record<string, any>))) || ((value as Record<string, any>)['completedAt'] === undefined && (value as Record<string, any>)['completed_at'] === undefined)) return false;
+    if ((!('runSnapshot' in (value as Record<string, any>)) && !('run_snapshot' in (value as Record<string, any>))) || ((value as Record<string, any>)['runSnapshot'] === undefined && (value as Record<string, any>)['run_snapshot'] === undefined)) return false;
     if (!('error' in value) || value['error'] === undefined) return false;
-    if (!('autoStart' in value) || value['autoStart'] === undefined) return false;
+    if ((!('autoStart' in (value as Record<string, any>)) && !('auto_start' in (value as Record<string, any>))) || ((value as Record<string, any>)['autoStart'] === undefined && (value as Record<string, any>)['auto_start'] === undefined)) return false;
     if (!('inputs' in value) || value['inputs'] === undefined) return false;
     if (!('outputs' in value) || value['outputs'] === undefined) return false;
     if (!('discussions' in value) || value['discussions'] === undefined) return false;
-    if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
-    if (!('updatedAt' in value) || value['updatedAt'] === undefined) return false;
+    if ((!('createdAt' in (value as Record<string, any>)) && !('created_at' in (value as Record<string, any>))) || ((value as Record<string, any>)['createdAt'] === undefined && (value as Record<string, any>)['created_at'] === undefined)) return false;
+    if ((!('updatedAt' in (value as Record<string, any>)) && !('updated_at' in (value as Record<string, any>))) || ((value as Record<string, any>)['updatedAt'] === undefined && (value as Record<string, any>)['updated_at'] === undefined)) return false;
     return true;
 }
 
@@ -319,21 +269,21 @@ export function WorkflowRunResponseFromJSONTyped(json: any, ignoreDiscriminator:
         'triggeredBy': UserInfoFromJSON(json['triggered_by']),
         'executionState': WorkflowExecutionStateFromJSON(json['execution_state']),
         'approvalState': PathPartApprovalStateFromJSON(json['approval_state']),
-        'startedAt': (json['started_at'] == null ? null : new Date(json['started_at'])),
-        'completedAt': (json['completed_at'] == null ? null : new Date(json['completed_at'])),
+        'startedAt': (json['started_at'] == null ? null : parseDateTime(json['started_at'])),
+        'completedAt': (json['completed_at'] == null ? null : parseDateTime(json['completed_at'])),
         'runSnapshot': WorkflowRunSnapshotFromJSON(json['run_snapshot']),
         'error': json['error'],
         'autoStart': json['auto_start'],
-        'autoStartUserMessage': json['auto_start_user_message'] == null ? undefined : json['auto_start_user_message'],
+        'autoStartUserMessage': json['auto_start_user_message'] === undefined ? undefined : json['auto_start_user_message'] === null ? null : json['auto_start_user_message'],
         'inputs': RunFolderFromJSON(json['inputs']),
         'outputs': RunFolderFromJSON(json['outputs']),
         'discussions': RunFolderRefFromJSON(json['discussions']),
         'excludedCommonFiles': json['excluded_common_files'] == null ? undefined : ((json['excluded_common_files'] as Array<any>).map(ExcludedCommonFileFromJSON)),
-        'runThreadId': json['run_thread_id'] == null ? undefined : json['run_thread_id'],
-        'owner': json['owner'] == null ? undefined : UserInfoFromJSON(json['owner']),
-        'createdAt': (new Date(json['created_at'])),
-        'updatedAt': (new Date(json['updated_at'])),
-        'permissions': json['permissions'] == null ? undefined : ItemPermissionsFromJSON(json['permissions']),
+        'runThreadId': json['run_thread_id'] === undefined ? undefined : json['run_thread_id'] === null ? null : json['run_thread_id'],
+        'owner': json['owner'] === undefined ? undefined : json['owner'] === null ? null : UserInfoFromJSON(json['owner']),
+        'createdAt': (json['created_at'] == null ? json['created_at'] : parseDateTime(json['created_at'])),
+        'updatedAt': (json['updated_at'] == null ? json['updated_at'] : parseDateTime(json['updated_at'])),
+        'permissions': json['permissions'] === undefined ? undefined : json['permissions'] === null ? null : ItemPermissionsFromJSON(json['permissions']),
     };
 }
 
@@ -359,8 +309,8 @@ export function WorkflowRunResponseToJSONTyped(value?: WorkflowRunResponse | nul
         'triggered_by': UserInfoToJSON(value['triggeredBy']),
         'execution_state': WorkflowExecutionStateToJSON(value['executionState']),
         'approval_state': PathPartApprovalStateToJSON(value['approvalState']),
-        'started_at': value['startedAt'] == null ? value['startedAt'] : value['startedAt'].toISOString(),
-        'completed_at': value['completedAt'] == null ? value['completedAt'] : value['completedAt'].toISOString(),
+        'started_at': value['startedAt'] == null ? value['startedAt'] : serializeDateTime(value['startedAt']),
+        'completed_at': value['completedAt'] == null ? value['completedAt'] : serializeDateTime(value['completedAt']),
         'run_snapshot': WorkflowRunSnapshotToJSON(value['runSnapshot']),
         'error': value['error'],
         'auto_start': value['autoStart'],
@@ -371,8 +321,8 @@ export function WorkflowRunResponseToJSONTyped(value?: WorkflowRunResponse | nul
         'excluded_common_files': value['excludedCommonFiles'] == null ? undefined : ((value['excludedCommonFiles'] as Array<any>).map(ExcludedCommonFileToJSON)),
         'run_thread_id': value['runThreadId'],
         'owner': UserInfoToJSON(value['owner']),
-        'created_at': value['createdAt'].toISOString(),
-        'updated_at': value['updatedAt'].toISOString(),
+        'created_at': value['createdAt'] == null ? value['createdAt'] : serializeDateTime(value['createdAt']),
+        'updated_at': value['updatedAt'] == null ? value['updatedAt'] : serializeDateTime(value['updatedAt']),
         'permissions': ItemPermissionsToJSON(value['permissions']),
     };
 }

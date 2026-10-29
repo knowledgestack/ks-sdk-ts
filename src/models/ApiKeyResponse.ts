@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
 /**
  * API key metadata (without the secret key).
  * @export
@@ -21,43 +21,33 @@ import { mapValues } from '../runtime';
 export interface ApiKeyResponse {
     /**
      * 
-     * @type {string}
-     * @memberof ApiKeyResponse
      */
     id: string;
     /**
      * 
-     * @type {string}
-     * @memberof ApiKeyResponse
      */
     name: string;
     /**
      * 
-     * @type {string}
-     * @memberof ApiKeyResponse
      */
     keySuffix: string;
     /**
      * 
-     * @type {Date}
-     * @memberof ApiKeyResponse
      */
     createdAt: Date;
     /**
      * 
-     * @type {Date}
-     * @memberof ApiKeyResponse
      */
     expiresAt: Date | null;
     /**
      * 
-     * @type {Date}
-     * @memberof ApiKeyResponse
      */
     lastUsedAt: Date | null;
 }
 export const ApiKeyResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -80,10 +70,10 @@ export const ApiKeyResponsePropertyValidationAttributesMap: {
 export function instanceOfApiKeyResponse(value: object): value is ApiKeyResponse {
     if (!('id' in value) || value['id'] === undefined) return false;
     if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('keySuffix' in value) || value['keySuffix'] === undefined) return false;
-    if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
-    if (!('expiresAt' in value) || value['expiresAt'] === undefined) return false;
-    if (!('lastUsedAt' in value) || value['lastUsedAt'] === undefined) return false;
+    if ((!('keySuffix' in (value as Record<string, any>)) && !('key_suffix' in (value as Record<string, any>))) || ((value as Record<string, any>)['keySuffix'] === undefined && (value as Record<string, any>)['key_suffix'] === undefined)) return false;
+    if ((!('createdAt' in (value as Record<string, any>)) && !('created_at' in (value as Record<string, any>))) || ((value as Record<string, any>)['createdAt'] === undefined && (value as Record<string, any>)['created_at'] === undefined)) return false;
+    if ((!('expiresAt' in (value as Record<string, any>)) && !('expires_at' in (value as Record<string, any>))) || ((value as Record<string, any>)['expiresAt'] === undefined && (value as Record<string, any>)['expires_at'] === undefined)) return false;
+    if ((!('lastUsedAt' in (value as Record<string, any>)) && !('last_used_at' in (value as Record<string, any>))) || ((value as Record<string, any>)['lastUsedAt'] === undefined && (value as Record<string, any>)['last_used_at'] === undefined)) return false;
     return true;
 }
 
@@ -100,9 +90,9 @@ export function ApiKeyResponseFromJSONTyped(json: any, ignoreDiscriminator: bool
         'id': json['id'],
         'name': json['name'],
         'keySuffix': json['key_suffix'],
-        'createdAt': (new Date(json['created_at'])),
-        'expiresAt': (json['expires_at'] == null ? null : new Date(json['expires_at'])),
-        'lastUsedAt': (json['last_used_at'] == null ? null : new Date(json['last_used_at'])),
+        'createdAt': (json['created_at'] == null ? json['created_at'] : parseDateTime(json['created_at'])),
+        'expiresAt': (json['expires_at'] == null ? null : parseDateTime(json['expires_at'])),
+        'lastUsedAt': (json['last_used_at'] == null ? null : parseDateTime(json['last_used_at'])),
     };
 }
 
@@ -120,9 +110,9 @@ export function ApiKeyResponseToJSONTyped(value?: ApiKeyResponse | null, ignoreD
         'id': value['id'],
         'name': value['name'],
         'key_suffix': value['keySuffix'],
-        'created_at': value['createdAt'].toISOString(),
-        'expires_at': value['expiresAt'] == null ? value['expiresAt'] : value['expiresAt'].toISOString(),
-        'last_used_at': value['lastUsedAt'] == null ? value['lastUsedAt'] : value['lastUsedAt'].toISOString(),
+        'created_at': value['createdAt'] == null ? value['createdAt'] : serializeDateTime(value['createdAt']),
+        'expires_at': value['expiresAt'] == null ? value['expiresAt'] : serializeDateTime(value['expiresAt']),
+        'last_used_at': value['lastUsedAt'] == null ? value['lastUsedAt'] : serializeDateTime(value['lastUsedAt']),
     };
 }
 

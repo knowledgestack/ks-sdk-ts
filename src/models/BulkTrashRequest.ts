@@ -21,13 +21,13 @@ import { mapValues } from '../runtime';
 export interface BulkTrashRequest {
     /**
      * 
-     * @type {Array<string>}
-     * @memberof BulkTrashRequest
      */
     objectIds?: Array<string>;
 }
 export const BulkTrashRequestPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,

@@ -12,114 +12,222 @@
  * Do not edit the class manually.
  */
 
-
 import * as runtime from '../runtime';
-import type {
-  BrandingLogoType,
-  ErrorResponse,
-  HTTPValidationError,
-  PaginatedResponseTenantResponse,
-  PaginatedResponseTenantUserResponse,
-  SortDirection,
-  TenantQuotaStateResponse,
-  TenantResponse,
-  TenantUserEditRequest,
-  TenantUserOrder,
-  TenantUserResponse,
-  TenantUserRole,
-  UpdateTenantRequest,
-} from '../models/index';
 import {
+    type BrandingLogoType,
     BrandingLogoTypeFromJSON,
     BrandingLogoTypeToJSON,
+} from '../models/BrandingLogoType';
+import {
+    type ErrorResponse,
     ErrorResponseFromJSON,
     ErrorResponseToJSON,
+} from '../models/ErrorResponse';
+import {
+    type HTTPValidationError,
     HTTPValidationErrorFromJSON,
     HTTPValidationErrorToJSON,
+} from '../models/HTTPValidationError';
+import {
+    type PaginatedResponseTenantResponse,
     PaginatedResponseTenantResponseFromJSON,
     PaginatedResponseTenantResponseToJSON,
+} from '../models/PaginatedResponseTenantResponse';
+import {
+    type PaginatedResponseTenantUserResponse,
     PaginatedResponseTenantUserResponseFromJSON,
     PaginatedResponseTenantUserResponseToJSON,
+} from '../models/PaginatedResponseTenantUserResponse';
+import {
+    type SortDirection,
     SortDirectionFromJSON,
     SortDirectionToJSON,
+} from '../models/SortDirection';
+import {
+    type TenantQuotaStateResponse,
     TenantQuotaStateResponseFromJSON,
     TenantQuotaStateResponseToJSON,
+} from '../models/TenantQuotaStateResponse';
+import {
+    type TenantResponse,
     TenantResponseFromJSON,
     TenantResponseToJSON,
+} from '../models/TenantResponse';
+import {
+    type TenantUserEditRequest,
     TenantUserEditRequestFromJSON,
     TenantUserEditRequestToJSON,
+} from '../models/TenantUserEditRequest';
+import {
+    type TenantUserOrder,
     TenantUserOrderFromJSON,
     TenantUserOrderToJSON,
+} from '../models/TenantUserOrder';
+import {
+    type TenantUserResponse,
     TenantUserResponseFromJSON,
     TenantUserResponseToJSON,
+} from '../models/TenantUserResponse';
+import {
+    type TenantUserRole,
     TenantUserRoleFromJSON,
     TenantUserRoleToJSON,
+} from '../models/TenantUserRole';
+import {
+    type UpdateTenantRequest,
     UpdateTenantRequestFromJSON,
     UpdateTenantRequestToJSON,
-} from '../models/index';
+} from '../models/UpdateTenantRequest';
 
 export interface ActivateTenantUserRequest {
+    /**
+     * 
+     */
     tenantId: string;
+    /**
+     * 
+     */
     userId: string;
 }
 
 export interface DeactivateTenantUserRequest {
+    /**
+     * 
+     */
     tenantId: string;
+    /**
+     * 
+     */
     userId: string;
 }
 
 export interface DeleteTenantRequest {
+    /**
+     * 
+     */
     tenantId: string;
 }
 
 export interface DeleteTenantLogoRequest {
+    /**
+     * 
+     */
     tenantId: string;
+    /**
+     * 
+     */
     logoType?: BrandingLogoType;
 }
 
 export interface DeleteTenantUserRequest {
+    /**
+     * 
+     */
     tenantId: string;
+    /**
+     * 
+     */
     userId: string;
 }
 
 export interface GetTenantRequest {
+    /**
+     * 
+     */
     tenantId: string;
 }
 
 export interface GetTenantQuotaStateRequest {
+    /**
+     * 
+     */
     tenantId: string;
 }
 
 export interface ListTenantUsersRequest {
+    /**
+     * 
+     */
     tenantId: string;
+    /**
+     * Field to sort members by (default: active-first)
+     */
     sortBy?: TenantUserOrder;
+    /**
+     * Sort direction; overrides the field's natural default
+     */
     sortDir?: SortDirection;
+    /**
+     * Filter to members with this role
+     */
     role?: TenantUserRole;
+    /**
+     * Case-insensitive substring filter on first/last name
+     */
     usernameLike?: string | null;
+    /**
+     * Exclude deactivated members
+     */
     activeOnly?: boolean;
+    /**
+     * Number of items per page
+     */
     limit?: number;
+    /**
+     * Number of items to skip
+     */
     offset?: number;
 }
 
 export interface ListTenantsRequest {
+    /**
+     * Number of items per page
+     */
     limit?: number;
+    /**
+     * Number of items to skip
+     */
     offset?: number;
 }
 
 export interface UpdateTenantOperationRequest {
+    /**
+     * 
+     */
     tenantId: string;
+    /**
+     * 
+     */
     updateTenantRequest: UpdateTenantRequest;
 }
 
 export interface UpdateTenantUserRequest {
+    /**
+     * 
+     */
     tenantId: string;
+    /**
+     * 
+     */
     userId: string;
+    /**
+     * 
+     */
     tenantUserEditRequest: TenantUserEditRequest;
 }
 
 export interface UploadTenantLogoRequest {
+    /**
+     * 
+     */
     tenantId: string;
+    /**
+     * 
+     */
     file: Blob;
+    /**
+     * 
+     */
     logoType?: BrandingLogoType;
 }
 
@@ -491,8 +599,8 @@ export class TenantsApi extends runtime.BaseAPI implements TenantsApiInterface {
         }
 
         let urlPath = `/v1/tenants/{tenant_id}/users/{user_id}/activate`;
-        urlPath = urlPath.replace(`{${"tenant_id"}}`, encodeURIComponent(String(requestParameters['tenantId'])));
-        urlPath = urlPath.replace(`{${"user_id"}}`, encodeURIComponent(String(requestParameters['userId'])));
+        urlPath = urlPath.replace('{tenant_id}', encodeURIComponent(String(requestParameters['tenantId'])));
+        urlPath = urlPath.replace('{user_id}', encodeURIComponent(String(requestParameters['userId'])));
 
         return {
             path: urlPath,
@@ -554,8 +662,8 @@ export class TenantsApi extends runtime.BaseAPI implements TenantsApiInterface {
         }
 
         let urlPath = `/v1/tenants/{tenant_id}/users/{user_id}/deactivate`;
-        urlPath = urlPath.replace(`{${"tenant_id"}}`, encodeURIComponent(String(requestParameters['tenantId'])));
-        urlPath = urlPath.replace(`{${"user_id"}}`, encodeURIComponent(String(requestParameters['userId'])));
+        urlPath = urlPath.replace('{tenant_id}', encodeURIComponent(String(requestParameters['tenantId'])));
+        urlPath = urlPath.replace('{user_id}', encodeURIComponent(String(requestParameters['userId'])));
 
         return {
             path: urlPath,
@@ -610,7 +718,7 @@ export class TenantsApi extends runtime.BaseAPI implements TenantsApiInterface {
         }
 
         let urlPath = `/v1/tenants/{tenant_id}`;
-        urlPath = urlPath.replace(`{${"tenant_id"}}`, encodeURIComponent(String(requestParameters['tenantId'])));
+        urlPath = urlPath.replace('{tenant_id}', encodeURIComponent(String(requestParameters['tenantId'])));
 
         return {
             path: urlPath,
@@ -668,7 +776,7 @@ export class TenantsApi extends runtime.BaseAPI implements TenantsApiInterface {
         }
 
         let urlPath = `/v1/tenants/{tenant_id}/branding/logo`;
-        urlPath = urlPath.replace(`{${"tenant_id"}}`, encodeURIComponent(String(requestParameters['tenantId'])));
+        urlPath = urlPath.replace('{tenant_id}', encodeURIComponent(String(requestParameters['tenantId'])));
 
         return {
             path: urlPath,
@@ -730,8 +838,8 @@ export class TenantsApi extends runtime.BaseAPI implements TenantsApiInterface {
         }
 
         let urlPath = `/v1/tenants/{tenant_id}/users/{user_id}`;
-        urlPath = urlPath.replace(`{${"tenant_id"}}`, encodeURIComponent(String(requestParameters['tenantId'])));
-        urlPath = urlPath.replace(`{${"user_id"}}`, encodeURIComponent(String(requestParameters['userId'])));
+        urlPath = urlPath.replace('{tenant_id}', encodeURIComponent(String(requestParameters['tenantId'])));
+        urlPath = urlPath.replace('{user_id}', encodeURIComponent(String(requestParameters['userId'])));
 
         return {
             path: urlPath,
@@ -785,7 +893,7 @@ export class TenantsApi extends runtime.BaseAPI implements TenantsApiInterface {
         }
 
         let urlPath = `/v1/tenants/{tenant_id}`;
-        urlPath = urlPath.replace(`{${"tenant_id"}}`, encodeURIComponent(String(requestParameters['tenantId'])));
+        urlPath = urlPath.replace('{tenant_id}', encodeURIComponent(String(requestParameters['tenantId'])));
 
         return {
             path: urlPath,
@@ -840,7 +948,7 @@ export class TenantsApi extends runtime.BaseAPI implements TenantsApiInterface {
         }
 
         let urlPath = `/v1/tenants/{tenant_id}/quota`;
-        urlPath = urlPath.replace(`{${"tenant_id"}}`, encodeURIComponent(String(requestParameters['tenantId'])));
+        urlPath = urlPath.replace('{tenant_id}', encodeURIComponent(String(requestParameters['tenantId'])));
 
         return {
             path: urlPath,
@@ -923,7 +1031,7 @@ export class TenantsApi extends runtime.BaseAPI implements TenantsApiInterface {
         }
 
         let urlPath = `/v1/tenants/{tenant_id}/users`;
-        urlPath = urlPath.replace(`{${"tenant_id"}}`, encodeURIComponent(String(requestParameters['tenantId'])));
+        urlPath = urlPath.replace('{tenant_id}', encodeURIComponent(String(requestParameters['tenantId'])));
 
         return {
             path: urlPath,
@@ -1042,7 +1150,7 @@ export class TenantsApi extends runtime.BaseAPI implements TenantsApiInterface {
         }
 
         let urlPath = `/v1/tenants/{tenant_id}`;
-        urlPath = urlPath.replace(`{${"tenant_id"}}`, encodeURIComponent(String(requestParameters['tenantId'])));
+        urlPath = urlPath.replace('{tenant_id}', encodeURIComponent(String(requestParameters['tenantId'])));
 
         return {
             path: urlPath,
@@ -1114,8 +1222,8 @@ export class TenantsApi extends runtime.BaseAPI implements TenantsApiInterface {
         }
 
         let urlPath = `/v1/tenants/{tenant_id}/users/{user_id}`;
-        urlPath = urlPath.replace(`{${"tenant_id"}}`, encodeURIComponent(String(requestParameters['tenantId'])));
-        urlPath = urlPath.replace(`{${"user_id"}}`, encodeURIComponent(String(requestParameters['userId'])));
+        urlPath = urlPath.replace('{tenant_id}', encodeURIComponent(String(requestParameters['tenantId'])));
+        urlPath = urlPath.replace('{user_id}', encodeURIComponent(String(requestParameters['userId'])));
 
         return {
             path: urlPath,
@@ -1202,7 +1310,7 @@ export class TenantsApi extends runtime.BaseAPI implements TenantsApiInterface {
 
 
         let urlPath = `/v1/tenants/{tenant_id}/branding/logo`;
-        urlPath = urlPath.replace(`{${"tenant_id"}}`, encodeURIComponent(String(requestParameters['tenantId'])));
+        urlPath = urlPath.replace('{tenant_id}', encodeURIComponent(String(requestParameters['tenantId'])));
 
         return {
             path: urlPath,

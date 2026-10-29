@@ -29,20 +29,14 @@ import {
 export interface FolderActionResponse {
     /**
      * 
-     * @type {string}
-     * @memberof FolderActionResponse
      */
     folderId: string;
     /**
      * 
-     * @type {FolderAction}
-     * @memberof FolderActionResponse
      */
     action: FolderAction;
     /**
      * 
-     * @type {string}
-     * @memberof FolderActionResponse
      */
     workflowId: string;
 }
@@ -50,6 +44,8 @@ export interface FolderActionResponse {
 
 export const FolderActionResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -70,9 +66,9 @@ export const FolderActionResponsePropertyValidationAttributesMap: {
  * Check if a given object implements the FolderActionResponse interface.
  */
 export function instanceOfFolderActionResponse(value: object): value is FolderActionResponse {
-    if (!('folderId' in value) || value['folderId'] === undefined) return false;
+    if ((!('folderId' in (value as Record<string, any>)) && !('folder_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['folderId'] === undefined && (value as Record<string, any>)['folder_id'] === undefined)) return false;
     if (!('action' in value) || value['action'] === undefined) return false;
-    if (!('workflowId' in value) || value['workflowId'] === undefined) return false;
+    if ((!('workflowId' in (value as Record<string, any>)) && !('workflow_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['workflowId'] === undefined && (value as Record<string, any>)['workflow_id'] === undefined)) return false;
     return true;
 }
 

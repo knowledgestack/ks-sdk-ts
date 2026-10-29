@@ -21,25 +21,21 @@ import { mapValues } from '../runtime';
 export interface LeaderboardEntry {
     /**
      * 
-     * @type {string}
-     * @memberof LeaderboardEntry
      */
     id: string;
     /**
      * 
-     * @type {string}
-     * @memberof LeaderboardEntry
      */
     name: string;
     /**
      * Run count.
-     * @type {number}
-     * @memberof LeaderboardEntry
      */
     count: number;
 }
 export const LeaderboardEntryPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,

@@ -29,20 +29,14 @@ import {
 export interface UserMessageRequest {
     /**
      * User input text. Mock agent dev controls may be embedded here (e.g. /mock duration=5 wps=3 scenario=tool_call_once).
-     * @type {string}
-     * @memberof UserMessageRequest
      */
     inputText?: string;
     /**
      * Answer with the faster, lower-cost chat profile. Omit to use the tenant's default_fast_mode; true/false overrides it for this message. Ignored when the tenant pins a chat profile and on workflow-run threads.
-     * @type {boolean}
-     * @memberof UserMessageRequest
      */
     fastMode?: boolean | null;
     /**
      * 
-     * @type {SupportedLanguage}
-     * @memberof UserMessageRequest
      */
     outputLanguage?: SupportedLanguage;
 }
@@ -50,6 +44,8 @@ export interface UserMessageRequest {
 
 export const UserMessageRequestPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -84,7 +80,7 @@ export function UserMessageRequestFromJSONTyped(json: any, ignoreDiscriminator: 
     return {
         
         'inputText': json['input_text'] == null ? undefined : json['input_text'],
-        'fastMode': json['fast_mode'] == null ? undefined : json['fast_mode'],
+        'fastMode': json['fast_mode'] === undefined ? undefined : json['fast_mode'] === null ? null : json['fast_mode'],
         'outputLanguage': json['output_language'] == null ? undefined : SupportedLanguageFromJSON(json['output_language']),
     };
 }

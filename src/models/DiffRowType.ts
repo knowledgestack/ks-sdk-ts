@@ -21,7 +21,7 @@ export const DiffRowType = {
     Equal: 'equal',
     Insert: 'insert',
     Delete: 'delete',
-    Replace: 'replace'
+    Replace: 'replace',
 } as const;
 export type DiffRowType = typeof DiffRowType[keyof typeof DiffRowType];
 

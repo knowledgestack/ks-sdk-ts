@@ -29,31 +29,25 @@ import {
 export interface CatalogTableResponse {
     /**
      * 
-     * @type {string}
-     * @memberof CatalogTableResponse
      */
     name: string;
     /**
      * 
-     * @type {string}
-     * @memberof CatalogTableResponse
      */
     schemaName: string;
     /**
      * 
-     * @type {boolean}
-     * @memberof CatalogTableResponse
      */
     isView?: boolean;
     /**
      * 
-     * @type {Array<CatalogColumnResponse>}
-     * @memberof CatalogTableResponse
      */
     columns: Array<CatalogColumnResponse>;
 }
 export const CatalogTableResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -75,7 +69,7 @@ export const CatalogTableResponsePropertyValidationAttributesMap: {
  */
 export function instanceOfCatalogTableResponse(value: object): value is CatalogTableResponse {
     if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('schemaName' in value) || value['schemaName'] === undefined) return false;
+    if ((!('schemaName' in (value as Record<string, any>)) && !('schema_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['schemaName'] === undefined && (value as Record<string, any>)['schema_name'] === undefined)) return false;
     if (!('columns' in value) || value['columns'] === undefined) return false;
     return true;
 }

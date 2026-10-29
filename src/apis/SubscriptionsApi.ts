@@ -12,34 +12,48 @@
  * Do not edit the class manually.
  */
 
-
 import * as runtime from '../runtime';
-import type {
-  ChangeSubscriptionRequest,
-  CheckoutResponse,
-  ErrorResponse,
-  HTTPValidationError,
-  TenantSubscriptionResponse,
-} from '../models/index';
 import {
+    type ChangeSubscriptionRequest,
     ChangeSubscriptionRequestFromJSON,
     ChangeSubscriptionRequestToJSON,
+} from '../models/ChangeSubscriptionRequest';
+import {
+    type CheckoutResponse,
     CheckoutResponseFromJSON,
     CheckoutResponseToJSON,
+} from '../models/CheckoutResponse';
+import {
+    type ErrorResponse,
     ErrorResponseFromJSON,
     ErrorResponseToJSON,
+} from '../models/ErrorResponse';
+import {
+    type HTTPValidationError,
     HTTPValidationErrorFromJSON,
     HTTPValidationErrorToJSON,
+} from '../models/HTTPValidationError';
+import {
+    type TenantSubscriptionResponse,
     TenantSubscriptionResponseFromJSON,
     TenantSubscriptionResponseToJSON,
-} from '../models/index';
+} from '../models/TenantSubscriptionResponse';
 
 export interface ChangeTenantSubscriptionRequest {
+    /**
+     * 
+     */
     tenantId: string;
+    /**
+     * 
+     */
     changeSubscriptionRequest: ChangeSubscriptionRequest;
 }
 
 export interface GetTenantSubscriptionRequest {
+    /**
+     * 
+     */
     tenantId: string;
 }
 
@@ -141,7 +155,7 @@ export class SubscriptionsApi extends runtime.BaseAPI implements SubscriptionsAp
         }
 
         let urlPath = `/v1/tenants/{tenant_id}/subscriptions`;
-        urlPath = urlPath.replace(`{${"tenant_id"}}`, encodeURIComponent(String(requestParameters['tenantId'])));
+        urlPath = urlPath.replace('{tenant_id}', encodeURIComponent(String(requestParameters['tenantId'])));
 
         return {
             path: urlPath,
@@ -197,7 +211,7 @@ export class SubscriptionsApi extends runtime.BaseAPI implements SubscriptionsAp
         }
 
         let urlPath = `/v1/tenants/{tenant_id}/subscriptions`;
-        urlPath = urlPath.replace(`{${"tenant_id"}}`, encodeURIComponent(String(requestParameters['tenantId'])));
+        urlPath = urlPath.replace('{tenant_id}', encodeURIComponent(String(requestParameters['tenantId'])));
 
         return {
             path: urlPath,

@@ -36,26 +36,18 @@ import {
 export interface CreateDocumentRequest {
     /**
      * Document name
-     * @type {string}
-     * @memberof CreateDocumentRequest
      */
     name: string;
     /**
      * Parent PathPart ID (must be a FOLDER type)
-     * @type {string}
-     * @memberof CreateDocumentRequest
      */
     parentPathPartId: string;
     /**
      * 
-     * @type {DocumentType}
-     * @memberof CreateDocumentRequest
      */
     documentType: DocumentType;
     /**
      * 
-     * @type {DocumentOrigin}
-     * @memberof CreateDocumentRequest
      */
     documentOrigin: DocumentOrigin;
 }
@@ -63,6 +55,8 @@ export interface CreateDocumentRequest {
 
 export const CreateDocumentRequestPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -77,6 +71,8 @@ export const CreateDocumentRequestPropertyValidationAttributesMap: {
     }
 } = {
     name: {
+        dataType: "string",
+        required: true,
         maxLength: 255,
         minLength: 1,
     },
@@ -88,9 +84,9 @@ export const CreateDocumentRequestPropertyValidationAttributesMap: {
  */
 export function instanceOfCreateDocumentRequest(value: object): value is CreateDocumentRequest {
     if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('parentPathPartId' in value) || value['parentPathPartId'] === undefined) return false;
-    if (!('documentType' in value) || value['documentType'] === undefined) return false;
-    if (!('documentOrigin' in value) || value['documentOrigin'] === undefined) return false;
+    if ((!('parentPathPartId' in (value as Record<string, any>)) && !('parent_path_part_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['parentPathPartId'] === undefined && (value as Record<string, any>)['parent_path_part_id'] === undefined)) return false;
+    if ((!('documentType' in (value as Record<string, any>)) && !('document_type' in (value as Record<string, any>))) || ((value as Record<string, any>)['documentType'] === undefined && (value as Record<string, any>)['document_type'] === undefined)) return false;
+    if ((!('documentOrigin' in (value as Record<string, any>)) && !('document_origin' in (value as Record<string, any>))) || ((value as Record<string, any>)['documentOrigin'] === undefined && (value as Record<string, any>)['document_origin'] === undefined)) return false;
     return true;
 }
 

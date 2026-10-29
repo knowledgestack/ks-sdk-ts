@@ -29,43 +29,33 @@ import { mapValues } from '../runtime';
 export interface DataSourceQueryResponse {
     /**
      * 
-     * @type {Array<string>}
-     * @memberof DataSourceQueryResponse
      */
     columns: Array<string>;
     /**
      * 
-     * @type {Array<Array<any>>}
-     * @memberof DataSourceQueryResponse
      */
     rows: Array<Array<any>>;
     /**
      * 
-     * @type {number}
-     * @memberof DataSourceQueryResponse
      */
     rowCount: number;
     /**
      * 
-     * @type {boolean}
-     * @memberof DataSourceQueryResponse
      */
     truncated: boolean;
     /**
      * 
-     * @type {string}
-     * @memberof DataSourceQueryResponse
      */
     generatedSql: string;
     /**
      * 
-     * @type {Array<string>}
-     * @memberof DataSourceQueryResponse
      */
     sqlValidationWarnings?: Array<string>;
 }
 export const DataSourceQueryResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -88,9 +78,9 @@ export const DataSourceQueryResponsePropertyValidationAttributesMap: {
 export function instanceOfDataSourceQueryResponse(value: object): value is DataSourceQueryResponse {
     if (!('columns' in value) || value['columns'] === undefined) return false;
     if (!('rows' in value) || value['rows'] === undefined) return false;
-    if (!('rowCount' in value) || value['rowCount'] === undefined) return false;
+    if ((!('rowCount' in (value as Record<string, any>)) && !('row_count' in (value as Record<string, any>))) || ((value as Record<string, any>)['rowCount'] === undefined && (value as Record<string, any>)['row_count'] === undefined)) return false;
     if (!('truncated' in value) || value['truncated'] === undefined) return false;
-    if (!('generatedSql' in value) || value['generatedSql'] === undefined) return false;
+    if ((!('generatedSql' in (value as Record<string, any>)) && !('generated_sql' in (value as Record<string, any>))) || ((value as Record<string, any>)['generatedSql'] === undefined && (value as Record<string, any>)['generated_sql'] === undefined)) return false;
     return true;
 }
 

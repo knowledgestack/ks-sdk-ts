@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
 import type { PartType } from './PartType';
 import {
     PartTypeFromJSON,
@@ -29,62 +29,42 @@ import {
 export interface PathPartAncestorItem {
     /**
      * PathPart ID
-     * @type {string}
-     * @memberof PathPartAncestorItem
      */
     pathPartId: string;
     /**
      * Item name
-     * @type {string}
-     * @memberof PathPartAncestorItem
      */
     name: string;
     /**
      * 
-     * @type {PartType}
-     * @memberof PathPartAncestorItem
      */
     partType: PartType;
     /**
      * Parent PathPart ID
-     * @type {string}
-     * @memberof PathPartAncestorItem
      */
     parentPathId: string | null;
     /**
      * ID of the underlying object
-     * @type {string}
-     * @memberof PathPartAncestorItem
      */
     metadataObjId: string | null;
     /**
      * Full materialized path from root
-     * @type {string}
-     * @memberof PathPartAncestorItem
      */
     materializedPath: string;
     /**
      * Whether this path part is system-managed
-     * @type {boolean}
-     * @memberof PathPartAncestorItem
      */
     systemManaged: boolean;
     /**
      * Direct exclusion flag on this ancestor only (not inherited). The effective exclusion is the OR across the full chain.
-     * @type {boolean}
-     * @memberof PathPartAncestorItem
      */
     excludeFromQdrant: boolean;
     /**
      * Creation timestamp
-     * @type {Date}
-     * @memberof PathPartAncestorItem
      */
     createdAt: Date;
     /**
      * Last update timestamp
-     * @type {Date}
-     * @memberof PathPartAncestorItem
      */
     updatedAt: Date;
 }
@@ -92,6 +72,8 @@ export interface PathPartAncestorItem {
 
 export const PathPartAncestorItemPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -112,16 +94,16 @@ export const PathPartAncestorItemPropertyValidationAttributesMap: {
  * Check if a given object implements the PathPartAncestorItem interface.
  */
 export function instanceOfPathPartAncestorItem(value: object): value is PathPartAncestorItem {
-    if (!('pathPartId' in value) || value['pathPartId'] === undefined) return false;
+    if ((!('pathPartId' in (value as Record<string, any>)) && !('path_part_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['pathPartId'] === undefined && (value as Record<string, any>)['path_part_id'] === undefined)) return false;
     if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('partType' in value) || value['partType'] === undefined) return false;
-    if (!('parentPathId' in value) || value['parentPathId'] === undefined) return false;
-    if (!('metadataObjId' in value) || value['metadataObjId'] === undefined) return false;
-    if (!('materializedPath' in value) || value['materializedPath'] === undefined) return false;
-    if (!('systemManaged' in value) || value['systemManaged'] === undefined) return false;
-    if (!('excludeFromQdrant' in value) || value['excludeFromQdrant'] === undefined) return false;
-    if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
-    if (!('updatedAt' in value) || value['updatedAt'] === undefined) return false;
+    if ((!('partType' in (value as Record<string, any>)) && !('part_type' in (value as Record<string, any>))) || ((value as Record<string, any>)['partType'] === undefined && (value as Record<string, any>)['part_type'] === undefined)) return false;
+    if ((!('parentPathId' in (value as Record<string, any>)) && !('parent_path_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['parentPathId'] === undefined && (value as Record<string, any>)['parent_path_id'] === undefined)) return false;
+    if ((!('metadataObjId' in (value as Record<string, any>)) && !('metadata_obj_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['metadataObjId'] === undefined && (value as Record<string, any>)['metadata_obj_id'] === undefined)) return false;
+    if ((!('materializedPath' in (value as Record<string, any>)) && !('materialized_path' in (value as Record<string, any>))) || ((value as Record<string, any>)['materializedPath'] === undefined && (value as Record<string, any>)['materialized_path'] === undefined)) return false;
+    if ((!('systemManaged' in (value as Record<string, any>)) && !('system_managed' in (value as Record<string, any>))) || ((value as Record<string, any>)['systemManaged'] === undefined && (value as Record<string, any>)['system_managed'] === undefined)) return false;
+    if ((!('excludeFromQdrant' in (value as Record<string, any>)) && !('exclude_from_qdrant' in (value as Record<string, any>))) || ((value as Record<string, any>)['excludeFromQdrant'] === undefined && (value as Record<string, any>)['exclude_from_qdrant'] === undefined)) return false;
+    if ((!('createdAt' in (value as Record<string, any>)) && !('created_at' in (value as Record<string, any>))) || ((value as Record<string, any>)['createdAt'] === undefined && (value as Record<string, any>)['created_at'] === undefined)) return false;
+    if ((!('updatedAt' in (value as Record<string, any>)) && !('updated_at' in (value as Record<string, any>))) || ((value as Record<string, any>)['updatedAt'] === undefined && (value as Record<string, any>)['updated_at'] === undefined)) return false;
     return true;
 }
 
@@ -143,8 +125,8 @@ export function PathPartAncestorItemFromJSONTyped(json: any, ignoreDiscriminator
         'materializedPath': json['materialized_path'],
         'systemManaged': json['system_managed'],
         'excludeFromQdrant': json['exclude_from_qdrant'],
-        'createdAt': (new Date(json['created_at'])),
-        'updatedAt': (new Date(json['updated_at'])),
+        'createdAt': (json['created_at'] == null ? json['created_at'] : parseDateTime(json['created_at'])),
+        'updatedAt': (json['updated_at'] == null ? json['updated_at'] : parseDateTime(json['updated_at'])),
     };
 }
 
@@ -167,8 +149,8 @@ export function PathPartAncestorItemToJSONTyped(value?: PathPartAncestorItem | n
         'materialized_path': value['materializedPath'],
         'system_managed': value['systemManaged'],
         'exclude_from_qdrant': value['excludeFromQdrant'],
-        'created_at': value['createdAt'].toISOString(),
-        'updated_at': value['updatedAt'].toISOString(),
+        'created_at': value['createdAt'] == null ? value['createdAt'] : serializeDateTime(value['createdAt']),
+        'updated_at': value['updatedAt'] == null ? value['updatedAt'] : serializeDateTime(value['updatedAt']),
     };
 }
 

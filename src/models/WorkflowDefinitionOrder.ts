@@ -20,7 +20,7 @@
 export const WorkflowDefinitionOrder = {
     CreatedAt: 'CREATED_AT',
     UpdatedAt: 'UPDATED_AT',
-    Name: 'NAME'
+    Name: 'NAME',
 } as const;
 export type WorkflowDefinitionOrder = typeof WorkflowDefinitionOrder[keyof typeof WorkflowDefinitionOrder];
 

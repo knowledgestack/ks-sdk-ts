@@ -21,25 +21,21 @@ import { mapValues } from '../runtime';
 export interface SearchSkillsRequest {
     /**
      * What the agent needs a skill for.
-     * @type {string}
-     * @memberof SearchSkillsRequest
      */
     query: string;
     /**
      * 
-     * @type {number}
-     * @memberof SearchSkillsRequest
      */
     topK?: number;
     /**
      * 
-     * @type {number}
-     * @memberof SearchSkillsRequest
      */
     scoreThreshold?: number;
 }
 export const SearchSkillsRequestPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -54,15 +50,19 @@ export const SearchSkillsRequestPropertyValidationAttributesMap: {
     }
 } = {
     query: {
+        dataType: "string",
+        required: true,
         minLength: 1,
     },
     topK: {
+        dataType: "number",
         maximum: 50,
         exclusiveMaximum: false,
         minimum: 1,
         exclusiveMinimum: false,
     },
     scoreThreshold: {
+        dataType: "number",
         maximum: 1.0,
         exclusiveMaximum: false,
         minimum: 0.0,

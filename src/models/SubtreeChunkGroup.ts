@@ -24,25 +24,21 @@ import { mapValues } from '../runtime';
 export interface SubtreeChunkGroup {
     /**
      * 
-     * @type {Array<string>}
-     * @memberof SubtreeChunkGroup
      */
     chunkIds: Array<string>;
     /**
      * 
-     * @type {Array<string>}
-     * @memberof SubtreeChunkGroup
      */
     pathPartIds: Array<string>;
     /**
      * 
-     * @type {Array<string>}
-     * @memberof SubtreeChunkGroup
      */
     tagIds: Array<string>;
 }
 export const SubtreeChunkGroupPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -63,9 +59,9 @@ export const SubtreeChunkGroupPropertyValidationAttributesMap: {
  * Check if a given object implements the SubtreeChunkGroup interface.
  */
 export function instanceOfSubtreeChunkGroup(value: object): value is SubtreeChunkGroup {
-    if (!('chunkIds' in value) || value['chunkIds'] === undefined) return false;
-    if (!('pathPartIds' in value) || value['pathPartIds'] === undefined) return false;
-    if (!('tagIds' in value) || value['tagIds'] === undefined) return false;
+    if ((!('chunkIds' in (value as Record<string, any>)) && !('chunk_ids' in (value as Record<string, any>))) || ((value as Record<string, any>)['chunkIds'] === undefined && (value as Record<string, any>)['chunk_ids'] === undefined)) return false;
+    if ((!('pathPartIds' in (value as Record<string, any>)) && !('path_part_ids' in (value as Record<string, any>))) || ((value as Record<string, any>)['pathPartIds'] === undefined && (value as Record<string, any>)['path_part_ids'] === undefined)) return false;
+    if ((!('tagIds' in (value as Record<string, any>)) && !('tag_ids' in (value as Record<string, any>))) || ((value as Record<string, any>)['tagIds'] === undefined && (value as Record<string, any>)['tag_ids'] === undefined)) return false;
     return true;
 }
 

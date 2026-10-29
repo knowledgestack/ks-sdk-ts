@@ -12,32 +12,45 @@
  * Do not edit the class manually.
  */
 
-
 import * as runtime from '../runtime';
-import type {
-  DocumentCheckoutResponse,
-  ErrorResponse,
-  HTTPValidationError,
-} from '../models/index';
 import {
+    type DocumentCheckoutResponse,
     DocumentCheckoutResponseFromJSON,
     DocumentCheckoutResponseToJSON,
+} from '../models/DocumentCheckoutResponse';
+import {
+    type ErrorResponse,
     ErrorResponseFromJSON,
     ErrorResponseToJSON,
+} from '../models/ErrorResponse';
+import {
+    type HTTPValidationError,
     HTTPValidationErrorFromJSON,
     HTTPValidationErrorToJSON,
-} from '../models/index';
+} from '../models/HTTPValidationError';
 
 export interface AcquireDocumentCheckoutRequest {
+    /**
+     * Document ID
+     */
     documentId: string;
+    /**
+     * OWNER/ADMIN only — atomically take the checkout regardless of the current holder. Sealed docs are still refused.
+     */
     force?: boolean;
 }
 
 export interface GetDocumentCheckoutRequest {
+    /**
+     * Document ID
+     */
     documentId: string;
 }
 
 export interface ReleaseDocumentCheckoutRequest {
+    /**
+     * Document ID
+     */
     documentId: string;
 }
 
@@ -158,7 +171,7 @@ export class DocumentCheckoutApi extends runtime.BaseAPI implements DocumentChec
         }
 
         let urlPath = `/v1/documents/{document_id}/checkout`;
-        urlPath = urlPath.replace(`{${"document_id"}}`, encodeURIComponent(String(requestParameters['documentId'])));
+        urlPath = urlPath.replace('{document_id}', encodeURIComponent(String(requestParameters['documentId'])));
 
         return {
             path: urlPath,
@@ -213,7 +226,7 @@ export class DocumentCheckoutApi extends runtime.BaseAPI implements DocumentChec
         }
 
         let urlPath = `/v1/documents/{document_id}/checkout`;
-        urlPath = urlPath.replace(`{${"document_id"}}`, encodeURIComponent(String(requestParameters['documentId'])));
+        urlPath = urlPath.replace('{document_id}', encodeURIComponent(String(requestParameters['documentId'])));
 
         return {
             path: urlPath,
@@ -268,7 +281,7 @@ export class DocumentCheckoutApi extends runtime.BaseAPI implements DocumentChec
         }
 
         let urlPath = `/v1/documents/{document_id}/checkout`;
-        urlPath = urlPath.replace(`{${"document_id"}}`, encodeURIComponent(String(requestParameters['documentId'])));
+        urlPath = urlPath.replace('{document_id}', encodeURIComponent(String(requestParameters['documentId'])));
 
         return {
             path: urlPath,

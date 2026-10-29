@@ -42,38 +42,26 @@ import {
 export interface ChangeSubscriptionRequest {
     /**
      * Target plan to switch to.
-     * @type {string}
-     * @memberof ChangeSubscriptionRequest
      */
     subscriptionId: string;
     /**
      * Desired seat cap. Must be <= plan.max_seats and >= the count of active TenantUser rows.
-     * @type {number}
-     * @memberof ChangeSubscriptionRequest
      */
     numSeats: number;
     /**
      * 
-     * @type {BillingInterval}
-     * @memberof ChangeSubscriptionRequest
      */
     interval?: BillingInterval;
     /**
      * 
-     * @type {BillingSystem}
-     * @memberof ChangeSubscriptionRequest
      */
     billingSystem?: BillingSystem;
     /**
      * Ping++ payment channel chosen in the UI (e.g. 'alipay_pc_direct', 'wx_pub_qr'). Required when billing_system=PING_PP.
-     * @type {string}
-     * @memberof ChangeSubscriptionRequest
      */
     channel?: string | null;
     /**
      * Channel-specific Ping++ charge `extra` parameters (success_url, product ids, ... — see the Ping++ charge API for the chosen channel). Passed through verbatim; amounts are always resolved server-side.
-     * @type {{ [key: string]: any; }}
-     * @memberof ChangeSubscriptionRequest
      */
     channelExtra?: { [key: string]: any; } | null;
 }
@@ -81,6 +69,8 @@ export interface ChangeSubscriptionRequest {
 
 export const ChangeSubscriptionRequestPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -95,6 +85,8 @@ export const ChangeSubscriptionRequestPropertyValidationAttributesMap: {
     }
 } = {
     numSeats: {
+        dataType: "number",
+        required: true,
         minimum: 1,
         exclusiveMinimum: false,
     },
@@ -105,8 +97,8 @@ export const ChangeSubscriptionRequestPropertyValidationAttributesMap: {
  * Check if a given object implements the ChangeSubscriptionRequest interface.
  */
 export function instanceOfChangeSubscriptionRequest(value: object): value is ChangeSubscriptionRequest {
-    if (!('subscriptionId' in value) || value['subscriptionId'] === undefined) return false;
-    if (!('numSeats' in value) || value['numSeats'] === undefined) return false;
+    if ((!('subscriptionId' in (value as Record<string, any>)) && !('subscription_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['subscriptionId'] === undefined && (value as Record<string, any>)['subscription_id'] === undefined)) return false;
+    if ((!('numSeats' in (value as Record<string, any>)) && !('num_seats' in (value as Record<string, any>))) || ((value as Record<string, any>)['numSeats'] === undefined && (value as Record<string, any>)['num_seats'] === undefined)) return false;
     return true;
 }
 
@@ -124,8 +116,8 @@ export function ChangeSubscriptionRequestFromJSONTyped(json: any, ignoreDiscrimi
         'numSeats': json['num_seats'],
         'interval': json['interval'] == null ? undefined : BillingIntervalFromJSON(json['interval']),
         'billingSystem': json['billing_system'] == null ? undefined : BillingSystemFromJSON(json['billing_system']),
-        'channel': json['channel'] == null ? undefined : json['channel'],
-        'channelExtra': json['channel_extra'] == null ? undefined : json['channel_extra'],
+        'channel': json['channel'] === undefined ? undefined : json['channel'] === null ? null : json['channel'],
+        'channelExtra': json['channel_extra'] === undefined ? undefined : json['channel_extra'] === null ? null : json['channel_extra'],
     };
 }
 

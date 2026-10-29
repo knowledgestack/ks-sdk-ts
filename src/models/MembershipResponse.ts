@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
 /**
  * 
  * @export
@@ -21,49 +21,37 @@ import { mapValues } from '../runtime';
 export interface MembershipResponse {
     /**
      * 
-     * @type {string}
-     * @memberof MembershipResponse
      */
     id: string;
     /**
      * 
-     * @type {string}
-     * @memberof MembershipResponse
      */
     tenantId: string;
     /**
      * 
-     * @type {string}
-     * @memberof MembershipResponse
      */
     groupId: string;
     /**
      * 
-     * @type {string}
-     * @memberof MembershipResponse
      */
     userId: string;
     /**
      * 
-     * @type {boolean}
-     * @memberof MembershipResponse
      */
     idpManaged?: boolean;
     /**
      * 
-     * @type {Date}
-     * @memberof MembershipResponse
      */
     createdAt: Date;
     /**
      * 
-     * @type {Date}
-     * @memberof MembershipResponse
      */
     updatedAt: Date;
 }
 export const MembershipResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -85,11 +73,11 @@ export const MembershipResponsePropertyValidationAttributesMap: {
  */
 export function instanceOfMembershipResponse(value: object): value is MembershipResponse {
     if (!('id' in value) || value['id'] === undefined) return false;
-    if (!('tenantId' in value) || value['tenantId'] === undefined) return false;
-    if (!('groupId' in value) || value['groupId'] === undefined) return false;
-    if (!('userId' in value) || value['userId'] === undefined) return false;
-    if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
-    if (!('updatedAt' in value) || value['updatedAt'] === undefined) return false;
+    if ((!('tenantId' in (value as Record<string, any>)) && !('tenant_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['tenantId'] === undefined && (value as Record<string, any>)['tenant_id'] === undefined)) return false;
+    if ((!('groupId' in (value as Record<string, any>)) && !('group_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['groupId'] === undefined && (value as Record<string, any>)['group_id'] === undefined)) return false;
+    if ((!('userId' in (value as Record<string, any>)) && !('user_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['userId'] === undefined && (value as Record<string, any>)['user_id'] === undefined)) return false;
+    if ((!('createdAt' in (value as Record<string, any>)) && !('created_at' in (value as Record<string, any>))) || ((value as Record<string, any>)['createdAt'] === undefined && (value as Record<string, any>)['created_at'] === undefined)) return false;
+    if ((!('updatedAt' in (value as Record<string, any>)) && !('updated_at' in (value as Record<string, any>))) || ((value as Record<string, any>)['updatedAt'] === undefined && (value as Record<string, any>)['updated_at'] === undefined)) return false;
     return true;
 }
 
@@ -108,8 +96,8 @@ export function MembershipResponseFromJSONTyped(json: any, ignoreDiscriminator: 
         'groupId': json['group_id'],
         'userId': json['user_id'],
         'idpManaged': json['idp_managed'] == null ? undefined : json['idp_managed'],
-        'createdAt': (new Date(json['created_at'])),
-        'updatedAt': (new Date(json['updated_at'])),
+        'createdAt': (json['created_at'] == null ? json['created_at'] : parseDateTime(json['created_at'])),
+        'updatedAt': (json['updated_at'] == null ? json['updated_at'] : parseDateTime(json['updated_at'])),
     };
 }
 
@@ -129,8 +117,8 @@ export function MembershipResponseToJSONTyped(value?: MembershipResponse | null,
         'group_id': value['groupId'],
         'user_id': value['userId'],
         'idp_managed': value['idpManaged'],
-        'created_at': value['createdAt'].toISOString(),
-        'updated_at': value['updatedAt'].toISOString(),
+        'created_at': value['createdAt'] == null ? value['createdAt'] : serializeDateTime(value['createdAt']),
+        'updated_at': value['updatedAt'] == null ? value['updatedAt'] : serializeDateTime(value['updatedAt']),
     };
 }
 

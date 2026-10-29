@@ -29,32 +29,22 @@ import {
 export interface XlsxCellAnchorInput {
     /**
      * 
-     * @type {XlsxCellAnchorInputTypeEnum}
-     * @memberof XlsxCellAnchorInput
      */
     type?: XlsxCellAnchorInputTypeEnum;
     /**
      * 
-     * @type {string}
-     * @memberof XlsxCellAnchorInput
      */
     sheetName: string;
     /**
      * Coordinate like 'B23'.
-     * @type {string}
-     * @memberof XlsxCellAnchorInput
      */
     cellAddress: string;
     /**
      * Cited chunks in the order they appeared in the comment body, each with the source-document snapshot resolved at save time.
-     * @type {Array<CitedChunk>}
-     * @memberof XlsxCellAnchorInput
      */
     citations: Array<CitedChunk>;
     /**
      * Cached cell value at this anchor, for FE display. NOT the cited quote. Empty when the cell holds a formula whose cache has not been refreshed.
-     * @type {string}
-     * @memberof XlsxCellAnchorInput
      */
     anchorText?: string;
 }
@@ -64,12 +54,14 @@ export interface XlsxCellAnchorInput {
  * @export
  */
 export const XlsxCellAnchorInputTypeEnum = {
-    XlsxCell: 'xlsx_cell'
+    XlsxCell: 'xlsx_cell',
 } as const;
 export type XlsxCellAnchorInputTypeEnum = typeof XlsxCellAnchorInputTypeEnum[keyof typeof XlsxCellAnchorInputTypeEnum];
 
 export const XlsxCellAnchorInputPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -84,6 +76,7 @@ export const XlsxCellAnchorInputPropertyValidationAttributesMap: {
     }
 } = {
     anchorText: {
+        dataType: "string",
         maxLength: 160,
     },
 }
@@ -93,8 +86,8 @@ export const XlsxCellAnchorInputPropertyValidationAttributesMap: {
  * Check if a given object implements the XlsxCellAnchorInput interface.
  */
 export function instanceOfXlsxCellAnchorInput(value: object): value is XlsxCellAnchorInput {
-    if (!('sheetName' in value) || value['sheetName'] === undefined) return false;
-    if (!('cellAddress' in value) || value['cellAddress'] === undefined) return false;
+    if ((!('sheetName' in (value as Record<string, any>)) && !('sheet_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['sheetName'] === undefined && (value as Record<string, any>)['sheet_name'] === undefined)) return false;
+    if ((!('cellAddress' in (value as Record<string, any>)) && !('cell_address' in (value as Record<string, any>))) || ((value as Record<string, any>)['cellAddress'] === undefined && (value as Record<string, any>)['cell_address'] === undefined)) return false;
     if (!('citations' in value) || value['citations'] === undefined) return false;
     return true;
 }

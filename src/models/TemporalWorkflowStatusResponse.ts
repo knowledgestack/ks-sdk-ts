@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
 /**
  * Generic Temporal workflow status — no DB interaction.
  * @export
@@ -21,49 +21,37 @@ import { mapValues } from '../runtime';
 export interface TemporalWorkflowStatusResponse {
     /**
      * 
-     * @type {string}
-     * @memberof TemporalWorkflowStatusResponse
      */
     workflowId: string;
     /**
      * 
-     * @type {string}
-     * @memberof TemporalWorkflowStatusResponse
      */
     temporalStatus: string;
     /**
      * 
-     * @type {string}
-     * @memberof TemporalWorkflowStatusResponse
      */
     workflowType: string;
     /**
      * 
-     * @type {string}
-     * @memberof TemporalWorkflowStatusResponse
      */
     taskQueue: string;
     /**
      * 
-     * @type {Date}
-     * @memberof TemporalWorkflowStatusResponse
      */
     startTime: Date;
     /**
      * 
-     * @type {Date}
-     * @memberof TemporalWorkflowStatusResponse
      */
     closeTime?: Date | null;
     /**
      * 
-     * @type {string}
-     * @memberof TemporalWorkflowStatusResponse
      */
     runId: string;
 }
 export const TemporalWorkflowStatusResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -84,12 +72,12 @@ export const TemporalWorkflowStatusResponsePropertyValidationAttributesMap: {
  * Check if a given object implements the TemporalWorkflowStatusResponse interface.
  */
 export function instanceOfTemporalWorkflowStatusResponse(value: object): value is TemporalWorkflowStatusResponse {
-    if (!('workflowId' in value) || value['workflowId'] === undefined) return false;
-    if (!('temporalStatus' in value) || value['temporalStatus'] === undefined) return false;
-    if (!('workflowType' in value) || value['workflowType'] === undefined) return false;
-    if (!('taskQueue' in value) || value['taskQueue'] === undefined) return false;
-    if (!('startTime' in value) || value['startTime'] === undefined) return false;
-    if (!('runId' in value) || value['runId'] === undefined) return false;
+    if ((!('workflowId' in (value as Record<string, any>)) && !('workflow_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['workflowId'] === undefined && (value as Record<string, any>)['workflow_id'] === undefined)) return false;
+    if ((!('temporalStatus' in (value as Record<string, any>)) && !('temporal_status' in (value as Record<string, any>))) || ((value as Record<string, any>)['temporalStatus'] === undefined && (value as Record<string, any>)['temporal_status'] === undefined)) return false;
+    if ((!('workflowType' in (value as Record<string, any>)) && !('workflow_type' in (value as Record<string, any>))) || ((value as Record<string, any>)['workflowType'] === undefined && (value as Record<string, any>)['workflow_type'] === undefined)) return false;
+    if ((!('taskQueue' in (value as Record<string, any>)) && !('task_queue' in (value as Record<string, any>))) || ((value as Record<string, any>)['taskQueue'] === undefined && (value as Record<string, any>)['task_queue'] === undefined)) return false;
+    if ((!('startTime' in (value as Record<string, any>)) && !('start_time' in (value as Record<string, any>))) || ((value as Record<string, any>)['startTime'] === undefined && (value as Record<string, any>)['start_time'] === undefined)) return false;
+    if ((!('runId' in (value as Record<string, any>)) && !('run_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['runId'] === undefined && (value as Record<string, any>)['run_id'] === undefined)) return false;
     return true;
 }
 
@@ -107,8 +95,8 @@ export function TemporalWorkflowStatusResponseFromJSONTyped(json: any, ignoreDis
         'temporalStatus': json['temporal_status'],
         'workflowType': json['workflow_type'],
         'taskQueue': json['task_queue'],
-        'startTime': (new Date(json['start_time'])),
-        'closeTime': json['close_time'] == null ? undefined : (new Date(json['close_time'])),
+        'startTime': (json['start_time'] == null ? json['start_time'] : parseDateTime(json['start_time'])),
+        'closeTime': json['close_time'] === undefined ? undefined : json['close_time'] === null ? null : (parseDateTime(json['close_time'])),
         'runId': json['run_id'],
     };
 }
@@ -128,8 +116,8 @@ export function TemporalWorkflowStatusResponseToJSONTyped(value?: TemporalWorkfl
         'temporal_status': value['temporalStatus'],
         'workflow_type': value['workflowType'],
         'task_queue': value['taskQueue'],
-        'start_time': value['startTime'].toISOString(),
-        'close_time': value['closeTime'] == null ? value['closeTime'] : value['closeTime'].toISOString(),
+        'start_time': value['startTime'] == null ? value['startTime'] : serializeDateTime(value['startTime']),
+        'close_time': value['closeTime'] == null ? value['closeTime'] : serializeDateTime(value['closeTime']),
         'run_id': value['runId'],
     };
 }

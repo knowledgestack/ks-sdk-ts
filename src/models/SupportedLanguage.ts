@@ -19,7 +19,7 @@
  */
 export const SupportedLanguage = {
     En: 'en',
-    Zh: 'zh'
+    Zh: 'zh',
 } as const;
 export type SupportedLanguage = typeof SupportedLanguage[keyof typeof SupportedLanguage];
 

@@ -46,26 +46,18 @@ import {
 export interface KbTimeseriesResponse {
     /**
      * 
-     * @type {KbMetric}
-     * @memberof KbTimeseriesResponse
      */
     metric: KbMetric;
     /**
      * 
-     * @type {string}
-     * @memberof KbTimeseriesResponse
      */
     timezone: string;
     /**
      * 
-     * @type {TimeBucket}
-     * @memberof KbTimeseriesResponse
      */
     bucket: TimeBucket;
     /**
      * 
-     * @type {Array<LabeledSeries>}
-     * @memberof KbTimeseriesResponse
      */
     series?: Array<LabeledSeries>;
 }
@@ -73,6 +65,8 @@ export interface KbTimeseriesResponse {
 
 export const KbTimeseriesResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,

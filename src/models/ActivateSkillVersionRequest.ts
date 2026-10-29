@@ -21,13 +21,13 @@ import { mapValues } from '../runtime';
 export interface ActivateSkillVersionRequest {
     /**
      * Required (true) to activate when the working copy has unpublished edits — activating overwrites them. Otherwise the request is a 409.
-     * @type {boolean}
-     * @memberof ActivateSkillVersionRequest
      */
     confirmDiscardUnpublished?: boolean;
 }
 export const ActivateSkillVersionRequestPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,

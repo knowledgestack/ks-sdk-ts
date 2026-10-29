@@ -22,7 +22,7 @@
  */
 export const NetworkClass = {
     Public: 'PUBLIC',
-    Internal: 'INTERNAL'
+    Internal: 'INTERNAL',
 } as const;
 export type NetworkClass = typeof NetworkClass[keyof typeof NetworkClass];
 

@@ -20,7 +20,7 @@
 export const DisplayNameFormat = {
     Firstname: 'firstname',
     Lastname: 'lastname',
-    FirstLast: 'first_last'
+    FirstLast: 'first_last',
 } as const;
 export type DisplayNameFormat = typeof DisplayNameFormat[keyof typeof DisplayNameFormat];
 

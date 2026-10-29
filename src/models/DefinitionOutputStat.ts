@@ -21,31 +21,25 @@ import { mapValues } from '../runtime';
 export interface DefinitionOutputStat {
     /**
      * 
-     * @type {string}
-     * @memberof DefinitionOutputStat
      */
     definitionId: string;
     /**
      * 
-     * @type {string}
-     * @memberof DefinitionOutputStat
      */
     name: string;
     /**
      * COMPLETED runs in the window.
-     * @type {number}
-     * @memberof DefinitionOutputStat
      */
     completedRuns: number;
     /**
      * Mean output DOCUMENTs generated per completed run.
-     * @type {number}
-     * @memberof DefinitionOutputStat
      */
     avgDocuments: number;
 }
 export const DefinitionOutputStatPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -66,10 +60,10 @@ export const DefinitionOutputStatPropertyValidationAttributesMap: {
  * Check if a given object implements the DefinitionOutputStat interface.
  */
 export function instanceOfDefinitionOutputStat(value: object): value is DefinitionOutputStat {
-    if (!('definitionId' in value) || value['definitionId'] === undefined) return false;
+    if ((!('definitionId' in (value as Record<string, any>)) && !('definition_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['definitionId'] === undefined && (value as Record<string, any>)['definition_id'] === undefined)) return false;
     if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('completedRuns' in value) || value['completedRuns'] === undefined) return false;
-    if (!('avgDocuments' in value) || value['avgDocuments'] === undefined) return false;
+    if ((!('completedRuns' in (value as Record<string, any>)) && !('completed_runs' in (value as Record<string, any>))) || ((value as Record<string, any>)['completedRuns'] === undefined && (value as Record<string, any>)['completed_runs'] === undefined)) return false;
+    if ((!('avgDocuments' in (value as Record<string, any>)) && !('avg_documents' in (value as Record<string, any>))) || ((value as Record<string, any>)['avgDocuments'] === undefined && (value as Record<string, any>)['avg_documents'] === undefined)) return false;
     return true;
 }
 

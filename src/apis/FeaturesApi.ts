@@ -12,18 +12,17 @@
  * Do not edit the class manually.
  */
 
-
 import * as runtime from '../runtime';
-import type {
-  ErrorResponse,
-  FeaturesResponse,
-} from '../models/index';
 import {
+    type ErrorResponse,
     ErrorResponseFromJSON,
     ErrorResponseToJSON,
+} from '../models/ErrorResponse';
+import {
+    type FeaturesResponse,
     FeaturesResponseFromJSON,
     FeaturesResponseToJSON,
-} from '../models/index';
+} from '../models/FeaturesResponse';
 
 /**
  * FeaturesApi - interface

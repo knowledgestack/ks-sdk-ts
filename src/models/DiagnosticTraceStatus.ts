@@ -20,7 +20,7 @@
 export const DiagnosticTraceStatus = {
     Ready: 'ready',
     Pending: 'pending',
-    Failed: 'failed'
+    Failed: 'failed',
 } as const;
 export type DiagnosticTraceStatus = typeof DiagnosticTraceStatus[keyof typeof DiagnosticTraceStatus];
 

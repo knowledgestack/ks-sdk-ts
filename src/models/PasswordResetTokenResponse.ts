@@ -21,13 +21,13 @@ import { mapValues } from '../runtime';
 export interface PasswordResetTokenResponse {
     /**
      * 
-     * @type {string}
-     * @memberof PasswordResetTokenResponse
      */
     passwordResetToken: string;
 }
 export const PasswordResetTokenResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -48,7 +48,7 @@ export const PasswordResetTokenResponsePropertyValidationAttributesMap: {
  * Check if a given object implements the PasswordResetTokenResponse interface.
  */
 export function instanceOfPasswordResetTokenResponse(value: object): value is PasswordResetTokenResponse {
-    if (!('passwordResetToken' in value) || value['passwordResetToken'] === undefined) return false;
+    if ((!('passwordResetToken' in (value as Record<string, any>)) && !('password_reset_token' in (value as Record<string, any>))) || ((value as Record<string, any>)['passwordResetToken'] === undefined && (value as Record<string, any>)['password_reset_token'] === undefined)) return false;
     return true;
 }
 

@@ -36,43 +36,33 @@ import {
 export interface CellDiff {
     /**
      * 
-     * @type {Array<CellChange>}
-     * @memberof CellDiff
      */
     changes: Array<CellChange>;
     /**
      * 
-     * @type {number}
-     * @memberof CellDiff
      */
     added: number;
     /**
      * 
-     * @type {number}
-     * @memberof CellDiff
      */
     removed: number;
     /**
      * 
-     * @type {number}
-     * @memberof CellDiff
      */
     modified: number;
     /**
      * 
-     * @type {boolean}
-     * @memberof CellDiff
      */
     truncated: boolean;
     /**
      * 
-     * @type {Array<SheetVisibilityChange>}
-     * @memberof CellDiff
      */
     sheetVisibilityChanges: Array<SheetVisibilityChange>;
 }
 export const CellDiffPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -98,7 +88,7 @@ export function instanceOfCellDiff(value: object): value is CellDiff {
     if (!('removed' in value) || value['removed'] === undefined) return false;
     if (!('modified' in value) || value['modified'] === undefined) return false;
     if (!('truncated' in value) || value['truncated'] === undefined) return false;
-    if (!('sheetVisibilityChanges' in value) || value['sheetVisibilityChanges'] === undefined) return false;
+    if ((!('sheetVisibilityChanges' in (value as Record<string, any>)) && !('sheet_visibility_changes' in (value as Record<string, any>))) || ((value as Record<string, any>)['sheetVisibilityChanges'] === undefined && (value as Record<string, any>)['sheet_visibility_changes'] === undefined)) return false;
     return true;
 }
 

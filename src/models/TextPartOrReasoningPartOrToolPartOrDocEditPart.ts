@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
 import type { DocEditPart } from './DocEditPart';
 import {
     instanceOfDocEditPart,
@@ -80,13 +81,13 @@ export function TextPartOrReasoningPartOrToolPartOrDocEditPartToJSONTyped(value?
     }
     switch (value['kind']) {
         case 'doc_edit':
-            return Object.assign({}, DocEditPartToJSON(value), { kind: 'doc_edit' } as const);
+            return Object.assign({}, DocEditPartToJSON(value), { 'kind': 'doc_edit' } as const);
         case 'reasoning':
-            return Object.assign({}, ReasoningPartToJSON(value), { kind: 'reasoning' } as const);
+            return Object.assign({}, ReasoningPartToJSON(value), { 'kind': 'reasoning' } as const);
         case 'text':
-            return Object.assign({}, TextPartToJSON(value), { kind: 'text' } as const);
+            return Object.assign({}, TextPartToJSON(value), { 'kind': 'text' } as const);
         case 'tool':
-            return Object.assign({}, ToolPartToJSON(value), { kind: 'tool' } as const);
+            return Object.assign({}, ToolPartToJSON(value), { 'kind': 'tool' } as const);
         default:
             return value;
     }

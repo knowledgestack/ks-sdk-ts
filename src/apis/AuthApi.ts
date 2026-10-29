@@ -12,156 +12,282 @@
  * Do not edit the class manually.
  */
 
-
 import * as runtime from '../runtime';
-import type {
-  ChangePhoneNumberRequest,
-  CreatePasswordUserRequest,
-  CreatePhonePasswordUserRequest,
-  DirectorySyncResponse,
-  EmailSentResponse,
-  EmailVerificationRequest,
-  ErrorResponse,
-  HTTPValidationError,
-  IdpType,
-  PasswordResetRequest,
-  PasswordResetTokenResponse,
-  PasswordResetWithTokenRequest,
-  PhoneValidationResponse,
-  PhoneVerificationRequest,
-  RequestPhoneChangeRequest,
-  ResponseSendPwResetEmail,
-  SSOInitiateResponse,
-  SendPasswordResetRequest,
-  SignInRequest,
-  SignUpResponse,
-  UserResponse,
-  ValidateResetCodeRequest,
-} from '../models/index';
 import {
+    type ChangePhoneNumberRequest,
     ChangePhoneNumberRequestFromJSON,
     ChangePhoneNumberRequestToJSON,
+} from '../models/ChangePhoneNumberRequest';
+import {
+    type CreatePasswordUserRequest,
     CreatePasswordUserRequestFromJSON,
     CreatePasswordUserRequestToJSON,
+} from '../models/CreatePasswordUserRequest';
+import {
+    type CreatePhonePasswordUserRequest,
     CreatePhonePasswordUserRequestFromJSON,
     CreatePhonePasswordUserRequestToJSON,
+} from '../models/CreatePhonePasswordUserRequest';
+import {
+    type DirectorySyncResponse,
     DirectorySyncResponseFromJSON,
     DirectorySyncResponseToJSON,
+} from '../models/DirectorySyncResponse';
+import {
+    type EmailSentResponse,
     EmailSentResponseFromJSON,
     EmailSentResponseToJSON,
+} from '../models/EmailSentResponse';
+import {
+    type EmailVerificationRequest,
     EmailVerificationRequestFromJSON,
     EmailVerificationRequestToJSON,
+} from '../models/EmailVerificationRequest';
+import {
+    type ErrorResponse,
     ErrorResponseFromJSON,
     ErrorResponseToJSON,
+} from '../models/ErrorResponse';
+import {
+    type HTTPValidationError,
     HTTPValidationErrorFromJSON,
     HTTPValidationErrorToJSON,
+} from '../models/HTTPValidationError';
+import {
+    type IdpType,
     IdpTypeFromJSON,
     IdpTypeToJSON,
+} from '../models/IdpType';
+import {
+    type PasswordResetRequest,
     PasswordResetRequestFromJSON,
     PasswordResetRequestToJSON,
+} from '../models/PasswordResetRequest';
+import {
+    type PasswordResetTokenResponse,
     PasswordResetTokenResponseFromJSON,
     PasswordResetTokenResponseToJSON,
+} from '../models/PasswordResetTokenResponse';
+import {
+    type PasswordResetWithTokenRequest,
     PasswordResetWithTokenRequestFromJSON,
     PasswordResetWithTokenRequestToJSON,
+} from '../models/PasswordResetWithTokenRequest';
+import {
+    type PhoneValidationResponse,
     PhoneValidationResponseFromJSON,
     PhoneValidationResponseToJSON,
+} from '../models/PhoneValidationResponse';
+import {
+    type PhoneVerificationRequest,
     PhoneVerificationRequestFromJSON,
     PhoneVerificationRequestToJSON,
+} from '../models/PhoneVerificationRequest';
+import {
+    type RequestPhoneChangeRequest,
     RequestPhoneChangeRequestFromJSON,
     RequestPhoneChangeRequestToJSON,
+} from '../models/RequestPhoneChangeRequest';
+import {
+    type ResponseSendPwResetEmail,
     ResponseSendPwResetEmailFromJSON,
     ResponseSendPwResetEmailToJSON,
+} from '../models/ResponseSendPwResetEmail';
+import {
+    type SSOInitiateResponse,
     SSOInitiateResponseFromJSON,
     SSOInitiateResponseToJSON,
+} from '../models/SSOInitiateResponse';
+import {
+    type SendPasswordResetRequest,
     SendPasswordResetRequestFromJSON,
     SendPasswordResetRequestToJSON,
+} from '../models/SendPasswordResetRequest';
+import {
+    type SignInRequest,
     SignInRequestFromJSON,
     SignInRequestToJSON,
+} from '../models/SignInRequest';
+import {
+    type SignUpResponse,
     SignUpResponseFromJSON,
     SignUpResponseToJSON,
+} from '../models/SignUpResponse';
+import {
+    type UserResponse,
     UserResponseFromJSON,
     UserResponseToJSON,
+} from '../models/UserResponse';
+import {
+    type ValidateResetCodeRequest,
     ValidateResetCodeRequestFromJSON,
     ValidateResetCodeRequestToJSON,
-} from '../models/index';
+} from '../models/ValidateResetCodeRequest';
 
 export interface ChangePhoneNumberOperationRequest {
+    /**
+     * 
+     */
     changePhoneNumberRequest: ChangePhoneNumberRequest;
 }
 
 export interface CreatePasswordUserOperationRequest {
+    /**
+     * 
+     */
     createPasswordUserRequest: CreatePasswordUserRequest;
 }
 
 export interface CreatePhonePasswordUserOperationRequest {
+    /**
+     * 
+     */
     createPhonePasswordUserRequest: CreatePhonePasswordUserRequest;
 }
 
 export interface FanweiDirectorySyncRequest {
+    /**
+     * 
+     */
     tenantId: string;
+    /**
+     * 
+     */
     authorization?: string | null;
+    /**
+     * 
+     */
     ksUat?: string | null;
 }
 
 export interface FanweiDirectorySync0Request {
+    /**
+     * 
+     */
     tenantId: string;
+    /**
+     * 
+     */
     authorization?: string | null;
+    /**
+     * 
+     */
     ksUat?: string | null;
 }
 
 export interface InitiateSsoRequest {
+    /**
+     * Provider to initiate SSO with
+     */
     provider: IdpType;
+    /**
+     * Invite to resolve if this sign-in creates the account; carried in the session to the callback like the OAuth state.
+     */
     inviteId?: string | null;
+    /**
+     * Tenant ID to initiate SSO with
+     */
     tenantId?: string | null;
 }
 
 export interface Oauth2CallbackRequest {
+    /**
+     * Provider to initiate SSO with
+     */
     provider: IdpType;
+    /**
+     * Authorization code from provider
+     */
     code?: string | null;
+    /**
+     * State parameter for CSRF protection
+     */
     state?: string | null;
+    /**
+     * Error code if authorization failed
+     */
     error?: string | null;
+    /**
+     * Error description
+     */
     errorDescription?: string | null;
+    /**
+     * Tenant ID to initiate SSO with
+     */
     tenantId?: string | null;
 }
 
 export interface PwEmailVerificationRequest {
+    /**
+     * 
+     */
     emailVerificationRequest: EmailVerificationRequest;
 }
 
 export interface PwPhoneVerificationRequest {
+    /**
+     * 
+     */
     phoneVerificationRequest: PhoneVerificationRequest;
 }
 
 export interface PwSigninRequest {
+    /**
+     * 
+     */
     signInRequest: SignInRequest;
 }
 
 export interface RefreshUatRequest {
+    /**
+     * Target tenant ID to switch to. None=refresh current tenant
+     */
     tenantId?: string | null;
 }
 
 export interface RequestPhoneChangeOperationRequest {
+    /**
+     * 
+     */
     requestPhoneChangeRequest: RequestPhoneChangeRequest;
 }
 
 export interface ResetPasswordRequest {
+    /**
+     * 
+     */
     passwordResetRequest: PasswordResetRequest;
 }
 
 export interface ResetPasswordWithTokenRequest {
+    /**
+     * 
+     */
     passwordResetWithTokenRequest: PasswordResetWithTokenRequest;
 }
 
 export interface SendPwResetEmailRequest {
+    /**
+     * 
+     */
     sendPasswordResetRequest: SendPasswordResetRequest;
 }
 
 export interface SsoSigninRequest {
+    /**
+     * 
+     */
     tenantId: string;
+    /**
+     * Post-login redirect path
+     */
     redirect?: string;
 }
 
 export interface ValidatePwResetCodeRequest {
+    /**
+     * 
+     */
     validateResetCodeRequest: ValidateResetCodeRequest;
 }
 
@@ -805,7 +931,7 @@ export class AuthApi extends runtime.BaseAPI implements AuthApiInterface {
 
 
         let urlPath = `/v1/auth/sso/{tenant_id}/directory_sync`;
-        urlPath = urlPath.replace(`{${"tenant_id"}}`, encodeURIComponent(String(requestParameters['tenantId'])));
+        urlPath = urlPath.replace('{tenant_id}', encodeURIComponent(String(requestParameters['tenantId'])));
 
         return {
             path: urlPath,
@@ -856,7 +982,7 @@ export class AuthApi extends runtime.BaseAPI implements AuthApiInterface {
 
 
         let urlPath = `/v1/auth/sso/{tenant_id}/directory_sync`;
-        urlPath = urlPath.replace(`{${"tenant_id"}}`, encodeURIComponent(String(requestParameters['tenantId'])));
+        urlPath = urlPath.replace('{tenant_id}', encodeURIComponent(String(requestParameters['tenantId'])));
 
         return {
             path: urlPath,
@@ -1486,7 +1612,7 @@ export class AuthApi extends runtime.BaseAPI implements AuthApiInterface {
 
 
         let urlPath = `/v1/auth/sso/{tenant_id}/signin`;
-        urlPath = urlPath.replace(`{${"tenant_id"}}`, encodeURIComponent(String(requestParameters['tenantId'])));
+        urlPath = urlPath.replace('{tenant_id}', encodeURIComponent(String(requestParameters['tenantId'])));
 
         return {
             path: urlPath,

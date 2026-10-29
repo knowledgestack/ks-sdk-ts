@@ -25,14 +25,10 @@ import { mapValues } from '../runtime';
 export interface SetWorkflowRunApprovalRequest {
     /**
      * 
-     * @type {SetWorkflowRunApprovalRequestStateEnum}
-     * @memberof SetWorkflowRunApprovalRequest
      */
     state: SetWorkflowRunApprovalRequestStateEnum;
     /**
      * Optional reviewer note attached to the decision.
-     * @type {string}
-     * @memberof SetWorkflowRunApprovalRequest
      */
     reason?: string | null;
 }
@@ -42,12 +38,14 @@ export interface SetWorkflowRunApprovalRequest {
  * @export
  */
 export const SetWorkflowRunApprovalRequestStateEnum = {
-    Approved: 'approved'
+    Approved: 'approved',
 } as const;
 export type SetWorkflowRunApprovalRequestStateEnum = typeof SetWorkflowRunApprovalRequestStateEnum[keyof typeof SetWorkflowRunApprovalRequestStateEnum];
 
 export const SetWorkflowRunApprovalRequestPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -62,6 +60,7 @@ export const SetWorkflowRunApprovalRequestPropertyValidationAttributesMap: {
     }
 } = {
     reason: {
+        dataType: "string",
         maxLength: 2048,
     },
 }
@@ -72,6 +71,8 @@ export const SetWorkflowRunApprovalRequestPropertyValidationAttributesMap: {
  */
 export function instanceOfSetWorkflowRunApprovalRequest(value: object): value is SetWorkflowRunApprovalRequest {
     if (!('state' in value) || value['state'] === undefined) return false;
+    if (value['state'] !== 'approved') return false;
+    
     return true;
 }
 
@@ -86,7 +87,7 @@ export function SetWorkflowRunApprovalRequestFromJSONTyped(json: any, ignoreDisc
     return {
         
         'state': json['state'],
-        'reason': json['reason'] == null ? undefined : json['reason'],
+        'reason': json['reason'] === undefined ? undefined : json['reason'] === null ? null : json['reason'],
     };
 }
 

@@ -21,25 +21,21 @@ import { mapValues } from '../runtime';
 export interface AccessCheckResponse {
     /**
      * Whether the user has the capability
-     * @type {boolean}
-     * @memberof AccessCheckResponse
      */
     allowed: boolean;
     /**
      * Why access was granted or denied
-     * @type {string}
-     * @memberof AccessCheckResponse
      */
     reason: string;
     /**
      * The permission path that granted access (None if denied or role bypass)
-     * @type {string}
-     * @memberof AccessCheckResponse
      */
     matchedPath?: string | null;
 }
 export const AccessCheckResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -77,7 +73,7 @@ export function AccessCheckResponseFromJSONTyped(json: any, ignoreDiscriminator:
         
         'allowed': json['allowed'],
         'reason': json['reason'],
-        'matchedPath': json['matched_path'] == null ? undefined : json['matched_path'],
+        'matchedPath': json['matched_path'] === undefined ? undefined : json['matched_path'] === null ? null : json['matched_path'],
     };
 }
 

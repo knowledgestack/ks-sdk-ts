@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
 import type { UserInfo } from './UserInfo';
 import {
     UserInfoFromJSON,
@@ -29,61 +29,45 @@ import {
 export interface ThreadResponse {
     /**
      * Thread ID
-     * @type {string}
-     * @memberof ThreadResponse
      */
     id: string;
     /**
      * PathPart ID
-     * @type {string}
-     * @memberof ThreadResponse
      */
     pathPartId: string;
     /**
      * Thread title
-     * @type {string}
-     * @memberof ThreadResponse
      */
     title: string;
     /**
      * Parent Thread ID (for subthreads)
-     * @type {string}
-     * @memberof ThreadResponse
      */
     parentThreadId?: string | null;
     /**
      * Full materialized path from root
-     * @type {string}
-     * @memberof ThreadResponse
      */
     materializedPath: string;
     /**
      * Tenant ID
-     * @type {string}
-     * @memberof ThreadResponse
      */
     tenantId: string;
     /**
      * Current owner (creator) of the thread, or null if unowned.
-     * @type {UserInfo}
-     * @memberof ThreadResponse
      */
     owner?: UserInfo | null;
     /**
      * Creation timestamp
-     * @type {Date}
-     * @memberof ThreadResponse
      */
     createdAt: Date;
     /**
      * Last update timestamp
-     * @type {Date}
-     * @memberof ThreadResponse
      */
     updatedAt: Date;
 }
 export const ThreadResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -105,12 +89,12 @@ export const ThreadResponsePropertyValidationAttributesMap: {
  */
 export function instanceOfThreadResponse(value: object): value is ThreadResponse {
     if (!('id' in value) || value['id'] === undefined) return false;
-    if (!('pathPartId' in value) || value['pathPartId'] === undefined) return false;
+    if ((!('pathPartId' in (value as Record<string, any>)) && !('path_part_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['pathPartId'] === undefined && (value as Record<string, any>)['path_part_id'] === undefined)) return false;
     if (!('title' in value) || value['title'] === undefined) return false;
-    if (!('materializedPath' in value) || value['materializedPath'] === undefined) return false;
-    if (!('tenantId' in value) || value['tenantId'] === undefined) return false;
-    if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
-    if (!('updatedAt' in value) || value['updatedAt'] === undefined) return false;
+    if ((!('materializedPath' in (value as Record<string, any>)) && !('materialized_path' in (value as Record<string, any>))) || ((value as Record<string, any>)['materializedPath'] === undefined && (value as Record<string, any>)['materialized_path'] === undefined)) return false;
+    if ((!('tenantId' in (value as Record<string, any>)) && !('tenant_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['tenantId'] === undefined && (value as Record<string, any>)['tenant_id'] === undefined)) return false;
+    if ((!('createdAt' in (value as Record<string, any>)) && !('created_at' in (value as Record<string, any>))) || ((value as Record<string, any>)['createdAt'] === undefined && (value as Record<string, any>)['created_at'] === undefined)) return false;
+    if ((!('updatedAt' in (value as Record<string, any>)) && !('updated_at' in (value as Record<string, any>))) || ((value as Record<string, any>)['updatedAt'] === undefined && (value as Record<string, any>)['updated_at'] === undefined)) return false;
     return true;
 }
 
@@ -127,12 +111,12 @@ export function ThreadResponseFromJSONTyped(json: any, ignoreDiscriminator: bool
         'id': json['id'],
         'pathPartId': json['path_part_id'],
         'title': json['title'],
-        'parentThreadId': json['parent_thread_id'] == null ? undefined : json['parent_thread_id'],
+        'parentThreadId': json['parent_thread_id'] === undefined ? undefined : json['parent_thread_id'] === null ? null : json['parent_thread_id'],
         'materializedPath': json['materialized_path'],
         'tenantId': json['tenant_id'],
-        'owner': json['owner'] == null ? undefined : UserInfoFromJSON(json['owner']),
-        'createdAt': (new Date(json['created_at'])),
-        'updatedAt': (new Date(json['updated_at'])),
+        'owner': json['owner'] === undefined ? undefined : json['owner'] === null ? null : UserInfoFromJSON(json['owner']),
+        'createdAt': (json['created_at'] == null ? json['created_at'] : parseDateTime(json['created_at'])),
+        'updatedAt': (json['updated_at'] == null ? json['updated_at'] : parseDateTime(json['updated_at'])),
     };
 }
 
@@ -154,8 +138,8 @@ export function ThreadResponseToJSONTyped(value?: ThreadResponse | null, ignoreD
         'materialized_path': value['materializedPath'],
         'tenant_id': value['tenantId'],
         'owner': UserInfoToJSON(value['owner']),
-        'created_at': value['createdAt'].toISOString(),
-        'updated_at': value['updatedAt'].toISOString(),
+        'created_at': value['createdAt'] == null ? value['createdAt'] : serializeDateTime(value['createdAt']),
+        'updated_at': value['updatedAt'] == null ? value['updatedAt'] : serializeDateTime(value['updatedAt']),
     };
 }
 

@@ -21,13 +21,13 @@ import { mapValues } from '../runtime';
 export interface CompleteUploadRequest {
     /**
      * Token from create-upload
-     * @type {string}
-     * @memberof CompleteUploadRequest
      */
     uploadToken: string;
 }
 export const CompleteUploadRequestPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -48,7 +48,7 @@ export const CompleteUploadRequestPropertyValidationAttributesMap: {
  * Check if a given object implements the CompleteUploadRequest interface.
  */
 export function instanceOfCompleteUploadRequest(value: object): value is CompleteUploadRequest {
-    if (!('uploadToken' in value) || value['uploadToken'] === undefined) return false;
+    if ((!('uploadToken' in (value as Record<string, any>)) && !('upload_token' in (value as Record<string, any>))) || ((value as Record<string, any>)['uploadToken'] === undefined && (value as Record<string, any>)['upload_token'] === undefined)) return false;
     return true;
 }
 

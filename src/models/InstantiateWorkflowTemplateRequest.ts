@@ -23,19 +23,17 @@ import { mapValues } from '../runtime';
 export interface InstantiateWorkflowTemplateRequest {
     /**
      * FOLDER path_part to create the new workflow under; the caller needs write access to it.
-     * @type {string}
-     * @memberof InstantiateWorkflowTemplateRequest
      */
     parentPathPartId: string;
     /**
      * Name for the new workflow; defaults to the source's name.
-     * @type {string}
-     * @memberof InstantiateWorkflowTemplateRequest
      */
     name?: string | null;
 }
 export const InstantiateWorkflowTemplateRequestPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -50,6 +48,7 @@ export const InstantiateWorkflowTemplateRequestPropertyValidationAttributesMap: 
     }
 } = {
     name: {
+        dataType: "string",
         maxLength: 255,
     },
 }
@@ -59,7 +58,7 @@ export const InstantiateWorkflowTemplateRequestPropertyValidationAttributesMap: 
  * Check if a given object implements the InstantiateWorkflowTemplateRequest interface.
  */
 export function instanceOfInstantiateWorkflowTemplateRequest(value: object): value is InstantiateWorkflowTemplateRequest {
-    if (!('parentPathPartId' in value) || value['parentPathPartId'] === undefined) return false;
+    if ((!('parentPathPartId' in (value as Record<string, any>)) && !('parent_path_part_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['parentPathPartId'] === undefined && (value as Record<string, any>)['parent_path_part_id'] === undefined)) return false;
     return true;
 }
 
@@ -74,7 +73,7 @@ export function InstantiateWorkflowTemplateRequestFromJSONTyped(json: any, ignor
     return {
         
         'parentPathPartId': json['parent_path_part_id'],
-        'name': json['name'] == null ? undefined : json['name'],
+        'name': json['name'] === undefined ? undefined : json['name'] === null ? null : json['name'],
     };
 }
 

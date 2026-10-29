@@ -20,7 +20,7 @@
 export const PermissionCapability = {
     ReadOnly: 'READ_ONLY',
     ReadWrite: 'READ_WRITE',
-    ReadWriteDelete: 'READ_WRITE_DELETE'
+    ReadWriteDelete: 'READ_WRITE_DELETE',
 } as const;
 export type PermissionCapability = typeof PermissionCapability[keyof typeof PermissionCapability];
 

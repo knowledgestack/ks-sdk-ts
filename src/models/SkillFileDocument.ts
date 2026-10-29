@@ -21,19 +21,17 @@ import { mapValues } from '../runtime';
 export interface SkillFileDocument {
     /**
      * Path relative to the skill root, e.g. SKILL.md
-     * @type {string}
-     * @memberof SkillFileDocument
      */
     path: string;
     /**
      * The file's Document id, as used in an @[doc:<id>] reference
-     * @type {string}
-     * @memberof SkillFileDocument
      */
     documentId: string;
 }
 export const SkillFileDocumentPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -55,7 +53,7 @@ export const SkillFileDocumentPropertyValidationAttributesMap: {
  */
 export function instanceOfSkillFileDocument(value: object): value is SkillFileDocument {
     if (!('path' in value) || value['path'] === undefined) return false;
-    if (!('documentId' in value) || value['documentId'] === undefined) return false;
+    if ((!('documentId' in (value as Record<string, any>)) && !('document_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['documentId'] === undefined && (value as Record<string, any>)['document_id'] === undefined)) return false;
     return true;
 }
 

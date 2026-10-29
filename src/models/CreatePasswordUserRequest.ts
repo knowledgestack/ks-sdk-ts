@@ -21,37 +21,29 @@ import { mapValues } from '../runtime';
 export interface CreatePasswordUserRequest {
     /**
      * Password
-     * @type {string}
-     * @memberof CreatePasswordUserRequest
      */
     password: string;
     /**
      * Email verification token
-     * @type {string}
-     * @memberof CreatePasswordUserRequest
      */
     emailToken: string;
     /**
      * First name
-     * @type {string}
-     * @memberof CreatePasswordUserRequest
      */
     firstName?: string | null;
     /**
      * Last name
-     * @type {string}
-     * @memberof CreatePasswordUserRequest
      */
     lastName?: string | null;
     /**
      * Invite to resolve before any workspace is provisioned. When it is valid for the verified email the account joins that tenant only; otherwise sign-up proceeds as usual and invite_rejection says why.
-     * @type {string}
-     * @memberof CreatePasswordUserRequest
      */
     inviteId?: string | null;
 }
 export const CreatePasswordUserRequestPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -66,6 +58,8 @@ export const CreatePasswordUserRequestPropertyValidationAttributesMap: {
     }
 } = {
     password: {
+        dataType: "string",
+        required: true,
         minLength: 8,
     },
 }
@@ -76,7 +70,7 @@ export const CreatePasswordUserRequestPropertyValidationAttributesMap: {
  */
 export function instanceOfCreatePasswordUserRequest(value: object): value is CreatePasswordUserRequest {
     if (!('password' in value) || value['password'] === undefined) return false;
-    if (!('emailToken' in value) || value['emailToken'] === undefined) return false;
+    if ((!('emailToken' in (value as Record<string, any>)) && !('email_token' in (value as Record<string, any>))) || ((value as Record<string, any>)['emailToken'] === undefined && (value as Record<string, any>)['email_token'] === undefined)) return false;
     return true;
 }
 
@@ -92,9 +86,9 @@ export function CreatePasswordUserRequestFromJSONTyped(json: any, ignoreDiscrimi
         
         'password': json['password'],
         'emailToken': json['email_token'],
-        'firstName': json['first_name'] == null ? undefined : json['first_name'],
-        'lastName': json['last_name'] == null ? undefined : json['last_name'],
-        'inviteId': json['invite_id'] == null ? undefined : json['invite_id'],
+        'firstName': json['first_name'] === undefined ? undefined : json['first_name'] === null ? null : json['first_name'],
+        'lastName': json['last_name'] === undefined ? undefined : json['last_name'] === null ? null : json['last_name'],
+        'inviteId': json['invite_id'] === undefined ? undefined : json['invite_id'] === null ? null : json['invite_id'],
     };
 }
 

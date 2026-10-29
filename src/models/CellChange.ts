@@ -34,74 +34,50 @@ import {
 export interface CellChange {
     /**
      * 
-     * @type {string}
-     * @memberof CellChange
      */
     sheet: string;
     /**
      * 
-     * @type {string}
-     * @memberof CellChange
      */
     address: string;
     /**
      * 
-     * @type {string}
-     * @memberof CellChange
      */
     old: string | null;
     /**
      * 
-     * @type {string}
-     * @memberof CellChange
      */
     _new: string | null;
     /**
      * 
-     * @type {CellChangeType}
-     * @memberof CellChange
      */
     type: CellChangeType;
     /**
      * 
-     * @type {string}
-     * @memberof CellChange
      */
     oldFormula?: string | null;
     /**
      * 
-     * @type {string}
-     * @memberof CellChange
      */
     newFormula?: string | null;
     /**
      * 
-     * @type {boolean}
-     * @memberof CellChange
      */
     formulaChanged?: boolean;
     /**
      * 
-     * @type {boolean}
-     * @memberof CellChange
      */
     formattingChanged?: boolean;
     /**
      * 
-     * @type {boolean}
-     * @memberof CellChange
      */
     commentChanged?: boolean;
     /**
      * 
-     * @type {string}
-     * @memberof CellChange
      */
     oldComment?: string | null;
     /**
      * 
-     * @type {string}
-     * @memberof CellChange
      */
     newComment?: string | null;
 }
@@ -109,6 +85,8 @@ export interface CellChange {
 
 export const CellChangePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -132,7 +110,7 @@ export function instanceOfCellChange(value: object): value is CellChange {
     if (!('sheet' in value) || value['sheet'] === undefined) return false;
     if (!('address' in value) || value['address'] === undefined) return false;
     if (!('old' in value) || value['old'] === undefined) return false;
-    if (!('_new' in value) || value['_new'] === undefined) return false;
+    if ((!('_new' in (value as Record<string, any>)) && !('new' in (value as Record<string, any>))) || ((value as Record<string, any>)['_new'] === undefined && (value as Record<string, any>)['new'] === undefined)) return false;
     if (!('type' in value) || value['type'] === undefined) return false;
     return true;
 }
@@ -152,13 +130,13 @@ export function CellChangeFromJSONTyped(json: any, ignoreDiscriminator: boolean)
         'old': json['old'],
         '_new': json['new'],
         'type': CellChangeTypeFromJSON(json['type']),
-        'oldFormula': json['old_formula'] == null ? undefined : json['old_formula'],
-        'newFormula': json['new_formula'] == null ? undefined : json['new_formula'],
+        'oldFormula': json['old_formula'] === undefined ? undefined : json['old_formula'] === null ? null : json['old_formula'],
+        'newFormula': json['new_formula'] === undefined ? undefined : json['new_formula'] === null ? null : json['new_formula'],
         'formulaChanged': json['formula_changed'] == null ? undefined : json['formula_changed'],
         'formattingChanged': json['formatting_changed'] == null ? undefined : json['formatting_changed'],
         'commentChanged': json['comment_changed'] == null ? undefined : json['comment_changed'],
-        'oldComment': json['old_comment'] == null ? undefined : json['old_comment'],
-        'newComment': json['new_comment'] == null ? undefined : json['new_comment'],
+        'oldComment': json['old_comment'] === undefined ? undefined : json['old_comment'] === null ? null : json['old_comment'],
+        'newComment': json['new_comment'] === undefined ? undefined : json['new_comment'] === null ? null : json['new_comment'],
     };
 }
 

@@ -29,31 +29,25 @@ import {
 export interface PaginatedResponseGroupPermissionResponse {
     /**
      * List of items
-     * @type {Array<GroupPermissionResponse>}
-     * @memberof PaginatedResponseGroupPermissionResponse
      */
     items: Array<GroupPermissionResponse>;
     /**
      * Total number of items
-     * @type {number}
-     * @memberof PaginatedResponseGroupPermissionResponse
      */
     total: number;
     /**
      * Number of items per page
-     * @type {number}
-     * @memberof PaginatedResponseGroupPermissionResponse
      */
     limit: number;
     /**
      * Number of items to skip
-     * @type {number}
-     * @memberof PaginatedResponseGroupPermissionResponse
      */
     offset: number;
 }
 export const PaginatedResponseGroupPermissionResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -68,14 +62,20 @@ export const PaginatedResponseGroupPermissionResponsePropertyValidationAttribute
     }
 } = {
     total: {
+        dataType: "number",
+        required: true,
         minimum: 0,
         exclusiveMinimum: false,
     },
     limit: {
+        dataType: "number",
+        required: true,
         minimum: 1,
         exclusiveMinimum: false,
     },
     offset: {
+        dataType: "number",
+        required: true,
         minimum: 0,
         exclusiveMinimum: false,
     },

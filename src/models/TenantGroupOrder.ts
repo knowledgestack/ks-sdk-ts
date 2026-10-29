@@ -19,7 +19,7 @@
  */
 export const TenantGroupOrder = {
     Name: 'NAME',
-    CreatedAt: 'CREATED_AT'
+    CreatedAt: 'CREATED_AT',
 } as const;
 export type TenantGroupOrder = typeof TenantGroupOrder[keyof typeof TenantGroupOrder];
 

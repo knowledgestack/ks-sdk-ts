@@ -21,43 +21,33 @@ import { mapValues } from '../runtime';
 export interface ConnectionConfig {
     /**
      * 
-     * @type {string}
-     * @memberof ConnectionConfig
      */
     host: string;
     /**
      * 
-     * @type {number}
-     * @memberof ConnectionConfig
      */
     port?: number | null;
     /**
      * 
-     * @type {string}
-     * @memberof ConnectionConfig
      */
     database: string;
     /**
      * 
-     * @type {string}
-     * @memberof ConnectionConfig
      */
     username: string;
     /**
      * 
-     * @type {string}
-     * @memberof ConnectionConfig
      */
     password: string;
     /**
      * Encrypt the connection with TLS. Enable for managed cloud databases that require it (e.g. Alibaba/Tencent RDS); leave off for trusted private-network databases. Encryption only — the server certificate is not verified.
-     * @type {boolean}
-     * @memberof ConnectionConfig
      */
     ssl?: boolean;
 }
 export const ConnectionConfigPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -96,7 +86,7 @@ export function ConnectionConfigFromJSONTyped(json: any, ignoreDiscriminator: bo
     return {
         
         'host': json['host'],
-        'port': json['port'] == null ? undefined : json['port'],
+        'port': json['port'] === undefined ? undefined : json['port'] === null ? null : json['port'],
         'database': json['database'],
         'username': json['username'],
         'password': json['password'],

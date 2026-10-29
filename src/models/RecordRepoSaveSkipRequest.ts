@@ -29,20 +29,14 @@ import {
 export interface RecordRepoSaveSkipRequest {
     /**
      * The run whose turn produced the changes.
-     * @type {string}
-     * @memberof RecordRepoSaveSkipRequest
      */
     runId: string;
     /**
      * 
-     * @type {RepoSaveSkipReason}
-     * @memberof RecordRepoSaveSkipRequest
      */
     reason: RepoSaveSkipReason;
     /**
      * A machine-readable code adding context, e.g. the refusal code (`repo_too_large`) or `commits_not_on_main`; never free text.
-     * @type {string}
-     * @memberof RecordRepoSaveSkipRequest
      */
     detail?: string | null;
 }
@@ -50,6 +44,8 @@ export interface RecordRepoSaveSkipRequest {
 
 export const RecordRepoSaveSkipRequestPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -64,6 +60,7 @@ export const RecordRepoSaveSkipRequestPropertyValidationAttributesMap: {
     }
 } = {
     detail: {
+        dataType: "string",
         pattern: '/^[a-z0-9_]{1,64}$/',
     },
 }
@@ -73,7 +70,7 @@ export const RecordRepoSaveSkipRequestPropertyValidationAttributesMap: {
  * Check if a given object implements the RecordRepoSaveSkipRequest interface.
  */
 export function instanceOfRecordRepoSaveSkipRequest(value: object): value is RecordRepoSaveSkipRequest {
-    if (!('runId' in value) || value['runId'] === undefined) return false;
+    if ((!('runId' in (value as Record<string, any>)) && !('run_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['runId'] === undefined && (value as Record<string, any>)['run_id'] === undefined)) return false;
     if (!('reason' in value) || value['reason'] === undefined) return false;
     return true;
 }
@@ -90,7 +87,7 @@ export function RecordRepoSaveSkipRequestFromJSONTyped(json: any, ignoreDiscrimi
         
         'runId': json['run_id'],
         'reason': RepoSaveSkipReasonFromJSON(json['reason']),
-        'detail': json['detail'] == null ? undefined : json['detail'],
+        'detail': json['detail'] === undefined ? undefined : json['detail'] === null ? null : json['detail'],
     };
 }
 

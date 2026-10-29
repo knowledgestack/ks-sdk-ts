@@ -21,19 +21,17 @@ import { mapValues } from '../runtime';
 export interface TransferOwnerResponse {
     /**
      * PathPart ID
-     * @type {string}
-     * @memberof TransferOwnerResponse
      */
     pathPartId: string;
     /**
      * New owner user_id
-     * @type {string}
-     * @memberof TransferOwnerResponse
      */
     ownerId: string;
 }
 export const TransferOwnerResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -54,8 +52,8 @@ export const TransferOwnerResponsePropertyValidationAttributesMap: {
  * Check if a given object implements the TransferOwnerResponse interface.
  */
 export function instanceOfTransferOwnerResponse(value: object): value is TransferOwnerResponse {
-    if (!('pathPartId' in value) || value['pathPartId'] === undefined) return false;
-    if (!('ownerId' in value) || value['ownerId'] === undefined) return false;
+    if ((!('pathPartId' in (value as Record<string, any>)) && !('path_part_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['pathPartId'] === undefined && (value as Record<string, any>)['path_part_id'] === undefined)) return false;
+    if ((!('ownerId' in (value as Record<string, any>)) && !('owner_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['ownerId'] === undefined && (value as Record<string, any>)['owner_id'] === undefined)) return false;
     return true;
 }
 

@@ -21,13 +21,13 @@ import { mapValues } from '../runtime';
 export interface ExtractResponse {
     /**
      * 
-     * @type {{ [key: string]: any; }}
-     * @memberof ExtractResponse
      */
     structured: { [key: string]: any; };
 }
 export const ExtractResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,

@@ -12,56 +12,88 @@
  * Do not edit the class manually.
  */
 
-
 import * as runtime from '../runtime';
-import type {
-  ErrorResponse,
-  HTTPValidationError,
-  MemoryBodyResponse,
-  MemoryEntryResponse,
-  MemoryScope,
-  PaginatedResponsePendingMemoryChunkResponse,
-  PendingMemoryChunkResponse,
-  ProposeMemoryChunkRequest,
-} from '../models/index';
 import {
+    type ErrorResponse,
     ErrorResponseFromJSON,
     ErrorResponseToJSON,
+} from '../models/ErrorResponse';
+import {
+    type HTTPValidationError,
     HTTPValidationErrorFromJSON,
     HTTPValidationErrorToJSON,
+} from '../models/HTTPValidationError';
+import {
+    type MemoryBodyResponse,
     MemoryBodyResponseFromJSON,
     MemoryBodyResponseToJSON,
+} from '../models/MemoryBodyResponse';
+import {
+    type MemoryEntryResponse,
     MemoryEntryResponseFromJSON,
     MemoryEntryResponseToJSON,
+} from '../models/MemoryEntryResponse';
+import {
+    type MemoryScope,
     MemoryScopeFromJSON,
     MemoryScopeToJSON,
+} from '../models/MemoryScope';
+import {
+    type PaginatedResponsePendingMemoryChunkResponse,
     PaginatedResponsePendingMemoryChunkResponseFromJSON,
     PaginatedResponsePendingMemoryChunkResponseToJSON,
+} from '../models/PaginatedResponsePendingMemoryChunkResponse';
+import {
+    type PendingMemoryChunkResponse,
     PendingMemoryChunkResponseFromJSON,
     PendingMemoryChunkResponseToJSON,
+} from '../models/PendingMemoryChunkResponse';
+import {
+    type ProposeMemoryChunkRequest,
     ProposeMemoryChunkRequestFromJSON,
     ProposeMemoryChunkRequestToJSON,
-} from '../models/index';
+} from '../models/ProposeMemoryChunkRequest';
 
 export interface ApproveMemoryProposalRequest {
+    /**
+     * 
+     */
     chunkId: string;
 }
 
 export interface GetMemoryBodyRequest {
+    /**
+     * 
+     */
     scope: MemoryScope;
+    /**
+     * 
+     */
     ownerId: string;
 }
 
 export interface ListMemoryProposalsRequest {
+    /**
+     * Number of items per page
+     */
     limit?: number;
+    /**
+     * Number of items to skip
+     */
     offset?: number;
 }
 
 export interface ProposeMemoryChunkOperationRequest {
+    /**
+     * 
+     */
     proposeMemoryChunkRequest: ProposeMemoryChunkRequest;
 }
 
 export interface RejectMemoryProposalRequest {
+    /**
+     * 
+     */
     chunkId: string;
 }
 
@@ -223,7 +255,7 @@ export class MemoryApi extends runtime.BaseAPI implements MemoryApiInterface {
         }
 
         let urlPath = `/v1/memory/proposals/{chunk_id}/approve`;
-        urlPath = urlPath.replace(`{${"chunk_id"}}`, encodeURIComponent(String(requestParameters['chunkId'])));
+        urlPath = urlPath.replace('{chunk_id}', encodeURIComponent(String(requestParameters['chunkId'])));
 
         return {
             path: urlPath,
@@ -451,7 +483,7 @@ export class MemoryApi extends runtime.BaseAPI implements MemoryApiInterface {
         }
 
         let urlPath = `/v1/memory/proposals/{chunk_id}/reject`;
-        urlPath = urlPath.replace(`{${"chunk_id"}}`, encodeURIComponent(String(requestParameters['chunkId'])));
+        urlPath = urlPath.replace('{chunk_id}', encodeURIComponent(String(requestParameters['chunkId'])));
 
         return {
             path: urlPath,

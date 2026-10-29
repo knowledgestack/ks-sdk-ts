@@ -21,13 +21,13 @@ import { mapValues } from '../runtime';
 export interface BulkTagRequest {
     /**
      * List of tag IDs to set/remove
-     * @type {Array<string>}
-     * @memberof BulkTagRequest
      */
     tagIds: Array<string>;
 }
 export const BulkTagRequestPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -42,6 +42,8 @@ export const BulkTagRequestPropertyValidationAttributesMap: {
     }
 } = {
     tagIds: {
+        dataType: "Array<string>",
+        required: true,
         maxItems: 10,
         uniqueItems: false,
     },
@@ -52,7 +54,7 @@ export const BulkTagRequestPropertyValidationAttributesMap: {
  * Check if a given object implements the BulkTagRequest interface.
  */
 export function instanceOfBulkTagRequest(value: object): value is BulkTagRequest {
-    if (!('tagIds' in value) || value['tagIds'] === undefined) return false;
+    if ((!('tagIds' in (value as Record<string, any>)) && !('tag_ids' in (value as Record<string, any>))) || ((value as Record<string, any>)['tagIds'] === undefined && (value as Record<string, any>)['tag_ids'] === undefined)) return false;
     return true;
 }
 

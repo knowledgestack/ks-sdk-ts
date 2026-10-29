@@ -48,26 +48,18 @@ import {
 export interface InputSnapshot {
     /**
      * DOCUMENT_VERSION path_part of the pinned input version, or the path_part of a live FOLDER / DATA_SOURCE / API_CONNECTION reference — see ``part_type``.
-     * @type {string}
-     * @memberof InputSnapshot
      */
     pathPartId: string;
     /**
      * 
-     * @type {string}
-     * @memberof InputSnapshot
      */
     materializedPath: string;
     /**
      * 
-     * @type {InputSnapshotPartTypeEnum}
-     * @memberof InputSnapshot
      */
     partType: InputSnapshotPartTypeEnum;
     /**
      * 
-     * @type {InputOrigin}
-     * @memberof InputSnapshot
      */
     origin?: InputOrigin;
 }
@@ -80,12 +72,14 @@ export const InputSnapshotPartTypeEnum = {
     DocumentVersion: 'DOCUMENT_VERSION',
     Folder: 'FOLDER',
     DataSource: 'DATA_SOURCE',
-    ApiConnection: 'API_CONNECTION'
+    ApiConnection: 'API_CONNECTION',
 } as const;
 export type InputSnapshotPartTypeEnum = typeof InputSnapshotPartTypeEnum[keyof typeof InputSnapshotPartTypeEnum];
 
 export const InputSnapshotPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -106,9 +100,9 @@ export const InputSnapshotPropertyValidationAttributesMap: {
  * Check if a given object implements the InputSnapshot interface.
  */
 export function instanceOfInputSnapshot(value: object): value is InputSnapshot {
-    if (!('pathPartId' in value) || value['pathPartId'] === undefined) return false;
-    if (!('materializedPath' in value) || value['materializedPath'] === undefined) return false;
-    if (!('partType' in value) || value['partType'] === undefined) return false;
+    if ((!('pathPartId' in (value as Record<string, any>)) && !('path_part_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['pathPartId'] === undefined && (value as Record<string, any>)['path_part_id'] === undefined)) return false;
+    if ((!('materializedPath' in (value as Record<string, any>)) && !('materialized_path' in (value as Record<string, any>))) || ((value as Record<string, any>)['materializedPath'] === undefined && (value as Record<string, any>)['materialized_path'] === undefined)) return false;
+    if ((!('partType' in (value as Record<string, any>)) && !('part_type' in (value as Record<string, any>))) || ((value as Record<string, any>)['partType'] === undefined && (value as Record<string, any>)['part_type'] === undefined)) return false;
     return true;
 }
 

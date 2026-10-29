@@ -21,19 +21,17 @@ import { mapValues } from '../runtime';
 export interface ValidateResetCodeRequest {
     /**
      * 
-     * @type {string}
-     * @memberof ValidateResetCodeRequest
      */
     phoneValidationId: string;
     /**
      * 
-     * @type {string}
-     * @memberof ValidateResetCodeRequest
      */
     code: string;
 }
 export const ValidateResetCodeRequestPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -54,7 +52,7 @@ export const ValidateResetCodeRequestPropertyValidationAttributesMap: {
  * Check if a given object implements the ValidateResetCodeRequest interface.
  */
 export function instanceOfValidateResetCodeRequest(value: object): value is ValidateResetCodeRequest {
-    if (!('phoneValidationId' in value) || value['phoneValidationId'] === undefined) return false;
+    if ((!('phoneValidationId' in (value as Record<string, any>)) && !('phone_validation_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['phoneValidationId'] === undefined && (value as Record<string, any>)['phone_validation_id'] === undefined)) return false;
     if (!('code' in value) || value['code'] === undefined) return false;
     return true;
 }

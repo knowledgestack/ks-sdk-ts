@@ -28,7 +28,7 @@ export const ContentsSortOrder = {
     CreatedAt: 'CREATED_AT',
     Status: 'STATUS',
     Owner: 'OWNER',
-    Tags: 'TAGS'
+    Tags: 'TAGS',
 } as const;
 export type ContentsSortOrder = typeof ContentsSortOrder[keyof typeof ContentsSortOrder];
 

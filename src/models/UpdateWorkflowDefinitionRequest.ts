@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
 import type { ScheduleCadence } from './ScheduleCadence';
 import {
     ScheduleCadenceFromJSON,
@@ -29,74 +29,50 @@ import {
 export interface UpdateWorkflowDefinitionRequest {
     /**
      * 
-     * @type {ScheduleCadence}
-     * @memberof UpdateWorkflowDefinitionRequest
      */
     scheduleCadence?: ScheduleCadence;
     /**
      * First occurrence. Read in ``schedule_timezone``, so its local wall time, weekday and day of month drive the recurrence. A MONTHLY schedule must land on or before the 28th: Temporal silently skips months that are too short.
-     * @type {Date}
-     * @memberof UpdateWorkflowDefinitionRequest
      */
     scheduleStartAt?: Date | null;
     /**
      * IANA zone the schedule fires in, e.g. ``Asia/Shanghai``. Optional: omit it to inherit the tenant timezone. Only set it to fire in a different zone than the tenant's. Must be an IANA name, not an ISO offset — an offset stops meaning the same wall clock across DST.
-     * @type {string}
-     * @memberof UpdateWorkflowDefinitionRequest
      */
     scheduleTimezone?: string | null;
     /**
      * 
-     * @type {string}
-     * @memberof UpdateWorkflowDefinitionRequest
      */
     name: string;
     /**
      * 
-     * @type {string}
-     * @memberof UpdateWorkflowDefinitionRequest
      */
     description?: string | null;
     /**
      * 
-     * @type {number}
-     * @memberof UpdateWorkflowDefinitionRequest
      */
     maxRunDurationSeconds?: number;
     /**
      * DOCUMENT path_part of the instruction document. Pass null (or omit) to retain the existing pinned instruction; pass a UUID to replace it. Never nulled out — the column is NOT NULL.
-     * @type {string}
-     * @memberof UpdateWorkflowDefinitionRequest
      */
     instructionPathPartId?: string | null;
     /**
      * FOLDER path_part to move the definition under. Pass null (or omit) to leave it where it is. The move is rejected with 409 while any run of this definition is IN_PROGRESS.
-     * @type {string}
-     * @memberof UpdateWorkflowDefinitionRequest
      */
     parentPathPartId?: string | null;
     /**
      * 
-     * @type {boolean}
-     * @memberof UpdateWorkflowDefinitionRequest
      */
     isActive: boolean;
     /**
      * 
-     * @type {boolean}
-     * @memberof UpdateWorkflowDefinitionRequest
      */
     approvalRequired: boolean;
     /**
      * Skill PDO ids force-loaded into every run by default. Retain-on-None PUT semantics: null (or omit) keeps the stored list, [] clears, a list replaces. Each must be a readable SKILL.
-     * @type {Array<string>}
-     * @memberof UpdateWorkflowDefinitionRequest
      */
     selectedSkillIds?: Array<string> | null;
     /**
      * Common files attached to every run (DOCUMENT / FOLDER / DATA_SOURCE / API_CONNECTION path_part ids). Like ``instruction_path_part_id``, this is the exception to PUT semantics: null (or omit) retains the stored list; pass [] to clear; pass a list to replace it wholesale. The caller must be able to read each one.
-     * @type {Array<string>}
-     * @memberof UpdateWorkflowDefinitionRequest
      */
     commonFilePathPartIds?: Array<string> | null;
 }
@@ -104,6 +80,8 @@ export interface UpdateWorkflowDefinitionRequest {
 
 export const UpdateWorkflowDefinitionRequestPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -118,22 +96,28 @@ export const UpdateWorkflowDefinitionRequestPropertyValidationAttributesMap: {
     }
 } = {
     scheduleTimezone: {
+        dataType: "string",
         maxLength: 64,
     },
     name: {
+        dataType: "string",
+        required: true,
         maxLength: 255,
     },
     maxRunDurationSeconds: {
+        dataType: "number",
         maximum: 7200,
         exclusiveMaximum: false,
         minimum: 60,
         exclusiveMinimum: false,
     },
     selectedSkillIds: {
+        dataType: "Array<string>",
         maxItems: 20,
         uniqueItems: false,
     },
     commonFilePathPartIds: {
+        dataType: "Array<string>",
         maxItems: 20,
         uniqueItems: false,
     },
@@ -145,8 +129,8 @@ export const UpdateWorkflowDefinitionRequestPropertyValidationAttributesMap: {
  */
 export function instanceOfUpdateWorkflowDefinitionRequest(value: object): value is UpdateWorkflowDefinitionRequest {
     if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('isActive' in value) || value['isActive'] === undefined) return false;
-    if (!('approvalRequired' in value) || value['approvalRequired'] === undefined) return false;
+    if ((!('isActive' in (value as Record<string, any>)) && !('is_active' in (value as Record<string, any>))) || ((value as Record<string, any>)['isActive'] === undefined && (value as Record<string, any>)['is_active'] === undefined)) return false;
+    if ((!('approvalRequired' in (value as Record<string, any>)) && !('approval_required' in (value as Record<string, any>))) || ((value as Record<string, any>)['approvalRequired'] === undefined && (value as Record<string, any>)['approval_required'] === undefined)) return false;
     return true;
 }
 
@@ -161,17 +145,17 @@ export function UpdateWorkflowDefinitionRequestFromJSONTyped(json: any, ignoreDi
     return {
         
         'scheduleCadence': json['schedule_cadence'] == null ? undefined : ScheduleCadenceFromJSON(json['schedule_cadence']),
-        'scheduleStartAt': json['schedule_start_at'] == null ? undefined : (new Date(json['schedule_start_at'])),
-        'scheduleTimezone': json['schedule_timezone'] == null ? undefined : json['schedule_timezone'],
+        'scheduleStartAt': json['schedule_start_at'] === undefined ? undefined : json['schedule_start_at'] === null ? null : (parseDateTime(json['schedule_start_at'])),
+        'scheduleTimezone': json['schedule_timezone'] === undefined ? undefined : json['schedule_timezone'] === null ? null : json['schedule_timezone'],
         'name': json['name'],
-        'description': json['description'] == null ? undefined : json['description'],
+        'description': json['description'] === undefined ? undefined : json['description'] === null ? null : json['description'],
         'maxRunDurationSeconds': json['max_run_duration_seconds'] == null ? undefined : json['max_run_duration_seconds'],
-        'instructionPathPartId': json['instruction_path_part_id'] == null ? undefined : json['instruction_path_part_id'],
-        'parentPathPartId': json['parent_path_part_id'] == null ? undefined : json['parent_path_part_id'],
+        'instructionPathPartId': json['instruction_path_part_id'] === undefined ? undefined : json['instruction_path_part_id'] === null ? null : json['instruction_path_part_id'],
+        'parentPathPartId': json['parent_path_part_id'] === undefined ? undefined : json['parent_path_part_id'] === null ? null : json['parent_path_part_id'],
         'isActive': json['is_active'],
         'approvalRequired': json['approval_required'],
-        'selectedSkillIds': json['selected_skill_ids'] == null ? undefined : json['selected_skill_ids'],
-        'commonFilePathPartIds': json['common_file_path_part_ids'] == null ? undefined : json['common_file_path_part_ids'],
+        'selectedSkillIds': json['selected_skill_ids'] === undefined ? undefined : json['selected_skill_ids'] === null ? null : json['selected_skill_ids'],
+        'commonFilePathPartIds': json['common_file_path_part_ids'] === undefined ? undefined : json['common_file_path_part_ids'] === null ? null : json['common_file_path_part_ids'],
     };
 }
 
@@ -187,7 +171,7 @@ export function UpdateWorkflowDefinitionRequestToJSONTyped(value?: UpdateWorkflo
     return {
         
         'schedule_cadence': ScheduleCadenceToJSON(value['scheduleCadence']),
-        'schedule_start_at': value['scheduleStartAt'] == null ? value['scheduleStartAt'] : value['scheduleStartAt'].toISOString(),
+        'schedule_start_at': value['scheduleStartAt'] == null ? value['scheduleStartAt'] : serializeDateTime(value['scheduleStartAt']),
         'schedule_timezone': value['scheduleTimezone'],
         'name': value['name'],
         'description': value['description'],

@@ -39,38 +39,26 @@ import {
 export interface CitedChunk {
     /**
      * 
-     * @type {string}
-     * @memberof CitedChunk
      */
     chunkId: string;
     /**
      * 
-     * @type {string}
-     * @memberof CitedChunk
      */
     documentId?: string | null;
     /**
      * Source document name as of save time. May be stale if the document was later renamed or replaced.
-     * @type {string}
-     * @memberof CitedChunk
      */
     documentName?: string | null;
     /**
      * 
-     * @type {DocumentType}
-     * @memberof CitedChunk
      */
     documentType?: DocumentType;
     /**
      * 
-     * @type {string}
-     * @memberof CitedChunk
      */
     documentVersionId?: string | null;
     /**
      * 
-     * @type {number}
-     * @memberof CitedChunk
      */
     versionNumber?: number | null;
 }
@@ -78,6 +66,8 @@ export interface CitedChunk {
 
 export const CitedChunkPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -98,7 +88,7 @@ export const CitedChunkPropertyValidationAttributesMap: {
  * Check if a given object implements the CitedChunk interface.
  */
 export function instanceOfCitedChunk(value: object): value is CitedChunk {
-    if (!('chunkId' in value) || value['chunkId'] === undefined) return false;
+    if ((!('chunkId' in (value as Record<string, any>)) && !('chunk_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['chunkId'] === undefined && (value as Record<string, any>)['chunk_id'] === undefined)) return false;
     return true;
 }
 
@@ -113,11 +103,11 @@ export function CitedChunkFromJSONTyped(json: any, ignoreDiscriminator: boolean)
     return {
         
         'chunkId': json['chunk_id'],
-        'documentId': json['document_id'] == null ? undefined : json['document_id'],
-        'documentName': json['document_name'] == null ? undefined : json['document_name'],
+        'documentId': json['document_id'] === undefined ? undefined : json['document_id'] === null ? null : json['document_id'],
+        'documentName': json['document_name'] === undefined ? undefined : json['document_name'] === null ? null : json['document_name'],
         'documentType': json['document_type'] == null ? undefined : DocumentTypeFromJSON(json['document_type']),
-        'documentVersionId': json['document_version_id'] == null ? undefined : json['document_version_id'],
-        'versionNumber': json['version_number'] == null ? undefined : json['version_number'],
+        'documentVersionId': json['document_version_id'] === undefined ? undefined : json['document_version_id'] === null ? null : json['document_version_id'],
+        'versionNumber': json['version_number'] === undefined ? undefined : json['version_number'] === null ? null : json['version_number'],
     };
 }
 

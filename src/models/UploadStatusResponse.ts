@@ -29,19 +29,17 @@ import {
 export interface UploadStatusResponse {
     /**
      * 
-     * @type {Array<UploadPartResponse>}
-     * @memberof UploadStatusResponse
      */
     parts: Array<UploadPartResponse>;
     /**
      * 
-     * @type {number}
-     * @memberof UploadStatusResponse
      */
     uploadedBytes: number;
 }
 export const UploadStatusResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -63,7 +61,7 @@ export const UploadStatusResponsePropertyValidationAttributesMap: {
  */
 export function instanceOfUploadStatusResponse(value: object): value is UploadStatusResponse {
     if (!('parts' in value) || value['parts'] === undefined) return false;
-    if (!('uploadedBytes' in value) || value['uploadedBytes'] === undefined) return false;
+    if ((!('uploadedBytes' in (value as Record<string, any>)) && !('uploaded_bytes' in (value as Record<string, any>))) || ((value as Record<string, any>)['uploadedBytes'] === undefined && (value as Record<string, any>)['uploaded_bytes'] === undefined)) return false;
     return true;
 }
 

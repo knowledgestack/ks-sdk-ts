@@ -21,25 +21,21 @@ import { mapValues } from '../runtime';
 export interface WorkflowActionResponse {
     /**
      * 
-     * @type {string}
-     * @memberof WorkflowActionResponse
      */
     workflowId: string;
     /**
      * 
-     * @type {string}
-     * @memberof WorkflowActionResponse
      */
     action: string;
     /**
      * 
-     * @type {string}
-     * @memberof WorkflowActionResponse
      */
     message: string;
 }
 export const WorkflowActionResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -60,7 +56,7 @@ export const WorkflowActionResponsePropertyValidationAttributesMap: {
  * Check if a given object implements the WorkflowActionResponse interface.
  */
 export function instanceOfWorkflowActionResponse(value: object): value is WorkflowActionResponse {
-    if (!('workflowId' in value) || value['workflowId'] === undefined) return false;
+    if ((!('workflowId' in (value as Record<string, any>)) && !('workflow_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['workflowId'] === undefined && (value as Record<string, any>)['workflow_id'] === undefined)) return false;
     if (!('action' in value) || value['action'] === undefined) return false;
     if (!('message' in value) || value['message'] === undefined) return false;
     return true;

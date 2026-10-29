@@ -29,13 +29,13 @@ import {
 export interface HTTPValidationError {
     /**
      * 
-     * @type {Array<ValidationError>}
-     * @memberof HTTPValidationError
      */
     detail?: Array<ValidationError>;
 }
 export const HTTPValidationErrorPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,

@@ -29,32 +29,22 @@ import {
 export interface ModelTableResult {
     /**
      * 
-     * @type {string}
-     * @memberof ModelTableResult
      */
     tableName: string;
     /**
      * 
-     * @type {string}
-     * @memberof ModelTableResult
      */
     schemaName?: string | null;
     /**
      * 
-     * @type {ModelTableResultStatusEnum}
-     * @memberof ModelTableResult
      */
     status: ModelTableResultStatusEnum;
     /**
      * 
-     * @type {DataSourceTableResponse}
-     * @memberof ModelTableResult
      */
     table?: DataSourceTableResponse | null;
     /**
      * 
-     * @type {string}
-     * @memberof ModelTableResult
      */
     error?: string | null;
 }
@@ -66,12 +56,14 @@ export interface ModelTableResult {
 export const ModelTableResultStatusEnum = {
     Created: 'created',
     Conflict: 'conflict',
-    Error: 'error'
+    Error: 'error',
 } as const;
 export type ModelTableResultStatusEnum = typeof ModelTableResultStatusEnum[keyof typeof ModelTableResultStatusEnum];
 
 export const ModelTableResultPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -92,7 +84,7 @@ export const ModelTableResultPropertyValidationAttributesMap: {
  * Check if a given object implements the ModelTableResult interface.
  */
 export function instanceOfModelTableResult(value: object): value is ModelTableResult {
-    if (!('tableName' in value) || value['tableName'] === undefined) return false;
+    if ((!('tableName' in (value as Record<string, any>)) && !('table_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['tableName'] === undefined && (value as Record<string, any>)['table_name'] === undefined)) return false;
     if (!('status' in value) || value['status'] === undefined) return false;
     return true;
 }
@@ -108,10 +100,10 @@ export function ModelTableResultFromJSONTyped(json: any, ignoreDiscriminator: bo
     return {
         
         'tableName': json['table_name'],
-        'schemaName': json['schema_name'] == null ? undefined : json['schema_name'],
+        'schemaName': json['schema_name'] === undefined ? undefined : json['schema_name'] === null ? null : json['schema_name'],
         'status': json['status'],
-        'table': json['table'] == null ? undefined : DataSourceTableResponseFromJSON(json['table']),
-        'error': json['error'] == null ? undefined : json['error'],
+        'table': json['table'] === undefined ? undefined : json['table'] === null ? null : DataSourceTableResponseFromJSON(json['table']),
+        'error': json['error'] === undefined ? undefined : json['error'] === null ? null : json['error'],
     };
 }
 

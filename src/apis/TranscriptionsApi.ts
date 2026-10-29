@@ -12,27 +12,36 @@
  * Do not edit the class manually.
  */
 
-
 import * as runtime from '../runtime';
-import type {
-  ErrorResponse,
-  HTTPValidationError,
-  SupportedLanguage,
-  TranscriptionResponse,
-} from '../models/index';
 import {
+    type ErrorResponse,
     ErrorResponseFromJSON,
     ErrorResponseToJSON,
+} from '../models/ErrorResponse';
+import {
+    type HTTPValidationError,
     HTTPValidationErrorFromJSON,
     HTTPValidationErrorToJSON,
+} from '../models/HTTPValidationError';
+import {
+    type SupportedLanguage,
     SupportedLanguageFromJSON,
     SupportedLanguageToJSON,
+} from '../models/SupportedLanguage';
+import {
+    type TranscriptionResponse,
     TranscriptionResponseFromJSON,
     TranscriptionResponseToJSON,
-} from '../models/index';
+} from '../models/TranscriptionResponse';
 
 export interface CreateTranscriptionRequest {
+    /**
+     * The audio clip. Accepts what a browser records (audio/webm, audio/ogg, audio/mp4) plus audio/mpeg, audio/wav and audio/flac. Re-encoded server-side, so the container does not have to match the backend.
+     */
     file: Blob;
+    /**
+     * 
+     */
     language?: SupportedLanguage;
 }
 

@@ -21,19 +21,17 @@ import { mapValues } from '../runtime';
 export interface BulkDeleteRequest {
     /**
      * 
-     * @type {Array<string>}
-     * @memberof BulkDeleteRequest
      */
     folderIds?: Array<string>;
     /**
      * 
-     * @type {Array<string>}
-     * @memberof BulkDeleteRequest
      */
     documentIds?: Array<string>;
 }
 export const BulkDeleteRequestPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,

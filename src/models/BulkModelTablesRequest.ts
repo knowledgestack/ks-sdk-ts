@@ -29,13 +29,13 @@ import {
 export interface BulkModelTablesRequest {
     /**
      * 
-     * @type {Array<ModelTableRequest>}
-     * @memberof BulkModelTablesRequest
      */
     tables: Array<ModelTableRequest>;
 }
 export const BulkModelTablesRequestPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -50,6 +50,8 @@ export const BulkModelTablesRequestPropertyValidationAttributesMap: {
     }
 } = {
     tables: {
+        dataType: "Array<ModelTableRequest>",
+        required: true,
         minItems: 1,
         uniqueItems: false,
     },

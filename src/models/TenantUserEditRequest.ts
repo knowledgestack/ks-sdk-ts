@@ -33,20 +33,14 @@ import {
 export interface TenantUserEditRequest {
     /**
      * 
-     * @type {TenantUserRole}
-     * @memberof TenantUserEditRequest
      */
     role: TenantUserRole;
     /**
      * User's job title; omit to leave unchanged, empty string to clear
-     * @type {string}
-     * @memberof TenantUserEditRequest
      */
     jobTitle?: string | null;
     /**
      * User's department; omit to leave unchanged, empty string to clear
-     * @type {string}
-     * @memberof TenantUserEditRequest
      */
     department?: string | null;
 }
@@ -54,6 +48,8 @@ export interface TenantUserEditRequest {
 
 export const TenantUserEditRequestPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -68,9 +64,11 @@ export const TenantUserEditRequestPropertyValidationAttributesMap: {
     }
 } = {
     jobTitle: {
+        dataType: "string",
         maxLength: 120,
     },
     department: {
+        dataType: "string",
         maxLength: 120,
     },
 }
@@ -95,8 +93,8 @@ export function TenantUserEditRequestFromJSONTyped(json: any, ignoreDiscriminato
     return {
         
         'role': TenantUserRoleFromJSON(json['role']),
-        'jobTitle': json['job_title'] == null ? undefined : json['job_title'],
-        'department': json['department'] == null ? undefined : json['department'],
+        'jobTitle': json['job_title'] === undefined ? undefined : json['job_title'] === null ? null : json['job_title'],
+        'department': json['department'] === undefined ? undefined : json['department'] === null ? null : json['department'],
     };
 }
 

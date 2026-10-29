@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
 import type { PipelineStatus } from './PipelineStatus';
 import {
     PipelineStatusFromJSON,
@@ -36,86 +36,58 @@ import {
 export interface WorkflowSummaryResponse {
     /**
      * 
-     * @type {string}
-     * @memberof WorkflowSummaryResponse
      */
     workflowId: string;
     /**
      * 
-     * @type {string}
-     * @memberof WorkflowSummaryResponse
      */
     documentId: string;
     /**
      * 
-     * @type {string}
-     * @memberof WorkflowSummaryResponse
      */
     documentName: string;
     /**
      * The document's path
-     * @type {string}
-     * @memberof WorkflowSummaryResponse
      */
     materializedPath: string;
     /**
      * 
-     * @type {string}
-     * @memberof WorkflowSummaryResponse
      */
     documentVersionId: string;
     /**
      * Whether this version is the document's active one; false for an unfinished newer upload and for a superseded older version
-     * @type {boolean}
-     * @memberof WorkflowSummaryResponse
      */
     isActiveVersion: boolean;
     /**
      * 
-     * @type {UserInfo}
-     * @memberof WorkflowSummaryResponse
      */
     uploader: UserInfo;
     /**
      * 
-     * @type {PipelineStatus}
-     * @memberof WorkflowSummaryResponse
      */
     status: PipelineStatus;
     /**
      * 
-     * @type {string}
-     * @memberof WorkflowSummaryResponse
      */
     lastActivity?: string | null;
     /**
      * 
-     * @type {number}
-     * @memberof WorkflowSummaryResponse
      */
     lastStageRetryAttempt?: number;
     /**
      * 
-     * @type {string}
-     * @memberof WorkflowSummaryResponse
      */
     error?: string | null;
     /**
      * When the last run started; the upload time until a run has started
-     * @type {Date}
-     * @memberof WorkflowSummaryResponse
      */
     lastRunTimestamp: Date;
     /**
      * 
-     * @type {Date}
-     * @memberof WorkflowSummaryResponse
      */
     lastStateUpdateTimestamp?: Date | null;
     /**
      * 
-     * @type {Date}
-     * @memberof WorkflowSummaryResponse
      */
     createdAt: Date;
 }
@@ -123,6 +95,8 @@ export interface WorkflowSummaryResponse {
 
 export const WorkflowSummaryResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -137,6 +111,7 @@ export const WorkflowSummaryResponsePropertyValidationAttributesMap: {
     }
 } = {
     lastStageRetryAttempt: {
+        dataType: "number",
         minimum: 0,
         exclusiveMinimum: false,
     },
@@ -147,16 +122,16 @@ export const WorkflowSummaryResponsePropertyValidationAttributesMap: {
  * Check if a given object implements the WorkflowSummaryResponse interface.
  */
 export function instanceOfWorkflowSummaryResponse(value: object): value is WorkflowSummaryResponse {
-    if (!('workflowId' in value) || value['workflowId'] === undefined) return false;
-    if (!('documentId' in value) || value['documentId'] === undefined) return false;
-    if (!('documentName' in value) || value['documentName'] === undefined) return false;
-    if (!('materializedPath' in value) || value['materializedPath'] === undefined) return false;
-    if (!('documentVersionId' in value) || value['documentVersionId'] === undefined) return false;
-    if (!('isActiveVersion' in value) || value['isActiveVersion'] === undefined) return false;
+    if ((!('workflowId' in (value as Record<string, any>)) && !('workflow_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['workflowId'] === undefined && (value as Record<string, any>)['workflow_id'] === undefined)) return false;
+    if ((!('documentId' in (value as Record<string, any>)) && !('document_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['documentId'] === undefined && (value as Record<string, any>)['document_id'] === undefined)) return false;
+    if ((!('documentName' in (value as Record<string, any>)) && !('document_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['documentName'] === undefined && (value as Record<string, any>)['document_name'] === undefined)) return false;
+    if ((!('materializedPath' in (value as Record<string, any>)) && !('materialized_path' in (value as Record<string, any>))) || ((value as Record<string, any>)['materializedPath'] === undefined && (value as Record<string, any>)['materialized_path'] === undefined)) return false;
+    if ((!('documentVersionId' in (value as Record<string, any>)) && !('document_version_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['documentVersionId'] === undefined && (value as Record<string, any>)['document_version_id'] === undefined)) return false;
+    if ((!('isActiveVersion' in (value as Record<string, any>)) && !('is_active_version' in (value as Record<string, any>))) || ((value as Record<string, any>)['isActiveVersion'] === undefined && (value as Record<string, any>)['is_active_version'] === undefined)) return false;
     if (!('uploader' in value) || value['uploader'] === undefined) return false;
     if (!('status' in value) || value['status'] === undefined) return false;
-    if (!('lastRunTimestamp' in value) || value['lastRunTimestamp'] === undefined) return false;
-    if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
+    if ((!('lastRunTimestamp' in (value as Record<string, any>)) && !('last_run_timestamp' in (value as Record<string, any>))) || ((value as Record<string, any>)['lastRunTimestamp'] === undefined && (value as Record<string, any>)['last_run_timestamp'] === undefined)) return false;
+    if ((!('createdAt' in (value as Record<string, any>)) && !('created_at' in (value as Record<string, any>))) || ((value as Record<string, any>)['createdAt'] === undefined && (value as Record<string, any>)['created_at'] === undefined)) return false;
     return true;
 }
 
@@ -178,12 +153,12 @@ export function WorkflowSummaryResponseFromJSONTyped(json: any, ignoreDiscrimina
         'isActiveVersion': json['is_active_version'],
         'uploader': UserInfoFromJSON(json['uploader']),
         'status': PipelineStatusFromJSON(json['status']),
-        'lastActivity': json['last_activity'] == null ? undefined : json['last_activity'],
+        'lastActivity': json['last_activity'] === undefined ? undefined : json['last_activity'] === null ? null : json['last_activity'],
         'lastStageRetryAttempt': json['last_stage_retry_attempt'] == null ? undefined : json['last_stage_retry_attempt'],
-        'error': json['error'] == null ? undefined : json['error'],
-        'lastRunTimestamp': (new Date(json['last_run_timestamp'])),
-        'lastStateUpdateTimestamp': json['last_state_update_timestamp'] == null ? undefined : (new Date(json['last_state_update_timestamp'])),
-        'createdAt': (new Date(json['created_at'])),
+        'error': json['error'] === undefined ? undefined : json['error'] === null ? null : json['error'],
+        'lastRunTimestamp': (json['last_run_timestamp'] == null ? json['last_run_timestamp'] : parseDateTime(json['last_run_timestamp'])),
+        'lastStateUpdateTimestamp': json['last_state_update_timestamp'] === undefined ? undefined : json['last_state_update_timestamp'] === null ? null : (parseDateTime(json['last_state_update_timestamp'])),
+        'createdAt': (json['created_at'] == null ? json['created_at'] : parseDateTime(json['created_at'])),
     };
 }
 
@@ -209,9 +184,9 @@ export function WorkflowSummaryResponseToJSONTyped(value?: WorkflowSummaryRespon
         'last_activity': value['lastActivity'],
         'last_stage_retry_attempt': value['lastStageRetryAttempt'],
         'error': value['error'],
-        'last_run_timestamp': value['lastRunTimestamp'].toISOString(),
-        'last_state_update_timestamp': value['lastStateUpdateTimestamp'] == null ? value['lastStateUpdateTimestamp'] : value['lastStateUpdateTimestamp'].toISOString(),
-        'created_at': value['createdAt'].toISOString(),
+        'last_run_timestamp': value['lastRunTimestamp'] == null ? value['lastRunTimestamp'] : serializeDateTime(value['lastRunTimestamp']),
+        'last_state_update_timestamp': value['lastStateUpdateTimestamp'] == null ? value['lastStateUpdateTimestamp'] : serializeDateTime(value['lastStateUpdateTimestamp']),
+        'created_at': value['createdAt'] == null ? value['createdAt'] : serializeDateTime(value['createdAt']),
     };
 }
 

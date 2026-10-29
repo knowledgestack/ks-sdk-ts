@@ -34,19 +34,17 @@ import {
 export interface IngestZipResponse {
     /**
      * 
-     * @type {string}
-     * @memberof IngestZipResponse
      */
     workflowId: string | null;
     /**
      * 
-     * @type {Array<ZipFileResult>}
-     * @memberof IngestZipResponse
      */
     skipped: Array<ZipFileResult>;
 }
 export const IngestZipResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -67,7 +65,7 @@ export const IngestZipResponsePropertyValidationAttributesMap: {
  * Check if a given object implements the IngestZipResponse interface.
  */
 export function instanceOfIngestZipResponse(value: object): value is IngestZipResponse {
-    if (!('workflowId' in value) || value['workflowId'] === undefined) return false;
+    if ((!('workflowId' in (value as Record<string, any>)) && !('workflow_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['workflowId'] === undefined && (value as Record<string, any>)['workflow_id'] === undefined)) return false;
     if (!('skipped' in value) || value['skipped'] === undefined) return false;
     return true;
 }

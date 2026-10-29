@@ -21,13 +21,13 @@ import { mapValues } from '../runtime';
 export interface AskResponse {
     /**
      * 
-     * @type {string}
-     * @memberof AskResponse
      */
     text: string;
 }
 export const AskResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,

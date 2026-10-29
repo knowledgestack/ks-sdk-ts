@@ -21,19 +21,17 @@ import { mapValues } from '../runtime';
 export interface DiffSpan {
     /**
      * 
-     * @type {number}
-     * @memberof DiffSpan
      */
     start: number;
     /**
      * 
-     * @type {number}
-     * @memberof DiffSpan
      */
     end: number;
 }
 export const DiffSpanPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,

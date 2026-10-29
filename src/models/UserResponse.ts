@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
 import type { TenantUserJoinMethod } from './TenantUserJoinMethod';
 import {
     TenantUserJoinMethodFromJSON,
@@ -71,128 +71,86 @@ import {
 export interface UserResponse {
     /**
      * User ID
-     * @type {string}
-     * @memberof UserResponse
      */
     id: string;
     /**
      * Email address of the user
-     * @type {string}
-     * @memberof UserResponse
      */
     email: string | null;
     /**
      * Subscriber number as a string of digits (no country code). Returned as a string to avoid JS Number precision issues.
-     * @type {string}
-     * @memberof UserResponse
      */
     phoneNumber?: string | null;
     /**
      * First name of the user
-     * @type {string}
-     * @memberof UserResponse
      */
     firstName: string | null;
     /**
      * Last name of the user
-     * @type {string}
-     * @memberof UserResponse
      */
     lastName: string | null;
     /**
      * 
-     * @type {IdpType}
-     * @memberof UserResponse
      */
     idpType: IdpType;
     /**
      * Current tenant ID the user is logged into
-     * @type {string}
-     * @memberof UserResponse
      */
     currentTenantId: string;
     /**
      * 
-     * @type {TenantUserRole}
-     * @memberof UserResponse
      */
     currentTenantRole: TenantUserRole;
     /**
      * Default tenant ID the user shall be logged into
-     * @type {string}
-     * @memberof UserResponse
      */
     defaultTenantId: string;
     /**
      * User's job title at the current tenant (per-membership)
-     * @type {string}
-     * @memberof UserResponse
      */
     jobTitle?: string | null;
     /**
      * User's department at the current tenant (per-membership)
-     * @type {string}
-     * @memberof UserResponse
      */
     department?: string | null;
     /**
      * What the user wrote about themselves at the current tenant. The chat agent reads it on every turn.
-     * @type {string}
-     * @memberof UserResponse
      */
     bio?: string | null;
     /**
      * Presigned URL of the user's profile photo at the current tenant. Expires after six hours; read GET /v1/users/me again for a fresh one.
-     * @type {string}
-     * @memberof UserResponse
      */
     avatarUrl?: string | null;
     /**
      * 
-     * @type {SupportedLanguage}
-     * @memberof UserResponse
      */
     languagePreference: SupportedLanguage;
     /**
      * When the user finished onboarding for the current tenant. NULL = wizard should be shown.
-     * @type {Date}
-     * @memberof UserResponse
      */
     onboardingCompletedAt?: Date | null;
     /**
      * 
-     * @type {TenantUserJoinMethod}
-     * @memberof UserResponse
      */
     joinMethod: TenantUserJoinMethod;
     /**
      * Resume step and guide progress for the current membership.
-     * @type {OnboardingState}
-     * @memberof UserResponse
      */
     onboardingState?: OnboardingState | null;
     /**
      * Who sent the accepted invite that created the current membership. NULL when the membership did not come from an email invite, and on the sign-in and sign-up responses; read it from GET /v1/users/me.
-     * @type {UserInfo}
-     * @memberof UserResponse
      */
     invitedBy?: UserInfo | null;
     /**
      * 
-     * @type {AddedBy}
-     * @memberof UserResponse
      */
     addedBy?: AddedBy;
     /**
      * Profile fields the identity provider owns, so clients render them read-only and updates to them are refused. Empty unless directory-managed.
-     * @type {Array<string>}
-     * @memberof UserResponse
      */
     idpManagedFields?: Array<string>;
     /**
      * The current tenant's onboarding switch: true forces the flow on, false hides it, NULL follows the deployment default.
-     * @type {boolean}
-     * @memberof UserResponse
      */
     onboardingEnabled?: boolean | null;
 }
@@ -200,6 +158,8 @@ export interface UserResponse {
 
 export const UserResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -222,14 +182,14 @@ export const UserResponsePropertyValidationAttributesMap: {
 export function instanceOfUserResponse(value: object): value is UserResponse {
     if (!('id' in value) || value['id'] === undefined) return false;
     if (!('email' in value) || value['email'] === undefined) return false;
-    if (!('firstName' in value) || value['firstName'] === undefined) return false;
-    if (!('lastName' in value) || value['lastName'] === undefined) return false;
-    if (!('idpType' in value) || value['idpType'] === undefined) return false;
-    if (!('currentTenantId' in value) || value['currentTenantId'] === undefined) return false;
-    if (!('currentTenantRole' in value) || value['currentTenantRole'] === undefined) return false;
-    if (!('defaultTenantId' in value) || value['defaultTenantId'] === undefined) return false;
-    if (!('languagePreference' in value) || value['languagePreference'] === undefined) return false;
-    if (!('joinMethod' in value) || value['joinMethod'] === undefined) return false;
+    if ((!('firstName' in (value as Record<string, any>)) && !('first_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['firstName'] === undefined && (value as Record<string, any>)['first_name'] === undefined)) return false;
+    if ((!('lastName' in (value as Record<string, any>)) && !('last_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['lastName'] === undefined && (value as Record<string, any>)['last_name'] === undefined)) return false;
+    if ((!('idpType' in (value as Record<string, any>)) && !('idp_type' in (value as Record<string, any>))) || ((value as Record<string, any>)['idpType'] === undefined && (value as Record<string, any>)['idp_type'] === undefined)) return false;
+    if ((!('currentTenantId' in (value as Record<string, any>)) && !('current_tenant_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['currentTenantId'] === undefined && (value as Record<string, any>)['current_tenant_id'] === undefined)) return false;
+    if ((!('currentTenantRole' in (value as Record<string, any>)) && !('current_tenant_role' in (value as Record<string, any>))) || ((value as Record<string, any>)['currentTenantRole'] === undefined && (value as Record<string, any>)['current_tenant_role'] === undefined)) return false;
+    if ((!('defaultTenantId' in (value as Record<string, any>)) && !('default_tenant_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['defaultTenantId'] === undefined && (value as Record<string, any>)['default_tenant_id'] === undefined)) return false;
+    if ((!('languagePreference' in (value as Record<string, any>)) && !('language_preference' in (value as Record<string, any>))) || ((value as Record<string, any>)['languagePreference'] === undefined && (value as Record<string, any>)['language_preference'] === undefined)) return false;
+    if ((!('joinMethod' in (value as Record<string, any>)) && !('join_method' in (value as Record<string, any>))) || ((value as Record<string, any>)['joinMethod'] === undefined && (value as Record<string, any>)['join_method'] === undefined)) return false;
     return true;
 }
 
@@ -245,25 +205,25 @@ export function UserResponseFromJSONTyped(json: any, ignoreDiscriminator: boolea
         
         'id': json['id'],
         'email': json['email'],
-        'phoneNumber': json['phone_number'] == null ? undefined : json['phone_number'],
+        'phoneNumber': json['phone_number'] === undefined ? undefined : json['phone_number'] === null ? null : json['phone_number'],
         'firstName': json['first_name'],
         'lastName': json['last_name'],
         'idpType': IdpTypeFromJSON(json['idp_type']),
         'currentTenantId': json['current_tenant_id'],
         'currentTenantRole': TenantUserRoleFromJSON(json['current_tenant_role']),
         'defaultTenantId': json['default_tenant_id'],
-        'jobTitle': json['job_title'] == null ? undefined : json['job_title'],
-        'department': json['department'] == null ? undefined : json['department'],
-        'bio': json['bio'] == null ? undefined : json['bio'],
-        'avatarUrl': json['avatar_url'] == null ? undefined : json['avatar_url'],
+        'jobTitle': json['job_title'] === undefined ? undefined : json['job_title'] === null ? null : json['job_title'],
+        'department': json['department'] === undefined ? undefined : json['department'] === null ? null : json['department'],
+        'bio': json['bio'] === undefined ? undefined : json['bio'] === null ? null : json['bio'],
+        'avatarUrl': json['avatar_url'] === undefined ? undefined : json['avatar_url'] === null ? null : json['avatar_url'],
         'languagePreference': SupportedLanguageFromJSON(json['language_preference']),
-        'onboardingCompletedAt': json['onboarding_completed_at'] == null ? undefined : (new Date(json['onboarding_completed_at'])),
+        'onboardingCompletedAt': json['onboarding_completed_at'] === undefined ? undefined : json['onboarding_completed_at'] === null ? null : (parseDateTime(json['onboarding_completed_at'])),
         'joinMethod': TenantUserJoinMethodFromJSON(json['join_method']),
-        'onboardingState': json['onboarding_state'] == null ? undefined : OnboardingStateFromJSON(json['onboarding_state']),
-        'invitedBy': json['invited_by'] == null ? undefined : UserInfoFromJSON(json['invited_by']),
+        'onboardingState': json['onboarding_state'] === undefined ? undefined : json['onboarding_state'] === null ? null : OnboardingStateFromJSON(json['onboarding_state']),
+        'invitedBy': json['invited_by'] === undefined ? undefined : json['invited_by'] === null ? null : UserInfoFromJSON(json['invited_by']),
         'addedBy': json['added_by'] == null ? undefined : AddedByFromJSON(json['added_by']),
         'idpManagedFields': json['idp_managed_fields'] == null ? undefined : json['idp_managed_fields'],
-        'onboardingEnabled': json['onboarding_enabled'] == null ? undefined : json['onboarding_enabled'],
+        'onboardingEnabled': json['onboarding_enabled'] === undefined ? undefined : json['onboarding_enabled'] === null ? null : json['onboarding_enabled'],
     };
 }
 
@@ -292,7 +252,7 @@ export function UserResponseToJSONTyped(value?: UserResponse | null, ignoreDiscr
         'bio': value['bio'],
         'avatar_url': value['avatarUrl'],
         'language_preference': SupportedLanguageToJSON(value['languagePreference']),
-        'onboarding_completed_at': value['onboardingCompletedAt'] == null ? value['onboardingCompletedAt'] : value['onboardingCompletedAt'].toISOString(),
+        'onboarding_completed_at': value['onboardingCompletedAt'] == null ? value['onboardingCompletedAt'] : serializeDateTime(value['onboardingCompletedAt']),
         'join_method': TenantUserJoinMethodToJSON(value['joinMethod']),
         'onboarding_state': OnboardingStateToJSON(value['onboardingState']),
         'invited_by': UserInfoToJSON(value['invitedBy']),

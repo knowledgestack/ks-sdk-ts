@@ -29,19 +29,17 @@ import {
 export interface BulkGrantRequest {
     /**
      * 
-     * @type {string}
-     * @memberof BulkGrantRequest
      */
     tenantId: string;
     /**
      * 
-     * @type {Array<BulkGrantItem>}
-     * @memberof BulkGrantRequest
      */
     grants?: Array<BulkGrantItem>;
 }
 export const BulkGrantRequestPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -62,7 +60,7 @@ export const BulkGrantRequestPropertyValidationAttributesMap: {
  * Check if a given object implements the BulkGrantRequest interface.
  */
 export function instanceOfBulkGrantRequest(value: object): value is BulkGrantRequest {
-    if (!('tenantId' in value) || value['tenantId'] === undefined) return false;
+    if ((!('tenantId' in (value as Record<string, any>)) && !('tenant_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['tenantId'] === undefined && (value as Record<string, any>)['tenant_id'] === undefined)) return false;
     return true;
 }
 

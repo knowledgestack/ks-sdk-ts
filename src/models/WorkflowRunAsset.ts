@@ -55,44 +55,30 @@ import {
 export interface WorkflowRunAsset {
     /**
      * PDO id accepted by the download / list-contents APIs
-     * @type {string}
-     * @memberof WorkflowRunAsset
      */
     id: string;
     /**
      * 
-     * @type {string}
-     * @memberof WorkflowRunAsset
      */
     pathPartId: string;
     /**
      * 
-     * @type {string}
-     * @memberof WorkflowRunAsset
      */
     name: string;
     /**
      * 
-     * @type {PartType}
-     * @memberof WorkflowRunAsset
      */
     partType: PartType;
     /**
      * 
-     * @type {string}
-     * @memberof WorkflowRunAsset
      */
     materializedPath: string;
     /**
      * 
-     * @type {PathPartApprovalState}
-     * @memberof WorkflowRunAsset
      */
     approvalState: PathPartApprovalState;
     /**
      * 
-     * @type {InputOrigin}
-     * @memberof WorkflowRunAsset
      */
     origin?: InputOrigin;
 }
@@ -100,6 +86,8 @@ export interface WorkflowRunAsset {
 
 export const WorkflowRunAssetPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -121,11 +109,11 @@ export const WorkflowRunAssetPropertyValidationAttributesMap: {
  */
 export function instanceOfWorkflowRunAsset(value: object): value is WorkflowRunAsset {
     if (!('id' in value) || value['id'] === undefined) return false;
-    if (!('pathPartId' in value) || value['pathPartId'] === undefined) return false;
+    if ((!('pathPartId' in (value as Record<string, any>)) && !('path_part_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['pathPartId'] === undefined && (value as Record<string, any>)['path_part_id'] === undefined)) return false;
     if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('partType' in value) || value['partType'] === undefined) return false;
-    if (!('materializedPath' in value) || value['materializedPath'] === undefined) return false;
-    if (!('approvalState' in value) || value['approvalState'] === undefined) return false;
+    if ((!('partType' in (value as Record<string, any>)) && !('part_type' in (value as Record<string, any>))) || ((value as Record<string, any>)['partType'] === undefined && (value as Record<string, any>)['part_type'] === undefined)) return false;
+    if ((!('materializedPath' in (value as Record<string, any>)) && !('materialized_path' in (value as Record<string, any>))) || ((value as Record<string, any>)['materializedPath'] === undefined && (value as Record<string, any>)['materialized_path'] === undefined)) return false;
+    if ((!('approvalState' in (value as Record<string, any>)) && !('approval_state' in (value as Record<string, any>))) || ((value as Record<string, any>)['approvalState'] === undefined && (value as Record<string, any>)['approval_state'] === undefined)) return false;
     return true;
 }
 

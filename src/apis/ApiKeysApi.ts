@@ -12,37 +12,51 @@
  * Do not edit the class manually.
  */
 
-
 import * as runtime from '../runtime';
-import type {
-  ApiKeyResponse,
-  CreateApiKeyRequest,
-  CreateApiKeyResponse,
-  ErrorResponse,
-  HTTPValidationError,
-} from '../models/index';
 import {
+    type ApiKeyResponse,
     ApiKeyResponseFromJSON,
     ApiKeyResponseToJSON,
+} from '../models/ApiKeyResponse';
+import {
+    type CreateApiKeyRequest,
     CreateApiKeyRequestFromJSON,
     CreateApiKeyRequestToJSON,
+} from '../models/CreateApiKeyRequest';
+import {
+    type CreateApiKeyResponse,
     CreateApiKeyResponseFromJSON,
     CreateApiKeyResponseToJSON,
+} from '../models/CreateApiKeyResponse';
+import {
+    type ErrorResponse,
     ErrorResponseFromJSON,
     ErrorResponseToJSON,
+} from '../models/ErrorResponse';
+import {
+    type HTTPValidationError,
     HTTPValidationErrorFromJSON,
     HTTPValidationErrorToJSON,
-} from '../models/index';
+} from '../models/HTTPValidationError';
 
 export interface CreateApiKeyOperationRequest {
+    /**
+     * 
+     */
     createApiKeyRequest: CreateApiKeyRequest;
 }
 
 export interface DeleteApiKeyRequest {
+    /**
+     * 
+     */
     apiKeyId: string;
 }
 
 export interface GetApiKeyRequest {
+    /**
+     * 
+     */
     apiKeyId: string;
 }
 
@@ -220,7 +234,7 @@ export class ApiKeysApi extends runtime.BaseAPI implements ApiKeysApiInterface {
 
 
         let urlPath = `/v1/api-keys/{api_key_id}`;
-        urlPath = urlPath.replace(`{${"api_key_id"}}`, encodeURIComponent(String(requestParameters['apiKeyId'])));
+        urlPath = urlPath.replace('{api_key_id}', encodeURIComponent(String(requestParameters['apiKeyId'])));
 
         return {
             path: urlPath,
@@ -266,7 +280,7 @@ export class ApiKeysApi extends runtime.BaseAPI implements ApiKeysApiInterface {
 
 
         let urlPath = `/v1/api-keys/{api_key_id}`;
-        urlPath = urlPath.replace(`{${"api_key_id"}}`, encodeURIComponent(String(requestParameters['apiKeyId'])));
+        urlPath = urlPath.replace('{api_key_id}', encodeURIComponent(String(requestParameters['apiKeyId'])));
 
         return {
             path: urlPath,

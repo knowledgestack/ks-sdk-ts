@@ -21,7 +21,7 @@ export const DiagnosticTraceFailureReason = {
     TooLarge: 'too_large',
     ClickhouseError: 'clickhouse_error',
     MalformedTrace: 'malformed_trace',
-    NoTrace: 'no_trace'
+    NoTrace: 'no_trace',
 } as const;
 export type DiagnosticTraceFailureReason = typeof DiagnosticTraceFailureReason[keyof typeof DiagnosticTraceFailureReason];
 

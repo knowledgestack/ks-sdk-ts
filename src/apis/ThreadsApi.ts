@@ -12,81 +12,156 @@
  * Do not edit the class manually.
  */
 
-
 import * as runtime from '../runtime';
-import type {
-  CreateThreadRequest,
-  ErrorResponse,
-  HTTPValidationError,
-  PaginatedResponseThreadResponse,
-  SortDirection,
-  ThreadOrder,
-  ThreadResponse,
-  UpdateThreadRequest,
-  UserMessageRequest,
-  UserMessageResponse,
-} from '../models/index';
 import {
+    type CreateThreadRequest,
     CreateThreadRequestFromJSON,
     CreateThreadRequestToJSON,
+} from '../models/CreateThreadRequest';
+import {
+    type ErrorResponse,
     ErrorResponseFromJSON,
     ErrorResponseToJSON,
+} from '../models/ErrorResponse';
+import {
+    type HTTPValidationError,
     HTTPValidationErrorFromJSON,
     HTTPValidationErrorToJSON,
+} from '../models/HTTPValidationError';
+import {
+    type PaginatedResponseThreadResponse,
     PaginatedResponseThreadResponseFromJSON,
     PaginatedResponseThreadResponseToJSON,
+} from '../models/PaginatedResponseThreadResponse';
+import {
+    type SortDirection,
     SortDirectionFromJSON,
     SortDirectionToJSON,
+} from '../models/SortDirection';
+import {
+    type ThreadOrder,
     ThreadOrderFromJSON,
     ThreadOrderToJSON,
+} from '../models/ThreadOrder';
+import {
+    type ThreadResponse,
     ThreadResponseFromJSON,
     ThreadResponseToJSON,
+} from '../models/ThreadResponse';
+import {
+    type UpdateThreadRequest,
     UpdateThreadRequestFromJSON,
     UpdateThreadRequestToJSON,
+} from '../models/UpdateThreadRequest';
+import {
+    type UserMessageRequest,
     UserMessageRequestFromJSON,
     UserMessageRequestToJSON,
+} from '../models/UserMessageRequest';
+import {
+    type UserMessageResponse,
     UserMessageResponseFromJSON,
     UserMessageResponseToJSON,
-} from '../models/index';
+} from '../models/UserMessageResponse';
 
 export interface CreateThreadOperationRequest {
+    /**
+     * 
+     */
     createThreadRequest: CreateThreadRequest;
 }
 
 export interface DeleteThreadRequest {
+    /**
+     * 
+     */
     threadId: string;
 }
 
 export interface GetThreadRequest {
+    /**
+     * 
+     */
     threadId: string;
 }
 
 export interface ListThreadsRequest {
+    /**
+     * Parent PathPart ID. Omit to list user's conversation threads.
+     */
     parentPathPartId?: string | null;
+    /**
+     * Field to sort threads by (default: CREATED_AT)
+     */
     sortBy?: ThreadOrder;
+    /**
+     * Sort direction; overrides the field's natural default
+     */
     sortDir?: SortDirection;
+    /**
+     * Case-insensitive substring filter on title
+     */
     titleLike?: string | null;
+    /**
+     * Number of items per page
+     */
     limit?: number;
+    /**
+     * Number of items to skip
+     */
     offset?: number;
+    /**
+     * Only items created at or after this timestamp (inclusive)
+     */
     createdAfter?: Date | null;
+    /**
+     * Only items created strictly before this timestamp
+     */
     createdBefore?: Date | null;
+    /**
+     * Only items updated at or after this timestamp (inclusive)
+     */
     updatedAfter?: Date | null;
+    /**
+     * Only items updated strictly before this timestamp
+     */
     updatedBefore?: Date | null;
 }
 
 export interface SendUserMessageRequest {
+    /**
+     * 
+     */
     threadId: string;
+    /**
+     * 
+     */
     userMessageRequest: UserMessageRequest;
 }
 
 export interface StreamThreadRequest {
+    /**
+     * 
+     */
     threadId: string;
+    /**
+     * 
+     */
     lastMessageId?: string | null;
+    /**
+     * 
+     */
     lastEntryId?: string | null;
 }
 
 export interface UpdateThreadOperationRequest {
+    /**
+     * 
+     */
     threadId: string;
+    /**
+     * 
+     */
     updateThreadRequest: UpdateThreadRequest;
 }
 
@@ -380,7 +455,7 @@ export class ThreadsApi extends runtime.BaseAPI implements ThreadsApiInterface {
         }
 
         let urlPath = `/v1/threads/{thread_id}`;
-        urlPath = urlPath.replace(`{${"thread_id"}}`, encodeURIComponent(String(requestParameters['threadId'])));
+        urlPath = urlPath.replace('{thread_id}', encodeURIComponent(String(requestParameters['threadId'])));
 
         return {
             path: urlPath,
@@ -434,7 +509,7 @@ export class ThreadsApi extends runtime.BaseAPI implements ThreadsApiInterface {
         }
 
         let urlPath = `/v1/threads/{thread_id}`;
-        urlPath = urlPath.replace(`{${"thread_id"}}`, encodeURIComponent(String(requestParameters['threadId'])));
+        urlPath = urlPath.replace('{thread_id}', encodeURIComponent(String(requestParameters['threadId'])));
 
         return {
             path: urlPath,
@@ -495,19 +570,19 @@ export class ThreadsApi extends runtime.BaseAPI implements ThreadsApiInterface {
         }
 
         if (requestParameters['createdAfter'] != null) {
-            queryParameters['created_after'] = (requestParameters['createdAfter'] as any).toISOString();
+            queryParameters['created_after'] = runtime.serializeDateTime(requestParameters['createdAfter'] as any);
         }
 
         if (requestParameters['createdBefore'] != null) {
-            queryParameters['created_before'] = (requestParameters['createdBefore'] as any).toISOString();
+            queryParameters['created_before'] = runtime.serializeDateTime(requestParameters['createdBefore'] as any);
         }
 
         if (requestParameters['updatedAfter'] != null) {
-            queryParameters['updated_after'] = (requestParameters['updatedAfter'] as any).toISOString();
+            queryParameters['updated_after'] = runtime.serializeDateTime(requestParameters['updatedAfter'] as any);
         }
 
         if (requestParameters['updatedBefore'] != null) {
-            queryParameters['updated_before'] = (requestParameters['updatedBefore'] as any).toISOString();
+            queryParameters['updated_before'] = runtime.serializeDateTime(requestParameters['updatedBefore'] as any);
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -585,7 +660,7 @@ export class ThreadsApi extends runtime.BaseAPI implements ThreadsApiInterface {
         }
 
         let urlPath = `/v1/threads/{thread_id}/user_message`;
-        urlPath = urlPath.replace(`{${"thread_id"}}`, encodeURIComponent(String(requestParameters['threadId'])));
+        urlPath = urlPath.replace('{thread_id}', encodeURIComponent(String(requestParameters['threadId'])));
 
         return {
             path: urlPath,
@@ -649,7 +724,7 @@ export class ThreadsApi extends runtime.BaseAPI implements ThreadsApiInterface {
         }
 
         let urlPath = `/v1/threads/{thread_id}/stream`;
-        urlPath = urlPath.replace(`{${"thread_id"}}`, encodeURIComponent(String(requestParameters['threadId'])));
+        urlPath = urlPath.replace('{thread_id}', encodeURIComponent(String(requestParameters['threadId'])));
 
         return {
             path: urlPath,
@@ -712,7 +787,7 @@ export class ThreadsApi extends runtime.BaseAPI implements ThreadsApiInterface {
         }
 
         let urlPath = `/v1/threads/{thread_id}`;
-        urlPath = urlPath.replace(`{${"thread_id"}}`, encodeURIComponent(String(requestParameters['threadId'])));
+        urlPath = urlPath.replace('{thread_id}', encodeURIComponent(String(requestParameters['threadId'])));
 
         return {
             path: urlPath,

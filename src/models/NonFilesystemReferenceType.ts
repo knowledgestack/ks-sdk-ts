@@ -21,7 +21,7 @@ export const NonFilesystemReferenceType = {
     Image: 'image',
     Memory: 'memory',
     Tag: 'tag',
-    User: 'user'
+    User: 'user',
 } as const;
 export type NonFilesystemReferenceType = typeof NonFilesystemReferenceType[keyof typeof NonFilesystemReferenceType];
 

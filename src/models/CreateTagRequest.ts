@@ -21,25 +21,21 @@ import { mapValues } from '../runtime';
 export interface CreateTagRequest {
     /**
      * Tag name
-     * @type {string}
-     * @memberof CreateTagRequest
      */
     name: string;
     /**
      * Tag color as 6-character hex string (e.g. 'FF5733')
-     * @type {string}
-     * @memberof CreateTagRequest
      */
     color?: string;
     /**
      * Optional tag description
-     * @type {string}
-     * @memberof CreateTagRequest
      */
     description?: string | null;
 }
 export const CreateTagRequestPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -54,15 +50,19 @@ export const CreateTagRequestPropertyValidationAttributesMap: {
     }
 } = {
     name: {
+        dataType: "string",
+        required: true,
         maxLength: 100,
         minLength: 1,
     },
     color: {
+        dataType: "string",
         maxLength: 6,
         minLength: 6,
         pattern: '/^[0-9A-Fa-f]{6}$/',
     },
     description: {
+        dataType: "string",
         maxLength: 500,
     },
 }
@@ -88,7 +88,7 @@ export function CreateTagRequestFromJSONTyped(json: any, ignoreDiscriminator: bo
         
         'name': json['name'],
         'color': json['color'] == null ? undefined : json['color'],
-        'description': json['description'] == null ? undefined : json['description'],
+        'description': json['description'] === undefined ? undefined : json['description'] === null ? null : json['description'],
     };
 }
 

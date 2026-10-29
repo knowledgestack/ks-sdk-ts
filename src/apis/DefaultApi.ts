@@ -12,21 +12,22 @@
  * Do not edit the class manually.
  */
 
-
 import * as runtime from '../runtime';
-import type {
-  ErrorResponse,
-  HealthCheckResponse,
-  RootResponse,
-} from '../models/index';
 import {
+    type ErrorResponse,
     ErrorResponseFromJSON,
     ErrorResponseToJSON,
+} from '../models/ErrorResponse';
+import {
+    type HealthCheckResponse,
     HealthCheckResponseFromJSON,
     HealthCheckResponseToJSON,
+} from '../models/HealthCheckResponse';
+import {
+    type RootResponse,
     RootResponseFromJSON,
     RootResponseToJSON,
-} from '../models/index';
+} from '../models/RootResponse';
 
 /**
  * DefaultApi - interface

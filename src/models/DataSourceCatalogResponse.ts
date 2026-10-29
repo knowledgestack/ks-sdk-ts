@@ -29,13 +29,13 @@ import {
 export interface DataSourceCatalogResponse {
     /**
      * 
-     * @type {Array<CatalogTableResponse>}
-     * @memberof DataSourceCatalogResponse
      */
     tables: Array<CatalogTableResponse>;
 }
 export const DataSourceCatalogResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,

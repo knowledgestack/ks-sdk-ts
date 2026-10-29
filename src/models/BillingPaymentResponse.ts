@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
 import type { BillingSystem } from './BillingSystem';
 import {
     BillingSystemFromJSON,
@@ -33,56 +33,38 @@ import {
 export interface BillingPaymentResponse {
     /**
      * Payment id.
-     * @type {string}
-     * @memberof BillingPaymentResponse
      */
     id: string;
     /**
      * 
-     * @type {BillingSystem}
-     * @memberof BillingPaymentResponse
      */
     billingSystem: BillingSystem;
     /**
      * Plan purchased.
-     * @type {string}
-     * @memberof BillingPaymentResponse
      */
     planId: string;
     /**
      * Billing period purchased.
-     * @type {string}
-     * @memberof BillingPaymentResponse
      */
     interval: string;
     /**
      * Seats purchased.
-     * @type {number}
-     * @memberof BillingPaymentResponse
      */
     numSeats: number;
     /**
      * Total charged, in the currency's minor unit.
-     * @type {number}
-     * @memberof BillingPaymentResponse
      */
     amount: number;
     /**
      * USD (cents) or CNY (fen).
-     * @type {string}
-     * @memberof BillingPaymentResponse
      */
     currency: string;
     /**
      * Provider-hosted invoice/receipt, when available.
-     * @type {string}
-     * @memberof BillingPaymentResponse
      */
     invoiceUrl?: string | null;
     /**
      * When the payment confirmed.
-     * @type {Date}
-     * @memberof BillingPaymentResponse
      */
     createdAt: Date;
 }
@@ -90,6 +72,8 @@ export interface BillingPaymentResponse {
 
 export const BillingPaymentResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -111,13 +95,13 @@ export const BillingPaymentResponsePropertyValidationAttributesMap: {
  */
 export function instanceOfBillingPaymentResponse(value: object): value is BillingPaymentResponse {
     if (!('id' in value) || value['id'] === undefined) return false;
-    if (!('billingSystem' in value) || value['billingSystem'] === undefined) return false;
-    if (!('planId' in value) || value['planId'] === undefined) return false;
+    if ((!('billingSystem' in (value as Record<string, any>)) && !('billing_system' in (value as Record<string, any>))) || ((value as Record<string, any>)['billingSystem'] === undefined && (value as Record<string, any>)['billing_system'] === undefined)) return false;
+    if ((!('planId' in (value as Record<string, any>)) && !('plan_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['planId'] === undefined && (value as Record<string, any>)['plan_id'] === undefined)) return false;
     if (!('interval' in value) || value['interval'] === undefined) return false;
-    if (!('numSeats' in value) || value['numSeats'] === undefined) return false;
+    if ((!('numSeats' in (value as Record<string, any>)) && !('num_seats' in (value as Record<string, any>))) || ((value as Record<string, any>)['numSeats'] === undefined && (value as Record<string, any>)['num_seats'] === undefined)) return false;
     if (!('amount' in value) || value['amount'] === undefined) return false;
     if (!('currency' in value) || value['currency'] === undefined) return false;
-    if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
+    if ((!('createdAt' in (value as Record<string, any>)) && !('created_at' in (value as Record<string, any>))) || ((value as Record<string, any>)['createdAt'] === undefined && (value as Record<string, any>)['created_at'] === undefined)) return false;
     return true;
 }
 
@@ -138,8 +122,8 @@ export function BillingPaymentResponseFromJSONTyped(json: any, ignoreDiscriminat
         'numSeats': json['num_seats'],
         'amount': json['amount'],
         'currency': json['currency'],
-        'invoiceUrl': json['invoice_url'] == null ? undefined : json['invoice_url'],
-        'createdAt': (new Date(json['created_at'])),
+        'invoiceUrl': json['invoice_url'] === undefined ? undefined : json['invoice_url'] === null ? null : json['invoice_url'],
+        'createdAt': (json['created_at'] == null ? json['created_at'] : parseDateTime(json['created_at'])),
     };
 }
 
@@ -162,7 +146,7 @@ export function BillingPaymentResponseToJSONTyped(value?: BillingPaymentResponse
         'amount': value['amount'],
         'currency': value['currency'],
         'invoice_url': value['invoiceUrl'],
-        'created_at': value['createdAt'].toISOString(),
+        'created_at': value['createdAt'] == null ? value['createdAt'] : serializeDateTime(value['createdAt']),
     };
 }
 

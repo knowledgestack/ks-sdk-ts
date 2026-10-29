@@ -29,13 +29,13 @@ import {
 export interface SearchTablesResponse {
     /**
      * 
-     * @type {Array<TableSearchResult>}
-     * @memberof SearchTablesResponse
      */
     results: Array<TableSearchResult>;
 }
 export const SearchTablesResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,

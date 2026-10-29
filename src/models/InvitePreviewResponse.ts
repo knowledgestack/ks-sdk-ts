@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
 import type { TenantUserRole } from './TenantUserRole';
 import {
     TenantUserRoleFromJSON,
@@ -43,38 +43,26 @@ import {
 export interface InvitePreviewResponse {
     /**
      * 
-     * @type {InvitePreviewState}
-     * @memberof InvitePreviewResponse
      */
     state: InvitePreviewState;
     /**
      * Invitee email, to lock the form
-     * @type {string}
-     * @memberof InvitePreviewResponse
      */
     email?: string | null;
     /**
      * 
-     * @type {string}
-     * @memberof InvitePreviewResponse
      */
     tenantName?: string | null;
     /**
      * 
-     * @type {TenantUserRole}
-     * @memberof InvitePreviewResponse
      */
     role?: TenantUserRole;
     /**
      * 
-     * @type {Date}
-     * @memberof InvitePreviewResponse
      */
     expiresAt?: Date | null;
     /**
      * Display name only, no email
-     * @type {UserInfo}
-     * @memberof InvitePreviewResponse
      */
     invitedBy?: UserInfo | null;
 }
@@ -82,6 +70,8 @@ export interface InvitePreviewResponse {
 
 export const InvitePreviewResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -117,11 +107,11 @@ export function InvitePreviewResponseFromJSONTyped(json: any, ignoreDiscriminato
     return {
         
         'state': InvitePreviewStateFromJSON(json['state']),
-        'email': json['email'] == null ? undefined : json['email'],
-        'tenantName': json['tenant_name'] == null ? undefined : json['tenant_name'],
+        'email': json['email'] === undefined ? undefined : json['email'] === null ? null : json['email'],
+        'tenantName': json['tenant_name'] === undefined ? undefined : json['tenant_name'] === null ? null : json['tenant_name'],
         'role': json['role'] == null ? undefined : TenantUserRoleFromJSON(json['role']),
-        'expiresAt': json['expires_at'] == null ? undefined : (new Date(json['expires_at'])),
-        'invitedBy': json['invited_by'] == null ? undefined : UserInfoFromJSON(json['invited_by']),
+        'expiresAt': json['expires_at'] === undefined ? undefined : json['expires_at'] === null ? null : (parseDateTime(json['expires_at'])),
+        'invitedBy': json['invited_by'] === undefined ? undefined : json['invited_by'] === null ? null : UserInfoFromJSON(json['invited_by']),
     };
 }
 
@@ -140,7 +130,7 @@ export function InvitePreviewResponseToJSONTyped(value?: InvitePreviewResponse |
         'email': value['email'],
         'tenant_name': value['tenantName'],
         'role': TenantUserRoleToJSON(value['role']),
-        'expires_at': value['expiresAt'] == null ? value['expiresAt'] : value['expiresAt'].toISOString(),
+        'expires_at': value['expiresAt'] == null ? value['expiresAt'] : serializeDateTime(value['expiresAt']),
         'invited_by': UserInfoToJSON(value['invitedBy']),
     };
 }

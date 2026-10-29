@@ -45,26 +45,18 @@ import {
 export interface TestConnectionRequest {
     /**
      * Test a stored connector instead of fresh creds
-     * @type {string}
-     * @memberof TestConnectionRequest
      */
     dataSourceId?: string | null;
     /**
      * 
-     * @type {DataSourceEngine}
-     * @memberof TestConnectionRequest
      */
     engine?: DataSourceEngine;
     /**
      * 
-     * @type {ConnectionConfig}
-     * @memberof TestConnectionRequest
      */
     connectionConfig?: ConnectionConfig | null;
     /**
      * Fresh-creds mode: the folder the connector would be created under; the probe is gated by write access to it.
-     * @type {string}
-     * @memberof TestConnectionRequest
      */
     parentPathPartId?: string | null;
 }
@@ -72,6 +64,8 @@ export interface TestConnectionRequest {
 
 export const TestConnectionRequestPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -105,10 +99,10 @@ export function TestConnectionRequestFromJSONTyped(json: any, ignoreDiscriminato
     }
     return {
         
-        'dataSourceId': json['data_source_id'] == null ? undefined : json['data_source_id'],
+        'dataSourceId': json['data_source_id'] === undefined ? undefined : json['data_source_id'] === null ? null : json['data_source_id'],
         'engine': json['engine'] == null ? undefined : DataSourceEngineFromJSON(json['engine']),
-        'connectionConfig': json['connection_config'] == null ? undefined : ConnectionConfigFromJSON(json['connection_config']),
-        'parentPathPartId': json['parent_path_part_id'] == null ? undefined : json['parent_path_part_id'],
+        'connectionConfig': json['connection_config'] === undefined ? undefined : json['connection_config'] === null ? null : ConnectionConfigFromJSON(json['connection_config']),
+        'parentPathPartId': json['parent_path_part_id'] === undefined ? undefined : json['parent_path_part_id'] === null ? null : json['parent_path_part_id'],
     };
 }
 

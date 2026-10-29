@@ -20,7 +20,7 @@
 export const InviteStatus = {
     Pending: 'pending',
     Accepted: 'accepted',
-    Expired: 'expired'
+    Expired: 'expired',
 } as const;
 export type InviteStatus = typeof InviteStatus[keyof typeof InviteStatus];
 

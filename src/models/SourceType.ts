@@ -19,7 +19,7 @@
  */
 export const SourceType = {
     Direct: 'DIRECT',
-    Yidingsync: 'YIDINGSYNC'
+    Yidingsync: 'YIDINGSYNC',
 } as const;
 export type SourceType = typeof SourceType[keyof typeof SourceType];
 

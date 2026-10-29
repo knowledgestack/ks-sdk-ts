@@ -20,7 +20,7 @@
 export const MessageRole = {
     User: 'USER',
     Assistant: 'ASSISTANT',
-    System: 'SYSTEM'
+    System: 'SYSTEM',
 } as const;
 export type MessageRole = typeof MessageRole[keyof typeof MessageRole];
 

@@ -12,82 +12,155 @@
  * Do not edit the class manually.
  */
 
-
 import * as runtime from '../runtime';
-import type {
-  AcceptInviteResponse,
-  ErrorResponse,
-  HTTPValidationError,
-  InviteOrder,
-  InvitePreviewResponse,
-  InviteResponse,
-  InviteStatus,
-  InviteUserRequest,
-  PaginatedResponseInviteResponse,
-  SortDirection,
-  TenantUserRole,
-  UpdateInviteRequest,
-} from '../models/index';
 import {
+    type AcceptInviteResponse,
     AcceptInviteResponseFromJSON,
     AcceptInviteResponseToJSON,
+} from '../models/AcceptInviteResponse';
+import {
+    type ErrorResponse,
     ErrorResponseFromJSON,
     ErrorResponseToJSON,
+} from '../models/ErrorResponse';
+import {
+    type HTTPValidationError,
     HTTPValidationErrorFromJSON,
     HTTPValidationErrorToJSON,
+} from '../models/HTTPValidationError';
+import {
+    type InviteOrder,
     InviteOrderFromJSON,
     InviteOrderToJSON,
+} from '../models/InviteOrder';
+import {
+    type InvitePreviewResponse,
     InvitePreviewResponseFromJSON,
     InvitePreviewResponseToJSON,
+} from '../models/InvitePreviewResponse';
+import {
+    type InviteResponse,
     InviteResponseFromJSON,
     InviteResponseToJSON,
+} from '../models/InviteResponse';
+import {
+    type InviteStatus,
     InviteStatusFromJSON,
     InviteStatusToJSON,
+} from '../models/InviteStatus';
+import {
+    type InviteUserRequest,
     InviteUserRequestFromJSON,
     InviteUserRequestToJSON,
+} from '../models/InviteUserRequest';
+import {
+    type PaginatedResponseInviteResponse,
     PaginatedResponseInviteResponseFromJSON,
     PaginatedResponseInviteResponseToJSON,
+} from '../models/PaginatedResponseInviteResponse';
+import {
+    type SortDirection,
     SortDirectionFromJSON,
     SortDirectionToJSON,
+} from '../models/SortDirection';
+import {
+    type TenantUserRole,
     TenantUserRoleFromJSON,
     TenantUserRoleToJSON,
+} from '../models/TenantUserRole';
+import {
+    type UpdateInviteRequest,
     UpdateInviteRequestFromJSON,
     UpdateInviteRequestToJSON,
-} from '../models/index';
+} from '../models/UpdateInviteRequest';
 
 export interface AcceptInviteRequest {
+    /**
+     * Either an Invite ID (traditional per-email invite) OR a Tenant ID (when the tenant has ``invite_link.enabled``). Tenant lookup is tried first.
+     */
     inviteId: string;
 }
 
 export interface CreateInviteRequest {
+    /**
+     * 
+     */
     inviteUserRequest: InviteUserRequest;
 }
 
 export interface DeleteInviteRequest {
+    /**
+     * 
+     */
     inviteId: string;
 }
 
 export interface ListInvitesRequest {
+    /**
+     * Filter by email (case-insensitive partial match)
+     */
     email?: string | null;
+    /**
+     * Filter by invite status (pending, accepted, expired)
+     */
     status?: InviteStatus;
+    /**
+     * Filter by invite role
+     */
     role?: TenantUserRole;
+    /**
+     * Filter to invites sent by this user
+     */
     invitedBy?: string | null;
+    /**
+     * Field to sort invites by (default: CREATED_AT)
+     */
     sortBy?: InviteOrder;
+    /**
+     * Sort direction; overrides the field's natural default
+     */
     sortDir?: SortDirection;
+    /**
+     * Number of items per page
+     */
     limit?: number;
+    /**
+     * Number of items to skip
+     */
     offset?: number;
+    /**
+     * Only items created at or after this timestamp (inclusive)
+     */
     createdAfter?: Date | null;
+    /**
+     * Only items created strictly before this timestamp
+     */
     createdBefore?: Date | null;
+    /**
+     * Only items updated at or after this timestamp (inclusive)
+     */
     updatedAfter?: Date | null;
+    /**
+     * Only items updated strictly before this timestamp
+     */
     updatedBefore?: Date | null;
 }
 
 export interface PreviewInviteRequest {
+    /**
+     * 
+     */
     inviteId: string;
 }
 
 export interface UpdateInviteOperationRequest {
+    /**
+     * 
+     */
     inviteId: string;
+    /**
+     * 
+     */
     updateInviteRequest: UpdateInviteRequest;
 }
 
@@ -298,7 +371,7 @@ export class InvitesApi extends runtime.BaseAPI implements InvitesApiInterface {
         }
 
         let urlPath = `/v1/invites/{invite_id}/accept`;
-        urlPath = urlPath.replace(`{${"invite_id"}}`, encodeURIComponent(String(requestParameters['inviteId'])));
+        urlPath = urlPath.replace('{invite_id}', encodeURIComponent(String(requestParameters['inviteId'])));
 
         return {
             path: urlPath,
@@ -410,7 +483,7 @@ export class InvitesApi extends runtime.BaseAPI implements InvitesApiInterface {
         }
 
         let urlPath = `/v1/invites/{invite_id}`;
-        urlPath = urlPath.replace(`{${"invite_id"}}`, encodeURIComponent(String(requestParameters['inviteId'])));
+        urlPath = urlPath.replace('{invite_id}', encodeURIComponent(String(requestParameters['inviteId'])));
 
         return {
             path: urlPath,
@@ -478,19 +551,19 @@ export class InvitesApi extends runtime.BaseAPI implements InvitesApiInterface {
         }
 
         if (requestParameters['createdAfter'] != null) {
-            queryParameters['created_after'] = (requestParameters['createdAfter'] as any).toISOString();
+            queryParameters['created_after'] = runtime.serializeDateTime(requestParameters['createdAfter'] as any);
         }
 
         if (requestParameters['createdBefore'] != null) {
-            queryParameters['created_before'] = (requestParameters['createdBefore'] as any).toISOString();
+            queryParameters['created_before'] = runtime.serializeDateTime(requestParameters['createdBefore'] as any);
         }
 
         if (requestParameters['updatedAfter'] != null) {
-            queryParameters['updated_after'] = (requestParameters['updatedAfter'] as any).toISOString();
+            queryParameters['updated_after'] = runtime.serializeDateTime(requestParameters['updatedAfter'] as any);
         }
 
         if (requestParameters['updatedBefore'] != null) {
-            queryParameters['updated_before'] = (requestParameters['updatedBefore'] as any).toISOString();
+            queryParameters['updated_before'] = runtime.serializeDateTime(requestParameters['updatedBefore'] as any);
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -551,7 +624,7 @@ export class InvitesApi extends runtime.BaseAPI implements InvitesApiInterface {
 
 
         let urlPath = `/v1/invites/{invite_id}/preview`;
-        urlPath = urlPath.replace(`{${"invite_id"}}`, encodeURIComponent(String(requestParameters['inviteId'])));
+        urlPath = urlPath.replace('{invite_id}', encodeURIComponent(String(requestParameters['inviteId'])));
 
         return {
             path: urlPath,
@@ -615,7 +688,7 @@ export class InvitesApi extends runtime.BaseAPI implements InvitesApiInterface {
         }
 
         let urlPath = `/v1/invites/{invite_id}`;
-        urlPath = urlPath.replace(`{${"invite_id"}}`, encodeURIComponent(String(requestParameters['inviteId'])));
+        urlPath = urlPath.replace('{invite_id}', encodeURIComponent(String(requestParameters['inviteId'])));
 
         return {
             path: urlPath,

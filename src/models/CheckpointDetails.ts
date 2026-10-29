@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
 /**
  * Agent-internal overlay that replaces older messages in the loaded history.
  * 
@@ -26,55 +26,41 @@ import { mapValues } from '../runtime';
 export interface CheckpointDetails {
     /**
      * Last message covered by this summary (inclusive).
-     * @type {string}
-     * @memberof CheckpointDetails
      */
     uptoMessageId: string;
     /**
      * created_at of upto_message_id; tiebreaker for identical timestamps.
-     * @type {Date}
-     * @memberof CheckpointDetails
      */
     uptoMessageCreatedAt: Date;
     /**
      * Agent-internal summary blob (currently {"text": ...}). Server does not interpret this; the agent reads the summary back from the message's content.text.
-     * @type {{ [key: string]: any; }}
-     * @memberof CheckpointDetails
      */
     summary: { [key: string]: any; };
     /**
      * 
-     * @type {number}
-     * @memberof CheckpointDetails
      */
     coveredMessageCount: number;
     /**
      * 
-     * @type {number}
-     * @memberof CheckpointDetails
      */
     tokensBefore: number;
     /**
      * 
-     * @type {number}
-     * @memberof CheckpointDetails
      */
     tokensAfter: number;
     /**
      * 
-     * @type {string}
-     * @memberof CheckpointDetails
      */
     summarizerModel: string;
     /**
      * 
-     * @type {string}
-     * @memberof CheckpointDetails
      */
     promptVersion: string;
 }
 export const CheckpointDetailsPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -89,21 +75,31 @@ export const CheckpointDetailsPropertyValidationAttributesMap: {
     }
 } = {
     coveredMessageCount: {
+        dataType: "number",
+        required: true,
         minimum: 0,
         exclusiveMinimum: false,
     },
     tokensBefore: {
+        dataType: "number",
+        required: true,
         minimum: 0,
         exclusiveMinimum: false,
     },
     tokensAfter: {
+        dataType: "number",
+        required: true,
         minimum: 0,
         exclusiveMinimum: false,
     },
     summarizerModel: {
+        dataType: "string",
+        required: true,
         maxLength: 128,
     },
     promptVersion: {
+        dataType: "string",
+        required: true,
         maxLength: 32,
     },
 }
@@ -113,14 +109,14 @@ export const CheckpointDetailsPropertyValidationAttributesMap: {
  * Check if a given object implements the CheckpointDetails interface.
  */
 export function instanceOfCheckpointDetails(value: object): value is CheckpointDetails {
-    if (!('uptoMessageId' in value) || value['uptoMessageId'] === undefined) return false;
-    if (!('uptoMessageCreatedAt' in value) || value['uptoMessageCreatedAt'] === undefined) return false;
+    if ((!('uptoMessageId' in (value as Record<string, any>)) && !('upto_message_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['uptoMessageId'] === undefined && (value as Record<string, any>)['upto_message_id'] === undefined)) return false;
+    if ((!('uptoMessageCreatedAt' in (value as Record<string, any>)) && !('upto_message_created_at' in (value as Record<string, any>))) || ((value as Record<string, any>)['uptoMessageCreatedAt'] === undefined && (value as Record<string, any>)['upto_message_created_at'] === undefined)) return false;
     if (!('summary' in value) || value['summary'] === undefined) return false;
-    if (!('coveredMessageCount' in value) || value['coveredMessageCount'] === undefined) return false;
-    if (!('tokensBefore' in value) || value['tokensBefore'] === undefined) return false;
-    if (!('tokensAfter' in value) || value['tokensAfter'] === undefined) return false;
-    if (!('summarizerModel' in value) || value['summarizerModel'] === undefined) return false;
-    if (!('promptVersion' in value) || value['promptVersion'] === undefined) return false;
+    if ((!('coveredMessageCount' in (value as Record<string, any>)) && !('covered_message_count' in (value as Record<string, any>))) || ((value as Record<string, any>)['coveredMessageCount'] === undefined && (value as Record<string, any>)['covered_message_count'] === undefined)) return false;
+    if ((!('tokensBefore' in (value as Record<string, any>)) && !('tokens_before' in (value as Record<string, any>))) || ((value as Record<string, any>)['tokensBefore'] === undefined && (value as Record<string, any>)['tokens_before'] === undefined)) return false;
+    if ((!('tokensAfter' in (value as Record<string, any>)) && !('tokens_after' in (value as Record<string, any>))) || ((value as Record<string, any>)['tokensAfter'] === undefined && (value as Record<string, any>)['tokens_after'] === undefined)) return false;
+    if ((!('summarizerModel' in (value as Record<string, any>)) && !('summarizer_model' in (value as Record<string, any>))) || ((value as Record<string, any>)['summarizerModel'] === undefined && (value as Record<string, any>)['summarizer_model'] === undefined)) return false;
+    if ((!('promptVersion' in (value as Record<string, any>)) && !('prompt_version' in (value as Record<string, any>))) || ((value as Record<string, any>)['promptVersion'] === undefined && (value as Record<string, any>)['prompt_version'] === undefined)) return false;
     return true;
 }
 
@@ -135,7 +131,7 @@ export function CheckpointDetailsFromJSONTyped(json: any, ignoreDiscriminator: b
     return {
         
         'uptoMessageId': json['upto_message_id'],
-        'uptoMessageCreatedAt': (new Date(json['upto_message_created_at'])),
+        'uptoMessageCreatedAt': (json['upto_message_created_at'] == null ? json['upto_message_created_at'] : parseDateTime(json['upto_message_created_at'])),
         'summary': json['summary'],
         'coveredMessageCount': json['covered_message_count'],
         'tokensBefore': json['tokens_before'],
@@ -157,7 +153,7 @@ export function CheckpointDetailsToJSONTyped(value?: CheckpointDetails | null, i
     return {
         
         'upto_message_id': value['uptoMessageId'],
-        'upto_message_created_at': value['uptoMessageCreatedAt'].toISOString(),
+        'upto_message_created_at': value['uptoMessageCreatedAt'] == null ? value['uptoMessageCreatedAt'] : serializeDateTime(value['uptoMessageCreatedAt']),
         'summary': value['summary'],
         'covered_message_count': value['coveredMessageCount'],
         'tokens_before': value['tokensBefore'],

@@ -25,7 +25,7 @@
  */
 export const PathPartApprovalDecision = {
     Pending: 'pending',
-    Approved: 'approved'
+    Approved: 'approved',
 } as const;
 export type PathPartApprovalDecision = typeof PathPartApprovalDecision[keyof typeof PathPartApprovalDecision];
 

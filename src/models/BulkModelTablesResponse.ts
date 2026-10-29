@@ -29,13 +29,13 @@ import {
 export interface BulkModelTablesResponse {
     /**
      * 
-     * @type {Array<ModelTableResult>}
-     * @memberof BulkModelTablesResponse
      */
     results: Array<ModelTableResult>;
 }
 export const BulkModelTablesResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,

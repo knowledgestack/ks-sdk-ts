@@ -21,25 +21,21 @@ import { mapValues } from '../runtime';
 export interface ColumnReference {
     /**
      * 
-     * @type {string}
-     * @memberof ColumnReference
      */
     schemaName?: string | null;
     /**
      * 
-     * @type {string}
-     * @memberof ColumnReference
      */
     table: string;
     /**
      * 
-     * @type {string}
-     * @memberof ColumnReference
      */
     column: string;
 }
 export const ColumnReferencePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -75,7 +71,7 @@ export function ColumnReferenceFromJSONTyped(json: any, ignoreDiscriminator: boo
     }
     return {
         
-        'schemaName': json['schema_name'] == null ? undefined : json['schema_name'],
+        'schemaName': json['schema_name'] === undefined ? undefined : json['schema_name'] === null ? null : json['schema_name'],
         'table': json['table'],
         'column': json['column'],
     };

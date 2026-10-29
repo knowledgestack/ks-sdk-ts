@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
 import type { TenantUserRole } from './TenantUserRole';
 import {
     TenantUserRoleFromJSON,
@@ -29,74 +29,50 @@ import {
 export interface InviteResponse {
     /**
      * 
-     * @type {string}
-     * @memberof InviteResponse
      */
     id: string;
     /**
      * 
-     * @type {string}
-     * @memberof InviteResponse
      */
     tenantId: string;
     /**
      * 
-     * @type {string}
-     * @memberof InviteResponse
      */
     email: string;
     /**
      * 
-     * @type {TenantUserRole}
-     * @memberof InviteResponse
      */
     role: TenantUserRole;
     /**
      * 
-     * @type {Array<string>}
-     * @memberof InviteResponse
      */
     groups?: Array<string>;
     /**
      * 
-     * @type {Date}
-     * @memberof InviteResponse
      */
     expiresAt: Date;
     /**
      * 
-     * @type {Date}
-     * @memberof InviteResponse
      */
     acceptedAt?: Date | null;
     /**
      * 
-     * @type {Date}
-     * @memberof InviteResponse
      */
     createdAt: Date;
     /**
      * 
-     * @type {Date}
-     * @memberof InviteResponse
      */
     updatedAt: Date;
     /**
      * 
-     * @type {string}
-     * @memberof InviteResponse
      */
     invitedByUserId?: string | null;
     /**
      * 
-     * @type {string}
-     * @memberof InviteResponse
      */
     inviteLink: string;
     /**
      * 
-     * @type {string}
-     * @memberof InviteResponse
      */
     emailId?: string | null;
 }
@@ -104,6 +80,8 @@ export interface InviteResponse {
 
 export const InviteResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -125,13 +103,13 @@ export const InviteResponsePropertyValidationAttributesMap: {
  */
 export function instanceOfInviteResponse(value: object): value is InviteResponse {
     if (!('id' in value) || value['id'] === undefined) return false;
-    if (!('tenantId' in value) || value['tenantId'] === undefined) return false;
+    if ((!('tenantId' in (value as Record<string, any>)) && !('tenant_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['tenantId'] === undefined && (value as Record<string, any>)['tenant_id'] === undefined)) return false;
     if (!('email' in value) || value['email'] === undefined) return false;
     if (!('role' in value) || value['role'] === undefined) return false;
-    if (!('expiresAt' in value) || value['expiresAt'] === undefined) return false;
-    if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
-    if (!('updatedAt' in value) || value['updatedAt'] === undefined) return false;
-    if (!('inviteLink' in value) || value['inviteLink'] === undefined) return false;
+    if ((!('expiresAt' in (value as Record<string, any>)) && !('expires_at' in (value as Record<string, any>))) || ((value as Record<string, any>)['expiresAt'] === undefined && (value as Record<string, any>)['expires_at'] === undefined)) return false;
+    if ((!('createdAt' in (value as Record<string, any>)) && !('created_at' in (value as Record<string, any>))) || ((value as Record<string, any>)['createdAt'] === undefined && (value as Record<string, any>)['created_at'] === undefined)) return false;
+    if ((!('updatedAt' in (value as Record<string, any>)) && !('updated_at' in (value as Record<string, any>))) || ((value as Record<string, any>)['updatedAt'] === undefined && (value as Record<string, any>)['updated_at'] === undefined)) return false;
+    if ((!('inviteLink' in (value as Record<string, any>)) && !('invite_link' in (value as Record<string, any>))) || ((value as Record<string, any>)['inviteLink'] === undefined && (value as Record<string, any>)['invite_link'] === undefined)) return false;
     return true;
 }
 
@@ -150,13 +128,13 @@ export function InviteResponseFromJSONTyped(json: any, ignoreDiscriminator: bool
         'email': json['email'],
         'role': TenantUserRoleFromJSON(json['role']),
         'groups': json['groups'] == null ? undefined : json['groups'],
-        'expiresAt': (new Date(json['expires_at'])),
-        'acceptedAt': json['accepted_at'] == null ? undefined : (new Date(json['accepted_at'])),
-        'createdAt': (new Date(json['created_at'])),
-        'updatedAt': (new Date(json['updated_at'])),
-        'invitedByUserId': json['invited_by_user_id'] == null ? undefined : json['invited_by_user_id'],
+        'expiresAt': (json['expires_at'] == null ? json['expires_at'] : parseDateTime(json['expires_at'])),
+        'acceptedAt': json['accepted_at'] === undefined ? undefined : json['accepted_at'] === null ? null : (parseDateTime(json['accepted_at'])),
+        'createdAt': (json['created_at'] == null ? json['created_at'] : parseDateTime(json['created_at'])),
+        'updatedAt': (json['updated_at'] == null ? json['updated_at'] : parseDateTime(json['updated_at'])),
+        'invitedByUserId': json['invited_by_user_id'] === undefined ? undefined : json['invited_by_user_id'] === null ? null : json['invited_by_user_id'],
         'inviteLink': json['invite_link'],
-        'emailId': json['email_id'] == null ? undefined : json['email_id'],
+        'emailId': json['email_id'] === undefined ? undefined : json['email_id'] === null ? null : json['email_id'],
     };
 }
 
@@ -176,10 +154,10 @@ export function InviteResponseToJSONTyped(value?: InviteResponse | null, ignoreD
         'email': value['email'],
         'role': TenantUserRoleToJSON(value['role']),
         'groups': value['groups'],
-        'expires_at': value['expiresAt'].toISOString(),
-        'accepted_at': value['acceptedAt'] == null ? value['acceptedAt'] : value['acceptedAt'].toISOString(),
-        'created_at': value['createdAt'].toISOString(),
-        'updated_at': value['updatedAt'].toISOString(),
+        'expires_at': value['expiresAt'] == null ? value['expiresAt'] : serializeDateTime(value['expiresAt']),
+        'accepted_at': value['acceptedAt'] == null ? value['acceptedAt'] : serializeDateTime(value['acceptedAt']),
+        'created_at': value['createdAt'] == null ? value['createdAt'] : serializeDateTime(value['createdAt']),
+        'updated_at': value['updatedAt'] == null ? value['updatedAt'] : serializeDateTime(value['updatedAt']),
         'invited_by_user_id': value['invitedByUserId'],
         'invite_link': value['inviteLink'],
         'email_id': value['emailId'],

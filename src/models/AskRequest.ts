@@ -29,14 +29,10 @@ import {
 export interface AskRequest {
     /**
      * User prompt passed directly to the agent
-     * @type {string}
-     * @memberof AskRequest
      */
     prompt: string;
     /**
      * 
-     * @type {SupportedLanguage}
-     * @memberof AskRequest
      */
     outputLanguage?: SupportedLanguage;
 }
@@ -44,6 +40,8 @@ export interface AskRequest {
 
 export const AskRequestPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,

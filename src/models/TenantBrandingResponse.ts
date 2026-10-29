@@ -21,43 +21,33 @@ import { mapValues } from '../runtime';
 export interface TenantBrandingResponse {
     /**
      * Custom brand name for logo
-     * @type {string}
-     * @memberof TenantBrandingResponse
      */
     brandName?: string | null;
     /**
      * Primary brand hex color
-     * @type {string}
-     * @memberof TenantBrandingResponse
      */
     brandColor?: string | null;
     /**
      * Presigned URL for primary logo
-     * @type {string}
-     * @memberof TenantBrandingResponse
      */
     logoUrl?: string | null;
     /**
      * Presigned URL for dark-mode logo
-     * @type {string}
-     * @memberof TenantBrandingResponse
      */
     logoDarkUrl?: string | null;
     /**
      * Presigned URL for favicon
-     * @type {string}
-     * @memberof TenantBrandingResponse
      */
     faviconUrl?: string | null;
     /**
      * Custom CSS variable overrides
-     * @type {{ [key: string]: string; }}
-     * @memberof TenantBrandingResponse
      */
     themeOverrides?: { [key: string]: string; } | null;
 }
 export const TenantBrandingResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -91,12 +81,12 @@ export function TenantBrandingResponseFromJSONTyped(json: any, ignoreDiscriminat
     }
     return {
         
-        'brandName': json['brand_name'] == null ? undefined : json['brand_name'],
-        'brandColor': json['brand_color'] == null ? undefined : json['brand_color'],
-        'logoUrl': json['logo_url'] == null ? undefined : json['logo_url'],
-        'logoDarkUrl': json['logo_dark_url'] == null ? undefined : json['logo_dark_url'],
-        'faviconUrl': json['favicon_url'] == null ? undefined : json['favicon_url'],
-        'themeOverrides': json['theme_overrides'] == null ? undefined : json['theme_overrides'],
+        'brandName': json['brand_name'] === undefined ? undefined : json['brand_name'] === null ? null : json['brand_name'],
+        'brandColor': json['brand_color'] === undefined ? undefined : json['brand_color'] === null ? null : json['brand_color'],
+        'logoUrl': json['logo_url'] === undefined ? undefined : json['logo_url'] === null ? null : json['logo_url'],
+        'logoDarkUrl': json['logo_dark_url'] === undefined ? undefined : json['logo_dark_url'] === null ? null : json['logo_dark_url'],
+        'faviconUrl': json['favicon_url'] === undefined ? undefined : json['favicon_url'] === null ? null : json['favicon_url'],
+        'themeOverrides': json['theme_overrides'] === undefined ? undefined : json['theme_overrides'] === null ? null : json['theme_overrides'],
     };
 }
 

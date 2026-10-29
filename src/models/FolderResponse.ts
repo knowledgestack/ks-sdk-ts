@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
 import type { ItemPermissions } from './ItemPermissions';
 import {
     ItemPermissionsFromJSON,
@@ -50,92 +50,62 @@ import {
 export interface FolderResponse {
     /**
      * Path part type
-     * @type {FolderResponsePartTypeEnum}
-     * @memberof FolderResponse
      */
     partType: FolderResponsePartTypeEnum;
     /**
      * Folder ID
-     * @type {string}
-     * @memberof FolderResponse
      */
     id: string;
     /**
      * PathPart ID
-     * @type {string}
-     * @memberof FolderResponse
      */
     pathPartId: string;
     /**
      * Folder name
-     * @type {string}
-     * @memberof FolderResponse
      */
     name: string;
     /**
      * Parent PathPart ID
-     * @type {string}
-     * @memberof FolderResponse
      */
     parentPathPartId: string | null;
     /**
      * Full materialized path from root
-     * @type {string}
-     * @memberof FolderResponse
      */
     materializedPath: string;
     /**
      * Whether this folder is system-managed
-     * @type {boolean}
-     * @memberof FolderResponse
      */
     systemManaged: boolean;
     /**
      * 
-     * @type {PathPartApprovalState}
-     * @memberof FolderResponse
      */
     approvalState: PathPartApprovalState;
     /**
      * Direct exclusion flag on this folder's path part only. The effective exclusion also applies when any ancestor folder has the flag set — fetch the ancestry to determine effective state.
-     * @type {boolean}
-     * @memberof FolderResponse
      */
     excludeFromQdrant: boolean;
     /**
      * Tenant ID
-     * @type {string}
-     * @memberof FolderResponse
      */
     tenantId: string;
     /**
      * Current owner (creator) of the folder, or null if unowned.
-     * @type {UserInfo}
-     * @memberof FolderResponse
      */
     owner?: UserInfo | null;
     /**
      * Creation timestamp
-     * @type {Date}
-     * @memberof FolderResponse
      */
     createdAt: Date;
     /**
      * Last update timestamp
-     * @type {Date}
-     * @memberof FolderResponse
      */
     updatedAt: Date;
     /**
      * Tags attached to this folder
-     * @type {Array<TagResponse>}
-     * @memberof FolderResponse
      */
     tags?: Array<TagResponse> | null;
     /**
      * Caller's effective rights; null on mutation responses.
-     * @type {ItemPermissions}
-     * @memberof FolderResponse
      */
     permissions?: ItemPermissions | null;
 }
@@ -145,12 +115,14 @@ export interface FolderResponse {
  * @export
  */
 export const FolderResponsePartTypeEnum = {
-    Folder: 'FOLDER'
+    Folder: 'FOLDER',
 } as const;
 export type FolderResponsePartTypeEnum = typeof FolderResponsePartTypeEnum[keyof typeof FolderResponsePartTypeEnum];
 
 export const FolderResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -171,18 +143,20 @@ export const FolderResponsePropertyValidationAttributesMap: {
  * Check if a given object implements the FolderResponse interface.
  */
 export function instanceOfFolderResponse(value: object): value is FolderResponse {
-    if (!('partType' in value) || value['partType'] === undefined) return false;
+    if ((!('partType' in (value as Record<string, any>)) && !('part_type' in (value as Record<string, any>))) || ((value as Record<string, any>)['partType'] === undefined && (value as Record<string, any>)['part_type'] === undefined)) return false;
+    if ((value as Record<string, any>)['partType'] !== 'FOLDER' && (value as Record<string, any>)['part_type'] !== 'FOLDER') return false;
+    
     if (!('id' in value) || value['id'] === undefined) return false;
-    if (!('pathPartId' in value) || value['pathPartId'] === undefined) return false;
+    if ((!('pathPartId' in (value as Record<string, any>)) && !('path_part_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['pathPartId'] === undefined && (value as Record<string, any>)['path_part_id'] === undefined)) return false;
     if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('parentPathPartId' in value) || value['parentPathPartId'] === undefined) return false;
-    if (!('materializedPath' in value) || value['materializedPath'] === undefined) return false;
-    if (!('systemManaged' in value) || value['systemManaged'] === undefined) return false;
-    if (!('approvalState' in value) || value['approvalState'] === undefined) return false;
-    if (!('excludeFromQdrant' in value) || value['excludeFromQdrant'] === undefined) return false;
-    if (!('tenantId' in value) || value['tenantId'] === undefined) return false;
-    if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
-    if (!('updatedAt' in value) || value['updatedAt'] === undefined) return false;
+    if ((!('parentPathPartId' in (value as Record<string, any>)) && !('parent_path_part_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['parentPathPartId'] === undefined && (value as Record<string, any>)['parent_path_part_id'] === undefined)) return false;
+    if ((!('materializedPath' in (value as Record<string, any>)) && !('materialized_path' in (value as Record<string, any>))) || ((value as Record<string, any>)['materializedPath'] === undefined && (value as Record<string, any>)['materialized_path'] === undefined)) return false;
+    if ((!('systemManaged' in (value as Record<string, any>)) && !('system_managed' in (value as Record<string, any>))) || ((value as Record<string, any>)['systemManaged'] === undefined && (value as Record<string, any>)['system_managed'] === undefined)) return false;
+    if ((!('approvalState' in (value as Record<string, any>)) && !('approval_state' in (value as Record<string, any>))) || ((value as Record<string, any>)['approvalState'] === undefined && (value as Record<string, any>)['approval_state'] === undefined)) return false;
+    if ((!('excludeFromQdrant' in (value as Record<string, any>)) && !('exclude_from_qdrant' in (value as Record<string, any>))) || ((value as Record<string, any>)['excludeFromQdrant'] === undefined && (value as Record<string, any>)['exclude_from_qdrant'] === undefined)) return false;
+    if ((!('tenantId' in (value as Record<string, any>)) && !('tenant_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['tenantId'] === undefined && (value as Record<string, any>)['tenant_id'] === undefined)) return false;
+    if ((!('createdAt' in (value as Record<string, any>)) && !('created_at' in (value as Record<string, any>))) || ((value as Record<string, any>)['createdAt'] === undefined && (value as Record<string, any>)['created_at'] === undefined)) return false;
+    if ((!('updatedAt' in (value as Record<string, any>)) && !('updated_at' in (value as Record<string, any>))) || ((value as Record<string, any>)['updatedAt'] === undefined && (value as Record<string, any>)['updated_at'] === undefined)) return false;
     return true;
 }
 
@@ -206,11 +180,11 @@ export function FolderResponseFromJSONTyped(json: any, ignoreDiscriminator: bool
         'approvalState': PathPartApprovalStateFromJSON(json['approval_state']),
         'excludeFromQdrant': json['exclude_from_qdrant'],
         'tenantId': json['tenant_id'],
-        'owner': json['owner'] == null ? undefined : UserInfoFromJSON(json['owner']),
-        'createdAt': (new Date(json['created_at'])),
-        'updatedAt': (new Date(json['updated_at'])),
-        'tags': json['tags'] == null ? undefined : ((json['tags'] as Array<any>).map(TagResponseFromJSON)),
-        'permissions': json['permissions'] == null ? undefined : ItemPermissionsFromJSON(json['permissions']),
+        'owner': json['owner'] === undefined ? undefined : json['owner'] === null ? null : UserInfoFromJSON(json['owner']),
+        'createdAt': (json['created_at'] == null ? json['created_at'] : parseDateTime(json['created_at'])),
+        'updatedAt': (json['updated_at'] == null ? json['updated_at'] : parseDateTime(json['updated_at'])),
+        'tags': json['tags'] === undefined ? undefined : json['tags'] === null ? null : ((json['tags'] as Array<any>).map(TagResponseFromJSON)),
+        'permissions': json['permissions'] === undefined ? undefined : json['permissions'] === null ? null : ItemPermissionsFromJSON(json['permissions']),
     };
 }
 
@@ -236,8 +210,8 @@ export function FolderResponseToJSONTyped(value?: FolderResponse | null, ignoreD
         'exclude_from_qdrant': value['excludeFromQdrant'],
         'tenant_id': value['tenantId'],
         'owner': UserInfoToJSON(value['owner']),
-        'created_at': value['createdAt'].toISOString(),
-        'updated_at': value['updatedAt'].toISOString(),
+        'created_at': value['createdAt'] == null ? value['createdAt'] : serializeDateTime(value['createdAt']),
+        'updated_at': value['updatedAt'] == null ? value['updatedAt'] : serializeDateTime(value['updatedAt']),
         'tags': value['tags'] == null ? undefined : ((value['tags'] as Array<any>).map(TagResponseToJSON)),
         'permissions': ItemPermissionsToJSON(value['permissions']),
     };

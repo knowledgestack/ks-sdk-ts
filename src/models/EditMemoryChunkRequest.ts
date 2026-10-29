@@ -21,13 +21,13 @@ import { mapValues } from '../runtime';
 export interface EditMemoryChunkRequest {
     /**
      * 
-     * @type {string}
-     * @memberof EditMemoryChunkRequest
      */
     body: string;
 }
 export const EditMemoryChunkRequestPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -42,6 +42,8 @@ export const EditMemoryChunkRequestPropertyValidationAttributesMap: {
     }
 } = {
     body: {
+        dataType: "string",
+        required: true,
         maxLength: 16384,
         minLength: 1,
     },

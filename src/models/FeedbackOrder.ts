@@ -18,7 +18,7 @@
  * @export
  */
 export const FeedbackOrder = {
-    CreatedAt: 'CREATED_AT'
+    CreatedAt: 'CREATED_AT',
 } as const;
 export type FeedbackOrder = typeof FeedbackOrder[keyof typeof FeedbackOrder];
 

@@ -12,36 +12,58 @@
  * Do not edit the class manually.
  */
 
-
 import * as runtime from '../runtime';
-import type {
-  ErrorResponse,
-  HTTPValidationError,
-  KbMetric,
-  KbSummaryResponse,
-  KbTimeseriesResponse,
-  TimeBucket,
-} from '../models/index';
 import {
+    type ErrorResponse,
     ErrorResponseFromJSON,
     ErrorResponseToJSON,
+} from '../models/ErrorResponse';
+import {
+    type HTTPValidationError,
     HTTPValidationErrorFromJSON,
     HTTPValidationErrorToJSON,
+} from '../models/HTTPValidationError';
+import {
+    type KbMetric,
     KbMetricFromJSON,
     KbMetricToJSON,
+} from '../models/KbMetric';
+import {
+    type KbSummaryResponse,
     KbSummaryResponseFromJSON,
     KbSummaryResponseToJSON,
+} from '../models/KbSummaryResponse';
+import {
+    type KbTimeseriesResponse,
     KbTimeseriesResponseFromJSON,
     KbTimeseriesResponseToJSON,
+} from '../models/KbTimeseriesResponse';
+import {
+    type TimeBucket,
     TimeBucketFromJSON,
     TimeBucketToJSON,
-} from '../models/index';
+} from '../models/TimeBucket';
 
 export interface GetAdminKbTimeseriesRequest {
+    /**
+     * Which KB metric to bucket.
+     */
     metric: KbMetric;
+    /**
+     * IANA tz override; defaults to tenant setting.
+     */
     timezone?: string | null;
+    /**
+     * Window start (inclusive). Defaults to 7 days ago.
+     */
     since?: Date | null;
+    /**
+     * Window end (inclusive).
+     */
     until?: Date | null;
+    /**
+     * Bucket size.
+     */
     bucket?: TimeBucket;
 }
 
@@ -182,11 +204,11 @@ export class AdminKbApi extends runtime.BaseAPI implements AdminKbApiInterface {
         }
 
         if (requestParameters['since'] != null) {
-            queryParameters['since'] = (requestParameters['since'] as any).toISOString();
+            queryParameters['since'] = runtime.serializeDateTime(requestParameters['since'] as any);
         }
 
         if (requestParameters['until'] != null) {
-            queryParameters['until'] = (requestParameters['until'] as any).toISOString();
+            queryParameters['until'] = runtime.serializeDateTime(requestParameters['until'] as any);
         }
 
         if (requestParameters['bucket'] != null) {

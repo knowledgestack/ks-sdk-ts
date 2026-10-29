@@ -20,7 +20,7 @@
 export const GuideModuleStatus = {
     InProgress: 'IN_PROGRESS',
     Completed: 'COMPLETED',
-    Dismissed: 'DISMISSED'
+    Dismissed: 'DISMISSED',
 } as const;
 export type GuideModuleStatus = typeof GuideModuleStatus[keyof typeof GuideModuleStatus];
 

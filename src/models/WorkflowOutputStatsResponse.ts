@@ -29,19 +29,17 @@ import {
 export interface WorkflowOutputStatsResponse {
     /**
      * 
-     * @type {Array<DefinitionOutputStat>}
-     * @memberof WorkflowOutputStatsResponse
      */
     perDefinition?: Array<DefinitionOutputStat>;
     /**
      * Mean output DOCUMENTs across all completed runs; null when none.
-     * @type {number}
-     * @memberof WorkflowOutputStatsResponse
      */
     overallAvg: number | null;
 }
 export const WorkflowOutputStatsResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -62,7 +60,7 @@ export const WorkflowOutputStatsResponsePropertyValidationAttributesMap: {
  * Check if a given object implements the WorkflowOutputStatsResponse interface.
  */
 export function instanceOfWorkflowOutputStatsResponse(value: object): value is WorkflowOutputStatsResponse {
-    if (!('overallAvg' in value) || value['overallAvg'] === undefined) return false;
+    if ((!('overallAvg' in (value as Record<string, any>)) && !('overall_avg' in (value as Record<string, any>))) || ((value as Record<string, any>)['overallAvg'] === undefined && (value as Record<string, any>)['overall_avg'] === undefined)) return false;
     return true;
 }
 

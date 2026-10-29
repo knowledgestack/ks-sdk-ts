@@ -29,19 +29,17 @@ import {
 export interface LabeledSeries {
     /**
      * Series label, e.g. 'SOURCE' or 'FAILED'.
-     * @type {string}
-     * @memberof LabeledSeries
      */
     label: string;
     /**
      * 
-     * @type {Array<TimeseriesPoint>}
-     * @memberof LabeledSeries
      */
     points?: Array<TimeseriesPoint>;
 }
 export const LabeledSeriesPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,

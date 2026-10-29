@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
 import type { TraceKind } from './TraceKind';
 import {
     TraceKindFromJSON,
@@ -43,236 +43,158 @@ import {
 export interface DiagnosticTraceItem {
     /**
      * 
-     * @type {DiagnosticTraceStatus}
-     * @memberof DiagnosticTraceItem
      */
     status: DiagnosticTraceStatus;
     /**
      * 
-     * @type {TraceKind}
-     * @memberof DiagnosticTraceItem
      */
     kind: TraceKind;
     /**
      * 
-     * @type {DiagnosticTraceFailureReason}
-     * @memberof DiagnosticTraceItem
      */
     reason?: DiagnosticTraceFailureReason;
     /**
      * 
-     * @type {string}
-     * @memberof DiagnosticTraceItem
      */
     traceId: string | null;
     /**
      * 
-     * @type {string}
-     * @memberof DiagnosticTraceItem
      */
     runId?: string | null;
     /**
      * 
-     * @type {string}
-     * @memberof DiagnosticTraceItem
      */
     threadId?: string | null;
     /**
      * 
-     * @type {string}
-     * @memberof DiagnosticTraceItem
      */
     messageId?: string | null;
     /**
      * 
-     * @type {string}
-     * @memberof DiagnosticTraceItem
      */
     userId: string | null;
     /**
      * 
-     * @type {Date}
-     * @memberof DiagnosticTraceItem
      */
     startedAt: Date | null;
     /**
      * 
-     * @type {Date}
-     * @memberof DiagnosticTraceItem
      */
     endedAt?: Date | null;
     /**
      * 
-     * @type {number}
-     * @memberof DiagnosticTraceItem
      */
     durationMs?: number | null;
     /**
      * 
-     * @type {string}
-     * @memberof DiagnosticTraceItem
      */
     model?: string | null;
     /**
      * 
-     * @type {number}
-     * @memberof DiagnosticTraceItem
      */
     generations?: number | null;
     /**
      * 
-     * @type {number}
-     * @memberof DiagnosticTraceItem
      */
     toolCalls?: number | null;
     /**
      * 
-     * @type {number}
-     * @memberof DiagnosticTraceItem
      */
     subagents?: number | null;
     /**
      * 
-     * @type {number}
-     * @memberof DiagnosticTraceItem
      */
     inputTokens?: number | null;
     /**
      * 
-     * @type {number}
-     * @memberof DiagnosticTraceItem
      */
     outputTokens?: number | null;
     /**
      * 
-     * @type {number}
-     * @memberof DiagnosticTraceItem
      */
     cachedTokens?: number | null;
     /**
      * 
-     * @type {number}
-     * @memberof DiagnosticTraceItem
      */
     reasoningTokens?: number | null;
     /**
      * 
-     * @type {number}
-     * @memberof DiagnosticTraceItem
      */
     maxContext?: number | null;
     /**
      * 
-     * @type {number}
-     * @memberof DiagnosticTraceItem
      */
     degenerateGens?: number | null;
     /**
      * 
-     * @type {number}
-     * @memberof DiagnosticTraceItem
      */
     selfDoubtPer1k?: number | null;
     /**
      * 
-     * @type {number}
-     * @memberof DiagnosticTraceItem
      */
     cacheRate?: number | null;
     /**
      * 
-     * @type {number}
-     * @memberof DiagnosticTraceItem
      */
     reasoningShare?: number | null;
     /**
      * 
-     * @type {number}
-     * @memberof DiagnosticTraceItem
      */
     singleToolRate?: number | null;
     /**
      * 
-     * @type {number}
-     * @memberof DiagnosticTraceItem
      */
     nEvents?: number | null;
     /**
      * 
-     * @type {{ [key: string]: any; }}
-     * @memberof DiagnosticTraceItem
      */
     metrics?: { [key: string]: any; } | null;
     /**
      * 
-     * @type {boolean}
-     * @memberof DiagnosticTraceItem
      */
     traceComplete?: boolean | null;
     /**
      * 
-     * @type {boolean}
-     * @memberof DiagnosticTraceItem
      */
     corruptResults?: boolean | null;
     /**
      * 
-     * @type {string}
-     * @memberof DiagnosticTraceItem
      */
     backendVersion?: string | null;
     /**
      * 
-     * @type {number}
-     * @memberof DiagnosticTraceItem
      */
     schemaVersion?: number | null;
     /**
      * 
-     * @type {string}
-     * @memberof DiagnosticTraceItem
      */
     title?: string | null;
     /**
      * 
-     * @type {string}
-     * @memberof DiagnosticTraceItem
      */
     path?: string | null;
     /**
      * 
-     * @type {string}
-     * @memberof DiagnosticTraceItem
      */
     workflowId?: string | null;
     /**
      * 
-     * @type {string}
-     * @memberof DiagnosticTraceItem
      */
     workflowName?: string | null;
     /**
      * 
-     * @type {string}
-     * @memberof DiagnosticTraceItem
      */
     state?: string | null;
     /**
      * 
-     * @type {string}
-     * @memberof DiagnosticTraceItem
      */
     runLabel?: string | null;
     /**
      * 
-     * @type {string}
-     * @memberof DiagnosticTraceItem
      */
     traceUrl?: string | null;
     /**
      * 
-     * @type {number}
-     * @memberof DiagnosticTraceItem
      */
     expiresInSeconds?: number | null;
 }
@@ -280,6 +202,8 @@ export interface DiagnosticTraceItem {
 
 export const DiagnosticTraceItemPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -302,9 +226,9 @@ export const DiagnosticTraceItemPropertyValidationAttributesMap: {
 export function instanceOfDiagnosticTraceItem(value: object): value is DiagnosticTraceItem {
     if (!('status' in value) || value['status'] === undefined) return false;
     if (!('kind' in value) || value['kind'] === undefined) return false;
-    if (!('traceId' in value) || value['traceId'] === undefined) return false;
-    if (!('userId' in value) || value['userId'] === undefined) return false;
-    if (!('startedAt' in value) || value['startedAt'] === undefined) return false;
+    if ((!('traceId' in (value as Record<string, any>)) && !('trace_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['traceId'] === undefined && (value as Record<string, any>)['trace_id'] === undefined)) return false;
+    if ((!('userId' in (value as Record<string, any>)) && !('user_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['userId'] === undefined && (value as Record<string, any>)['user_id'] === undefined)) return false;
+    if ((!('startedAt' in (value as Record<string, any>)) && !('started_at' in (value as Record<string, any>))) || ((value as Record<string, any>)['startedAt'] === undefined && (value as Record<string, any>)['started_at'] === undefined)) return false;
     return true;
 }
 
@@ -322,41 +246,41 @@ export function DiagnosticTraceItemFromJSONTyped(json: any, ignoreDiscriminator:
         'kind': TraceKindFromJSON(json['kind']),
         'reason': json['reason'] == null ? undefined : DiagnosticTraceFailureReasonFromJSON(json['reason']),
         'traceId': json['trace_id'],
-        'runId': json['run_id'] == null ? undefined : json['run_id'],
-        'threadId': json['thread_id'] == null ? undefined : json['thread_id'],
-        'messageId': json['message_id'] == null ? undefined : json['message_id'],
+        'runId': json['run_id'] === undefined ? undefined : json['run_id'] === null ? null : json['run_id'],
+        'threadId': json['thread_id'] === undefined ? undefined : json['thread_id'] === null ? null : json['thread_id'],
+        'messageId': json['message_id'] === undefined ? undefined : json['message_id'] === null ? null : json['message_id'],
         'userId': json['user_id'],
-        'startedAt': (json['started_at'] == null ? null : new Date(json['started_at'])),
-        'endedAt': json['ended_at'] == null ? undefined : (new Date(json['ended_at'])),
-        'durationMs': json['duration_ms'] == null ? undefined : json['duration_ms'],
-        'model': json['model'] == null ? undefined : json['model'],
-        'generations': json['generations'] == null ? undefined : json['generations'],
-        'toolCalls': json['tool_calls'] == null ? undefined : json['tool_calls'],
-        'subagents': json['subagents'] == null ? undefined : json['subagents'],
-        'inputTokens': json['input_tokens'] == null ? undefined : json['input_tokens'],
-        'outputTokens': json['output_tokens'] == null ? undefined : json['output_tokens'],
-        'cachedTokens': json['cached_tokens'] == null ? undefined : json['cached_tokens'],
-        'reasoningTokens': json['reasoning_tokens'] == null ? undefined : json['reasoning_tokens'],
-        'maxContext': json['max_context'] == null ? undefined : json['max_context'],
-        'degenerateGens': json['degenerate_gens'] == null ? undefined : json['degenerate_gens'],
-        'selfDoubtPer1k': json['self_doubt_per_1k'] == null ? undefined : json['self_doubt_per_1k'],
-        'cacheRate': json['cache_rate'] == null ? undefined : json['cache_rate'],
-        'reasoningShare': json['reasoning_share'] == null ? undefined : json['reasoning_share'],
-        'singleToolRate': json['single_tool_rate'] == null ? undefined : json['single_tool_rate'],
-        'nEvents': json['n_events'] == null ? undefined : json['n_events'],
-        'metrics': json['metrics'] == null ? undefined : json['metrics'],
-        'traceComplete': json['trace_complete'] == null ? undefined : json['trace_complete'],
-        'corruptResults': json['corrupt_results'] == null ? undefined : json['corrupt_results'],
-        'backendVersion': json['backend_version'] == null ? undefined : json['backend_version'],
-        'schemaVersion': json['schema_version'] == null ? undefined : json['schema_version'],
-        'title': json['title'] == null ? undefined : json['title'],
-        'path': json['path'] == null ? undefined : json['path'],
-        'workflowId': json['workflow_id'] == null ? undefined : json['workflow_id'],
-        'workflowName': json['workflow_name'] == null ? undefined : json['workflow_name'],
-        'state': json['state'] == null ? undefined : json['state'],
-        'runLabel': json['run_label'] == null ? undefined : json['run_label'],
-        'traceUrl': json['trace_url'] == null ? undefined : json['trace_url'],
-        'expiresInSeconds': json['expires_in_seconds'] == null ? undefined : json['expires_in_seconds'],
+        'startedAt': (json['started_at'] == null ? null : parseDateTime(json['started_at'])),
+        'endedAt': json['ended_at'] === undefined ? undefined : json['ended_at'] === null ? null : (parseDateTime(json['ended_at'])),
+        'durationMs': json['duration_ms'] === undefined ? undefined : json['duration_ms'] === null ? null : json['duration_ms'],
+        'model': json['model'] === undefined ? undefined : json['model'] === null ? null : json['model'],
+        'generations': json['generations'] === undefined ? undefined : json['generations'] === null ? null : json['generations'],
+        'toolCalls': json['tool_calls'] === undefined ? undefined : json['tool_calls'] === null ? null : json['tool_calls'],
+        'subagents': json['subagents'] === undefined ? undefined : json['subagents'] === null ? null : json['subagents'],
+        'inputTokens': json['input_tokens'] === undefined ? undefined : json['input_tokens'] === null ? null : json['input_tokens'],
+        'outputTokens': json['output_tokens'] === undefined ? undefined : json['output_tokens'] === null ? null : json['output_tokens'],
+        'cachedTokens': json['cached_tokens'] === undefined ? undefined : json['cached_tokens'] === null ? null : json['cached_tokens'],
+        'reasoningTokens': json['reasoning_tokens'] === undefined ? undefined : json['reasoning_tokens'] === null ? null : json['reasoning_tokens'],
+        'maxContext': json['max_context'] === undefined ? undefined : json['max_context'] === null ? null : json['max_context'],
+        'degenerateGens': json['degenerate_gens'] === undefined ? undefined : json['degenerate_gens'] === null ? null : json['degenerate_gens'],
+        'selfDoubtPer1k': json['self_doubt_per_1k'] === undefined ? undefined : json['self_doubt_per_1k'] === null ? null : json['self_doubt_per_1k'],
+        'cacheRate': json['cache_rate'] === undefined ? undefined : json['cache_rate'] === null ? null : json['cache_rate'],
+        'reasoningShare': json['reasoning_share'] === undefined ? undefined : json['reasoning_share'] === null ? null : json['reasoning_share'],
+        'singleToolRate': json['single_tool_rate'] === undefined ? undefined : json['single_tool_rate'] === null ? null : json['single_tool_rate'],
+        'nEvents': json['n_events'] === undefined ? undefined : json['n_events'] === null ? null : json['n_events'],
+        'metrics': json['metrics'] === undefined ? undefined : json['metrics'] === null ? null : json['metrics'],
+        'traceComplete': json['trace_complete'] === undefined ? undefined : json['trace_complete'] === null ? null : json['trace_complete'],
+        'corruptResults': json['corrupt_results'] === undefined ? undefined : json['corrupt_results'] === null ? null : json['corrupt_results'],
+        'backendVersion': json['backend_version'] === undefined ? undefined : json['backend_version'] === null ? null : json['backend_version'],
+        'schemaVersion': json['schema_version'] === undefined ? undefined : json['schema_version'] === null ? null : json['schema_version'],
+        'title': json['title'] === undefined ? undefined : json['title'] === null ? null : json['title'],
+        'path': json['path'] === undefined ? undefined : json['path'] === null ? null : json['path'],
+        'workflowId': json['workflow_id'] === undefined ? undefined : json['workflow_id'] === null ? null : json['workflow_id'],
+        'workflowName': json['workflow_name'] === undefined ? undefined : json['workflow_name'] === null ? null : json['workflow_name'],
+        'state': json['state'] === undefined ? undefined : json['state'] === null ? null : json['state'],
+        'runLabel': json['run_label'] === undefined ? undefined : json['run_label'] === null ? null : json['run_label'],
+        'traceUrl': json['trace_url'] === undefined ? undefined : json['trace_url'] === null ? null : json['trace_url'],
+        'expiresInSeconds': json['expires_in_seconds'] === undefined ? undefined : json['expires_in_seconds'] === null ? null : json['expires_in_seconds'],
     };
 }
 
@@ -379,8 +303,8 @@ export function DiagnosticTraceItemToJSONTyped(value?: DiagnosticTraceItem | nul
         'thread_id': value['threadId'],
         'message_id': value['messageId'],
         'user_id': value['userId'],
-        'started_at': value['startedAt'] == null ? value['startedAt'] : value['startedAt'].toISOString(),
-        'ended_at': value['endedAt'] == null ? value['endedAt'] : value['endedAt'].toISOString(),
+        'started_at': value['startedAt'] == null ? value['startedAt'] : serializeDateTime(value['startedAt']),
+        'ended_at': value['endedAt'] == null ? value['endedAt'] : serializeDateTime(value['endedAt']),
         'duration_ms': value['durationMs'],
         'model': value['model'],
         'generations': value['generations'],

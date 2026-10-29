@@ -12,125 +12,252 @@
  * Do not edit the class manually.
  */
 
-
 import * as runtime from '../runtime';
-import type {
-  CloneWorkflowRunRequest,
-  ErrorResponse,
-  HTTPValidationError,
-  PaginatedResponseWorkflowRunResponse,
-  PathPartApprovalState,
-  SetWorkflowRunApprovalRequest,
-  SortDirection,
-  StartWorkflowRunRequest,
-  UpdateWorkflowRunRequest,
-  WorkflowCallbackResponse,
-  WorkflowExecutionState,
-  WorkflowRunCallbackRequest,
-  WorkflowRunOrder,
-  WorkflowRunResponse,
-  WorkflowRunSummaryResponse,
-} from '../models/index';
 import {
+    type CloneWorkflowRunRequest,
     CloneWorkflowRunRequestFromJSON,
     CloneWorkflowRunRequestToJSON,
+} from '../models/CloneWorkflowRunRequest';
+import {
+    type ErrorResponse,
     ErrorResponseFromJSON,
     ErrorResponseToJSON,
+} from '../models/ErrorResponse';
+import {
+    type HTTPValidationError,
     HTTPValidationErrorFromJSON,
     HTTPValidationErrorToJSON,
+} from '../models/HTTPValidationError';
+import {
+    type PaginatedResponseWorkflowRunResponse,
     PaginatedResponseWorkflowRunResponseFromJSON,
     PaginatedResponseWorkflowRunResponseToJSON,
+} from '../models/PaginatedResponseWorkflowRunResponse';
+import {
+    type PathPartApprovalState,
     PathPartApprovalStateFromJSON,
     PathPartApprovalStateToJSON,
+} from '../models/PathPartApprovalState';
+import {
+    type SetWorkflowRunApprovalRequest,
     SetWorkflowRunApprovalRequestFromJSON,
     SetWorkflowRunApprovalRequestToJSON,
+} from '../models/SetWorkflowRunApprovalRequest';
+import {
+    type SortDirection,
     SortDirectionFromJSON,
     SortDirectionToJSON,
+} from '../models/SortDirection';
+import {
+    type StartWorkflowRunRequest,
     StartWorkflowRunRequestFromJSON,
     StartWorkflowRunRequestToJSON,
+} from '../models/StartWorkflowRunRequest';
+import {
+    type UpdateWorkflowRunRequest,
     UpdateWorkflowRunRequestFromJSON,
     UpdateWorkflowRunRequestToJSON,
+} from '../models/UpdateWorkflowRunRequest';
+import {
+    type WorkflowCallbackResponse,
     WorkflowCallbackResponseFromJSON,
     WorkflowCallbackResponseToJSON,
+} from '../models/WorkflowCallbackResponse';
+import {
+    type WorkflowExecutionState,
     WorkflowExecutionStateFromJSON,
     WorkflowExecutionStateToJSON,
+} from '../models/WorkflowExecutionState';
+import {
+    type WorkflowRunCallbackRequest,
     WorkflowRunCallbackRequestFromJSON,
     WorkflowRunCallbackRequestToJSON,
+} from '../models/WorkflowRunCallbackRequest';
+import {
+    type WorkflowRunOrder,
     WorkflowRunOrderFromJSON,
     WorkflowRunOrderToJSON,
+} from '../models/WorkflowRunOrder';
+import {
+    type WorkflowRunResponse,
     WorkflowRunResponseFromJSON,
     WorkflowRunResponseToJSON,
+} from '../models/WorkflowRunResponse';
+import {
+    type WorkflowRunSummaryResponse,
     WorkflowRunSummaryResponseFromJSON,
     WorkflowRunSummaryResponseToJSON,
-} from '../models/index';
+} from '../models/WorkflowRunSummaryResponse';
 
 export interface CloneWorkflowRunOperationRequest {
+    /**
+     * 
+     */
     runId: string;
+    /**
+     * 
+     */
     cloneWorkflowRunRequest: CloneWorkflowRunRequest;
 }
 
 export interface DeleteWorkflowRunRequest {
+    /**
+     * 
+     */
     runId: string;
 }
 
 export interface GetWorkflowRunRequest {
+    /**
+     * 
+     */
     runId: string;
 }
 
 export interface GetWorkflowRunsSummaryRequest {
+    /**
+     * Window start (inclusive). Defaults to 7 days ago.
+     */
     since?: Date | null;
+    /**
+     * Window end (inclusive). Defaults to open-ended.
+     */
     until?: Date | null;
+    /**
+     * Scope all numbers to one workflow (requires read).
+     */
     definitionId?: string | null;
 }
 
 export interface ListWorkflowRunsForTenantRequest {
+    /**
+     * Keep only runs in these execution states (repeatable).
+     */
     state?: Array<WorkflowExecutionState> | null;
+    /**
+     * Only runs the caller created (owner). Overrides owner_id.
+     */
     mine?: boolean;
+    /**
+     * Only runs the caller may approve (approve-path scoped). Compose with approval_state=pending for the approval worklist.
+     */
     approvableByMe?: boolean;
+    /**
+     * Only runs under this workflow definition.
+     */
     definitionId?: string | null;
+    /**
+     * Only runs created by this user.
+     */
     ownerId?: string | null;
+    /**
+     * Field to sort runs by (default: STARTED_AT)
+     */
     sortBy?: WorkflowRunOrder;
+    /**
+     * Sort direction; overrides the field's natural default
+     */
     sortDir?: SortDirection;
+    /**
+     * Number of items per page
+     */
     limit?: number;
+    /**
+     * Number of items to skip
+     */
     offset?: number;
+    /**
+     * Only items created at or after this timestamp (inclusive)
+     */
     createdAfter?: Date | null;
+    /**
+     * Only items created strictly before this timestamp
+     */
     createdBefore?: Date | null;
+    /**
+     * Only items updated at or after this timestamp (inclusive)
+     */
     updatedAfter?: Date | null;
+    /**
+     * Only items updated strictly before this timestamp
+     */
     updatedBefore?: Date | null;
+    /**
+     * Keep only items in these approval states (repeatable): not_required, pending, approved.
+     */
     approvalState?: Array<PathPartApprovalState> | null;
+    /**
+     * Keep only items that carry at least one of these tags on the item itself or any ancestor folder (repeatable, OR / tag inheritance).
+     */
     includeTagIds?: Array<string> | null;
+    /**
+     * Drop items that carry any of these tags on the item itself or any ancestor folder (repeatable). Takes precedence over include_tag_ids.
+     */
     excludeTagIds?: Array<string> | null;
 }
 
 export interface ResumeWorkflowRunRequest {
+    /**
+     * 
+     */
     runId: string;
 }
 
 export interface RetryWorkflowRunRequest {
+    /**
+     * 
+     */
     runId: string;
 }
 
 export interface SetWorkflowRunApprovalOperationRequest {
+    /**
+     * 
+     */
     runId: string;
+    /**
+     * 
+     */
     setWorkflowRunApprovalRequest: SetWorkflowRunApprovalRequest;
 }
 
 export interface StartWorkflowRunOperationRequest {
+    /**
+     * 
+     */
     runId: string;
+    /**
+     * 
+     */
     startWorkflowRunRequest?: StartWorkflowRunRequest | null;
 }
 
 export interface StopWorkflowRunRequest {
+    /**
+     * 
+     */
     runId: string;
 }
 
 export interface UpdateWorkflowRunOperationRequest {
+    /**
+     * 
+     */
     runId: string;
+    /**
+     * 
+     */
     updateWorkflowRunRequest: UpdateWorkflowRunRequest;
 }
 
 export interface WorkflowRunCallbackOperationRequest {
+    /**
+     * 
+     */
     runId: string;
+    /**
+     * 
+     */
     workflowRunCallbackRequest: WorkflowRunCallbackRequest;
 }
 
@@ -512,7 +639,7 @@ export class WorkflowRunsApi extends runtime.BaseAPI implements WorkflowRunsApiI
         }
 
         let urlPath = `/v1/workflow-runs/{run_id}/clone`;
-        urlPath = urlPath.replace(`{${"run_id"}}`, encodeURIComponent(String(requestParameters['runId'])));
+        urlPath = urlPath.replace('{run_id}', encodeURIComponent(String(requestParameters['runId'])));
 
         return {
             path: urlPath,
@@ -568,7 +695,7 @@ export class WorkflowRunsApi extends runtime.BaseAPI implements WorkflowRunsApiI
         }
 
         let urlPath = `/v1/workflow-runs/{run_id}`;
-        urlPath = urlPath.replace(`{${"run_id"}}`, encodeURIComponent(String(requestParameters['runId'])));
+        urlPath = urlPath.replace('{run_id}', encodeURIComponent(String(requestParameters['runId'])));
 
         return {
             path: urlPath,
@@ -620,7 +747,7 @@ export class WorkflowRunsApi extends runtime.BaseAPI implements WorkflowRunsApiI
         }
 
         let urlPath = `/v1/workflow-runs/{run_id}`;
-        urlPath = urlPath.replace(`{${"run_id"}}`, encodeURIComponent(String(requestParameters['runId'])));
+        urlPath = urlPath.replace('{run_id}', encodeURIComponent(String(requestParameters['runId'])));
 
         return {
             path: urlPath,
@@ -655,11 +782,11 @@ export class WorkflowRunsApi extends runtime.BaseAPI implements WorkflowRunsApiI
         const queryParameters: any = {};
 
         if (requestParameters['since'] != null) {
-            queryParameters['since'] = (requestParameters['since'] as any).toISOString();
+            queryParameters['since'] = runtime.serializeDateTime(requestParameters['since'] as any);
         }
 
         if (requestParameters['until'] != null) {
-            queryParameters['until'] = (requestParameters['until'] as any).toISOString();
+            queryParameters['until'] = runtime.serializeDateTime(requestParameters['until'] as any);
         }
 
         if (requestParameters['definitionId'] != null) {
@@ -750,19 +877,19 @@ export class WorkflowRunsApi extends runtime.BaseAPI implements WorkflowRunsApiI
         }
 
         if (requestParameters['createdAfter'] != null) {
-            queryParameters['created_after'] = (requestParameters['createdAfter'] as any).toISOString();
+            queryParameters['created_after'] = runtime.serializeDateTime(requestParameters['createdAfter'] as any);
         }
 
         if (requestParameters['createdBefore'] != null) {
-            queryParameters['created_before'] = (requestParameters['createdBefore'] as any).toISOString();
+            queryParameters['created_before'] = runtime.serializeDateTime(requestParameters['createdBefore'] as any);
         }
 
         if (requestParameters['updatedAfter'] != null) {
-            queryParameters['updated_after'] = (requestParameters['updatedAfter'] as any).toISOString();
+            queryParameters['updated_after'] = runtime.serializeDateTime(requestParameters['updatedAfter'] as any);
         }
 
         if (requestParameters['updatedBefore'] != null) {
-            queryParameters['updated_before'] = (requestParameters['updatedBefore'] as any).toISOString();
+            queryParameters['updated_before'] = runtime.serializeDateTime(requestParameters['updatedBefore'] as any);
         }
 
         if (requestParameters['approvalState'] != null) {
@@ -843,7 +970,7 @@ export class WorkflowRunsApi extends runtime.BaseAPI implements WorkflowRunsApiI
         }
 
         let urlPath = `/v1/workflow-runs/{run_id}/resume`;
-        urlPath = urlPath.replace(`{${"run_id"}}`, encodeURIComponent(String(requestParameters['runId'])));
+        urlPath = urlPath.replace('{run_id}', encodeURIComponent(String(requestParameters['runId'])));
 
         return {
             path: urlPath,
@@ -898,7 +1025,7 @@ export class WorkflowRunsApi extends runtime.BaseAPI implements WorkflowRunsApiI
         }
 
         let urlPath = `/v1/workflow-runs/{run_id}/retry`;
-        urlPath = urlPath.replace(`{${"run_id"}}`, encodeURIComponent(String(requestParameters['runId'])));
+        urlPath = urlPath.replace('{run_id}', encodeURIComponent(String(requestParameters['runId'])));
 
         return {
             path: urlPath,
@@ -962,7 +1089,7 @@ export class WorkflowRunsApi extends runtime.BaseAPI implements WorkflowRunsApiI
         }
 
         let urlPath = `/v1/workflow-runs/{run_id}/approval`;
-        urlPath = urlPath.replace(`{${"run_id"}}`, encodeURIComponent(String(requestParameters['runId'])));
+        urlPath = urlPath.replace('{run_id}', encodeURIComponent(String(requestParameters['runId'])));
 
         return {
             path: urlPath,
@@ -1020,7 +1147,7 @@ export class WorkflowRunsApi extends runtime.BaseAPI implements WorkflowRunsApiI
         }
 
         let urlPath = `/v1/workflow-runs/{run_id}/start`;
-        urlPath = urlPath.replace(`{${"run_id"}}`, encodeURIComponent(String(requestParameters['runId'])));
+        urlPath = urlPath.replace('{run_id}', encodeURIComponent(String(requestParameters['runId'])));
 
         return {
             path: urlPath,
@@ -1076,7 +1203,7 @@ export class WorkflowRunsApi extends runtime.BaseAPI implements WorkflowRunsApiI
         }
 
         let urlPath = `/v1/workflow-runs/{run_id}/stop`;
-        urlPath = urlPath.replace(`{${"run_id"}}`, encodeURIComponent(String(requestParameters['runId'])));
+        urlPath = urlPath.replace('{run_id}', encodeURIComponent(String(requestParameters['runId'])));
 
         return {
             path: urlPath,
@@ -1140,7 +1267,7 @@ export class WorkflowRunsApi extends runtime.BaseAPI implements WorkflowRunsApiI
         }
 
         let urlPath = `/v1/workflow-runs/{run_id}`;
-        urlPath = urlPath.replace(`{${"run_id"}}`, encodeURIComponent(String(requestParameters['runId'])));
+        urlPath = urlPath.replace('{run_id}', encodeURIComponent(String(requestParameters['runId'])));
 
         return {
             path: urlPath,
@@ -1205,7 +1332,7 @@ export class WorkflowRunsApi extends runtime.BaseAPI implements WorkflowRunsApiI
         }
 
         let urlPath = `/v1/workflow-runs/{run_id}/callback`;
-        urlPath = urlPath.replace(`{${"run_id"}}`, encodeURIComponent(String(requestParameters['runId'])));
+        urlPath = urlPath.replace('{run_id}', encodeURIComponent(String(requestParameters['runId'])));
 
         return {
             path: urlPath,

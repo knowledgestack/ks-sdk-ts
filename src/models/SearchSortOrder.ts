@@ -25,7 +25,7 @@ export const SearchSortOrder = {
     Relevance: 'RELEVANCE',
     Name: 'NAME',
     UpdatedAt: 'UPDATED_AT',
-    CreatedAt: 'CREATED_AT'
+    CreatedAt: 'CREATED_AT',
 } as const;
 export type SearchSortOrder = typeof SearchSortOrder[keyof typeof SearchSortOrder];
 

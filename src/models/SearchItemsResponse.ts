@@ -32,37 +32,29 @@ import {
 export interface SearchItemsResponse {
     /**
      * List of items
-     * @type {Array<FolderResponseOrDocumentResponseOrWorkflowDefinitionResponseOrWorkflowRunResponseOrDataSourceResponseOrDataSourceSchemaR>}
-     * @memberof SearchItemsResponse
      */
     items: Array<FolderResponseOrDocumentResponseOrWorkflowDefinitionResponseOrWorkflowRunResponseOrDataSourceResponseOrDataSourceSchemaR>;
     /**
      * Total number of items
-     * @type {number}
-     * @memberof SearchItemsResponse
      */
     total: number;
     /**
      * Number of items per page
-     * @type {number}
-     * @memberof SearchItemsResponse
      */
     limit: number;
     /**
      * Number of items to skip
-     * @type {number}
-     * @memberof SearchItemsResponse
      */
     offset: number;
     /**
      * Matches per item type, keyed by SearchablePartType and unaffected by the part_type filter
-     * @type {{ [key: string]: number; }}
-     * @memberof SearchItemsResponse
      */
     countsByType?: { [key: string]: number; };
 }
 export const SearchItemsResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -77,14 +69,20 @@ export const SearchItemsResponsePropertyValidationAttributesMap: {
     }
 } = {
     total: {
+        dataType: "number",
+        required: true,
         minimum: 0,
         exclusiveMinimum: false,
     },
     limit: {
+        dataType: "number",
+        required: true,
         minimum: 1,
         exclusiveMinimum: false,
     },
     offset: {
+        dataType: "number",
+        required: true,
         minimum: 0,
         exclusiveMinimum: false,
     },

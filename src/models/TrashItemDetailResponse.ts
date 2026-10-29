@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
 import type { PartType } from './PartType';
 import {
     PartTypeFromJSON,
@@ -43,68 +43,46 @@ import {
 export interface TrashItemDetailResponse {
     /**
      * PathPart ID
-     * @type {string}
-     * @memberof TrashItemDetailResponse
      */
     pathPartId: string;
     /**
      * Underlying PDO ID
-     * @type {string}
-     * @memberof TrashItemDetailResponse
      */
     metadataObjId: string;
     /**
      * 
-     * @type {PartType}
-     * @memberof TrashItemDetailResponse
      */
     partType: PartType;
     /**
      * Display name
-     * @type {string}
-     * @memberof TrashItemDetailResponse
      */
     name: string;
     /**
      * Parent PathPart ID
-     * @type {string}
-     * @memberof TrashItemDetailResponse
      */
     parentPathPartId: string | null;
     /**
      * Original materialized path
-     * @type {string}
-     * @memberof TrashItemDetailResponse
      */
     materializedPath: string;
     /**
      * When the item was moved to trash
-     * @type {Date}
-     * @memberof TrashItemDetailResponse
      */
     deletedAt: Date;
     /**
      * User that moved it to trash
-     * @type {string}
-     * @memberof TrashItemDetailResponse
      */
     deletedBy: string | null;
     /**
      * 
-     * @type {DocumentType}
-     * @memberof TrashItemDetailResponse
      */
     documentType?: DocumentType;
     /**
      * Current owner (creator) of the item, or null if unowned.
-     * @type {UserInfo}
-     * @memberof TrashItemDetailResponse
      */
     owner?: UserInfo | null;
     /**
      * Presigned URL (6-hour validity) to the document's source blob for preview; null for folders and other non-document items.
-     * @type {string}
-     * @memberof TrashItemDetailResponse
      */
     assetS3Url?: string | null;
 }
@@ -112,6 +90,8 @@ export interface TrashItemDetailResponse {
 
 export const TrashItemDetailResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -132,14 +112,14 @@ export const TrashItemDetailResponsePropertyValidationAttributesMap: {
  * Check if a given object implements the TrashItemDetailResponse interface.
  */
 export function instanceOfTrashItemDetailResponse(value: object): value is TrashItemDetailResponse {
-    if (!('pathPartId' in value) || value['pathPartId'] === undefined) return false;
-    if (!('metadataObjId' in value) || value['metadataObjId'] === undefined) return false;
-    if (!('partType' in value) || value['partType'] === undefined) return false;
+    if ((!('pathPartId' in (value as Record<string, any>)) && !('path_part_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['pathPartId'] === undefined && (value as Record<string, any>)['path_part_id'] === undefined)) return false;
+    if ((!('metadataObjId' in (value as Record<string, any>)) && !('metadata_obj_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['metadataObjId'] === undefined && (value as Record<string, any>)['metadata_obj_id'] === undefined)) return false;
+    if ((!('partType' in (value as Record<string, any>)) && !('part_type' in (value as Record<string, any>))) || ((value as Record<string, any>)['partType'] === undefined && (value as Record<string, any>)['part_type'] === undefined)) return false;
     if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('parentPathPartId' in value) || value['parentPathPartId'] === undefined) return false;
-    if (!('materializedPath' in value) || value['materializedPath'] === undefined) return false;
-    if (!('deletedAt' in value) || value['deletedAt'] === undefined) return false;
-    if (!('deletedBy' in value) || value['deletedBy'] === undefined) return false;
+    if ((!('parentPathPartId' in (value as Record<string, any>)) && !('parent_path_part_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['parentPathPartId'] === undefined && (value as Record<string, any>)['parent_path_part_id'] === undefined)) return false;
+    if ((!('materializedPath' in (value as Record<string, any>)) && !('materialized_path' in (value as Record<string, any>))) || ((value as Record<string, any>)['materializedPath'] === undefined && (value as Record<string, any>)['materialized_path'] === undefined)) return false;
+    if ((!('deletedAt' in (value as Record<string, any>)) && !('deleted_at' in (value as Record<string, any>))) || ((value as Record<string, any>)['deletedAt'] === undefined && (value as Record<string, any>)['deleted_at'] === undefined)) return false;
+    if ((!('deletedBy' in (value as Record<string, any>)) && !('deleted_by' in (value as Record<string, any>))) || ((value as Record<string, any>)['deletedBy'] === undefined && (value as Record<string, any>)['deleted_by'] === undefined)) return false;
     return true;
 }
 
@@ -159,11 +139,11 @@ export function TrashItemDetailResponseFromJSONTyped(json: any, ignoreDiscrimina
         'name': json['name'],
         'parentPathPartId': json['parent_path_part_id'],
         'materializedPath': json['materialized_path'],
-        'deletedAt': (new Date(json['deleted_at'])),
+        'deletedAt': (json['deleted_at'] == null ? json['deleted_at'] : parseDateTime(json['deleted_at'])),
         'deletedBy': json['deleted_by'],
         'documentType': json['document_type'] == null ? undefined : DocumentTypeFromJSON(json['document_type']),
-        'owner': json['owner'] == null ? undefined : UserInfoFromJSON(json['owner']),
-        'assetS3Url': json['asset_s3_url'] == null ? undefined : json['asset_s3_url'],
+        'owner': json['owner'] === undefined ? undefined : json['owner'] === null ? null : UserInfoFromJSON(json['owner']),
+        'assetS3Url': json['asset_s3_url'] === undefined ? undefined : json['asset_s3_url'] === null ? null : json['asset_s3_url'],
     };
 }
 
@@ -184,7 +164,7 @@ export function TrashItemDetailResponseToJSONTyped(value?: TrashItemDetailRespon
         'name': value['name'],
         'parent_path_part_id': value['parentPathPartId'],
         'materialized_path': value['materializedPath'],
-        'deleted_at': value['deletedAt'].toISOString(),
+        'deleted_at': value['deletedAt'] == null ? value['deletedAt'] : serializeDateTime(value['deletedAt']),
         'deleted_by': value['deletedBy'],
         'document_type': DocumentTypeToJSON(value['documentType']),
         'owner': UserInfoToJSON(value['owner']),

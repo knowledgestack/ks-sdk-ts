@@ -19,7 +19,7 @@
  */
 export const InviteOrder = {
     CreatedAt: 'CREATED_AT',
-    ExpiresAt: 'EXPIRES_AT'
+    ExpiresAt: 'EXPIRES_AT',
 } as const;
 export type InviteOrder = typeof InviteOrder[keyof typeof InviteOrder];
 

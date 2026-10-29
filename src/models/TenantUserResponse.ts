@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
 import type { TenantUserRole } from './TenantUserRole';
 import {
     TenantUserRoleFromJSON,
@@ -29,68 +29,46 @@ import {
 export interface TenantUserResponse {
     /**
      * User ID
-     * @type {string}
-     * @memberof TenantUserResponse
      */
     userId: string;
     /**
      * User email address
-     * @type {string}
-     * @memberof TenantUserResponse
      */
     email?: string | null;
     /**
      * User first name
-     * @type {string}
-     * @memberof TenantUserResponse
      */
     firstName?: string | null;
     /**
      * User last name
-     * @type {string}
-     * @memberof TenantUserResponse
      */
     lastName?: string | null;
     /**
      * 
-     * @type {TenantUserRole}
-     * @memberof TenantUserResponse
      */
     role: TenantUserRole;
     /**
      * User's department
-     * @type {string}
-     * @memberof TenantUserResponse
      */
     department?: string | null;
     /**
      * User's job title
-     * @type {string}
-     * @memberof TenantUserResponse
      */
     jobTitle?: string | null;
     /**
      * Soft-deletion timestamp. NULL = active.
-     * @type {Date}
-     * @memberof TenantUserResponse
      */
     deactivatedOn?: Date | null;
     /**
      * Whether the user is managed by the tenant's identity provider
-     * @type {boolean}
-     * @memberof TenantUserResponse
      */
     isTenantIdpManaged: boolean;
     /**
      * Date the user was added to the tenant
-     * @type {Date}
-     * @memberof TenantUserResponse
      */
     createdAt: Date;
     /**
      * Date the user was updated
-     * @type {Date}
-     * @memberof TenantUserResponse
      */
     updatedAt: Date;
 }
@@ -98,6 +76,8 @@ export interface TenantUserResponse {
 
 export const TenantUserResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -118,11 +98,11 @@ export const TenantUserResponsePropertyValidationAttributesMap: {
  * Check if a given object implements the TenantUserResponse interface.
  */
 export function instanceOfTenantUserResponse(value: object): value is TenantUserResponse {
-    if (!('userId' in value) || value['userId'] === undefined) return false;
+    if ((!('userId' in (value as Record<string, any>)) && !('user_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['userId'] === undefined && (value as Record<string, any>)['user_id'] === undefined)) return false;
     if (!('role' in value) || value['role'] === undefined) return false;
-    if (!('isTenantIdpManaged' in value) || value['isTenantIdpManaged'] === undefined) return false;
-    if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
-    if (!('updatedAt' in value) || value['updatedAt'] === undefined) return false;
+    if ((!('isTenantIdpManaged' in (value as Record<string, any>)) && !('is_tenant_idp_managed' in (value as Record<string, any>))) || ((value as Record<string, any>)['isTenantIdpManaged'] === undefined && (value as Record<string, any>)['is_tenant_idp_managed'] === undefined)) return false;
+    if ((!('createdAt' in (value as Record<string, any>)) && !('created_at' in (value as Record<string, any>))) || ((value as Record<string, any>)['createdAt'] === undefined && (value as Record<string, any>)['created_at'] === undefined)) return false;
+    if ((!('updatedAt' in (value as Record<string, any>)) && !('updated_at' in (value as Record<string, any>))) || ((value as Record<string, any>)['updatedAt'] === undefined && (value as Record<string, any>)['updated_at'] === undefined)) return false;
     return true;
 }
 
@@ -137,16 +117,16 @@ export function TenantUserResponseFromJSONTyped(json: any, ignoreDiscriminator: 
     return {
         
         'userId': json['user_id'],
-        'email': json['email'] == null ? undefined : json['email'],
-        'firstName': json['first_name'] == null ? undefined : json['first_name'],
-        'lastName': json['last_name'] == null ? undefined : json['last_name'],
+        'email': json['email'] === undefined ? undefined : json['email'] === null ? null : json['email'],
+        'firstName': json['first_name'] === undefined ? undefined : json['first_name'] === null ? null : json['first_name'],
+        'lastName': json['last_name'] === undefined ? undefined : json['last_name'] === null ? null : json['last_name'],
         'role': TenantUserRoleFromJSON(json['role']),
-        'department': json['department'] == null ? undefined : json['department'],
-        'jobTitle': json['job_title'] == null ? undefined : json['job_title'],
-        'deactivatedOn': json['deactivated_on'] == null ? undefined : (new Date(json['deactivated_on'])),
+        'department': json['department'] === undefined ? undefined : json['department'] === null ? null : json['department'],
+        'jobTitle': json['job_title'] === undefined ? undefined : json['job_title'] === null ? null : json['job_title'],
+        'deactivatedOn': json['deactivated_on'] === undefined ? undefined : json['deactivated_on'] === null ? null : (parseDateTime(json['deactivated_on'])),
         'isTenantIdpManaged': json['is_tenant_idp_managed'],
-        'createdAt': (new Date(json['created_at'])),
-        'updatedAt': (new Date(json['updated_at'])),
+        'createdAt': (json['created_at'] == null ? json['created_at'] : parseDateTime(json['created_at'])),
+        'updatedAt': (json['updated_at'] == null ? json['updated_at'] : parseDateTime(json['updated_at'])),
     };
 }
 
@@ -168,10 +148,10 @@ export function TenantUserResponseToJSONTyped(value?: TenantUserResponse | null,
         'role': TenantUserRoleToJSON(value['role']),
         'department': value['department'],
         'job_title': value['jobTitle'],
-        'deactivated_on': value['deactivatedOn'] == null ? value['deactivatedOn'] : value['deactivatedOn'].toISOString(),
+        'deactivated_on': value['deactivatedOn'] == null ? value['deactivatedOn'] : serializeDateTime(value['deactivatedOn']),
         'is_tenant_idp_managed': value['isTenantIdpManaged'],
-        'created_at': value['createdAt'].toISOString(),
-        'updated_at': value['updatedAt'].toISOString(),
+        'created_at': value['createdAt'] == null ? value['createdAt'] : serializeDateTime(value['createdAt']),
+        'updated_at': value['updatedAt'] == null ? value['updatedAt'] : serializeDateTime(value['updatedAt']),
     };
 }
 

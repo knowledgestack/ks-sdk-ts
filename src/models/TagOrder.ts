@@ -19,7 +19,7 @@
  */
 export const TagOrder = {
     Name: 'NAME',
-    CreatedAt: 'CREATED_AT'
+    CreatedAt: 'CREATED_AT',
 } as const;
 export type TagOrder = typeof TagOrder[keyof typeof TagOrder];
 

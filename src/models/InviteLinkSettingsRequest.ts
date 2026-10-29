@@ -24,20 +24,14 @@ import { mapValues } from '../runtime';
 export interface InviteLinkSettingsRequest {
     /**
      * 
-     * @type {boolean}
-     * @memberof InviteLinkSettingsRequest
      */
     enabled?: boolean | null;
     /**
      * 
-     * @type {InviteLinkSettingsRequestRoleEnum}
-     * @memberof InviteLinkSettingsRequest
      */
     role?: InviteLinkSettingsRequestRoleEnum | null;
     /**
      * 
-     * @type {Array<string>}
-     * @memberof InviteLinkSettingsRequest
      */
     groups?: Array<string> | null;
 }
@@ -48,12 +42,14 @@ export interface InviteLinkSettingsRequest {
  */
 export const InviteLinkSettingsRequestRoleEnum = {
     User: 'USER',
-    Admin: 'ADMIN'
+    Admin: 'ADMIN',
 } as const;
 export type InviteLinkSettingsRequestRoleEnum = typeof InviteLinkSettingsRequestRoleEnum[keyof typeof InviteLinkSettingsRequestRoleEnum];
 
 export const InviteLinkSettingsRequestPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -68,6 +64,7 @@ export const InviteLinkSettingsRequestPropertyValidationAttributesMap: {
     }
 } = {
     groups: {
+        dataType: "Array<string>",
         maxItems: 10,
         uniqueItems: false,
     },
@@ -91,9 +88,9 @@ export function InviteLinkSettingsRequestFromJSONTyped(json: any, ignoreDiscrimi
     }
     return {
         
-        'enabled': json['enabled'] == null ? undefined : json['enabled'],
-        'role': json['role'] == null ? undefined : json['role'],
-        'groups': json['groups'] == null ? undefined : json['groups'],
+        'enabled': json['enabled'] === undefined ? undefined : json['enabled'] === null ? null : json['enabled'],
+        'role': json['role'] === undefined ? undefined : json['role'] === null ? null : json['role'],
+        'groups': json['groups'] === undefined ? undefined : json['groups'] === null ? null : json['groups'],
     };
 }
 

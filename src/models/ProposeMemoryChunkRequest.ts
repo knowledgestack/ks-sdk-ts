@@ -36,38 +36,26 @@ import {
 export interface ProposeMemoryChunkRequest {
     /**
      * 
-     * @type {MemoryScope}
-     * @memberof ProposeMemoryChunkRequest
      */
     scope: MemoryScope;
     /**
      * 
-     * @type {string}
-     * @memberof ProposeMemoryChunkRequest
      */
     scopeOwnerId: string;
     /**
      * 
-     * @type {string}
-     * @memberof ProposeMemoryChunkRequest
      */
     content: string;
     /**
      * 
-     * @type {string}
-     * @memberof ProposeMemoryChunkRequest
      */
     rationale: string;
     /**
      * 
-     * @type {MemoryKind}
-     * @memberof ProposeMemoryChunkRequest
      */
     kind?: MemoryKind;
     /**
      * 
-     * @type {string}
-     * @memberof ProposeMemoryChunkRequest
      */
     runId?: string | null;
 }
@@ -75,6 +63,8 @@ export interface ProposeMemoryChunkRequest {
 
 export const ProposeMemoryChunkRequestPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -89,10 +79,14 @@ export const ProposeMemoryChunkRequestPropertyValidationAttributesMap: {
     }
 } = {
     content: {
+        dataType: "string",
+        required: true,
         maxLength: 16384,
         minLength: 1,
     },
     rationale: {
+        dataType: "string",
+        required: true,
         maxLength: 4096,
         minLength: 1,
     },
@@ -104,7 +98,7 @@ export const ProposeMemoryChunkRequestPropertyValidationAttributesMap: {
  */
 export function instanceOfProposeMemoryChunkRequest(value: object): value is ProposeMemoryChunkRequest {
     if (!('scope' in value) || value['scope'] === undefined) return false;
-    if (!('scopeOwnerId' in value) || value['scopeOwnerId'] === undefined) return false;
+    if ((!('scopeOwnerId' in (value as Record<string, any>)) && !('scope_owner_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['scopeOwnerId'] === undefined && (value as Record<string, any>)['scope_owner_id'] === undefined)) return false;
     if (!('content' in value) || value['content'] === undefined) return false;
     if (!('rationale' in value) || value['rationale'] === undefined) return false;
     return true;
@@ -125,7 +119,7 @@ export function ProposeMemoryChunkRequestFromJSONTyped(json: any, ignoreDiscrimi
         'content': json['content'],
         'rationale': json['rationale'],
         'kind': json['kind'] == null ? undefined : MemoryKindFromJSON(json['kind']),
-        'runId': json['run_id'] == null ? undefined : json['run_id'],
+        'runId': json['run_id'] === undefined ? undefined : json['run_id'] === null ? null : json['run_id'],
     };
 }
 

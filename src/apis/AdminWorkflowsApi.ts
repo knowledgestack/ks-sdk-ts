@@ -12,66 +12,128 @@
  * Do not edit the class manually.
  */
 
-
 import * as runtime from '../runtime';
-import type {
-  ErrorResponse,
-  HTTPValidationError,
-  HourHistogramResponse,
-  RunTimeseriesResponse,
-  TimeBucket,
-  WorkflowLeaderboardResponse,
-  WorkflowOutputStatsResponse,
-  WorkflowRunSummaryResponse,
-} from '../models/index';
 import {
+    type ErrorResponse,
     ErrorResponseFromJSON,
     ErrorResponseToJSON,
+} from '../models/ErrorResponse';
+import {
+    type HTTPValidationError,
     HTTPValidationErrorFromJSON,
     HTTPValidationErrorToJSON,
+} from '../models/HTTPValidationError';
+import {
+    type HourHistogramResponse,
     HourHistogramResponseFromJSON,
     HourHistogramResponseToJSON,
+} from '../models/HourHistogramResponse';
+import {
+    type RunTimeseriesResponse,
     RunTimeseriesResponseFromJSON,
     RunTimeseriesResponseToJSON,
+} from '../models/RunTimeseriesResponse';
+import {
+    type TimeBucket,
     TimeBucketFromJSON,
     TimeBucketToJSON,
+} from '../models/TimeBucket';
+import {
+    type WorkflowLeaderboardResponse,
     WorkflowLeaderboardResponseFromJSON,
     WorkflowLeaderboardResponseToJSON,
+} from '../models/WorkflowLeaderboardResponse';
+import {
+    type WorkflowOutputStatsResponse,
     WorkflowOutputStatsResponseFromJSON,
     WorkflowOutputStatsResponseToJSON,
+} from '../models/WorkflowOutputStatsResponse';
+import {
+    type WorkflowRunSummaryResponse,
     WorkflowRunSummaryResponseFromJSON,
     WorkflowRunSummaryResponseToJSON,
-} from '../models/index';
+} from '../models/WorkflowRunSummaryResponse';
 
 export interface GetAdminWorkflowByHourRequest {
+    /**
+     * IANA tz override; defaults to tenant setting.
+     */
     timezone?: string | null;
+    /**
+     * Scope to one workflow.
+     */
     definitionId?: string | null;
+    /**
+     * Window start (inclusive). Defaults to 7 days ago.
+     */
     since?: Date | null;
+    /**
+     * Window end (inclusive).
+     */
     until?: Date | null;
 }
 
 export interface GetAdminWorkflowLeaderboardRequest {
+    /**
+     * Top-N per leaderboard.
+     */
     limit?: number;
+    /**
+     * Window start (inclusive). Defaults to 7 days ago.
+     */
     since?: Date | null;
+    /**
+     * Window end (inclusive).
+     */
     until?: Date | null;
 }
 
 export interface GetAdminWorkflowOutputStatsRequest {
+    /**
+     * Window start (inclusive). Defaults to 7 days ago.
+     */
     since?: Date | null;
+    /**
+     * Window end (inclusive).
+     */
     until?: Date | null;
 }
 
 export interface GetAdminWorkflowSummaryRequest {
+    /**
+     * Scope all numbers to one workflow.
+     */
     definitionId?: string | null;
+    /**
+     * Window start (inclusive). Defaults to 7 days ago.
+     */
     since?: Date | null;
+    /**
+     * Window end (inclusive).
+     */
     until?: Date | null;
 }
 
 export interface GetAdminWorkflowTimeseriesRequest {
+    /**
+     * IANA tz override; defaults to tenant setting.
+     */
     timezone?: string | null;
+    /**
+     * Scope to one workflow.
+     */
     definitionId?: string | null;
+    /**
+     * Window start (inclusive). Defaults to 7 days ago.
+     */
     since?: Date | null;
+    /**
+     * Window end (inclusive).
+     */
     until?: Date | null;
+    /**
+     * Bucket size.
+     */
     bucket?: TimeBucket;
 }
 
@@ -248,11 +310,11 @@ export class AdminWorkflowsApi extends runtime.BaseAPI implements AdminWorkflows
         }
 
         if (requestParameters['since'] != null) {
-            queryParameters['since'] = (requestParameters['since'] as any).toISOString();
+            queryParameters['since'] = runtime.serializeDateTime(requestParameters['since'] as any);
         }
 
         if (requestParameters['until'] != null) {
-            queryParameters['until'] = (requestParameters['until'] as any).toISOString();
+            queryParameters['until'] = runtime.serializeDateTime(requestParameters['until'] as any);
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -307,11 +369,11 @@ export class AdminWorkflowsApi extends runtime.BaseAPI implements AdminWorkflows
         }
 
         if (requestParameters['since'] != null) {
-            queryParameters['since'] = (requestParameters['since'] as any).toISOString();
+            queryParameters['since'] = runtime.serializeDateTime(requestParameters['since'] as any);
         }
 
         if (requestParameters['until'] != null) {
-            queryParameters['until'] = (requestParameters['until'] as any).toISOString();
+            queryParameters['until'] = runtime.serializeDateTime(requestParameters['until'] as any);
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -362,11 +424,11 @@ export class AdminWorkflowsApi extends runtime.BaseAPI implements AdminWorkflows
         const queryParameters: any = {};
 
         if (requestParameters['since'] != null) {
-            queryParameters['since'] = (requestParameters['since'] as any).toISOString();
+            queryParameters['since'] = runtime.serializeDateTime(requestParameters['since'] as any);
         }
 
         if (requestParameters['until'] != null) {
-            queryParameters['until'] = (requestParameters['until'] as any).toISOString();
+            queryParameters['until'] = runtime.serializeDateTime(requestParameters['until'] as any);
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -421,11 +483,11 @@ export class AdminWorkflowsApi extends runtime.BaseAPI implements AdminWorkflows
         }
 
         if (requestParameters['since'] != null) {
-            queryParameters['since'] = (requestParameters['since'] as any).toISOString();
+            queryParameters['since'] = runtime.serializeDateTime(requestParameters['since'] as any);
         }
 
         if (requestParameters['until'] != null) {
-            queryParameters['until'] = (requestParameters['until'] as any).toISOString();
+            queryParameters['until'] = runtime.serializeDateTime(requestParameters['until'] as any);
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -484,11 +546,11 @@ export class AdminWorkflowsApi extends runtime.BaseAPI implements AdminWorkflows
         }
 
         if (requestParameters['since'] != null) {
-            queryParameters['since'] = (requestParameters['since'] as any).toISOString();
+            queryParameters['since'] = runtime.serializeDateTime(requestParameters['since'] as any);
         }
 
         if (requestParameters['until'] != null) {
-            queryParameters['until'] = (requestParameters['until'] as any).toISOString();
+            queryParameters['until'] = runtime.serializeDateTime(requestParameters['until'] as any);
         }
 
         if (requestParameters['bucket'] != null) {

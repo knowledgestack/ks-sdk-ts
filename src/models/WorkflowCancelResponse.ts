@@ -21,19 +21,17 @@ import { mapValues } from '../runtime';
 export interface WorkflowCancelResponse {
     /**
      * 
-     * @type {string}
-     * @memberof WorkflowCancelResponse
      */
     workflowId: string;
     /**
      * 
-     * @type {string}
-     * @memberof WorkflowCancelResponse
      */
     message: string;
 }
 export const WorkflowCancelResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -54,7 +52,7 @@ export const WorkflowCancelResponsePropertyValidationAttributesMap: {
  * Check if a given object implements the WorkflowCancelResponse interface.
  */
 export function instanceOfWorkflowCancelResponse(value: object): value is WorkflowCancelResponse {
-    if (!('workflowId' in value) || value['workflowId'] === undefined) return false;
+    if ((!('workflowId' in (value as Record<string, any>)) && !('workflow_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['workflowId'] === undefined && (value as Record<string, any>)['workflow_id'] === undefined)) return false;
     if (!('message' in value) || value['message'] === undefined) return false;
     return true;
 }

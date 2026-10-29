@@ -21,19 +21,17 @@ import { mapValues } from '../runtime';
 export interface UserMessageResponse {
     /**
      * 
-     * @type {string}
-     * @memberof UserMessageResponse
      */
     workflowId: string;
     /**
      * 
-     * @type {string}
-     * @memberof UserMessageResponse
      */
     userMessageId: string;
 }
 export const UserMessageResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -54,8 +52,8 @@ export const UserMessageResponsePropertyValidationAttributesMap: {
  * Check if a given object implements the UserMessageResponse interface.
  */
 export function instanceOfUserMessageResponse(value: object): value is UserMessageResponse {
-    if (!('workflowId' in value) || value['workflowId'] === undefined) return false;
-    if (!('userMessageId' in value) || value['userMessageId'] === undefined) return false;
+    if ((!('workflowId' in (value as Record<string, any>)) && !('workflow_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['workflowId'] === undefined && (value as Record<string, any>)['workflow_id'] === undefined)) return false;
+    if ((!('userMessageId' in (value as Record<string, any>)) && !('user_message_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['userMessageId'] === undefined && (value as Record<string, any>)['user_message_id'] === undefined)) return false;
     return true;
 }
 

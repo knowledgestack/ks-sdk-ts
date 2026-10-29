@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
 import type { ItemPermissions } from './ItemPermissions';
 import {
     ItemPermissionsFromJSON,
@@ -57,110 +57,74 @@ import {
 export interface SkillResponse {
     /**
      * Path part type
-     * @type {SkillResponsePartTypeEnum}
-     * @memberof SkillResponse
      */
     partType?: SkillResponsePartTypeEnum;
     /**
      * 
-     * @type {string}
-     * @memberof SkillResponse
      */
     id: string;
     /**
      * SKILL path_part of this skill
-     * @type {string}
-     * @memberof SkillResponse
      */
     pathPartId: string;
     /**
      * FOLDER path_part of the containing folder
-     * @type {string}
-     * @memberof SkillResponse
      */
     parentPathPartId: string | null;
     /**
      * Full materialized path from root
-     * @type {string}
-     * @memberof SkillResponse
      */
     materializedPath: string;
     /**
      * 
-     * @type {string}
-     * @memberof SkillResponse
      */
     tenantId: string;
     /**
      * 
-     * @type {string}
-     * @memberof SkillResponse
      */
     name: string;
     /**
      * One-line 'use when…' routing signal, from the SKILL.md frontmatter.
-     * @type {string}
-     * @memberof SkillResponse
      */
     description: string;
     /**
      * Full SKILL.md content; populated on the detail read and on mutation responses, null on list.
-     * @type {string}
-     * @memberof SkillResponse
      */
     skillMd?: string | null;
     /**
      * Bundle file paths relative to the skill root (SKILL.md excluded); populated on the detail read and on mutation responses, empty on list.
-     * @type {Array<string>}
-     * @memberof SkillResponse
      */
     filePaths?: Array<string>;
     /**
      * Bundle files with their contents; populated only on the detail read (GET /skills/{id}), null on list. Lets the editor read the current file set so a PATCH can safely resubmit the whole set.
-     * @type {Array<SkillFile>}
-     * @memberof SkillResponse
      */
     files?: Array<SkillFile> | null;
     /**
      * Every working file with its Document id, SKILL.md included, sorted by path; populated with file_paths, empty on list.
-     * @type {Array<SkillFileDocument>}
-     * @memberof SkillResponse
      */
     fileDocuments?: Array<SkillFileDocument>;
     /**
      * Whether the working copy differs from the active published version. Always present (incl. list responses) so the UI can flag a skill with an unpublished draft.
-     * @type {boolean}
-     * @memberof SkillResponse
      */
     hasUnpublishedChanges?: boolean;
     /**
      * 
-     * @type {PathPartApprovalState}
-     * @memberof SkillResponse
      */
     approvalState: PathPartApprovalState;
     /**
      * Creator, or null.
-     * @type {UserInfo}
-     * @memberof SkillResponse
      */
     owner?: UserInfo | null;
     /**
      * 
-     * @type {Date}
-     * @memberof SkillResponse
      */
     createdAt: Date;
     /**
      * 
-     * @type {Date}
-     * @memberof SkillResponse
      */
     updatedAt: Date;
     /**
      * Caller's effective rights; populated on the list, detail read, and mutation responses.
-     * @type {ItemPermissions}
-     * @memberof SkillResponse
      */
     permissions?: ItemPermissions | null;
 }
@@ -170,12 +134,14 @@ export interface SkillResponse {
  * @export
  */
 export const SkillResponsePartTypeEnum = {
-    Skill: 'SKILL'
+    Skill: 'SKILL',
 } as const;
 export type SkillResponsePartTypeEnum = typeof SkillResponsePartTypeEnum[keyof typeof SkillResponsePartTypeEnum];
 
 export const SkillResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -197,15 +163,15 @@ export const SkillResponsePropertyValidationAttributesMap: {
  */
 export function instanceOfSkillResponse(value: object): value is SkillResponse {
     if (!('id' in value) || value['id'] === undefined) return false;
-    if (!('pathPartId' in value) || value['pathPartId'] === undefined) return false;
-    if (!('parentPathPartId' in value) || value['parentPathPartId'] === undefined) return false;
-    if (!('materializedPath' in value) || value['materializedPath'] === undefined) return false;
-    if (!('tenantId' in value) || value['tenantId'] === undefined) return false;
+    if ((!('pathPartId' in (value as Record<string, any>)) && !('path_part_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['pathPartId'] === undefined && (value as Record<string, any>)['path_part_id'] === undefined)) return false;
+    if ((!('parentPathPartId' in (value as Record<string, any>)) && !('parent_path_part_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['parentPathPartId'] === undefined && (value as Record<string, any>)['parent_path_part_id'] === undefined)) return false;
+    if ((!('materializedPath' in (value as Record<string, any>)) && !('materialized_path' in (value as Record<string, any>))) || ((value as Record<string, any>)['materializedPath'] === undefined && (value as Record<string, any>)['materialized_path'] === undefined)) return false;
+    if ((!('tenantId' in (value as Record<string, any>)) && !('tenant_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['tenantId'] === undefined && (value as Record<string, any>)['tenant_id'] === undefined)) return false;
     if (!('name' in value) || value['name'] === undefined) return false;
     if (!('description' in value) || value['description'] === undefined) return false;
-    if (!('approvalState' in value) || value['approvalState'] === undefined) return false;
-    if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
-    if (!('updatedAt' in value) || value['updatedAt'] === undefined) return false;
+    if ((!('approvalState' in (value as Record<string, any>)) && !('approval_state' in (value as Record<string, any>))) || ((value as Record<string, any>)['approvalState'] === undefined && (value as Record<string, any>)['approval_state'] === undefined)) return false;
+    if ((!('createdAt' in (value as Record<string, any>)) && !('created_at' in (value as Record<string, any>))) || ((value as Record<string, any>)['createdAt'] === undefined && (value as Record<string, any>)['created_at'] === undefined)) return false;
+    if ((!('updatedAt' in (value as Record<string, any>)) && !('updated_at' in (value as Record<string, any>))) || ((value as Record<string, any>)['updatedAt'] === undefined && (value as Record<string, any>)['updated_at'] === undefined)) return false;
     return true;
 }
 
@@ -227,16 +193,16 @@ export function SkillResponseFromJSONTyped(json: any, ignoreDiscriminator: boole
         'tenantId': json['tenant_id'],
         'name': json['name'],
         'description': json['description'],
-        'skillMd': json['skill_md'] == null ? undefined : json['skill_md'],
+        'skillMd': json['skill_md'] === undefined ? undefined : json['skill_md'] === null ? null : json['skill_md'],
         'filePaths': json['file_paths'] == null ? undefined : json['file_paths'],
-        'files': json['files'] == null ? undefined : ((json['files'] as Array<any>).map(SkillFileFromJSON)),
+        'files': json['files'] === undefined ? undefined : json['files'] === null ? null : ((json['files'] as Array<any>).map(SkillFileFromJSON)),
         'fileDocuments': json['file_documents'] == null ? undefined : ((json['file_documents'] as Array<any>).map(SkillFileDocumentFromJSON)),
         'hasUnpublishedChanges': json['has_unpublished_changes'] == null ? undefined : json['has_unpublished_changes'],
         'approvalState': PathPartApprovalStateFromJSON(json['approval_state']),
-        'owner': json['owner'] == null ? undefined : UserInfoFromJSON(json['owner']),
-        'createdAt': (new Date(json['created_at'])),
-        'updatedAt': (new Date(json['updated_at'])),
-        'permissions': json['permissions'] == null ? undefined : ItemPermissionsFromJSON(json['permissions']),
+        'owner': json['owner'] === undefined ? undefined : json['owner'] === null ? null : UserInfoFromJSON(json['owner']),
+        'createdAt': (json['created_at'] == null ? json['created_at'] : parseDateTime(json['created_at'])),
+        'updatedAt': (json['updated_at'] == null ? json['updated_at'] : parseDateTime(json['updated_at'])),
+        'permissions': json['permissions'] === undefined ? undefined : json['permissions'] === null ? null : ItemPermissionsFromJSON(json['permissions']),
     };
 }
 
@@ -266,8 +232,8 @@ export function SkillResponseToJSONTyped(value?: SkillResponse | null, ignoreDis
         'has_unpublished_changes': value['hasUnpublishedChanges'],
         'approval_state': PathPartApprovalStateToJSON(value['approvalState']),
         'owner': UserInfoToJSON(value['owner']),
-        'created_at': value['createdAt'].toISOString(),
-        'updated_at': value['updatedAt'].toISOString(),
+        'created_at': value['createdAt'] == null ? value['createdAt'] : serializeDateTime(value['createdAt']),
+        'updated_at': value['updatedAt'] == null ? value['updatedAt'] : serializeDateTime(value['updatedAt']),
         'permissions': ItemPermissionsToJSON(value['permissions']),
     };
 }

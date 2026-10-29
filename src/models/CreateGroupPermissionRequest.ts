@@ -29,20 +29,14 @@ import {
 export interface CreateGroupPermissionRequest {
     /**
      * 
-     * @type {string}
-     * @memberof CreateGroupPermissionRequest
      */
     pathPartId: string;
     /**
      * 
-     * @type {PermissionCapability}
-     * @memberof CreateGroupPermissionRequest
      */
     capability: PermissionCapability;
     /**
      * 
-     * @type {boolean}
-     * @memberof CreateGroupPermissionRequest
      */
     canApprove?: boolean;
 }
@@ -50,6 +44,8 @@ export interface CreateGroupPermissionRequest {
 
 export const CreateGroupPermissionRequestPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -70,7 +66,7 @@ export const CreateGroupPermissionRequestPropertyValidationAttributesMap: {
  * Check if a given object implements the CreateGroupPermissionRequest interface.
  */
 export function instanceOfCreateGroupPermissionRequest(value: object): value is CreateGroupPermissionRequest {
-    if (!('pathPartId' in value) || value['pathPartId'] === undefined) return false;
+    if ((!('pathPartId' in (value as Record<string, any>)) && !('path_part_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['pathPartId'] === undefined && (value as Record<string, any>)['path_part_id'] === undefined)) return false;
     if (!('capability' in value) || value['capability'] === undefined) return false;
     return true;
 }

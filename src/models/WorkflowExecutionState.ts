@@ -36,7 +36,7 @@ export const WorkflowExecutionState = {
     NotStarted: 'NOT_STARTED',
     InProgress: 'IN_PROGRESS',
     Completed: 'COMPLETED',
-    Failed: 'FAILED'
+    Failed: 'FAILED',
 } as const;
 export type WorkflowExecutionState = typeof WorkflowExecutionState[keyof typeof WorkflowExecutionState];
 

@@ -29,43 +29,33 @@ import {
 export interface ColumnConfig {
     /**
      * 
-     * @type {string}
-     * @memberof ColumnConfig
      */
     name: string;
     /**
      * 
-     * @type {string}
-     * @memberof ColumnConfig
      */
     dataType?: string;
     /**
      * 
-     * @type {string}
-     * @memberof ColumnConfig
      */
     comment?: string | null;
     /**
      * 
-     * @type {boolean}
-     * @memberof ColumnConfig
      */
     isPk?: boolean;
     /**
      * 
-     * @type {boolean}
-     * @memberof ColumnConfig
      */
     exposed?: boolean;
     /**
      * 
-     * @type {ColumnReference}
-     * @memberof ColumnConfig
      */
     references?: ColumnReference | null;
 }
 export const ColumnConfigPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -102,10 +92,10 @@ export function ColumnConfigFromJSONTyped(json: any, ignoreDiscriminator: boolea
         
         'name': json['name'],
         'dataType': json['data_type'] == null ? undefined : json['data_type'],
-        'comment': json['comment'] == null ? undefined : json['comment'],
+        'comment': json['comment'] === undefined ? undefined : json['comment'] === null ? null : json['comment'],
         'isPk': json['is_pk'] == null ? undefined : json['is_pk'],
         'exposed': json['exposed'] == null ? undefined : json['exposed'],
-        'references': json['references'] == null ? undefined : ColumnReferenceFromJSON(json['references']),
+        'references': json['references'] === undefined ? undefined : json['references'] === null ? null : ColumnReferenceFromJSON(json['references']),
     };
 }
 

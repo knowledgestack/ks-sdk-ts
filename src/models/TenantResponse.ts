@@ -43,55 +43,41 @@ import {
 export interface TenantResponse {
     /**
      * Tenant ID
-     * @type {string}
-     * @memberof TenantResponse
      */
     id: string;
     /**
      * Tenant name
-     * @type {string}
-     * @memberof TenantResponse
      */
     name: string;
     /**
      * The tenant OWNER's name, so a member knows who can grant access. Null only when the tenant has no OWNER membership.
-     * @type {UserInfo}
-     * @memberof TenantResponse
      */
     owner: UserInfo | null;
     /**
      * External IdP configuration
-     * @type {{ [key: string]: any; }}
-     * @memberof TenantResponse
      */
     idpConfig?: { [key: string]: any; } | null;
     /**
      * 
-     * @type {TenantSettingsResponse}
-     * @memberof TenantResponse
      */
     settings: TenantSettingsResponse;
     /**
      * 
-     * @type {TenantBrandingResponse}
-     * @memberof TenantResponse
      */
     branding?: TenantBrandingResponse;
     /**
      * Maximum active members allowed for this tenant.
-     * @type {number}
-     * @memberof TenantResponse
      */
     seats: number;
     /**
      * FK to the subscription plan governing the tenant's caps. Resolve ``GET /public/subscriptions`` to display plan name and limits.
-     * @type {string}
-     * @memberof TenantResponse
      */
     subscriptionId: string;
 }
 export const TenantResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -106,6 +92,8 @@ export const TenantResponsePropertyValidationAttributesMap: {
     }
 } = {
     seats: {
+        dataType: "number",
+        required: true,
         minimum: 1,
         exclusiveMinimum: false,
     },
@@ -121,7 +109,7 @@ export function instanceOfTenantResponse(value: object): value is TenantResponse
     if (!('owner' in value) || value['owner'] === undefined) return false;
     if (!('settings' in value) || value['settings'] === undefined) return false;
     if (!('seats' in value) || value['seats'] === undefined) return false;
-    if (!('subscriptionId' in value) || value['subscriptionId'] === undefined) return false;
+    if ((!('subscriptionId' in (value as Record<string, any>)) && !('subscription_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['subscriptionId'] === undefined && (value as Record<string, any>)['subscription_id'] === undefined)) return false;
     return true;
 }
 
@@ -138,7 +126,7 @@ export function TenantResponseFromJSONTyped(json: any, ignoreDiscriminator: bool
         'id': json['id'],
         'name': json['name'],
         'owner': UserInfoFromJSON(json['owner']),
-        'idpConfig': json['idp_config'] == null ? undefined : json['idp_config'],
+        'idpConfig': json['idp_config'] === undefined ? undefined : json['idp_config'] === null ? null : json['idp_config'],
         'settings': TenantSettingsResponseFromJSON(json['settings']),
         'branding': json['branding'] == null ? undefined : TenantBrandingResponseFromJSON(json['branding']),
         'seats': json['seats'],

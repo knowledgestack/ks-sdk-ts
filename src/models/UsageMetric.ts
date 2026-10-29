@@ -21,7 +21,7 @@ export const UsageMetric = {
     Page: 'PAGE',
     Search: 'SEARCH',
     Message: 'MESSAGE',
-    MediaMinute: 'MEDIA_MINUTE'
+    MediaMinute: 'MEDIA_MINUTE',
 } as const;
 export type UsageMetric = typeof UsageMetric[keyof typeof UsageMetric];
 

@@ -26,7 +26,7 @@ export const PathOrder = {
     Logical: 'LOGICAL',
     Name: 'NAME',
     UpdatedAt: 'UPDATED_AT',
-    CreatedAt: 'CREATED_AT'
+    CreatedAt: 'CREATED_AT',
 } as const;
 export type PathOrder = typeof PathOrder[keyof typeof PathOrder];
 

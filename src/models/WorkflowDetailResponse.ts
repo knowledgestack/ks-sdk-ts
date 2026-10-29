@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
 import type { PipelineStatus } from './PipelineStatus';
 import {
     PipelineStatusFromJSON,
@@ -36,128 +36,86 @@ import {
 export interface WorkflowDetailResponse {
     /**
      * 
-     * @type {string}
-     * @memberof WorkflowDetailResponse
      */
     workflowId: string;
     /**
      * 
-     * @type {string}
-     * @memberof WorkflowDetailResponse
      */
     documentId: string;
     /**
      * 
-     * @type {string}
-     * @memberof WorkflowDetailResponse
      */
     documentName: string;
     /**
      * The document's path
-     * @type {string}
-     * @memberof WorkflowDetailResponse
      */
     materializedPath: string;
     /**
      * 
-     * @type {string}
-     * @memberof WorkflowDetailResponse
      */
     documentVersionId: string;
     /**
      * Whether this version is the document's active one; false for an unfinished newer upload and for a superseded older version
-     * @type {boolean}
-     * @memberof WorkflowDetailResponse
      */
     isActiveVersion: boolean;
     /**
      * 
-     * @type {UserInfo}
-     * @memberof WorkflowDetailResponse
      */
     uploader: UserInfo;
     /**
      * 
-     * @type {PipelineStatus}
-     * @memberof WorkflowDetailResponse
      */
     status: PipelineStatus;
     /**
      * 
-     * @type {string}
-     * @memberof WorkflowDetailResponse
      */
     lastActivity?: string | null;
     /**
      * 
-     * @type {number}
-     * @memberof WorkflowDetailResponse
      */
     lastStageRetryAttempt?: number;
     /**
      * 
-     * @type {string}
-     * @memberof WorkflowDetailResponse
      */
     error?: string | null;
     /**
      * When the last run started; the upload time until a run has started
-     * @type {Date}
-     * @memberof WorkflowDetailResponse
      */
     lastRunTimestamp: Date;
     /**
      * 
-     * @type {Date}
-     * @memberof WorkflowDetailResponse
      */
     lastStateUpdateTimestamp?: Date | null;
     /**
      * 
-     * @type {Date}
-     * @memberof WorkflowDetailResponse
      */
     createdAt: Date;
     /**
      * 
-     * @type {string}
-     * @memberof WorkflowDetailResponse
      */
     temporalStatus: string;
     /**
      * 
-     * @type {Date}
-     * @memberof WorkflowDetailResponse
      */
     startTime: Date;
     /**
      * 
-     * @type {Date}
-     * @memberof WorkflowDetailResponse
      */
     closeTime?: Date | null;
     /**
      * 
-     * @type {string}
-     * @memberof WorkflowDetailResponse
      */
     workflowType: string;
     /**
      * 
-     * @type {string}
-     * @memberof WorkflowDetailResponse
      */
     taskQueue: string;
     /**
      * 
-     * @type {string}
-     * @memberof WorkflowDetailResponse
      */
     runId: string;
     /**
      * 
-     * @type {number}
-     * @memberof WorkflowDetailResponse
      */
     chunksProcessed?: number | null;
 }
@@ -165,6 +123,8 @@ export interface WorkflowDetailResponse {
 
 export const WorkflowDetailResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -179,6 +139,7 @@ export const WorkflowDetailResponsePropertyValidationAttributesMap: {
     }
 } = {
     lastStageRetryAttempt: {
+        dataType: "number",
         minimum: 0,
         exclusiveMinimum: false,
     },
@@ -189,21 +150,21 @@ export const WorkflowDetailResponsePropertyValidationAttributesMap: {
  * Check if a given object implements the WorkflowDetailResponse interface.
  */
 export function instanceOfWorkflowDetailResponse(value: object): value is WorkflowDetailResponse {
-    if (!('workflowId' in value) || value['workflowId'] === undefined) return false;
-    if (!('documentId' in value) || value['documentId'] === undefined) return false;
-    if (!('documentName' in value) || value['documentName'] === undefined) return false;
-    if (!('materializedPath' in value) || value['materializedPath'] === undefined) return false;
-    if (!('documentVersionId' in value) || value['documentVersionId'] === undefined) return false;
-    if (!('isActiveVersion' in value) || value['isActiveVersion'] === undefined) return false;
+    if ((!('workflowId' in (value as Record<string, any>)) && !('workflow_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['workflowId'] === undefined && (value as Record<string, any>)['workflow_id'] === undefined)) return false;
+    if ((!('documentId' in (value as Record<string, any>)) && !('document_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['documentId'] === undefined && (value as Record<string, any>)['document_id'] === undefined)) return false;
+    if ((!('documentName' in (value as Record<string, any>)) && !('document_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['documentName'] === undefined && (value as Record<string, any>)['document_name'] === undefined)) return false;
+    if ((!('materializedPath' in (value as Record<string, any>)) && !('materialized_path' in (value as Record<string, any>))) || ((value as Record<string, any>)['materializedPath'] === undefined && (value as Record<string, any>)['materialized_path'] === undefined)) return false;
+    if ((!('documentVersionId' in (value as Record<string, any>)) && !('document_version_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['documentVersionId'] === undefined && (value as Record<string, any>)['document_version_id'] === undefined)) return false;
+    if ((!('isActiveVersion' in (value as Record<string, any>)) && !('is_active_version' in (value as Record<string, any>))) || ((value as Record<string, any>)['isActiveVersion'] === undefined && (value as Record<string, any>)['is_active_version'] === undefined)) return false;
     if (!('uploader' in value) || value['uploader'] === undefined) return false;
     if (!('status' in value) || value['status'] === undefined) return false;
-    if (!('lastRunTimestamp' in value) || value['lastRunTimestamp'] === undefined) return false;
-    if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
-    if (!('temporalStatus' in value) || value['temporalStatus'] === undefined) return false;
-    if (!('startTime' in value) || value['startTime'] === undefined) return false;
-    if (!('workflowType' in value) || value['workflowType'] === undefined) return false;
-    if (!('taskQueue' in value) || value['taskQueue'] === undefined) return false;
-    if (!('runId' in value) || value['runId'] === undefined) return false;
+    if ((!('lastRunTimestamp' in (value as Record<string, any>)) && !('last_run_timestamp' in (value as Record<string, any>))) || ((value as Record<string, any>)['lastRunTimestamp'] === undefined && (value as Record<string, any>)['last_run_timestamp'] === undefined)) return false;
+    if ((!('createdAt' in (value as Record<string, any>)) && !('created_at' in (value as Record<string, any>))) || ((value as Record<string, any>)['createdAt'] === undefined && (value as Record<string, any>)['created_at'] === undefined)) return false;
+    if ((!('temporalStatus' in (value as Record<string, any>)) && !('temporal_status' in (value as Record<string, any>))) || ((value as Record<string, any>)['temporalStatus'] === undefined && (value as Record<string, any>)['temporal_status'] === undefined)) return false;
+    if ((!('startTime' in (value as Record<string, any>)) && !('start_time' in (value as Record<string, any>))) || ((value as Record<string, any>)['startTime'] === undefined && (value as Record<string, any>)['start_time'] === undefined)) return false;
+    if ((!('workflowType' in (value as Record<string, any>)) && !('workflow_type' in (value as Record<string, any>))) || ((value as Record<string, any>)['workflowType'] === undefined && (value as Record<string, any>)['workflow_type'] === undefined)) return false;
+    if ((!('taskQueue' in (value as Record<string, any>)) && !('task_queue' in (value as Record<string, any>))) || ((value as Record<string, any>)['taskQueue'] === undefined && (value as Record<string, any>)['task_queue'] === undefined)) return false;
+    if ((!('runId' in (value as Record<string, any>)) && !('run_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['runId'] === undefined && (value as Record<string, any>)['run_id'] === undefined)) return false;
     return true;
 }
 
@@ -225,19 +186,19 @@ export function WorkflowDetailResponseFromJSONTyped(json: any, ignoreDiscriminat
         'isActiveVersion': json['is_active_version'],
         'uploader': UserInfoFromJSON(json['uploader']),
         'status': PipelineStatusFromJSON(json['status']),
-        'lastActivity': json['last_activity'] == null ? undefined : json['last_activity'],
+        'lastActivity': json['last_activity'] === undefined ? undefined : json['last_activity'] === null ? null : json['last_activity'],
         'lastStageRetryAttempt': json['last_stage_retry_attempt'] == null ? undefined : json['last_stage_retry_attempt'],
-        'error': json['error'] == null ? undefined : json['error'],
-        'lastRunTimestamp': (new Date(json['last_run_timestamp'])),
-        'lastStateUpdateTimestamp': json['last_state_update_timestamp'] == null ? undefined : (new Date(json['last_state_update_timestamp'])),
-        'createdAt': (new Date(json['created_at'])),
+        'error': json['error'] === undefined ? undefined : json['error'] === null ? null : json['error'],
+        'lastRunTimestamp': (json['last_run_timestamp'] == null ? json['last_run_timestamp'] : parseDateTime(json['last_run_timestamp'])),
+        'lastStateUpdateTimestamp': json['last_state_update_timestamp'] === undefined ? undefined : json['last_state_update_timestamp'] === null ? null : (parseDateTime(json['last_state_update_timestamp'])),
+        'createdAt': (json['created_at'] == null ? json['created_at'] : parseDateTime(json['created_at'])),
         'temporalStatus': json['temporal_status'],
-        'startTime': (new Date(json['start_time'])),
-        'closeTime': json['close_time'] == null ? undefined : (new Date(json['close_time'])),
+        'startTime': (json['start_time'] == null ? json['start_time'] : parseDateTime(json['start_time'])),
+        'closeTime': json['close_time'] === undefined ? undefined : json['close_time'] === null ? null : (parseDateTime(json['close_time'])),
         'workflowType': json['workflow_type'],
         'taskQueue': json['task_queue'],
         'runId': json['run_id'],
-        'chunksProcessed': json['chunks_processed'] == null ? undefined : json['chunks_processed'],
+        'chunksProcessed': json['chunks_processed'] === undefined ? undefined : json['chunks_processed'] === null ? null : json['chunks_processed'],
     };
 }
 
@@ -263,12 +224,12 @@ export function WorkflowDetailResponseToJSONTyped(value?: WorkflowDetailResponse
         'last_activity': value['lastActivity'],
         'last_stage_retry_attempt': value['lastStageRetryAttempt'],
         'error': value['error'],
-        'last_run_timestamp': value['lastRunTimestamp'].toISOString(),
-        'last_state_update_timestamp': value['lastStateUpdateTimestamp'] == null ? value['lastStateUpdateTimestamp'] : value['lastStateUpdateTimestamp'].toISOString(),
-        'created_at': value['createdAt'].toISOString(),
+        'last_run_timestamp': value['lastRunTimestamp'] == null ? value['lastRunTimestamp'] : serializeDateTime(value['lastRunTimestamp']),
+        'last_state_update_timestamp': value['lastStateUpdateTimestamp'] == null ? value['lastStateUpdateTimestamp'] : serializeDateTime(value['lastStateUpdateTimestamp']),
+        'created_at': value['createdAt'] == null ? value['createdAt'] : serializeDateTime(value['createdAt']),
         'temporal_status': value['temporalStatus'],
-        'start_time': value['startTime'].toISOString(),
-        'close_time': value['closeTime'] == null ? value['closeTime'] : value['closeTime'].toISOString(),
+        'start_time': value['startTime'] == null ? value['startTime'] : serializeDateTime(value['startTime']),
+        'close_time': value['closeTime'] == null ? value['closeTime'] : serializeDateTime(value['closeTime']),
         'workflow_type': value['workflowType'],
         'task_queue': value['taskQueue'],
         'run_id': value['runId'],

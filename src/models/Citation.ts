@@ -21,43 +21,33 @@ import { mapValues } from '../runtime';
 export interface Citation {
     /**
      * 
-     * @type {string}
-     * @memberof Citation
      */
     chunkId: string;
     /**
      * The quote from the chunk
-     * @type {string}
-     * @memberof Citation
      */
     quote: string;
     /**
      * The 0-based start character of the quote in the chunk
-     * @type {number}
-     * @memberof Citation
      */
     startChar: number;
     /**
      * The length of the quote
-     * @type {number}
-     * @memberof Citation
      */
     length: number;
     /**
      * Start time (ms) of the cited chunk in the source media, for AUDIO/VIDEO — lets the client deep-link playback to the moment. None for non-media chunks.
-     * @type {number}
-     * @memberof Citation
      */
     startMs?: number | null;
     /**
      * End time (ms) of the cited chunk in the source media (AUDIO/VIDEO); None for non-media chunks.
-     * @type {number}
-     * @memberof Citation
      */
     endMs?: number | null;
 }
 export const CitationPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -72,6 +62,8 @@ export const CitationPropertyValidationAttributesMap: {
     }
 } = {
     startChar: {
+        dataType: "number",
+        required: true,
         minimum: 0,
         exclusiveMinimum: false,
     },
@@ -82,9 +74,9 @@ export const CitationPropertyValidationAttributesMap: {
  * Check if a given object implements the Citation interface.
  */
 export function instanceOfCitation(value: object): value is Citation {
-    if (!('chunkId' in value) || value['chunkId'] === undefined) return false;
+    if ((!('chunkId' in (value as Record<string, any>)) && !('chunk_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['chunkId'] === undefined && (value as Record<string, any>)['chunk_id'] === undefined)) return false;
     if (!('quote' in value) || value['quote'] === undefined) return false;
-    if (!('startChar' in value) || value['startChar'] === undefined) return false;
+    if ((!('startChar' in (value as Record<string, any>)) && !('start_char' in (value as Record<string, any>))) || ((value as Record<string, any>)['startChar'] === undefined && (value as Record<string, any>)['start_char'] === undefined)) return false;
     if (!('length' in value) || value['length'] === undefined) return false;
     return true;
 }
@@ -103,8 +95,8 @@ export function CitationFromJSONTyped(json: any, ignoreDiscriminator: boolean): 
         'quote': json['quote'],
         'startChar': json['start_char'],
         'length': json['length'],
-        'startMs': json['start_ms'] == null ? undefined : json['start_ms'],
-        'endMs': json['end_ms'] == null ? undefined : json['end_ms'],
+        'startMs': json['start_ms'] === undefined ? undefined : json['start_ms'] === null ? null : json['start_ms'],
+        'endMs': json['end_ms'] === undefined ? undefined : json['end_ms'] === null ? null : json['end_ms'],
     };
 }
 

@@ -20,7 +20,7 @@
 export const TenantUserOrder = {
     AddedAt: 'ADDED_AT',
     Username: 'USERNAME',
-    Role: 'ROLE'
+    Role: 'ROLE',
 } as const;
 export type TenantUserOrder = typeof TenantUserOrder[keyof typeof TenantUserOrder];
 

@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
 import type { PathPartApprovalState } from './PathPartApprovalState';
 import {
     PathPartApprovalStateFromJSON,
@@ -29,86 +29,58 @@ import {
 export interface SectionContentItem {
     /**
      * Path part type
-     * @type {SectionContentItemPartTypeEnum}
-     * @memberof SectionContentItem
      */
     partType: SectionContentItemPartTypeEnum;
     /**
      * PathPart ID
-     * @type {string}
-     * @memberof SectionContentItem
      */
     pathPartId: string;
     /**
      * PathPart name
-     * @type {string}
-     * @memberof SectionContentItem
      */
     name: string;
     /**
      * Parent PathPart ID
-     * @type {string}
-     * @memberof SectionContentItem
      */
     parentPathId: string;
     /**
      * Section ID
-     * @type {string}
-     * @memberof SectionContentItem
      */
     metadataObjId: string;
     /**
      * Depth relative to document version root
-     * @type {number}
-     * @memberof SectionContentItem
      */
     depth: number;
     /**
      * 0-based ordinal of the first chunk in this section's subtree, counting CHUNK rows in DFS order from the traversal root. Null when the section has no chunk anywhere below it, and on endpoints that do not compute traversal ordinals.
-     * @type {number}
-     * @memberof SectionContentItem
      */
     chunkStartIndex?: number | null;
     /**
      * 0-based ordinal of the last chunk in this section's subtree, inclusive. Chunks outside the section — a later sibling, or a chunk attached to an ancestor — are excluded, so the span covers only this section's own content. Null under the same conditions as chunk_start_index.
-     * @type {number}
-     * @memberof SectionContentItem
      */
     chunkEndIndex?: number | null;
     /**
      * Section page number
-     * @type {number}
-     * @memberof SectionContentItem
      */
     pageNumber?: number | null;
     /**
      * Full materialized path from root
-     * @type {string}
-     * @memberof SectionContentItem
      */
     materializedPath: string;
     /**
      * Whether this item is system-managed
-     * @type {boolean}
-     * @memberof SectionContentItem
      */
     systemManaged: boolean;
     /**
      * 
-     * @type {PathPartApprovalState}
-     * @memberof SectionContentItem
      */
     approvalState: PathPartApprovalState;
     /**
      * Creation timestamp
-     * @type {Date}
-     * @memberof SectionContentItem
      */
     createdAt: Date;
     /**
      * Last update timestamp
-     * @type {Date}
-     * @memberof SectionContentItem
      */
     updatedAt: Date;
 }
@@ -118,12 +90,14 @@ export interface SectionContentItem {
  * @export
  */
 export const SectionContentItemPartTypeEnum = {
-    Section: 'SECTION'
+    Section: 'SECTION',
 } as const;
 export type SectionContentItemPartTypeEnum = typeof SectionContentItemPartTypeEnum[keyof typeof SectionContentItemPartTypeEnum];
 
 export const SectionContentItemPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -144,17 +118,19 @@ export const SectionContentItemPropertyValidationAttributesMap: {
  * Check if a given object implements the SectionContentItem interface.
  */
 export function instanceOfSectionContentItem(value: object): value is SectionContentItem {
-    if (!('partType' in value) || value['partType'] === undefined) return false;
-    if (!('pathPartId' in value) || value['pathPartId'] === undefined) return false;
+    if ((!('partType' in (value as Record<string, any>)) && !('part_type' in (value as Record<string, any>))) || ((value as Record<string, any>)['partType'] === undefined && (value as Record<string, any>)['part_type'] === undefined)) return false;
+    if ((value as Record<string, any>)['partType'] !== 'SECTION' && (value as Record<string, any>)['part_type'] !== 'SECTION') return false;
+    
+    if ((!('pathPartId' in (value as Record<string, any>)) && !('path_part_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['pathPartId'] === undefined && (value as Record<string, any>)['path_part_id'] === undefined)) return false;
     if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('parentPathId' in value) || value['parentPathId'] === undefined) return false;
-    if (!('metadataObjId' in value) || value['metadataObjId'] === undefined) return false;
+    if ((!('parentPathId' in (value as Record<string, any>)) && !('parent_path_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['parentPathId'] === undefined && (value as Record<string, any>)['parent_path_id'] === undefined)) return false;
+    if ((!('metadataObjId' in (value as Record<string, any>)) && !('metadata_obj_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['metadataObjId'] === undefined && (value as Record<string, any>)['metadata_obj_id'] === undefined)) return false;
     if (!('depth' in value) || value['depth'] === undefined) return false;
-    if (!('materializedPath' in value) || value['materializedPath'] === undefined) return false;
-    if (!('systemManaged' in value) || value['systemManaged'] === undefined) return false;
-    if (!('approvalState' in value) || value['approvalState'] === undefined) return false;
-    if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
-    if (!('updatedAt' in value) || value['updatedAt'] === undefined) return false;
+    if ((!('materializedPath' in (value as Record<string, any>)) && !('materialized_path' in (value as Record<string, any>))) || ((value as Record<string, any>)['materializedPath'] === undefined && (value as Record<string, any>)['materialized_path'] === undefined)) return false;
+    if ((!('systemManaged' in (value as Record<string, any>)) && !('system_managed' in (value as Record<string, any>))) || ((value as Record<string, any>)['systemManaged'] === undefined && (value as Record<string, any>)['system_managed'] === undefined)) return false;
+    if ((!('approvalState' in (value as Record<string, any>)) && !('approval_state' in (value as Record<string, any>))) || ((value as Record<string, any>)['approvalState'] === undefined && (value as Record<string, any>)['approval_state'] === undefined)) return false;
+    if ((!('createdAt' in (value as Record<string, any>)) && !('created_at' in (value as Record<string, any>))) || ((value as Record<string, any>)['createdAt'] === undefined && (value as Record<string, any>)['created_at'] === undefined)) return false;
+    if ((!('updatedAt' in (value as Record<string, any>)) && !('updated_at' in (value as Record<string, any>))) || ((value as Record<string, any>)['updatedAt'] === undefined && (value as Record<string, any>)['updated_at'] === undefined)) return false;
     return true;
 }
 
@@ -174,14 +150,14 @@ export function SectionContentItemFromJSONTyped(json: any, ignoreDiscriminator: 
         'parentPathId': json['parent_path_id'],
         'metadataObjId': json['metadata_obj_id'],
         'depth': json['depth'],
-        'chunkStartIndex': json['chunk_start_index'] == null ? undefined : json['chunk_start_index'],
-        'chunkEndIndex': json['chunk_end_index'] == null ? undefined : json['chunk_end_index'],
-        'pageNumber': json['page_number'] == null ? undefined : json['page_number'],
+        'chunkStartIndex': json['chunk_start_index'] === undefined ? undefined : json['chunk_start_index'] === null ? null : json['chunk_start_index'],
+        'chunkEndIndex': json['chunk_end_index'] === undefined ? undefined : json['chunk_end_index'] === null ? null : json['chunk_end_index'],
+        'pageNumber': json['page_number'] === undefined ? undefined : json['page_number'] === null ? null : json['page_number'],
         'materializedPath': json['materialized_path'],
         'systemManaged': json['system_managed'],
         'approvalState': PathPartApprovalStateFromJSON(json['approval_state']),
-        'createdAt': (new Date(json['created_at'])),
-        'updatedAt': (new Date(json['updated_at'])),
+        'createdAt': (json['created_at'] == null ? json['created_at'] : parseDateTime(json['created_at'])),
+        'updatedAt': (json['updated_at'] == null ? json['updated_at'] : parseDateTime(json['updated_at'])),
     };
 }
 
@@ -208,8 +184,8 @@ export function SectionContentItemToJSONTyped(value?: SectionContentItem | null,
         'materialized_path': value['materializedPath'],
         'system_managed': value['systemManaged'],
         'approval_state': PathPartApprovalStateToJSON(value['approvalState']),
-        'created_at': value['createdAt'].toISOString(),
-        'updated_at': value['updatedAt'].toISOString(),
+        'created_at': value['createdAt'] == null ? value['createdAt'] : serializeDateTime(value['createdAt']),
+        'updated_at': value['updatedAt'] == null ? value['updatedAt'] : serializeDateTime(value['updatedAt']),
     };
 }
 

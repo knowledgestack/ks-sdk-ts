@@ -24,19 +24,17 @@ import { mapValues } from '../runtime';
 export interface BulkDownloadRequest {
     /**
      * 
-     * @type {Array<string>}
-     * @memberof BulkDownloadRequest
      */
     folderIds?: Array<string>;
     /**
      * 
-     * @type {Array<string>}
-     * @memberof BulkDownloadRequest
      */
     documentIds?: Array<string>;
 }
 export const BulkDownloadRequestPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -51,10 +49,12 @@ export const BulkDownloadRequestPropertyValidationAttributesMap: {
     }
 } = {
     folderIds: {
+        dataType: "Array<string>",
         maxItems: 200,
         uniqueItems: false,
     },
     documentIds: {
+        dataType: "Array<string>",
         maxItems: 200,
         uniqueItems: false,
     },

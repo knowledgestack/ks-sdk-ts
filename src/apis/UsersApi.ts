@@ -12,40 +12,56 @@
  * Do not edit the class manually.
  */
 
-
 import * as runtime from '../runtime';
-import type {
-  AccessRequestResponse,
-  ErrorResponse,
-  HTTPValidationError,
-  OnboardingStateUpdate,
-  UpdateUserRequest,
-  UserResponse,
-} from '../models/index';
 import {
+    type AccessRequestResponse,
     AccessRequestResponseFromJSON,
     AccessRequestResponseToJSON,
+} from '../models/AccessRequestResponse';
+import {
+    type ErrorResponse,
     ErrorResponseFromJSON,
     ErrorResponseToJSON,
+} from '../models/ErrorResponse';
+import {
+    type HTTPValidationError,
     HTTPValidationErrorFromJSON,
     HTTPValidationErrorToJSON,
+} from '../models/HTTPValidationError';
+import {
+    type OnboardingStateUpdate,
     OnboardingStateUpdateFromJSON,
     OnboardingStateUpdateToJSON,
+} from '../models/OnboardingStateUpdate';
+import {
+    type UpdateUserRequest,
     UpdateUserRequestFromJSON,
     UpdateUserRequestToJSON,
+} from '../models/UpdateUserRequest';
+import {
+    type UserResponse,
     UserResponseFromJSON,
     UserResponseToJSON,
-} from '../models/index';
+} from '../models/UserResponse';
 
 export interface UpdateMeRequest {
+    /**
+     * 
+     */
     updateUserRequest: UpdateUserRequest;
 }
 
 export interface UpdateOnboardingStateRequest {
+    /**
+     * 
+     */
     onboardingStateUpdate: OnboardingStateUpdate;
 }
 
 export interface UploadMyAvatarRequest {
+    /**
+     * 
+     */
     file: Blob;
 }
 

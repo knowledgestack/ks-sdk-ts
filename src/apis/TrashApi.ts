@@ -12,71 +12,132 @@
  * Do not edit the class manually.
  */
 
-
 import * as runtime from '../runtime';
-import type {
-  BulkOperationResponse,
-  BulkTrashRequest,
-  ErrorResponse,
-  HTTPValidationError,
-  PaginatedResponseTrashItemResponse,
-  PartType,
-  PathOrder,
-  SortDirection,
-  TrashItemDetailResponse,
-} from '../models/index';
 import {
+    type BulkOperationResponse,
     BulkOperationResponseFromJSON,
     BulkOperationResponseToJSON,
+} from '../models/BulkOperationResponse';
+import {
+    type BulkTrashRequest,
     BulkTrashRequestFromJSON,
     BulkTrashRequestToJSON,
+} from '../models/BulkTrashRequest';
+import {
+    type ErrorResponse,
     ErrorResponseFromJSON,
     ErrorResponseToJSON,
+} from '../models/ErrorResponse';
+import {
+    type HTTPValidationError,
     HTTPValidationErrorFromJSON,
     HTTPValidationErrorToJSON,
+} from '../models/HTTPValidationError';
+import {
+    type PaginatedResponseTrashItemResponse,
     PaginatedResponseTrashItemResponseFromJSON,
     PaginatedResponseTrashItemResponseToJSON,
+} from '../models/PaginatedResponseTrashItemResponse';
+import {
+    type PartType,
     PartTypeFromJSON,
     PartTypeToJSON,
+} from '../models/PartType';
+import {
+    type PathOrder,
     PathOrderFromJSON,
     PathOrderToJSON,
+} from '../models/PathOrder';
+import {
+    type SortDirection,
     SortDirectionFromJSON,
     SortDirectionToJSON,
+} from '../models/SortDirection';
+import {
+    type TrashItemDetailResponse,
     TrashItemDetailResponseFromJSON,
     TrashItemDetailResponseToJSON,
-} from '../models/index';
+} from '../models/TrashItemDetailResponse';
 
 export interface BulkPermanentlyDeleteTrashRequest {
+    /**
+     * 
+     */
     bulkTrashRequest: BulkTrashRequest;
 }
 
 export interface BulkRestoreTrashRequest {
+    /**
+     * 
+     */
     bulkTrashRequest: BulkTrashRequest;
 }
 
 export interface GetTrashItemRequest {
+    /**
+     * Trashed PathPart ID
+     */
     pathPartId: string;
 }
 
 export interface ListTrashRequest {
+    /**
+     * Sort order (default: LOGICAL = deletion recency)
+     */
     sortOrder?: PathOrder;
+    /**
+     * Sort direction; overrides the column's natural default
+     */
     sortDir?: SortDirection;
+    /**
+     * Filter to items deleted by this user
+     */
     deletedBy?: string | null;
+    /**
+     * Filter to these path-part types (folders, documents, ...)
+     */
     partType?: Array<PartType> | null;
+    /**
+     * Filter to items owned (created) by this user
+     */
     ownerId?: string | null;
+    /**
+     * Number of items per page
+     */
     limit?: number;
+    /**
+     * Number of items to skip
+     */
     offset?: number;
+    /**
+     * Only items created at or after this timestamp (inclusive)
+     */
     createdAfter?: Date | null;
+    /**
+     * Only items created strictly before this timestamp
+     */
     createdBefore?: Date | null;
+    /**
+     * Only items updated at or after this timestamp (inclusive)
+     */
     updatedAfter?: Date | null;
+    /**
+     * Only items updated strictly before this timestamp
+     */
     updatedBefore?: Date | null;
 }
 
 export interface PermanentlyDeleteTrashItemRequest {
+    /**
+     * Trashed PathPart ID
+     */
     pathPartId: string;
 }
 
 export interface RestoreTrashItemRequest {
+    /**
+     * Trashed PathPart ID
+     */
     pathPartId: string;
 }
 
@@ -397,7 +458,7 @@ export class TrashApi extends runtime.BaseAPI implements TrashApiInterface {
         }
 
         let urlPath = `/v1/trash/{path_part_id}`;
-        urlPath = urlPath.replace(`{${"path_part_id"}}`, encodeURIComponent(String(requestParameters['pathPartId'])));
+        urlPath = urlPath.replace('{path_part_id}', encodeURIComponent(String(requestParameters['pathPartId'])));
 
         return {
             path: urlPath,
@@ -462,19 +523,19 @@ export class TrashApi extends runtime.BaseAPI implements TrashApiInterface {
         }
 
         if (requestParameters['createdAfter'] != null) {
-            queryParameters['created_after'] = (requestParameters['createdAfter'] as any).toISOString();
+            queryParameters['created_after'] = runtime.serializeDateTime(requestParameters['createdAfter'] as any);
         }
 
         if (requestParameters['createdBefore'] != null) {
-            queryParameters['created_before'] = (requestParameters['createdBefore'] as any).toISOString();
+            queryParameters['created_before'] = runtime.serializeDateTime(requestParameters['createdBefore'] as any);
         }
 
         if (requestParameters['updatedAfter'] != null) {
-            queryParameters['updated_after'] = (requestParameters['updatedAfter'] as any).toISOString();
+            queryParameters['updated_after'] = runtime.serializeDateTime(requestParameters['updatedAfter'] as any);
         }
 
         if (requestParameters['updatedBefore'] != null) {
-            queryParameters['updated_before'] = (requestParameters['updatedBefore'] as any).toISOString();
+            queryParameters['updated_before'] = runtime.serializeDateTime(requestParameters['updatedBefore'] as any);
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -543,7 +604,7 @@ export class TrashApi extends runtime.BaseAPI implements TrashApiInterface {
         }
 
         let urlPath = `/v1/trash/{path_part_id}`;
-        urlPath = urlPath.replace(`{${"path_part_id"}}`, encodeURIComponent(String(requestParameters['pathPartId'])));
+        urlPath = urlPath.replace('{path_part_id}', encodeURIComponent(String(requestParameters['pathPartId'])));
 
         return {
             path: urlPath,
@@ -597,7 +658,7 @@ export class TrashApi extends runtime.BaseAPI implements TrashApiInterface {
         }
 
         let urlPath = `/v1/trash/{path_part_id}/restore`;
-        urlPath = urlPath.replace(`{${"path_part_id"}}`, encodeURIComponent(String(requestParameters['pathPartId'])));
+        urlPath = urlPath.replace('{path_part_id}', encodeURIComponent(String(requestParameters['pathPartId'])));
 
         return {
             path: urlPath,

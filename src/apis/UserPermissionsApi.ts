@@ -12,82 +12,148 @@
  * Do not edit the class manually.
  */
 
-
 import * as runtime from '../runtime';
-import type {
-  BulkGrantRequest,
-  BulkGrantResponse,
-  BulkOperationResponse,
-  BulkRevokeRequest,
-  CreatePermissionRequest,
-  ErrorResponse,
-  HTTPValidationError,
-  PaginatedResponsePermissionResponse,
-  PermissionCapability,
-  PermissionResponse,
-  SortDirection,
-  UpdatePermissionRequest,
-  UserPermissionOrder,
-} from '../models/index';
 import {
+    type BulkGrantRequest,
     BulkGrantRequestFromJSON,
     BulkGrantRequestToJSON,
+} from '../models/BulkGrantRequest';
+import {
+    type BulkGrantResponse,
     BulkGrantResponseFromJSON,
     BulkGrantResponseToJSON,
+} from '../models/BulkGrantResponse';
+import {
+    type BulkOperationResponse,
     BulkOperationResponseFromJSON,
     BulkOperationResponseToJSON,
+} from '../models/BulkOperationResponse';
+import {
+    type BulkRevokeRequest,
     BulkRevokeRequestFromJSON,
     BulkRevokeRequestToJSON,
+} from '../models/BulkRevokeRequest';
+import {
+    type CreatePermissionRequest,
     CreatePermissionRequestFromJSON,
     CreatePermissionRequestToJSON,
+} from '../models/CreatePermissionRequest';
+import {
+    type ErrorResponse,
     ErrorResponseFromJSON,
     ErrorResponseToJSON,
+} from '../models/ErrorResponse';
+import {
+    type HTTPValidationError,
     HTTPValidationErrorFromJSON,
     HTTPValidationErrorToJSON,
+} from '../models/HTTPValidationError';
+import {
+    type PaginatedResponsePermissionResponse,
     PaginatedResponsePermissionResponseFromJSON,
     PaginatedResponsePermissionResponseToJSON,
+} from '../models/PaginatedResponsePermissionResponse';
+import {
+    type PermissionCapability,
     PermissionCapabilityFromJSON,
     PermissionCapabilityToJSON,
+} from '../models/PermissionCapability';
+import {
+    type PermissionResponse,
     PermissionResponseFromJSON,
     PermissionResponseToJSON,
+} from '../models/PermissionResponse';
+import {
+    type SortDirection,
     SortDirectionFromJSON,
     SortDirectionToJSON,
+} from '../models/SortDirection';
+import {
+    type UpdatePermissionRequest,
     UpdatePermissionRequestFromJSON,
     UpdatePermissionRequestToJSON,
+} from '../models/UpdatePermissionRequest';
+import {
+    type UserPermissionOrder,
     UserPermissionOrderFromJSON,
     UserPermissionOrderToJSON,
-} from '../models/index';
+} from '../models/UserPermissionOrder';
 
 export interface BulkGrantUserPermissionsRequest {
+    /**
+     * 
+     */
     bulkGrantRequest: BulkGrantRequest;
 }
 
 export interface BulkRevokeUserPermissionsRequest {
+    /**
+     * 
+     */
     bulkRevokeRequest: BulkRevokeRequest;
 }
 
 export interface CreateUserPermissionRequest {
+    /**
+     * 
+     */
     createPermissionRequest: CreatePermissionRequest;
 }
 
 export interface DeleteUserPermissionRequest {
+    /**
+     * 
+     */
     permissionId: string;
+    /**
+     * Tenant ID the permission belongs to
+     */
     tenantId: string;
 }
 
 export interface ListUserPermissionsRequest {
+    /**
+     * Tenant ID to list permissions for
+     */
     tenantId: string;
+    /**
+     * User ID to list permissions for
+     */
     userId: string;
+    /**
+     * Field to sort permissions by (default: CREATED_AT)
+     */
     sortBy?: UserPermissionOrder;
+    /**
+     * Sort direction; overrides the field's natural default
+     */
     sortDir?: SortDirection;
+    /**
+     * Filter to a single capability level
+     */
     capability?: PermissionCapability;
+    /**
+     * Number of items per page
+     */
     limit?: number;
+    /**
+     * Number of items to skip
+     */
     offset?: number;
 }
 
 export interface UpdateUserPermissionRequest {
+    /**
+     * 
+     */
     permissionId: string;
+    /**
+     * Tenant ID the permission belongs to
+     */
     tenantId: string;
+    /**
+     * 
+     */
     updatePermissionRequest: UpdatePermissionRequest;
 }
 
@@ -474,7 +540,7 @@ export class UserPermissionsApi extends runtime.BaseAPI implements UserPermissio
         }
 
         let urlPath = `/v1/user-permissions/{permission_id}`;
-        urlPath = urlPath.replace(`{${"permission_id"}}`, encodeURIComponent(String(requestParameters['permissionId'])));
+        urlPath = urlPath.replace('{permission_id}', encodeURIComponent(String(requestParameters['permissionId'])));
 
         return {
             path: urlPath,
@@ -637,7 +703,7 @@ export class UserPermissionsApi extends runtime.BaseAPI implements UserPermissio
         }
 
         let urlPath = `/v1/user-permissions/{permission_id}`;
-        urlPath = urlPath.replace(`{${"permission_id"}}`, encodeURIComponent(String(requestParameters['permissionId'])));
+        urlPath = urlPath.replace('{permission_id}', encodeURIComponent(String(requestParameters['permissionId'])));
 
         return {
             path: urlPath,

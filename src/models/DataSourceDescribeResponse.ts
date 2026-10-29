@@ -26,31 +26,25 @@ import { mapValues } from '../runtime';
 export interface DataSourceDescribeResponse {
     /**
      * 
-     * @type {string}
-     * @memberof DataSourceDescribeResponse
      */
     dataSourceId: string;
     /**
      * Modeled tables considered
-     * @type {number}
-     * @memberof DataSourceDescribeResponse
      */
     tablesTotal: number;
     /**
      * Tables whose summary was (re)generated
-     * @type {number}
-     * @memberof DataSourceDescribeResponse
      */
     summarized: number;
     /**
      * Tables whose Qdrant point was (re)written
-     * @type {number}
-     * @memberof DataSourceDescribeResponse
      */
     embedded: number;
 }
 export const DataSourceDescribeResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -71,8 +65,8 @@ export const DataSourceDescribeResponsePropertyValidationAttributesMap: {
  * Check if a given object implements the DataSourceDescribeResponse interface.
  */
 export function instanceOfDataSourceDescribeResponse(value: object): value is DataSourceDescribeResponse {
-    if (!('dataSourceId' in value) || value['dataSourceId'] === undefined) return false;
-    if (!('tablesTotal' in value) || value['tablesTotal'] === undefined) return false;
+    if ((!('dataSourceId' in (value as Record<string, any>)) && !('data_source_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['dataSourceId'] === undefined && (value as Record<string, any>)['data_source_id'] === undefined)) return false;
+    if ((!('tablesTotal' in (value as Record<string, any>)) && !('tables_total' in (value as Record<string, any>))) || ((value as Record<string, any>)['tablesTotal'] === undefined && (value as Record<string, any>)['tables_total'] === undefined)) return false;
     if (!('summarized' in value) || value['summarized'] === undefined) return false;
     if (!('embedded' in value) || value['embedded'] === undefined) return false;
     return true;

@@ -12,53 +12,81 @@
  * Do not edit the class manually.
  */
 
-
 import * as runtime from '../runtime';
-import type {
-  CreateSectionRequest,
-  DissolveSectionResponse,
-  ErrorResponse,
-  HTTPValidationError,
-  SectionResponse,
-  UpdateSectionRequest,
-} from '../models/index';
 import {
+    type CreateSectionRequest,
     CreateSectionRequestFromJSON,
     CreateSectionRequestToJSON,
+} from '../models/CreateSectionRequest';
+import {
+    type DissolveSectionResponse,
     DissolveSectionResponseFromJSON,
     DissolveSectionResponseToJSON,
+} from '../models/DissolveSectionResponse';
+import {
+    type ErrorResponse,
     ErrorResponseFromJSON,
     ErrorResponseToJSON,
+} from '../models/ErrorResponse';
+import {
+    type HTTPValidationError,
     HTTPValidationErrorFromJSON,
     HTTPValidationErrorToJSON,
+} from '../models/HTTPValidationError';
+import {
+    type SectionResponse,
     SectionResponseFromJSON,
     SectionResponseToJSON,
+} from '../models/SectionResponse';
+import {
+    type UpdateSectionRequest,
     UpdateSectionRequestFromJSON,
     UpdateSectionRequestToJSON,
-} from '../models/index';
+} from '../models/UpdateSectionRequest';
 
 export interface CreateSectionOperationRequest {
+    /**
+     * 
+     */
     createSectionRequest: CreateSectionRequest;
 }
 
 export interface DeleteSectionRequest {
+    /**
+     * 
+     */
     sectionId: string;
 }
 
 export interface DissolveSectionRequest {
+    /**
+     * 
+     */
     sectionId: string;
 }
 
 export interface GetSectionRequest {
+    /**
+     * 
+     */
     sectionId: string;
 }
 
 export interface GetSectionsBulkRequest {
+    /**
+     * Section IDs to fetch (max 200)
+     */
     sectionIds?: Array<string> | null;
 }
 
 export interface UpdateSectionOperationRequest {
+    /**
+     * 
+     */
     sectionId: string;
+    /**
+     * 
+     */
     updateSectionRequest: UpdateSectionRequest;
 }
 
@@ -304,7 +332,7 @@ export class SectionsApi extends runtime.BaseAPI implements SectionsApiInterface
         }
 
         let urlPath = `/v1/sections/{section_id}`;
-        urlPath = urlPath.replace(`{${"section_id"}}`, encodeURIComponent(String(requestParameters['sectionId'])));
+        urlPath = urlPath.replace('{section_id}', encodeURIComponent(String(requestParameters['sectionId'])));
 
         return {
             path: urlPath,
@@ -358,7 +386,7 @@ export class SectionsApi extends runtime.BaseAPI implements SectionsApiInterface
         }
 
         let urlPath = `/v1/sections/{section_id}/dissolve`;
-        urlPath = urlPath.replace(`{${"section_id"}}`, encodeURIComponent(String(requestParameters['sectionId'])));
+        urlPath = urlPath.replace('{section_id}', encodeURIComponent(String(requestParameters['sectionId'])));
 
         return {
             path: urlPath,
@@ -413,7 +441,7 @@ export class SectionsApi extends runtime.BaseAPI implements SectionsApiInterface
         }
 
         let urlPath = `/v1/sections/{section_id}`;
-        urlPath = urlPath.replace(`{${"section_id"}}`, encodeURIComponent(String(requestParameters['sectionId'])));
+        urlPath = urlPath.replace('{section_id}', encodeURIComponent(String(requestParameters['sectionId'])));
 
         return {
             path: urlPath,
@@ -528,7 +556,7 @@ export class SectionsApi extends runtime.BaseAPI implements SectionsApiInterface
         }
 
         let urlPath = `/v1/sections/{section_id}`;
-        urlPath = urlPath.replace(`{${"section_id"}}`, encodeURIComponent(String(requestParameters['sectionId'])));
+        urlPath = urlPath.replace('{section_id}', encodeURIComponent(String(requestParameters['sectionId'])));
 
         return {
             path: urlPath,

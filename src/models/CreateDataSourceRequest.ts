@@ -50,38 +50,26 @@ import {
 export interface CreateDataSourceRequest {
     /**
      * 
-     * @type {string}
-     * @memberof CreateDataSourceRequest
      */
     name: string;
     /**
      * 
-     * @type {string}
-     * @memberof CreateDataSourceRequest
      */
     parentPathPartId: string;
     /**
      * 
-     * @type {SourceType}
-     * @memberof CreateDataSourceRequest
      */
     sourceType?: SourceType;
     /**
      * 
-     * @type {DataSourceEngine}
-     * @memberof CreateDataSourceRequest
      */
     engine?: DataSourceEngine;
     /**
      * 
-     * @type {ConnectionConfig}
-     * @memberof CreateDataSourceRequest
      */
     connectionConfig?: ConnectionConfig | null;
     /**
      * 
-     * @type {YidingConfig}
-     * @memberof CreateDataSourceRequest
      */
     sourceConfig?: YidingConfig | null;
 }
@@ -89,6 +77,8 @@ export interface CreateDataSourceRequest {
 
 export const CreateDataSourceRequestPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -103,6 +93,8 @@ export const CreateDataSourceRequestPropertyValidationAttributesMap: {
     }
 } = {
     name: {
+        dataType: "string",
+        required: true,
         maxLength: 255,
     },
 }
@@ -113,7 +105,7 @@ export const CreateDataSourceRequestPropertyValidationAttributesMap: {
  */
 export function instanceOfCreateDataSourceRequest(value: object): value is CreateDataSourceRequest {
     if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('parentPathPartId' in value) || value['parentPathPartId'] === undefined) return false;
+    if ((!('parentPathPartId' in (value as Record<string, any>)) && !('parent_path_part_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['parentPathPartId'] === undefined && (value as Record<string, any>)['parent_path_part_id'] === undefined)) return false;
     return true;
 }
 
@@ -131,8 +123,8 @@ export function CreateDataSourceRequestFromJSONTyped(json: any, ignoreDiscrimina
         'parentPathPartId': json['parent_path_part_id'],
         'sourceType': json['source_type'] == null ? undefined : SourceTypeFromJSON(json['source_type']),
         'engine': json['engine'] == null ? undefined : DataSourceEngineFromJSON(json['engine']),
-        'connectionConfig': json['connection_config'] == null ? undefined : ConnectionConfigFromJSON(json['connection_config']),
-        'sourceConfig': json['source_config'] == null ? undefined : YidingConfigFromJSON(json['source_config']),
+        'connectionConfig': json['connection_config'] === undefined ? undefined : json['connection_config'] === null ? null : ConnectionConfigFromJSON(json['connection_config']),
+        'sourceConfig': json['source_config'] === undefined ? undefined : json['source_config'] === null ? null : YidingConfigFromJSON(json['source_config']),
     };
 }
 

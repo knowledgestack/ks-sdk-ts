@@ -19,7 +19,7 @@
  */
 export const SupportedIdP = {
     Oauth2: 'OAUTH2',
-    FanweiE9: 'FANWEI_E9'
+    FanweiE9: 'FANWEI_E9',
 } as const;
 export type SupportedIdP = typeof SupportedIdP[keyof typeof SupportedIdP];
 

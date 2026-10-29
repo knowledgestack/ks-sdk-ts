@@ -27,13 +27,13 @@ import { mapValues } from '../runtime';
 export interface StartWorkflowRunRequest {
     /**
      * Free-text instruction shown in the run thread and passed to the agent as additional guidance on top of the workflow instruction. Optional.
-     * @type {string}
-     * @memberof StartWorkflowRunRequest
      */
     userMessage?: string | null;
 }
 export const StartWorkflowRunRequestPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -48,6 +48,7 @@ export const StartWorkflowRunRequestPropertyValidationAttributesMap: {
     }
 } = {
     userMessage: {
+        dataType: "string",
         maxLength: 4000,
     },
 }
@@ -70,7 +71,7 @@ export function StartWorkflowRunRequestFromJSONTyped(json: any, ignoreDiscrimina
     }
     return {
         
-        'userMessage': json['user_message'] == null ? undefined : json['user_message'],
+        'userMessage': json['user_message'] === undefined ? undefined : json['user_message'] === null ? null : json['user_message'],
     };
 }
 

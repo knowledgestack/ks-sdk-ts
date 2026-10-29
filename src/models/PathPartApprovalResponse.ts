@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
 import type { PathPartApprovalDecision } from './PathPartApprovalDecision';
 import {
     PathPartApprovalDecisionFromJSON,
@@ -29,50 +29,34 @@ import {
 export interface PathPartApprovalResponse {
     /**
      * 
-     * @type {string}
-     * @memberof PathPartApprovalResponse
      */
     id: string;
     /**
      * 
-     * @type {string}
-     * @memberof PathPartApprovalResponse
      */
     pathPartId: string;
     /**
      * 
-     * @type {PathPartApprovalDecision}
-     * @memberof PathPartApprovalResponse
      */
     status: PathPartApprovalDecision;
     /**
      * 
-     * @type {string}
-     * @memberof PathPartApprovalResponse
      */
     reviewerId: string | null;
     /**
      * 
-     * @type {Date}
-     * @memberof PathPartApprovalResponse
      */
     reviewedAt: Date | null;
     /**
      * 
-     * @type {string}
-     * @memberof PathPartApprovalResponse
      */
     reason: string | null;
     /**
      * 
-     * @type {Date}
-     * @memberof PathPartApprovalResponse
      */
     createdAt: Date;
     /**
      * 
-     * @type {Date}
-     * @memberof PathPartApprovalResponse
      */
     updatedAt: Date;
 }
@@ -80,6 +64,8 @@ export interface PathPartApprovalResponse {
 
 export const PathPartApprovalResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -101,13 +87,13 @@ export const PathPartApprovalResponsePropertyValidationAttributesMap: {
  */
 export function instanceOfPathPartApprovalResponse(value: object): value is PathPartApprovalResponse {
     if (!('id' in value) || value['id'] === undefined) return false;
-    if (!('pathPartId' in value) || value['pathPartId'] === undefined) return false;
+    if ((!('pathPartId' in (value as Record<string, any>)) && !('path_part_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['pathPartId'] === undefined && (value as Record<string, any>)['path_part_id'] === undefined)) return false;
     if (!('status' in value) || value['status'] === undefined) return false;
-    if (!('reviewerId' in value) || value['reviewerId'] === undefined) return false;
-    if (!('reviewedAt' in value) || value['reviewedAt'] === undefined) return false;
+    if ((!('reviewerId' in (value as Record<string, any>)) && !('reviewer_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['reviewerId'] === undefined && (value as Record<string, any>)['reviewer_id'] === undefined)) return false;
+    if ((!('reviewedAt' in (value as Record<string, any>)) && !('reviewed_at' in (value as Record<string, any>))) || ((value as Record<string, any>)['reviewedAt'] === undefined && (value as Record<string, any>)['reviewed_at'] === undefined)) return false;
     if (!('reason' in value) || value['reason'] === undefined) return false;
-    if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
-    if (!('updatedAt' in value) || value['updatedAt'] === undefined) return false;
+    if ((!('createdAt' in (value as Record<string, any>)) && !('created_at' in (value as Record<string, any>))) || ((value as Record<string, any>)['createdAt'] === undefined && (value as Record<string, any>)['created_at'] === undefined)) return false;
+    if ((!('updatedAt' in (value as Record<string, any>)) && !('updated_at' in (value as Record<string, any>))) || ((value as Record<string, any>)['updatedAt'] === undefined && (value as Record<string, any>)['updated_at'] === undefined)) return false;
     return true;
 }
 
@@ -125,10 +111,10 @@ export function PathPartApprovalResponseFromJSONTyped(json: any, ignoreDiscrimin
         'pathPartId': json['path_part_id'],
         'status': PathPartApprovalDecisionFromJSON(json['status']),
         'reviewerId': json['reviewer_id'],
-        'reviewedAt': (json['reviewed_at'] == null ? null : new Date(json['reviewed_at'])),
+        'reviewedAt': (json['reviewed_at'] == null ? null : parseDateTime(json['reviewed_at'])),
         'reason': json['reason'],
-        'createdAt': (new Date(json['created_at'])),
-        'updatedAt': (new Date(json['updated_at'])),
+        'createdAt': (json['created_at'] == null ? json['created_at'] : parseDateTime(json['created_at'])),
+        'updatedAt': (json['updated_at'] == null ? json['updated_at'] : parseDateTime(json['updated_at'])),
     };
 }
 
@@ -147,10 +133,10 @@ export function PathPartApprovalResponseToJSONTyped(value?: PathPartApprovalResp
         'path_part_id': value['pathPartId'],
         'status': PathPartApprovalDecisionToJSON(value['status']),
         'reviewer_id': value['reviewerId'],
-        'reviewed_at': value['reviewedAt'] == null ? value['reviewedAt'] : value['reviewedAt'].toISOString(),
+        'reviewed_at': value['reviewedAt'] == null ? value['reviewedAt'] : serializeDateTime(value['reviewedAt']),
         'reason': value['reason'],
-        'created_at': value['createdAt'].toISOString(),
-        'updated_at': value['updatedAt'].toISOString(),
+        'created_at': value['createdAt'] == null ? value['createdAt'] : serializeDateTime(value['createdAt']),
+        'updated_at': value['updatedAt'] == null ? value['updatedAt'] : serializeDateTime(value['updatedAt']),
     };
 }
 

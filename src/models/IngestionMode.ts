@@ -21,7 +21,7 @@ export const IngestionMode = {
     HighAccuracy: 'high_accuracy',
     Standard: 'standard',
     SingleChunk: 'single_chunk',
-    Media: 'media'
+    Media: 'media',
 } as const;
 export type IngestionMode = typeof IngestionMode[keyof typeof IngestionMode];
 

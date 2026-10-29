@@ -29,32 +29,22 @@ import {
 export interface TableCellChange {
     /**
      * 
-     * @type {number}
-     * @memberof TableCellChange
      */
     row: number;
     /**
      * 
-     * @type {number}
-     * @memberof TableCellChange
      */
     col: number;
     /**
      * 
-     * @type {BlockChangeType}
-     * @memberof TableCellChange
      */
     type: BlockChangeType;
     /**
      * 
-     * @type {string}
-     * @memberof TableCellChange
      */
     old: string | null;
     /**
      * 
-     * @type {string}
-     * @memberof TableCellChange
      */
     _new: string | null;
 }
@@ -62,6 +52,8 @@ export interface TableCellChange {
 
 export const TableCellChangePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -86,7 +78,7 @@ export function instanceOfTableCellChange(value: object): value is TableCellChan
     if (!('col' in value) || value['col'] === undefined) return false;
     if (!('type' in value) || value['type'] === undefined) return false;
     if (!('old' in value) || value['old'] === undefined) return false;
-    if (!('_new' in value) || value['_new'] === undefined) return false;
+    if ((!('_new' in (value as Record<string, any>)) && !('new' in (value as Record<string, any>))) || ((value as Record<string, any>)['_new'] === undefined && (value as Record<string, any>)['new'] === undefined)) return false;
     return true;
 }
 

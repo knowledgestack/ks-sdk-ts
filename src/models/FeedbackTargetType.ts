@@ -22,7 +22,7 @@ export const FeedbackTargetType = {
     Message: 'MESSAGE',
     Document: 'DOCUMENT',
     DocumentVersion: 'DOCUMENT_VERSION',
-    Chunk: 'CHUNK'
+    Chunk: 'CHUNK',
 } as const;
 export type FeedbackTargetType = typeof FeedbackTargetType[keyof typeof FeedbackTargetType];
 

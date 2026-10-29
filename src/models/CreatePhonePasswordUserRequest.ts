@@ -21,37 +21,29 @@ import { mapValues } from '../runtime';
 export interface CreatePhonePasswordUserRequest {
     /**
      * Password
-     * @type {string}
-     * @memberof CreatePhonePasswordUserRequest
      */
     password: string;
     /**
      * 6-digit verification code
-     * @type {string}
-     * @memberof CreatePhonePasswordUserRequest
      */
     code: string;
     /**
      * ID returned by phone_verification
-     * @type {string}
-     * @memberof CreatePhonePasswordUserRequest
      */
     phoneValidationId: string;
     /**
      * First name
-     * @type {string}
-     * @memberof CreatePhonePasswordUserRequest
      */
     firstName?: string | null;
     /**
      * Last name
-     * @type {string}
-     * @memberof CreatePhonePasswordUserRequest
      */
     lastName?: string | null;
 }
 export const CreatePhonePasswordUserRequestPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -66,6 +58,8 @@ export const CreatePhonePasswordUserRequestPropertyValidationAttributesMap: {
     }
 } = {
     password: {
+        dataType: "string",
+        required: true,
         minLength: 8,
     },
 }
@@ -77,7 +71,7 @@ export const CreatePhonePasswordUserRequestPropertyValidationAttributesMap: {
 export function instanceOfCreatePhonePasswordUserRequest(value: object): value is CreatePhonePasswordUserRequest {
     if (!('password' in value) || value['password'] === undefined) return false;
     if (!('code' in value) || value['code'] === undefined) return false;
-    if (!('phoneValidationId' in value) || value['phoneValidationId'] === undefined) return false;
+    if ((!('phoneValidationId' in (value as Record<string, any>)) && !('phone_validation_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['phoneValidationId'] === undefined && (value as Record<string, any>)['phone_validation_id'] === undefined)) return false;
     return true;
 }
 
@@ -94,8 +88,8 @@ export function CreatePhonePasswordUserRequestFromJSONTyped(json: any, ignoreDis
         'password': json['password'],
         'code': json['code'],
         'phoneValidationId': json['phone_validation_id'],
-        'firstName': json['first_name'] == null ? undefined : json['first_name'],
-        'lastName': json['last_name'] == null ? undefined : json['last_name'],
+        'firstName': json['first_name'] === undefined ? undefined : json['first_name'] === null ? null : json['first_name'],
+        'lastName': json['last_name'] === undefined ? undefined : json['last_name'] === null ? null : json['last_name'],
     };
 }
 

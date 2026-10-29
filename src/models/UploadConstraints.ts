@@ -29,43 +29,33 @@ import {
 export interface UploadConstraints {
     /**
      * 
-     * @type {Array<UploadFormat>}
-     * @memberof UploadConstraints
      */
     formats: Array<UploadFormat>;
     /**
      * 
-     * @type {number}
-     * @memberof UploadConstraints
      */
     maxBytes: number;
     /**
      * 
-     * @type {number}
-     * @memberof UploadConstraints
      */
     maxImageBytes: number;
     /**
      * 
-     * @type {number}
-     * @memberof UploadConstraints
      */
     maxMediaBytes: number;
     /**
      * 
-     * @type {number}
-     * @memberof UploadConstraints
      */
     maxMediaDurationMs: number;
     /**
      * 
-     * @type {number}
-     * @memberof UploadConstraints
      */
     resumablePartSize: number;
 }
 export const UploadConstraintsPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -87,11 +77,11 @@ export const UploadConstraintsPropertyValidationAttributesMap: {
  */
 export function instanceOfUploadConstraints(value: object): value is UploadConstraints {
     if (!('formats' in value) || value['formats'] === undefined) return false;
-    if (!('maxBytes' in value) || value['maxBytes'] === undefined) return false;
-    if (!('maxImageBytes' in value) || value['maxImageBytes'] === undefined) return false;
-    if (!('maxMediaBytes' in value) || value['maxMediaBytes'] === undefined) return false;
-    if (!('maxMediaDurationMs' in value) || value['maxMediaDurationMs'] === undefined) return false;
-    if (!('resumablePartSize' in value) || value['resumablePartSize'] === undefined) return false;
+    if ((!('maxBytes' in (value as Record<string, any>)) && !('max_bytes' in (value as Record<string, any>))) || ((value as Record<string, any>)['maxBytes'] === undefined && (value as Record<string, any>)['max_bytes'] === undefined)) return false;
+    if ((!('maxImageBytes' in (value as Record<string, any>)) && !('max_image_bytes' in (value as Record<string, any>))) || ((value as Record<string, any>)['maxImageBytes'] === undefined && (value as Record<string, any>)['max_image_bytes'] === undefined)) return false;
+    if ((!('maxMediaBytes' in (value as Record<string, any>)) && !('max_media_bytes' in (value as Record<string, any>))) || ((value as Record<string, any>)['maxMediaBytes'] === undefined && (value as Record<string, any>)['max_media_bytes'] === undefined)) return false;
+    if ((!('maxMediaDurationMs' in (value as Record<string, any>)) && !('max_media_duration_ms' in (value as Record<string, any>))) || ((value as Record<string, any>)['maxMediaDurationMs'] === undefined && (value as Record<string, any>)['max_media_duration_ms'] === undefined)) return false;
+    if ((!('resumablePartSize' in (value as Record<string, any>)) && !('resumable_part_size' in (value as Record<string, any>))) || ((value as Record<string, any>)['resumablePartSize'] === undefined && (value as Record<string, any>)['resumable_part_size'] === undefined)) return false;
     return true;
 }
 

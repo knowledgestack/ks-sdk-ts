@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
 import type { DocxParagraphAnchorInput } from './DocxParagraphAnchorInput';
 import {
     instanceOfDocxParagraphAnchorInput,
@@ -62,9 +63,9 @@ export function XlsxCellAnchorInputOrDocxParagraphAnchorInputToJSONTyped(value?:
     }
     switch (value['type']) {
         case 'docx_paragraph':
-            return Object.assign({}, DocxParagraphAnchorInputToJSON(value), { type: 'docx_paragraph' } as const);
+            return Object.assign({}, DocxParagraphAnchorInputToJSON(value), { 'type': 'docx_paragraph' } as const);
         case 'xlsx_cell':
-            return Object.assign({}, XlsxCellAnchorInputToJSON(value), { type: 'xlsx_cell' } as const);
+            return Object.assign({}, XlsxCellAnchorInputToJSON(value), { 'type': 'xlsx_cell' } as const);
         default:
             return value;
     }

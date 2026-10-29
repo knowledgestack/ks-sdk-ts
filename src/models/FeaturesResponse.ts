@@ -43,44 +43,30 @@ import {
 export interface FeaturesResponse {
     /**
      * 
-     * @type {boolean}
-     * @memberof FeaturesResponse
      */
     googleLoginEnabled: boolean;
     /**
      * 
-     * @type {boolean}
-     * @memberof FeaturesResponse
      */
     microsoftLoginEnabled: boolean;
     /**
      * 
-     * @type {boolean}
-     * @memberof FeaturesResponse
      */
     githubLoginEnabled: boolean;
     /**
      * 
-     * @type {boolean}
-     * @memberof FeaturesResponse
      */
     smsLoginEnabled: boolean;
     /**
      * 
-     * @type {SupportedLanguage}
-     * @memberof FeaturesResponse
      */
     defaultFrontendLanguage: SupportedLanguage;
     /**
      * 
-     * @type {UploadConstraints}
-     * @memberof FeaturesResponse
      */
     upload: UploadConstraints;
     /**
      * 
-     * @type {Array<DataSourceEngine>}
-     * @memberof FeaturesResponse
      */
     dataSourceEngines: Array<DataSourceEngine>;
 }
@@ -88,6 +74,8 @@ export interface FeaturesResponse {
 
 export const FeaturesResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -108,13 +96,13 @@ export const FeaturesResponsePropertyValidationAttributesMap: {
  * Check if a given object implements the FeaturesResponse interface.
  */
 export function instanceOfFeaturesResponse(value: object): value is FeaturesResponse {
-    if (!('googleLoginEnabled' in value) || value['googleLoginEnabled'] === undefined) return false;
-    if (!('microsoftLoginEnabled' in value) || value['microsoftLoginEnabled'] === undefined) return false;
-    if (!('githubLoginEnabled' in value) || value['githubLoginEnabled'] === undefined) return false;
-    if (!('smsLoginEnabled' in value) || value['smsLoginEnabled'] === undefined) return false;
-    if (!('defaultFrontendLanguage' in value) || value['defaultFrontendLanguage'] === undefined) return false;
+    if ((!('googleLoginEnabled' in (value as Record<string, any>)) && !('google_login_enabled' in (value as Record<string, any>))) || ((value as Record<string, any>)['googleLoginEnabled'] === undefined && (value as Record<string, any>)['google_login_enabled'] === undefined)) return false;
+    if ((!('microsoftLoginEnabled' in (value as Record<string, any>)) && !('microsoft_login_enabled' in (value as Record<string, any>))) || ((value as Record<string, any>)['microsoftLoginEnabled'] === undefined && (value as Record<string, any>)['microsoft_login_enabled'] === undefined)) return false;
+    if ((!('githubLoginEnabled' in (value as Record<string, any>)) && !('github_login_enabled' in (value as Record<string, any>))) || ((value as Record<string, any>)['githubLoginEnabled'] === undefined && (value as Record<string, any>)['github_login_enabled'] === undefined)) return false;
+    if ((!('smsLoginEnabled' in (value as Record<string, any>)) && !('sms_login_enabled' in (value as Record<string, any>))) || ((value as Record<string, any>)['smsLoginEnabled'] === undefined && (value as Record<string, any>)['sms_login_enabled'] === undefined)) return false;
+    if ((!('defaultFrontendLanguage' in (value as Record<string, any>)) && !('default_frontend_language' in (value as Record<string, any>))) || ((value as Record<string, any>)['defaultFrontendLanguage'] === undefined && (value as Record<string, any>)['default_frontend_language'] === undefined)) return false;
     if (!('upload' in value) || value['upload'] === undefined) return false;
-    if (!('dataSourceEngines' in value) || value['dataSourceEngines'] === undefined) return false;
+    if ((!('dataSourceEngines' in (value as Record<string, any>)) && !('data_source_engines' in (value as Record<string, any>))) || ((value as Record<string, any>)['dataSourceEngines'] === undefined && (value as Record<string, any>)['data_source_engines'] === undefined)) return false;
     return true;
 }
 

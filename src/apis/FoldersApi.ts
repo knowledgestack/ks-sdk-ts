@@ -12,135 +12,314 @@
  * Do not edit the class manually.
  */
 
-
 import * as runtime from '../runtime';
-import type {
-  ContentsSortOrder,
-  CreateFolderRequest,
-  DocumentType,
-  ErrorResponse,
-  FolderAction,
-  FolderActionResponse,
-  FolderResponse,
-  HTTPValidationError,
-  PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseWorkflowDefinitionResponseWorkflowRunResponseDat,
-  PaginatedResponseFolderResponse,
-  PathOrder,
-  PathPartApprovalState,
-  SearchItemsResponse,
-  SearchSortOrder,
-  SearchablePartType,
-  SortDirection,
-  UpdateFolderRequest,
-} from '../models/index';
 import {
+    type ContentsSortOrder,
     ContentsSortOrderFromJSON,
     ContentsSortOrderToJSON,
+} from '../models/ContentsSortOrder';
+import {
+    type CreateFolderRequest,
     CreateFolderRequestFromJSON,
     CreateFolderRequestToJSON,
+} from '../models/CreateFolderRequest';
+import {
+    type DocumentType,
     DocumentTypeFromJSON,
     DocumentTypeToJSON,
+} from '../models/DocumentType';
+import {
+    type ErrorResponse,
     ErrorResponseFromJSON,
     ErrorResponseToJSON,
+} from '../models/ErrorResponse';
+import {
+    type FolderAction,
     FolderActionFromJSON,
     FolderActionToJSON,
+} from '../models/FolderAction';
+import {
+    type FolderActionResponse,
     FolderActionResponseFromJSON,
     FolderActionResponseToJSON,
+} from '../models/FolderActionResponse';
+import {
+    type FolderResponse,
     FolderResponseFromJSON,
     FolderResponseToJSON,
+} from '../models/FolderResponse';
+import {
+    type HTTPValidationError,
     HTTPValidationErrorFromJSON,
     HTTPValidationErrorToJSON,
+} from '../models/HTTPValidationError';
+import {
+    type PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseWorkflowDefinitionResponseWorkflowRunResponseDat,
     PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseWorkflowDefinitionResponseWorkflowRunResponseDatFromJSON,
     PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseWorkflowDefinitionResponseWorkflowRunResponseDatToJSON,
+} from '../models/PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseWorkflowDefinitionResponseWorkflowRunResponseDat';
+import {
+    type PaginatedResponseFolderResponse,
     PaginatedResponseFolderResponseFromJSON,
     PaginatedResponseFolderResponseToJSON,
+} from '../models/PaginatedResponseFolderResponse';
+import {
+    type PathOrder,
     PathOrderFromJSON,
     PathOrderToJSON,
+} from '../models/PathOrder';
+import {
+    type PathPartApprovalState,
     PathPartApprovalStateFromJSON,
     PathPartApprovalStateToJSON,
+} from '../models/PathPartApprovalState';
+import {
+    type SearchItemsResponse,
     SearchItemsResponseFromJSON,
     SearchItemsResponseToJSON,
+} from '../models/SearchItemsResponse';
+import {
+    type SearchSortOrder,
     SearchSortOrderFromJSON,
     SearchSortOrderToJSON,
+} from '../models/SearchSortOrder';
+import {
+    type SearchablePartType,
     SearchablePartTypeFromJSON,
     SearchablePartTypeToJSON,
+} from '../models/SearchablePartType';
+import {
+    type SortDirection,
     SortDirectionFromJSON,
     SortDirectionToJSON,
+} from '../models/SortDirection';
+import {
+    type UpdateFolderRequest,
     UpdateFolderRequestFromJSON,
     UpdateFolderRequestToJSON,
-} from '../models/index';
+} from '../models/UpdateFolderRequest';
 
 export interface CreateFolderOperationRequest {
+    /**
+     * 
+     */
     createFolderRequest: CreateFolderRequest;
 }
 
 export interface DeleteFolderRequest {
+    /**
+     * 
+     */
     folderId: string;
 }
 
 export interface FolderActionRequest {
+    /**
+     * 
+     */
     folderId: string;
+    /**
+     * Action to perform
+     */
     action: FolderAction;
 }
 
 export interface GetFolderRequest {
+    /**
+     * 
+     */
     folderId: string;
+    /**
+     * Include tags in the response (default: false)
+     */
     withTags?: boolean;
 }
 
 export interface ListFolderContentsRequest {
+    /**
+     * 
+     */
     folderId: string;
+    /**
+     * Maximum depth to traverse (1=direct children, default: 1)
+     */
     maxDepth?: number;
+    /**
+     * Sort order for results (default: LOGICAL)
+     */
     sortOrder?: ContentsSortOrder;
+    /**
+     * Sort direction; overrides the column's natural default
+     */
     sortDir?: SortDirection;
+    /**
+     * Filter to items owned by this user
+     */
     ownerId?: string | null;
+    /**
+     * Case-insensitive substring filter on the item name
+     */
     nameLike?: string | null;
+    /**
+     * Include tag IDs for each item (default: false)
+     */
     withTags?: boolean;
+    /**
+     * Number of items per page
+     */
     limit?: number;
+    /**
+     * Number of items to skip
+     */
     offset?: number;
+    /**
+     * Keep only items in these approval states (repeatable): not_required, pending, approved.
+     */
     approvalState?: Array<PathPartApprovalState> | null;
+    /**
+     * Keep only items that carry at least one of these tags on the item itself or any ancestor folder (repeatable, OR / tag inheritance).
+     */
     includeTagIds?: Array<string> | null;
+    /**
+     * Drop items that carry any of these tags on the item itself or any ancestor folder (repeatable). Takes precedence over include_tag_ids.
+     */
     excludeTagIds?: Array<string> | null;
+    /**
+     * Only items created at or after this timestamp (inclusive)
+     */
     createdAfter?: Date | null;
+    /**
+     * Only items created strictly before this timestamp
+     */
     createdBefore?: Date | null;
+    /**
+     * Only items updated at or after this timestamp (inclusive)
+     */
     updatedAfter?: Date | null;
+    /**
+     * Only items updated strictly before this timestamp
+     */
     updatedBefore?: Date | null;
 }
 
 export interface ListFoldersRequest {
+    /**
+     * Parent PathPart ID (defaults to root)
+     */
     parentPathPartId?: string | null;
+    /**
+     * Sort order for results (default: LOGICAL)
+     */
     sortOrder?: PathOrder;
+    /**
+     * Sort direction; overrides the column's natural default
+     */
     sortDir?: SortDirection;
+    /**
+     * Filter to folders owned by this user
+     */
     ownerId?: string | null;
+    /**
+     * Include tags in the response (default: false)
+     */
     withTags?: boolean;
+    /**
+     * Number of items per page
+     */
     limit?: number;
+    /**
+     * Number of items to skip
+     */
     offset?: number;
+    /**
+     * Only items created at or after this timestamp (inclusive)
+     */
     createdAfter?: Date | null;
+    /**
+     * Only items created strictly before this timestamp
+     */
     createdBefore?: Date | null;
+    /**
+     * Only items updated at or after this timestamp (inclusive)
+     */
     updatedAfter?: Date | null;
+    /**
+     * Only items updated strictly before this timestamp
+     */
     updatedBefore?: Date | null;
 }
 
 export interface SearchItemsRequest {
+    /**
+     * Case-insensitive partial name search
+     */
     nameLike: string;
+    /**
+     * Filter by item type; repeat the parameter to select several (default: all searchable types)
+     */
     partType?: Array<SearchablePartType>;
+    /**
+     * Sort order for results (default: RELEVANCE)
+     */
     sortOrder?: SearchSortOrder;
+    /**
+     * Include tags in the response (default: false)
+     */
     withTags?: boolean;
+    /**
+     * Scope search to descendants of this folder's path part
+     */
     parentPathPartId?: string | null;
+    /**
+     * Number of items per page
+     */
     limit?: number;
+    /**
+     * Number of items to skip
+     */
     offset?: number;
+    /**
+     * Only documents of these types; repeat the parameter to select several (default: every type, every item kind)
+     */
     documentType?: Array<DocumentType>;
+    /**
+     * Only items owned by this user
+     */
     ownerId?: string | null;
+    /**
+     * Only items created at or after this timestamp (inclusive)
+     */
     createdAfter?: Date | null;
+    /**
+     * Only items created strictly before this timestamp
+     */
     createdBefore?: Date | null;
+    /**
+     * Only items updated at or after this timestamp (inclusive)
+     */
     updatedAfter?: Date | null;
+    /**
+     * Only items updated strictly before this timestamp
+     */
     updatedBefore?: Date | null;
+    /**
+     * Keep only items that carry at least one of these tags on the item itself or any ancestor folder (repeatable, OR / tag inheritance).
+     */
     includeTagIds?: Array<string> | null;
+    /**
+     * Drop items that carry any of these tags on the item itself or any ancestor folder (repeatable). Takes precedence over include_tag_ids.
+     */
     excludeTagIds?: Array<string> | null;
 }
 
 export interface UpdateFolderOperationRequest {
+    /**
+     * 
+     */
     folderId: string;
+    /**
+     * 
+     */
     updateFolderRequest: UpdateFolderRequest;
 }
 
@@ -515,7 +694,7 @@ export class FoldersApi extends runtime.BaseAPI implements FoldersApiInterface {
         }
 
         let urlPath = `/v1/folders/{folder_id}`;
-        urlPath = urlPath.replace(`{${"folder_id"}}`, encodeURIComponent(String(requestParameters['folderId'])));
+        urlPath = urlPath.replace('{folder_id}', encodeURIComponent(String(requestParameters['folderId'])));
 
         return {
             path: urlPath,
@@ -580,7 +759,7 @@ export class FoldersApi extends runtime.BaseAPI implements FoldersApiInterface {
         }
 
         let urlPath = `/v1/folders/{folder_id}`;
-        urlPath = urlPath.replace(`{${"folder_id"}}`, encodeURIComponent(String(requestParameters['folderId'])));
+        urlPath = urlPath.replace('{folder_id}', encodeURIComponent(String(requestParameters['folderId'])));
 
         return {
             path: urlPath,
@@ -639,7 +818,7 @@ export class FoldersApi extends runtime.BaseAPI implements FoldersApiInterface {
         }
 
         let urlPath = `/v1/folders/{folder_id}`;
-        urlPath = urlPath.replace(`{${"folder_id"}}`, encodeURIComponent(String(requestParameters['folderId'])));
+        urlPath = urlPath.replace('{folder_id}', encodeURIComponent(String(requestParameters['folderId'])));
 
         return {
             path: urlPath,
@@ -725,19 +904,19 @@ export class FoldersApi extends runtime.BaseAPI implements FoldersApiInterface {
         }
 
         if (requestParameters['createdAfter'] != null) {
-            queryParameters['created_after'] = (requestParameters['createdAfter'] as any).toISOString();
+            queryParameters['created_after'] = runtime.serializeDateTime(requestParameters['createdAfter'] as any);
         }
 
         if (requestParameters['createdBefore'] != null) {
-            queryParameters['created_before'] = (requestParameters['createdBefore'] as any).toISOString();
+            queryParameters['created_before'] = runtime.serializeDateTime(requestParameters['createdBefore'] as any);
         }
 
         if (requestParameters['updatedAfter'] != null) {
-            queryParameters['updated_after'] = (requestParameters['updatedAfter'] as any).toISOString();
+            queryParameters['updated_after'] = runtime.serializeDateTime(requestParameters['updatedAfter'] as any);
         }
 
         if (requestParameters['updatedBefore'] != null) {
-            queryParameters['updated_before'] = (requestParameters['updatedBefore'] as any).toISOString();
+            queryParameters['updated_before'] = runtime.serializeDateTime(requestParameters['updatedBefore'] as any);
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -752,7 +931,7 @@ export class FoldersApi extends runtime.BaseAPI implements FoldersApiInterface {
         }
 
         let urlPath = `/v1/folders/{folder_id}/contents`;
-        urlPath = urlPath.replace(`{${"folder_id"}}`, encodeURIComponent(String(requestParameters['folderId'])));
+        urlPath = urlPath.replace('{folder_id}', encodeURIComponent(String(requestParameters['folderId'])));
 
         return {
             path: urlPath,
@@ -817,19 +996,19 @@ export class FoldersApi extends runtime.BaseAPI implements FoldersApiInterface {
         }
 
         if (requestParameters['createdAfter'] != null) {
-            queryParameters['created_after'] = (requestParameters['createdAfter'] as any).toISOString();
+            queryParameters['created_after'] = runtime.serializeDateTime(requestParameters['createdAfter'] as any);
         }
 
         if (requestParameters['createdBefore'] != null) {
-            queryParameters['created_before'] = (requestParameters['createdBefore'] as any).toISOString();
+            queryParameters['created_before'] = runtime.serializeDateTime(requestParameters['createdBefore'] as any);
         }
 
         if (requestParameters['updatedAfter'] != null) {
-            queryParameters['updated_after'] = (requestParameters['updatedAfter'] as any).toISOString();
+            queryParameters['updated_after'] = runtime.serializeDateTime(requestParameters['updatedAfter'] as any);
         }
 
         if (requestParameters['updatedBefore'] != null) {
-            queryParameters['updated_before'] = (requestParameters['updatedBefore'] as any).toISOString();
+            queryParameters['updated_before'] = runtime.serializeDateTime(requestParameters['updatedBefore'] as any);
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -923,19 +1102,19 @@ export class FoldersApi extends runtime.BaseAPI implements FoldersApiInterface {
         }
 
         if (requestParameters['createdAfter'] != null) {
-            queryParameters['created_after'] = (requestParameters['createdAfter'] as any).toISOString();
+            queryParameters['created_after'] = runtime.serializeDateTime(requestParameters['createdAfter'] as any);
         }
 
         if (requestParameters['createdBefore'] != null) {
-            queryParameters['created_before'] = (requestParameters['createdBefore'] as any).toISOString();
+            queryParameters['created_before'] = runtime.serializeDateTime(requestParameters['createdBefore'] as any);
         }
 
         if (requestParameters['updatedAfter'] != null) {
-            queryParameters['updated_after'] = (requestParameters['updatedAfter'] as any).toISOString();
+            queryParameters['updated_after'] = runtime.serializeDateTime(requestParameters['updatedAfter'] as any);
         }
 
         if (requestParameters['updatedBefore'] != null) {
-            queryParameters['updated_before'] = (requestParameters['updatedBefore'] as any).toISOString();
+            queryParameters['updated_before'] = runtime.serializeDateTime(requestParameters['updatedBefore'] as any);
         }
 
         if (requestParameters['includeTagIds'] != null) {
@@ -1021,7 +1200,7 @@ export class FoldersApi extends runtime.BaseAPI implements FoldersApiInterface {
         }
 
         let urlPath = `/v1/folders/{folder_id}`;
-        urlPath = urlPath.replace(`{${"folder_id"}}`, encodeURIComponent(String(requestParameters['folderId'])));
+        urlPath = urlPath.replace('{folder_id}', encodeURIComponent(String(requestParameters['folderId'])));
 
         return {
             path: urlPath,

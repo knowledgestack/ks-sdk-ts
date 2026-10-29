@@ -21,19 +21,17 @@ import { mapValues } from '../runtime';
 export interface LineageEdgeResponse {
     /**
      * Parent chunk ID (source)
-     * @type {string}
-     * @memberof LineageEdgeResponse
      */
     parentChunkId: string;
     /**
      * Child chunk ID (derived)
-     * @type {string}
-     * @memberof LineageEdgeResponse
      */
     chunkId: string;
 }
 export const LineageEdgeResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -54,8 +52,8 @@ export const LineageEdgeResponsePropertyValidationAttributesMap: {
  * Check if a given object implements the LineageEdgeResponse interface.
  */
 export function instanceOfLineageEdgeResponse(value: object): value is LineageEdgeResponse {
-    if (!('parentChunkId' in value) || value['parentChunkId'] === undefined) return false;
-    if (!('chunkId' in value) || value['chunkId'] === undefined) return false;
+    if ((!('parentChunkId' in (value as Record<string, any>)) && !('parent_chunk_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['parentChunkId'] === undefined && (value as Record<string, any>)['parent_chunk_id'] === undefined)) return false;
+    if ((!('chunkId' in (value as Record<string, any>)) && !('chunk_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['chunkId'] === undefined && (value as Record<string, any>)['chunk_id'] === undefined)) return false;
     return true;
 }
 

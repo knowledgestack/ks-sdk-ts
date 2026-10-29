@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
 import type { UserInfo } from './UserInfo';
 import {
     UserInfoFromJSON,
@@ -41,79 +41,57 @@ import {
 export interface EventResponse {
     /**
      * 
-     * @type {string}
-     * @memberof EventResponse
      */
     id: string;
     /**
      * 
-     * @type {string}
-     * @memberof EventResponse
      */
     subjectPathPartId: string;
     /**
      * 
-     * @type {string}
-     * @memberof EventResponse
      */
     kind: string;
     /**
      * 
-     * @type {Date}
-     * @memberof EventResponse
      */
     ts: Date;
     /**
      * 
-     * @type {string}
-     * @memberof EventResponse
      */
     actorUserId: string | null;
     /**
      * 
-     * @type {{ [key: string]: any; }}
-     * @memberof EventResponse
      */
     payload: { [key: string]: any; };
     /**
      * 
-     * @type {UserInfo}
-     * @memberof EventResponse
      */
     actor?: UserInfo | null;
     /**
      * 
-     * @type {string}
-     * @memberof EventResponse
      */
     subjectName?: string | null;
     /**
      * 
-     * @type {string}
-     * @memberof EventResponse
      */
     subjectPath?: string | null;
     /**
      * 
-     * @type {string}
-     * @memberof EventResponse
      */
     subjectObjectId?: string | null;
     /**
      * 
-     * @type {string}
-     * @memberof EventResponse
      */
     subjectPartType?: string | null;
     /**
      * 
-     * @type {{ [key: string]: ResolvedRef; }}
-     * @memberof EventResponse
      */
     references?: { [key: string]: ResolvedRef; };
 }
 export const EventResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -135,10 +113,10 @@ export const EventResponsePropertyValidationAttributesMap: {
  */
 export function instanceOfEventResponse(value: object): value is EventResponse {
     if (!('id' in value) || value['id'] === undefined) return false;
-    if (!('subjectPathPartId' in value) || value['subjectPathPartId'] === undefined) return false;
+    if ((!('subjectPathPartId' in (value as Record<string, any>)) && !('subject_path_part_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['subjectPathPartId'] === undefined && (value as Record<string, any>)['subject_path_part_id'] === undefined)) return false;
     if (!('kind' in value) || value['kind'] === undefined) return false;
     if (!('ts' in value) || value['ts'] === undefined) return false;
-    if (!('actorUserId' in value) || value['actorUserId'] === undefined) return false;
+    if ((!('actorUserId' in (value as Record<string, any>)) && !('actor_user_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['actorUserId'] === undefined && (value as Record<string, any>)['actor_user_id'] === undefined)) return false;
     if (!('payload' in value) || value['payload'] === undefined) return false;
     return true;
 }
@@ -156,14 +134,14 @@ export function EventResponseFromJSONTyped(json: any, ignoreDiscriminator: boole
         'id': json['id'],
         'subjectPathPartId': json['subject_path_part_id'],
         'kind': json['kind'],
-        'ts': (new Date(json['ts'])),
+        'ts': (json['ts'] == null ? json['ts'] : parseDateTime(json['ts'])),
         'actorUserId': json['actor_user_id'],
         'payload': json['payload'],
-        'actor': json['actor'] == null ? undefined : UserInfoFromJSON(json['actor']),
-        'subjectName': json['subject_name'] == null ? undefined : json['subject_name'],
-        'subjectPath': json['subject_path'] == null ? undefined : json['subject_path'],
-        'subjectObjectId': json['subject_object_id'] == null ? undefined : json['subject_object_id'],
-        'subjectPartType': json['subject_part_type'] == null ? undefined : json['subject_part_type'],
+        'actor': json['actor'] === undefined ? undefined : json['actor'] === null ? null : UserInfoFromJSON(json['actor']),
+        'subjectName': json['subject_name'] === undefined ? undefined : json['subject_name'] === null ? null : json['subject_name'],
+        'subjectPath': json['subject_path'] === undefined ? undefined : json['subject_path'] === null ? null : json['subject_path'],
+        'subjectObjectId': json['subject_object_id'] === undefined ? undefined : json['subject_object_id'] === null ? null : json['subject_object_id'],
+        'subjectPartType': json['subject_part_type'] === undefined ? undefined : json['subject_part_type'] === null ? null : json['subject_part_type'],
         'references': json['references'] == null ? undefined : (mapValues(json['references'], ResolvedRefFromJSON)),
     };
 }
@@ -182,7 +160,7 @@ export function EventResponseToJSONTyped(value?: EventResponse | null, ignoreDis
         'id': value['id'],
         'subject_path_part_id': value['subjectPathPartId'],
         'kind': value['kind'],
-        'ts': value['ts'].toISOString(),
+        'ts': value['ts'] == null ? value['ts'] : serializeDateTime(value['ts']),
         'actor_user_id': value['actorUserId'],
         'payload': value['payload'],
         'actor': UserInfoToJSON(value['actor']),

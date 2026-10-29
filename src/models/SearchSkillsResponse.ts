@@ -29,13 +29,13 @@ import {
 export interface SearchSkillsResponse {
     /**
      * 
-     * @type {Array<SkillSearchResult>}
-     * @memberof SearchSkillsResponse
      */
     results?: Array<SkillSearchResult>;
 }
 export const SearchSkillsResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,

@@ -24,7 +24,7 @@ export const InviteRejection = {
     TenantUnavailable: 'tenant_unavailable',
     InvitesDisabled: 'invites_disabled',
     EmailMismatch: 'email_mismatch',
-    NoSeat: 'no_seat'
+    NoSeat: 'no_seat',
 } as const;
 export type InviteRejection = typeof InviteRejection[keyof typeof InviteRejection];
 

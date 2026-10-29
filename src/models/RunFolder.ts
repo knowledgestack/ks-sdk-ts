@@ -29,31 +29,25 @@ import {
 export interface RunFolder {
     /**
      * 
-     * @type {string}
-     * @memberof RunFolder
      */
     id: string;
     /**
      * 
-     * @type {string}
-     * @memberof RunFolder
      */
     pathPartId: string;
     /**
      * 
-     * @type {string}
-     * @memberof RunFolder
      */
     materializedPath: string;
     /**
      * 
-     * @type {Array<WorkflowRunAsset>}
-     * @memberof RunFolder
      */
     assets?: Array<WorkflowRunAsset>;
 }
 export const RunFolderPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -75,8 +69,8 @@ export const RunFolderPropertyValidationAttributesMap: {
  */
 export function instanceOfRunFolder(value: object): value is RunFolder {
     if (!('id' in value) || value['id'] === undefined) return false;
-    if (!('pathPartId' in value) || value['pathPartId'] === undefined) return false;
-    if (!('materializedPath' in value) || value['materializedPath'] === undefined) return false;
+    if ((!('pathPartId' in (value as Record<string, any>)) && !('path_part_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['pathPartId'] === undefined && (value as Record<string, any>)['path_part_id'] === undefined)) return false;
+    if ((!('materializedPath' in (value as Record<string, any>)) && !('materialized_path' in (value as Record<string, any>))) || ((value as Record<string, any>)['materializedPath'] === undefined && (value as Record<string, any>)['materialized_path'] === undefined)) return false;
     return true;
 }
 

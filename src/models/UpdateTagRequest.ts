@@ -21,25 +21,21 @@ import { mapValues } from '../runtime';
 export interface UpdateTagRequest {
     /**
      * New tag name
-     * @type {string}
-     * @memberof UpdateTagRequest
      */
     name?: string | null;
     /**
      * New tag color as 6-character hex string
-     * @type {string}
-     * @memberof UpdateTagRequest
      */
     color?: string | null;
     /**
      * New tag description (empty string to clear)
-     * @type {string}
-     * @memberof UpdateTagRequest
      */
     description?: string | null;
 }
 export const UpdateTagRequestPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -54,15 +50,18 @@ export const UpdateTagRequestPropertyValidationAttributesMap: {
     }
 } = {
     name: {
+        dataType: "string",
         maxLength: 100,
         minLength: 1,
     },
     color: {
+        dataType: "string",
         maxLength: 6,
         minLength: 6,
         pattern: '/^[0-9A-Fa-f]{6}$/',
     },
     description: {
+        dataType: "string",
         maxLength: 500,
     },
 }
@@ -85,9 +84,9 @@ export function UpdateTagRequestFromJSONTyped(json: any, ignoreDiscriminator: bo
     }
     return {
         
-        'name': json['name'] == null ? undefined : json['name'],
-        'color': json['color'] == null ? undefined : json['color'],
-        'description': json['description'] == null ? undefined : json['description'],
+        'name': json['name'] === undefined ? undefined : json['name'] === null ? null : json['name'],
+        'color': json['color'] === undefined ? undefined : json['color'] === null ? null : json['color'],
+        'description': json['description'] === undefined ? undefined : json['description'] === null ? null : json['description'],
     };
 }
 

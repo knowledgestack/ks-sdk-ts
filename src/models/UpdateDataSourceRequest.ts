@@ -51,37 +51,29 @@ import {
 export interface UpdateDataSourceRequest {
     /**
      * 
-     * @type {string}
-     * @memberof UpdateDataSourceRequest
      */
     name?: string | null;
     /**
      * New parent FOLDER path_part to move the connector under.
-     * @type {string}
-     * @memberof UpdateDataSourceRequest
      */
     parentPathPartId?: string | null;
     /**
      * Fresh, whole-object credentials to replace the stored ones.
-     * @type {ConnectionConfig}
-     * @memberof UpdateDataSourceRequest
      */
     connectionConfig?: ConnectionConfig | null;
     /**
      * What a YIDINGSYNC connector's crawler config may still change: the panel password and the crawl recurrence, each optional and each merged into the stored config rather than replacing it. Which shop and from when are fixed at creation. Rejected on a DIRECT connector. Changing ``cron`` re-arms the schedule. connection_config stays server-managed for YIDINGSYNC.
-     * @type {YidingConfigChange}
-     * @memberof UpdateDataSourceRequest
      */
     sourceConfig?: YidingConfigChange | null;
     /**
      * The crawl cursor, replaced whole. Written by the sync itself (the worker acts as the connector's owner) after each batch, so it records what has already been read. Moving it forward by hand makes the next run skip those days for good — the increment only re-scans what the cursor points at.
-     * @type {YidingCursor}
-     * @memberof UpdateDataSourceRequest
      */
     syncState?: YidingCursor | null;
 }
 export const UpdateDataSourceRequestPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -96,6 +88,7 @@ export const UpdateDataSourceRequestPropertyValidationAttributesMap: {
     }
 } = {
     name: {
+        dataType: "string",
         maxLength: 255,
         minLength: 1,
     },
@@ -119,11 +112,11 @@ export function UpdateDataSourceRequestFromJSONTyped(json: any, ignoreDiscrimina
     }
     return {
         
-        'name': json['name'] == null ? undefined : json['name'],
-        'parentPathPartId': json['parent_path_part_id'] == null ? undefined : json['parent_path_part_id'],
-        'connectionConfig': json['connection_config'] == null ? undefined : ConnectionConfigFromJSON(json['connection_config']),
-        'sourceConfig': json['source_config'] == null ? undefined : YidingConfigChangeFromJSON(json['source_config']),
-        'syncState': json['sync_state'] == null ? undefined : YidingCursorFromJSON(json['sync_state']),
+        'name': json['name'] === undefined ? undefined : json['name'] === null ? null : json['name'],
+        'parentPathPartId': json['parent_path_part_id'] === undefined ? undefined : json['parent_path_part_id'] === null ? null : json['parent_path_part_id'],
+        'connectionConfig': json['connection_config'] === undefined ? undefined : json['connection_config'] === null ? null : ConnectionConfigFromJSON(json['connection_config']),
+        'sourceConfig': json['source_config'] === undefined ? undefined : json['source_config'] === null ? null : YidingConfigChangeFromJSON(json['source_config']),
+        'syncState': json['sync_state'] === undefined ? undefined : json['sync_state'] === null ? null : YidingCursorFromJSON(json['sync_state']),
     };
 }
 

@@ -21,25 +21,21 @@ import { mapValues } from '../runtime';
 export interface UploadPartResponse {
     /**
      * 
-     * @type {number}
-     * @memberof UploadPartResponse
      */
     partNumber: number;
     /**
      * 
-     * @type {string}
-     * @memberof UploadPartResponse
      */
     etag: string;
     /**
      * 
-     * @type {number}
-     * @memberof UploadPartResponse
      */
     size: number;
 }
 export const UploadPartResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -60,7 +56,7 @@ export const UploadPartResponsePropertyValidationAttributesMap: {
  * Check if a given object implements the UploadPartResponse interface.
  */
 export function instanceOfUploadPartResponse(value: object): value is UploadPartResponse {
-    if (!('partNumber' in value) || value['partNumber'] === undefined) return false;
+    if ((!('partNumber' in (value as Record<string, any>)) && !('part_number' in (value as Record<string, any>))) || ((value as Record<string, any>)['partNumber'] === undefined && (value as Record<string, any>)['part_number'] === undefined)) return false;
     if (!('etag' in value) || value['etag'] === undefined) return false;
     if (!('size' in value) || value['size'] === undefined) return false;
     return true;

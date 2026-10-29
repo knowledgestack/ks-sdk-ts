@@ -12,26 +12,32 @@
  * Do not edit the class manually.
  */
 
-
 import * as runtime from '../runtime';
-import type {
-  BulkDeleteRequest,
-  BulkOperationResponse,
-  ErrorResponse,
-  HTTPValidationError,
-} from '../models/index';
 import {
+    type BulkDeleteRequest,
     BulkDeleteRequestFromJSON,
     BulkDeleteRequestToJSON,
+} from '../models/BulkDeleteRequest';
+import {
+    type BulkOperationResponse,
     BulkOperationResponseFromJSON,
     BulkOperationResponseToJSON,
+} from '../models/BulkOperationResponse';
+import {
+    type ErrorResponse,
     ErrorResponseFromJSON,
     ErrorResponseToJSON,
+} from '../models/ErrorResponse';
+import {
+    type HTTPValidationError,
     HTTPValidationErrorFromJSON,
     HTTPValidationErrorToJSON,
-} from '../models/index';
+} from '../models/HTTPValidationError';
 
 export interface BulkDeleteOperationRequest {
+    /**
+     * 
+     */
     bulkDeleteRequest: BulkDeleteRequest;
 }
 

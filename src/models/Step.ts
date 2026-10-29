@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
 import type { Args } from './Args';
 import {
     ArgsFromJSON,
@@ -36,44 +36,30 @@ import {
 export interface Step {
     /**
      * Stable step identifier within the message
-     * @type {string}
-     * @memberof Step
      */
     id: string;
     /**
      * The name of the step
-     * @type {string}
-     * @memberof Step
      */
     name: string;
     /**
      * 
-     * @type {StepKind}
-     * @memberof Step
      */
     kind: StepKind;
     /**
      * 
-     * @type {Args}
-     * @memberof Step
      */
     args?: Args | null;
     /**
      * 
-     * @type {string}
-     * @memberof Step
      */
     detail?: string | null;
     /**
      * The start time of the step
-     * @type {Date}
-     * @memberof Step
      */
     startTime: Date;
     /**
      * 
-     * @type {Date}
-     * @memberof Step
      */
     endTime?: Date | null;
 }
@@ -81,6 +67,8 @@ export interface Step {
 
 export const StepPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -104,7 +92,7 @@ export function instanceOfStep(value: object): value is Step {
     if (!('id' in value) || value['id'] === undefined) return false;
     if (!('name' in value) || value['name'] === undefined) return false;
     if (!('kind' in value) || value['kind'] === undefined) return false;
-    if (!('startTime' in value) || value['startTime'] === undefined) return false;
+    if ((!('startTime' in (value as Record<string, any>)) && !('start_time' in (value as Record<string, any>))) || ((value as Record<string, any>)['startTime'] === undefined && (value as Record<string, any>)['start_time'] === undefined)) return false;
     return true;
 }
 
@@ -121,10 +109,10 @@ export function StepFromJSONTyped(json: any, ignoreDiscriminator: boolean): Step
         'id': json['id'],
         'name': json['name'],
         'kind': StepKindFromJSON(json['kind']),
-        'args': json['args'] == null ? undefined : ArgsFromJSON(json['args']),
-        'detail': json['detail'] == null ? undefined : json['detail'],
-        'startTime': (new Date(json['start_time'])),
-        'endTime': json['end_time'] == null ? undefined : (new Date(json['end_time'])),
+        'args': json['args'] === undefined ? undefined : json['args'] === null ? null : ArgsFromJSON(json['args']),
+        'detail': json['detail'] === undefined ? undefined : json['detail'] === null ? null : json['detail'],
+        'startTime': (json['start_time'] == null ? json['start_time'] : parseDateTime(json['start_time'])),
+        'endTime': json['end_time'] === undefined ? undefined : json['end_time'] === null ? null : (parseDateTime(json['end_time'])),
     };
 }
 
@@ -144,8 +132,8 @@ export function StepToJSONTyped(value?: Step | null, ignoreDiscriminator: boolea
         'kind': StepKindToJSON(value['kind']),
         'args': ArgsToJSON(value['args']),
         'detail': value['detail'],
-        'start_time': value['startTime'].toISOString(),
-        'end_time': value['endTime'] == null ? value['endTime'] : value['endTime'].toISOString(),
+        'start_time': value['startTime'] == null ? value['startTime'] : serializeDateTime(value['startTime']),
+        'end_time': value['endTime'] == null ? value['endTime'] : serializeDateTime(value['endTime']),
     };
 }
 

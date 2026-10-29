@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
 import type { ItemPermissions } from './ItemPermissions';
 import {
     ItemPermissionsFromJSON,
@@ -43,92 +43,62 @@ import {
 export interface DataSourceSchemaResponse {
     /**
      * Path part type
-     * @type {DataSourceSchemaResponsePartTypeEnum}
-     * @memberof DataSourceSchemaResponse
      */
     partType?: DataSourceSchemaResponsePartTypeEnum;
     /**
      * 
-     * @type {string}
-     * @memberof DataSourceSchemaResponse
      */
     id: string;
     /**
      * DATA_SOURCE_SCHEMA path_part of this schema
-     * @type {string}
-     * @memberof DataSourceSchemaResponse
      */
     pathPartId: string;
     /**
      * DATA_SOURCE path_part of the parent connector
-     * @type {string}
-     * @memberof DataSourceSchemaResponse
      */
     parentPathPartId: string | null;
     /**
      * Full materialized path from root
-     * @type {string}
-     * @memberof DataSourceSchemaResponse
      */
     materializedPath: string;
     /**
      * 
-     * @type {string}
-     * @memberof DataSourceSchemaResponse
      */
     tenantId: string;
     /**
      * 
-     * @type {string}
-     * @memberof DataSourceSchemaResponse
      */
     name: string;
     /**
      * 
-     * @type {string}
-     * @memberof DataSourceSchemaResponse
      */
     dataSourceId: string;
     /**
      * Real namespace in the external DB
-     * @type {string}
-     * @memberof DataSourceSchemaResponse
      */
     schemaName: string;
     /**
      * True for the connection's default namespace
-     * @type {boolean}
-     * @memberof DataSourceSchemaResponse
      */
     isDefault: boolean;
     /**
      * 
-     * @type {PathPartApprovalState}
-     * @memberof DataSourceSchemaResponse
      */
     approvalState: PathPartApprovalState;
     /**
      * 
-     * @type {ItemPermissions}
-     * @memberof DataSourceSchemaResponse
      */
     permissions: ItemPermissions;
     /**
      * 
-     * @type {Date}
-     * @memberof DataSourceSchemaResponse
      */
     createdAt: Date;
     /**
      * 
-     * @type {Date}
-     * @memberof DataSourceSchemaResponse
      */
     updatedAt: Date;
     /**
      * Readable modeled tables in this schema
-     * @type {Array<DataSourceTableResponse>}
-     * @memberof DataSourceSchemaResponse
      */
     tables?: Array<DataSourceTableResponse>;
 }
@@ -138,12 +108,14 @@ export interface DataSourceSchemaResponse {
  * @export
  */
 export const DataSourceSchemaResponsePartTypeEnum = {
-    DataSourceSchema: 'DATA_SOURCE_SCHEMA'
+    DataSourceSchema: 'DATA_SOURCE_SCHEMA',
 } as const;
 export type DataSourceSchemaResponsePartTypeEnum = typeof DataSourceSchemaResponsePartTypeEnum[keyof typeof DataSourceSchemaResponsePartTypeEnum];
 
 export const DataSourceSchemaResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -165,18 +137,18 @@ export const DataSourceSchemaResponsePropertyValidationAttributesMap: {
  */
 export function instanceOfDataSourceSchemaResponse(value: object): value is DataSourceSchemaResponse {
     if (!('id' in value) || value['id'] === undefined) return false;
-    if (!('pathPartId' in value) || value['pathPartId'] === undefined) return false;
-    if (!('parentPathPartId' in value) || value['parentPathPartId'] === undefined) return false;
-    if (!('materializedPath' in value) || value['materializedPath'] === undefined) return false;
-    if (!('tenantId' in value) || value['tenantId'] === undefined) return false;
+    if ((!('pathPartId' in (value as Record<string, any>)) && !('path_part_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['pathPartId'] === undefined && (value as Record<string, any>)['path_part_id'] === undefined)) return false;
+    if ((!('parentPathPartId' in (value as Record<string, any>)) && !('parent_path_part_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['parentPathPartId'] === undefined && (value as Record<string, any>)['parent_path_part_id'] === undefined)) return false;
+    if ((!('materializedPath' in (value as Record<string, any>)) && !('materialized_path' in (value as Record<string, any>))) || ((value as Record<string, any>)['materializedPath'] === undefined && (value as Record<string, any>)['materialized_path'] === undefined)) return false;
+    if ((!('tenantId' in (value as Record<string, any>)) && !('tenant_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['tenantId'] === undefined && (value as Record<string, any>)['tenant_id'] === undefined)) return false;
     if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('dataSourceId' in value) || value['dataSourceId'] === undefined) return false;
-    if (!('schemaName' in value) || value['schemaName'] === undefined) return false;
-    if (!('isDefault' in value) || value['isDefault'] === undefined) return false;
-    if (!('approvalState' in value) || value['approvalState'] === undefined) return false;
+    if ((!('dataSourceId' in (value as Record<string, any>)) && !('data_source_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['dataSourceId'] === undefined && (value as Record<string, any>)['data_source_id'] === undefined)) return false;
+    if ((!('schemaName' in (value as Record<string, any>)) && !('schema_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['schemaName'] === undefined && (value as Record<string, any>)['schema_name'] === undefined)) return false;
+    if ((!('isDefault' in (value as Record<string, any>)) && !('is_default' in (value as Record<string, any>))) || ((value as Record<string, any>)['isDefault'] === undefined && (value as Record<string, any>)['is_default'] === undefined)) return false;
+    if ((!('approvalState' in (value as Record<string, any>)) && !('approval_state' in (value as Record<string, any>))) || ((value as Record<string, any>)['approvalState'] === undefined && (value as Record<string, any>)['approval_state'] === undefined)) return false;
     if (!('permissions' in value) || value['permissions'] === undefined) return false;
-    if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
-    if (!('updatedAt' in value) || value['updatedAt'] === undefined) return false;
+    if ((!('createdAt' in (value as Record<string, any>)) && !('created_at' in (value as Record<string, any>))) || ((value as Record<string, any>)['createdAt'] === undefined && (value as Record<string, any>)['created_at'] === undefined)) return false;
+    if ((!('updatedAt' in (value as Record<string, any>)) && !('updated_at' in (value as Record<string, any>))) || ((value as Record<string, any>)['updatedAt'] === undefined && (value as Record<string, any>)['updated_at'] === undefined)) return false;
     return true;
 }
 
@@ -202,8 +174,8 @@ export function DataSourceSchemaResponseFromJSONTyped(json: any, ignoreDiscrimin
         'isDefault': json['is_default'],
         'approvalState': PathPartApprovalStateFromJSON(json['approval_state']),
         'permissions': ItemPermissionsFromJSON(json['permissions']),
-        'createdAt': (new Date(json['created_at'])),
-        'updatedAt': (new Date(json['updated_at'])),
+        'createdAt': (json['created_at'] == null ? json['created_at'] : parseDateTime(json['created_at'])),
+        'updatedAt': (json['updated_at'] == null ? json['updated_at'] : parseDateTime(json['updated_at'])),
         'tables': json['tables'] == null ? undefined : ((json['tables'] as Array<any>).map(DataSourceTableResponseFromJSON)),
     };
 }
@@ -231,8 +203,8 @@ export function DataSourceSchemaResponseToJSONTyped(value?: DataSourceSchemaResp
         'is_default': value['isDefault'],
         'approval_state': PathPartApprovalStateToJSON(value['approvalState']),
         'permissions': ItemPermissionsToJSON(value['permissions']),
-        'created_at': value['createdAt'].toISOString(),
-        'updated_at': value['updatedAt'].toISOString(),
+        'created_at': value['createdAt'] == null ? value['createdAt'] : serializeDateTime(value['createdAt']),
+        'updated_at': value['updatedAt'] == null ? value['updatedAt'] : serializeDateTime(value['updatedAt']),
         'tables': value['tables'] == null ? undefined : ((value['tables'] as Array<any>).map(DataSourceTableResponseToJSON)),
     };
 }

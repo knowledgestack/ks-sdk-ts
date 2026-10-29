@@ -12,55 +12,98 @@
  * Do not edit the class manually.
  */
 
-
 import * as runtime from '../runtime';
-import type {
-  AppendMemoryChunkRequest,
-  EditMemoryChunkRequest,
-  ErrorResponse,
-  HTTPValidationError,
-  MemoryEntryResponse,
-  PaginatedResponseMemoryEntryResponse,
-} from '../models/index';
 import {
+    type AppendMemoryChunkRequest,
     AppendMemoryChunkRequestFromJSON,
     AppendMemoryChunkRequestToJSON,
+} from '../models/AppendMemoryChunkRequest';
+import {
+    type EditMemoryChunkRequest,
     EditMemoryChunkRequestFromJSON,
     EditMemoryChunkRequestToJSON,
+} from '../models/EditMemoryChunkRequest';
+import {
+    type ErrorResponse,
     ErrorResponseFromJSON,
     ErrorResponseToJSON,
+} from '../models/ErrorResponse';
+import {
+    type HTTPValidationError,
     HTTPValidationErrorFromJSON,
     HTTPValidationErrorToJSON,
+} from '../models/HTTPValidationError';
+import {
+    type MemoryEntryResponse,
     MemoryEntryResponseFromJSON,
     MemoryEntryResponseToJSON,
+} from '../models/MemoryEntryResponse';
+import {
+    type PaginatedResponseMemoryEntryResponse,
     PaginatedResponseMemoryEntryResponseFromJSON,
     PaginatedResponseMemoryEntryResponseToJSON,
-} from '../models/index';
+} from '../models/PaginatedResponseMemoryEntryResponse';
 
 export interface AppendWorkflowMemoryChunkRequest {
+    /**
+     * 
+     */
     definitionId: string;
+    /**
+     * 
+     */
     appendMemoryChunkRequest: AppendMemoryChunkRequest;
 }
 
 export interface EditWorkflowMemoryChunkRequest {
+    /**
+     * 
+     */
     definitionId: string;
+    /**
+     * 
+     */
     chunkId: string;
+    /**
+     * 
+     */
     editMemoryChunkRequest: EditMemoryChunkRequest;
 }
 
 export interface ForgetWorkflowMemoryChunkRequest {
+    /**
+     * 
+     */
     definitionId: string;
+    /**
+     * 
+     */
     chunkId: string;
 }
 
 export interface GetWorkflowMemoryChunkRequest {
+    /**
+     * 
+     */
     definitionId: string;
+    /**
+     * 
+     */
     chunkId: string;
 }
 
 export interface ListWorkflowMemoryChunksRequest {
+    /**
+     * 
+     */
     definitionId: string;
+    /**
+     * Number of items per page
+     */
     limit?: number;
+    /**
+     * Number of items to skip
+     */
     offset?: number;
 }
 
@@ -241,7 +284,7 @@ export class WorkflowMemoryApi extends runtime.BaseAPI implements WorkflowMemory
         }
 
         let urlPath = `/v1/workflow-definitions/{definition_id}/memory/chunks`;
-        urlPath = urlPath.replace(`{${"definition_id"}}`, encodeURIComponent(String(requestParameters['definitionId'])));
+        urlPath = urlPath.replace('{definition_id}', encodeURIComponent(String(requestParameters['definitionId'])));
 
         return {
             path: urlPath,
@@ -311,8 +354,8 @@ export class WorkflowMemoryApi extends runtime.BaseAPI implements WorkflowMemory
         }
 
         let urlPath = `/v1/workflow-definitions/{definition_id}/memory/chunks/{chunk_id}`;
-        urlPath = urlPath.replace(`{${"definition_id"}}`, encodeURIComponent(String(requestParameters['definitionId'])));
-        urlPath = urlPath.replace(`{${"chunk_id"}}`, encodeURIComponent(String(requestParameters['chunkId'])));
+        urlPath = urlPath.replace('{definition_id}', encodeURIComponent(String(requestParameters['definitionId'])));
+        urlPath = urlPath.replace('{chunk_id}', encodeURIComponent(String(requestParameters['chunkId'])));
 
         return {
             path: urlPath,
@@ -373,8 +416,8 @@ export class WorkflowMemoryApi extends runtime.BaseAPI implements WorkflowMemory
         }
 
         let urlPath = `/v1/workflow-definitions/{definition_id}/memory/chunks/{chunk_id}`;
-        urlPath = urlPath.replace(`{${"definition_id"}}`, encodeURIComponent(String(requestParameters['definitionId'])));
-        urlPath = urlPath.replace(`{${"chunk_id"}}`, encodeURIComponent(String(requestParameters['chunkId'])));
+        urlPath = urlPath.replace('{definition_id}', encodeURIComponent(String(requestParameters['definitionId'])));
+        urlPath = urlPath.replace('{chunk_id}', encodeURIComponent(String(requestParameters['chunkId'])));
 
         return {
             path: urlPath,
@@ -433,8 +476,8 @@ export class WorkflowMemoryApi extends runtime.BaseAPI implements WorkflowMemory
         }
 
         let urlPath = `/v1/workflow-definitions/{definition_id}/memory/chunks/{chunk_id}`;
-        urlPath = urlPath.replace(`{${"definition_id"}}`, encodeURIComponent(String(requestParameters['definitionId'])));
-        urlPath = urlPath.replace(`{${"chunk_id"}}`, encodeURIComponent(String(requestParameters['chunkId'])));
+        urlPath = urlPath.replace('{definition_id}', encodeURIComponent(String(requestParameters['definitionId'])));
+        urlPath = urlPath.replace('{chunk_id}', encodeURIComponent(String(requestParameters['chunkId'])));
 
         return {
             path: urlPath,
@@ -495,7 +538,7 @@ export class WorkflowMemoryApi extends runtime.BaseAPI implements WorkflowMemory
         }
 
         let urlPath = `/v1/workflow-definitions/{definition_id}/memory`;
-        urlPath = urlPath.replace(`{${"definition_id"}}`, encodeURIComponent(String(requestParameters['definitionId'])));
+        urlPath = urlPath.replace('{definition_id}', encodeURIComponent(String(requestParameters['definitionId'])));
 
         return {
             path: urlPath,

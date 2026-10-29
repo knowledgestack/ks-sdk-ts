@@ -29,20 +29,14 @@ import {
 export interface BulkGrantItemFailure {
     /**
      * 
-     * @type {string}
-     * @memberof BulkGrantItemFailure
      */
     userId: string;
     /**
      * 
-     * @type {string}
-     * @memberof BulkGrantItemFailure
      */
     objectId: string;
     /**
      * 
-     * @type {BulkFailureReason}
-     * @memberof BulkGrantItemFailure
      */
     reason: BulkFailureReason;
 }
@@ -50,6 +44,8 @@ export interface BulkGrantItemFailure {
 
 export const BulkGrantItemFailurePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -70,8 +66,8 @@ export const BulkGrantItemFailurePropertyValidationAttributesMap: {
  * Check if a given object implements the BulkGrantItemFailure interface.
  */
 export function instanceOfBulkGrantItemFailure(value: object): value is BulkGrantItemFailure {
-    if (!('userId' in value) || value['userId'] === undefined) return false;
-    if (!('objectId' in value) || value['objectId'] === undefined) return false;
+    if ((!('userId' in (value as Record<string, any>)) && !('user_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['userId'] === undefined && (value as Record<string, any>)['user_id'] === undefined)) return false;
+    if ((!('objectId' in (value as Record<string, any>)) && !('object_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['objectId'] === undefined && (value as Record<string, any>)['object_id'] === undefined)) return false;
     if (!('reason' in value) || value['reason'] === undefined) return false;
     return true;
 }

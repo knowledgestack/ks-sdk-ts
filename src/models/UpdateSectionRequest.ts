@@ -21,37 +21,29 @@ import { mapValues } from '../runtime';
 export interface UpdateSectionRequest {
     /**
      * New section name (can contain any characters)
-     * @type {string}
-     * @memberof UpdateSectionRequest
      */
     name?: string | null;
     /**
      * New page number (must be > 0)
-     * @type {number}
-     * @memberof UpdateSectionRequest
      */
     pageNumber?: number | null;
     /**
      * Move after this sibling PathPart ID
-     * @type {string}
-     * @memberof UpdateSectionRequest
      */
     prevSiblingPathId?: string | null;
     /**
      * Set to true to move to head of sibling list. This is needed since prev_sibling_path_id = None means no update
-     * @type {boolean}
-     * @memberof UpdateSectionRequest
      */
     moveToHead?: boolean;
     /**
      * Reparent to this PathPart ID (must be DOCUMENT_VERSION or SECTION in the same document version)
-     * @type {string}
-     * @memberof UpdateSectionRequest
      */
     parentPathPartId?: string | null;
 }
 export const UpdateSectionRequestPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -66,6 +58,7 @@ export const UpdateSectionRequestPropertyValidationAttributesMap: {
     }
 } = {
     name: {
+        dataType: "string",
         maxLength: 255,
         minLength: 1,
     },
@@ -89,11 +82,11 @@ export function UpdateSectionRequestFromJSONTyped(json: any, ignoreDiscriminator
     }
     return {
         
-        'name': json['name'] == null ? undefined : json['name'],
-        'pageNumber': json['page_number'] == null ? undefined : json['page_number'],
-        'prevSiblingPathId': json['prev_sibling_path_id'] == null ? undefined : json['prev_sibling_path_id'],
+        'name': json['name'] === undefined ? undefined : json['name'] === null ? null : json['name'],
+        'pageNumber': json['page_number'] === undefined ? undefined : json['page_number'] === null ? null : json['page_number'],
+        'prevSiblingPathId': json['prev_sibling_path_id'] === undefined ? undefined : json['prev_sibling_path_id'] === null ? null : json['prev_sibling_path_id'],
         'moveToHead': json['move_to_head'] == null ? undefined : json['move_to_head'],
-        'parentPathPartId': json['parent_path_part_id'] == null ? undefined : json['parent_path_part_id'],
+        'parentPathPartId': json['parent_path_part_id'] === undefined ? undefined : json['parent_path_part_id'] === null ? null : json['parent_path_part_id'],
     };
 }
 

@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
 import type { ChunkMetadata } from './ChunkMetadata';
 import {
     ChunkMetadataFromJSON,
@@ -36,44 +36,30 @@ import {
 export interface LineageNodeResponse {
     /**
      * Chunk ID
-     * @type {string}
-     * @memberof LineageNodeResponse
      */
     id: string;
     /**
      * Chunk text content
-     * @type {string}
-     * @memberof LineageNodeResponse
      */
     content: string;
     /**
      * 
-     * @type {ChunkType}
-     * @memberof LineageNodeResponse
      */
     chunkType: ChunkType;
     /**
      * 
-     * @type {ChunkMetadata}
-     * @memberof LineageNodeResponse
      */
     chunkMetadata: ChunkMetadata;
     /**
      * Tenant ID
-     * @type {string}
-     * @memberof LineageNodeResponse
      */
     tenantId: string;
     /**
      * Creation timestamp
-     * @type {Date}
-     * @memberof LineageNodeResponse
      */
     createdAt: Date;
     /**
      * Last update timestamp
-     * @type {Date}
-     * @memberof LineageNodeResponse
      */
     updatedAt: Date;
 }
@@ -81,6 +67,8 @@ export interface LineageNodeResponse {
 
 export const LineageNodeResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -103,11 +91,11 @@ export const LineageNodeResponsePropertyValidationAttributesMap: {
 export function instanceOfLineageNodeResponse(value: object): value is LineageNodeResponse {
     if (!('id' in value) || value['id'] === undefined) return false;
     if (!('content' in value) || value['content'] === undefined) return false;
-    if (!('chunkType' in value) || value['chunkType'] === undefined) return false;
-    if (!('chunkMetadata' in value) || value['chunkMetadata'] === undefined) return false;
-    if (!('tenantId' in value) || value['tenantId'] === undefined) return false;
-    if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
-    if (!('updatedAt' in value) || value['updatedAt'] === undefined) return false;
+    if ((!('chunkType' in (value as Record<string, any>)) && !('chunk_type' in (value as Record<string, any>))) || ((value as Record<string, any>)['chunkType'] === undefined && (value as Record<string, any>)['chunk_type'] === undefined)) return false;
+    if ((!('chunkMetadata' in (value as Record<string, any>)) && !('chunk_metadata' in (value as Record<string, any>))) || ((value as Record<string, any>)['chunkMetadata'] === undefined && (value as Record<string, any>)['chunk_metadata'] === undefined)) return false;
+    if ((!('tenantId' in (value as Record<string, any>)) && !('tenant_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['tenantId'] === undefined && (value as Record<string, any>)['tenant_id'] === undefined)) return false;
+    if ((!('createdAt' in (value as Record<string, any>)) && !('created_at' in (value as Record<string, any>))) || ((value as Record<string, any>)['createdAt'] === undefined && (value as Record<string, any>)['created_at'] === undefined)) return false;
+    if ((!('updatedAt' in (value as Record<string, any>)) && !('updated_at' in (value as Record<string, any>))) || ((value as Record<string, any>)['updatedAt'] === undefined && (value as Record<string, any>)['updated_at'] === undefined)) return false;
     return true;
 }
 
@@ -126,8 +114,8 @@ export function LineageNodeResponseFromJSONTyped(json: any, ignoreDiscriminator:
         'chunkType': ChunkTypeFromJSON(json['chunk_type']),
         'chunkMetadata': ChunkMetadataFromJSON(json['chunk_metadata']),
         'tenantId': json['tenant_id'],
-        'createdAt': (new Date(json['created_at'])),
-        'updatedAt': (new Date(json['updated_at'])),
+        'createdAt': (json['created_at'] == null ? json['created_at'] : parseDateTime(json['created_at'])),
+        'updatedAt': (json['updated_at'] == null ? json['updated_at'] : parseDateTime(json['updated_at'])),
     };
 }
 
@@ -147,8 +135,8 @@ export function LineageNodeResponseToJSONTyped(value?: LineageNodeResponse | nul
         'chunk_type': ChunkTypeToJSON(value['chunkType']),
         'chunk_metadata': ChunkMetadataToJSON(value['chunkMetadata']),
         'tenant_id': value['tenantId'],
-        'created_at': value['createdAt'].toISOString(),
-        'updated_at': value['updatedAt'].toISOString(),
+        'created_at': value['createdAt'] == null ? value['createdAt'] : serializeDateTime(value['createdAt']),
+        'updated_at': value['updatedAt'] == null ? value['updatedAt'] : serializeDateTime(value['updatedAt']),
     };
 }
 

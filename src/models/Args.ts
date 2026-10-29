@@ -22,6 +22,8 @@ export interface Args {
 }
 export const ArgsPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,

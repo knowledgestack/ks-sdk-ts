@@ -21,13 +21,13 @@ import { mapValues } from '../runtime';
 export interface VersionChunkIdsResponse {
     /**
      * 
-     * @type {Array<string>}
-     * @memberof VersionChunkIdsResponse
      */
     chunkIds: Array<string>;
 }
 export const VersionChunkIdsResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -48,7 +48,7 @@ export const VersionChunkIdsResponsePropertyValidationAttributesMap: {
  * Check if a given object implements the VersionChunkIdsResponse interface.
  */
 export function instanceOfVersionChunkIdsResponse(value: object): value is VersionChunkIdsResponse {
-    if (!('chunkIds' in value) || value['chunkIds'] === undefined) return false;
+    if ((!('chunkIds' in (value as Record<string, any>)) && !('chunk_ids' in (value as Record<string, any>))) || ((value as Record<string, any>)['chunkIds'] === undefined && (value as Record<string, any>)['chunk_ids'] === undefined)) return false;
     return true;
 }
 

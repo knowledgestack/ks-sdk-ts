@@ -21,13 +21,13 @@ import { mapValues } from '../runtime';
 export interface UpdateChunkContentRequest {
     /**
      * New chunk text content
-     * @type {string}
-     * @memberof UpdateChunkContentRequest
      */
     content: string;
 }
 export const UpdateChunkContentRequestPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -42,6 +42,8 @@ export const UpdateChunkContentRequestPropertyValidationAttributesMap: {
     }
 } = {
     content: {
+        dataType: "string",
+        required: true,
         minLength: 1,
     },
 }

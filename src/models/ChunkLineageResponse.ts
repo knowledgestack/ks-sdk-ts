@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
 /**
  * Single chunk lineage edge response.
  * @export
@@ -21,31 +21,25 @@ import { mapValues } from '../runtime';
 export interface ChunkLineageResponse {
     /**
      * Parent chunk ID
-     * @type {string}
-     * @memberof ChunkLineageResponse
      */
     parentChunkId: string;
     /**
      * Child chunk ID
-     * @type {string}
-     * @memberof ChunkLineageResponse
      */
     chunkId: string;
     /**
      * Tenant ID
-     * @type {string}
-     * @memberof ChunkLineageResponse
      */
     tenantId: string;
     /**
      * Creation timestamp
-     * @type {Date}
-     * @memberof ChunkLineageResponse
      */
     createdAt: Date;
 }
 export const ChunkLineageResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -66,10 +60,10 @@ export const ChunkLineageResponsePropertyValidationAttributesMap: {
  * Check if a given object implements the ChunkLineageResponse interface.
  */
 export function instanceOfChunkLineageResponse(value: object): value is ChunkLineageResponse {
-    if (!('parentChunkId' in value) || value['parentChunkId'] === undefined) return false;
-    if (!('chunkId' in value) || value['chunkId'] === undefined) return false;
-    if (!('tenantId' in value) || value['tenantId'] === undefined) return false;
-    if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
+    if ((!('parentChunkId' in (value as Record<string, any>)) && !('parent_chunk_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['parentChunkId'] === undefined && (value as Record<string, any>)['parent_chunk_id'] === undefined)) return false;
+    if ((!('chunkId' in (value as Record<string, any>)) && !('chunk_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['chunkId'] === undefined && (value as Record<string, any>)['chunk_id'] === undefined)) return false;
+    if ((!('tenantId' in (value as Record<string, any>)) && !('tenant_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['tenantId'] === undefined && (value as Record<string, any>)['tenant_id'] === undefined)) return false;
+    if ((!('createdAt' in (value as Record<string, any>)) && !('created_at' in (value as Record<string, any>))) || ((value as Record<string, any>)['createdAt'] === undefined && (value as Record<string, any>)['created_at'] === undefined)) return false;
     return true;
 }
 
@@ -86,7 +80,7 @@ export function ChunkLineageResponseFromJSONTyped(json: any, ignoreDiscriminator
         'parentChunkId': json['parent_chunk_id'],
         'chunkId': json['chunk_id'],
         'tenantId': json['tenant_id'],
-        'createdAt': (new Date(json['created_at'])),
+        'createdAt': (json['created_at'] == null ? json['created_at'] : parseDateTime(json['created_at'])),
     };
 }
 
@@ -104,7 +98,7 @@ export function ChunkLineageResponseToJSONTyped(value?: ChunkLineageResponse | n
         'parent_chunk_id': value['parentChunkId'],
         'chunk_id': value['chunkId'],
         'tenant_id': value['tenantId'],
-        'created_at': value['createdAt'].toISOString(),
+        'created_at': value['createdAt'] == null ? value['createdAt'] : serializeDateTime(value['createdAt']),
     };
 }
 

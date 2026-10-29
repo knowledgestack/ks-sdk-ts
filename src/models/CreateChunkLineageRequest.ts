@@ -21,19 +21,17 @@ import { mapValues } from '../runtime';
 export interface CreateChunkLineageRequest {
     /**
      * Child chunk ID
-     * @type {string}
-     * @memberof CreateChunkLineageRequest
      */
     chunkId: string;
     /**
      * List of parent chunk IDs
-     * @type {Array<string>}
-     * @memberof CreateChunkLineageRequest
      */
     parentChunkIds: Array<string>;
 }
 export const CreateChunkLineageRequestPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -48,6 +46,8 @@ export const CreateChunkLineageRequestPropertyValidationAttributesMap: {
     }
 } = {
     parentChunkIds: {
+        dataType: "Array<string>",
+        required: true,
         minItems: 1,
         uniqueItems: false,
     },
@@ -58,8 +58,8 @@ export const CreateChunkLineageRequestPropertyValidationAttributesMap: {
  * Check if a given object implements the CreateChunkLineageRequest interface.
  */
 export function instanceOfCreateChunkLineageRequest(value: object): value is CreateChunkLineageRequest {
-    if (!('chunkId' in value) || value['chunkId'] === undefined) return false;
-    if (!('parentChunkIds' in value) || value['parentChunkIds'] === undefined) return false;
+    if ((!('chunkId' in (value as Record<string, any>)) && !('chunk_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['chunkId'] === undefined && (value as Record<string, any>)['chunk_id'] === undefined)) return false;
+    if ((!('parentChunkIds' in (value as Record<string, any>)) && !('parent_chunk_ids' in (value as Record<string, any>))) || ((value as Record<string, any>)['parentChunkIds'] === undefined && (value as Record<string, any>)['parent_chunk_ids'] === undefined)) return false;
     return true;
 }
 

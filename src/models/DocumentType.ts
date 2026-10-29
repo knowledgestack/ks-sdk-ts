@@ -31,7 +31,7 @@ export const DocumentType = {
     Audio: 'AUDIO',
     Video: 'VIDEO',
     Email: 'EMAIL',
-    Unknown: 'UNKNOWN'
+    Unknown: 'UNKNOWN',
 } as const;
 export type DocumentType = typeof DocumentType[keyof typeof DocumentType];
 

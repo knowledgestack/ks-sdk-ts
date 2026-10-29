@@ -36,20 +36,14 @@ import {
 export interface OnboardingState {
     /**
      * 
-     * @type {OnboardingStep}
-     * @memberof OnboardingState
      */
     currentStep?: OnboardingStep;
     /**
      * 
-     * @type {GuideModules}
-     * @memberof OnboardingState
      */
     guideModules?: GuideModules;
     /**
      * 
-     * @type {boolean}
-     * @memberof OnboardingState
      */
     setupChecklistDismissed?: boolean;
 }
@@ -57,6 +51,8 @@ export interface OnboardingState {
 
 export const OnboardingStatePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,

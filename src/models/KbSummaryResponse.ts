@@ -29,115 +29,81 @@ import {
 export interface KbSummaryResponse {
     /**
      * 
-     * @type {number}
-     * @memberof KbSummaryResponse
      */
     documentsTotal: number;
     /**
      * Live document count keyed by document_origin.
-     * @type {{ [key: string]: number; }}
-     * @memberof KbSummaryResponse
      */
     documentsByOrigin: { [key: string]: number; };
     /**
      * Live document count keyed by document_type.
-     * @type {{ [key: string]: number; }}
-     * @memberof KbSummaryResponse
      */
     documentsByType: { [key: string]: number; };
     /**
      * Live document count keyed by the active version's pipeline status (pending, processing, completed, failed, cancelled, quota_limit). Documents whose active version was never ingested are absent.
-     * @type {{ [key: string]: number; }}
-     * @memberof KbSummaryResponse
      */
     documentsByIngestionStatus: { [key: string]: number; };
     /**
      * 
-     * @type {number}
-     * @memberof KbSummaryResponse
      */
     documentVersionsTotal: number;
     /**
      * 
-     * @type {number}
-     * @memberof KbSummaryResponse
      */
     chunksTotal: number;
     /**
      * 
-     * @type {{ [key: string]: number; }}
-     * @memberof KbSummaryResponse
      */
     chunksByType: { [key: string]: number; };
     /**
      * Sum of chunk.num_tokens (cl100k).
-     * @type {number}
-     * @memberof KbSummaryResponse
      */
     tokensTotal: number;
     /**
      * 
-     * @type {number}
-     * @memberof KbSummaryResponse
      */
     sectionsTotal: number;
     /**
      * 
-     * @type {number}
-     * @memberof KbSummaryResponse
      */
     threadsTotal: number;
     /**
      * 
-     * @type {number}
-     * @memberof KbSummaryResponse
      */
     messagesTotal: number;
     /**
      * 
-     * @type {{ [key: string]: number; }}
-     * @memberof KbSummaryResponse
      */
     messagesByRole: { [key: string]: number; };
     /**
      * 
-     * @type {number}
-     * @memberof KbSummaryResponse
      */
     dataSourcesTotal: number;
     /**
      * 
-     * @type {number}
-     * @memberof KbSummaryResponse
      */
     dataSourceTablesTotal: number;
     /**
      * 
-     * @type {number}
-     * @memberof KbSummaryResponse
      */
     documentsCheckedOut: number;
     /**
      * Current-period usage vs limit per metered resource.
-     * @type {Array<MeteredQuotaStatus>}
-     * @memberof KbSummaryResponse
      */
     quota: Array<MeteredQuotaStatus>;
     /**
      * 
-     * @type {number}
-     * @memberof KbSummaryResponse
      */
     feedbackUp: number;
     /**
      * 
-     * @type {number}
-     * @memberof KbSummaryResponse
      */
     feedbackDown: number;
 }
 export const KbSummaryResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -158,24 +124,24 @@ export const KbSummaryResponsePropertyValidationAttributesMap: {
  * Check if a given object implements the KbSummaryResponse interface.
  */
 export function instanceOfKbSummaryResponse(value: object): value is KbSummaryResponse {
-    if (!('documentsTotal' in value) || value['documentsTotal'] === undefined) return false;
-    if (!('documentsByOrigin' in value) || value['documentsByOrigin'] === undefined) return false;
-    if (!('documentsByType' in value) || value['documentsByType'] === undefined) return false;
-    if (!('documentsByIngestionStatus' in value) || value['documentsByIngestionStatus'] === undefined) return false;
-    if (!('documentVersionsTotal' in value) || value['documentVersionsTotal'] === undefined) return false;
-    if (!('chunksTotal' in value) || value['chunksTotal'] === undefined) return false;
-    if (!('chunksByType' in value) || value['chunksByType'] === undefined) return false;
-    if (!('tokensTotal' in value) || value['tokensTotal'] === undefined) return false;
-    if (!('sectionsTotal' in value) || value['sectionsTotal'] === undefined) return false;
-    if (!('threadsTotal' in value) || value['threadsTotal'] === undefined) return false;
-    if (!('messagesTotal' in value) || value['messagesTotal'] === undefined) return false;
-    if (!('messagesByRole' in value) || value['messagesByRole'] === undefined) return false;
-    if (!('dataSourcesTotal' in value) || value['dataSourcesTotal'] === undefined) return false;
-    if (!('dataSourceTablesTotal' in value) || value['dataSourceTablesTotal'] === undefined) return false;
-    if (!('documentsCheckedOut' in value) || value['documentsCheckedOut'] === undefined) return false;
+    if ((!('documentsTotal' in (value as Record<string, any>)) && !('documents_total' in (value as Record<string, any>))) || ((value as Record<string, any>)['documentsTotal'] === undefined && (value as Record<string, any>)['documents_total'] === undefined)) return false;
+    if ((!('documentsByOrigin' in (value as Record<string, any>)) && !('documents_by_origin' in (value as Record<string, any>))) || ((value as Record<string, any>)['documentsByOrigin'] === undefined && (value as Record<string, any>)['documents_by_origin'] === undefined)) return false;
+    if ((!('documentsByType' in (value as Record<string, any>)) && !('documents_by_type' in (value as Record<string, any>))) || ((value as Record<string, any>)['documentsByType'] === undefined && (value as Record<string, any>)['documents_by_type'] === undefined)) return false;
+    if ((!('documentsByIngestionStatus' in (value as Record<string, any>)) && !('documents_by_ingestion_status' in (value as Record<string, any>))) || ((value as Record<string, any>)['documentsByIngestionStatus'] === undefined && (value as Record<string, any>)['documents_by_ingestion_status'] === undefined)) return false;
+    if ((!('documentVersionsTotal' in (value as Record<string, any>)) && !('document_versions_total' in (value as Record<string, any>))) || ((value as Record<string, any>)['documentVersionsTotal'] === undefined && (value as Record<string, any>)['document_versions_total'] === undefined)) return false;
+    if ((!('chunksTotal' in (value as Record<string, any>)) && !('chunks_total' in (value as Record<string, any>))) || ((value as Record<string, any>)['chunksTotal'] === undefined && (value as Record<string, any>)['chunks_total'] === undefined)) return false;
+    if ((!('chunksByType' in (value as Record<string, any>)) && !('chunks_by_type' in (value as Record<string, any>))) || ((value as Record<string, any>)['chunksByType'] === undefined && (value as Record<string, any>)['chunks_by_type'] === undefined)) return false;
+    if ((!('tokensTotal' in (value as Record<string, any>)) && !('tokens_total' in (value as Record<string, any>))) || ((value as Record<string, any>)['tokensTotal'] === undefined && (value as Record<string, any>)['tokens_total'] === undefined)) return false;
+    if ((!('sectionsTotal' in (value as Record<string, any>)) && !('sections_total' in (value as Record<string, any>))) || ((value as Record<string, any>)['sectionsTotal'] === undefined && (value as Record<string, any>)['sections_total'] === undefined)) return false;
+    if ((!('threadsTotal' in (value as Record<string, any>)) && !('threads_total' in (value as Record<string, any>))) || ((value as Record<string, any>)['threadsTotal'] === undefined && (value as Record<string, any>)['threads_total'] === undefined)) return false;
+    if ((!('messagesTotal' in (value as Record<string, any>)) && !('messages_total' in (value as Record<string, any>))) || ((value as Record<string, any>)['messagesTotal'] === undefined && (value as Record<string, any>)['messages_total'] === undefined)) return false;
+    if ((!('messagesByRole' in (value as Record<string, any>)) && !('messages_by_role' in (value as Record<string, any>))) || ((value as Record<string, any>)['messagesByRole'] === undefined && (value as Record<string, any>)['messages_by_role'] === undefined)) return false;
+    if ((!('dataSourcesTotal' in (value as Record<string, any>)) && !('data_sources_total' in (value as Record<string, any>))) || ((value as Record<string, any>)['dataSourcesTotal'] === undefined && (value as Record<string, any>)['data_sources_total'] === undefined)) return false;
+    if ((!('dataSourceTablesTotal' in (value as Record<string, any>)) && !('data_source_tables_total' in (value as Record<string, any>))) || ((value as Record<string, any>)['dataSourceTablesTotal'] === undefined && (value as Record<string, any>)['data_source_tables_total'] === undefined)) return false;
+    if ((!('documentsCheckedOut' in (value as Record<string, any>)) && !('documents_checked_out' in (value as Record<string, any>))) || ((value as Record<string, any>)['documentsCheckedOut'] === undefined && (value as Record<string, any>)['documents_checked_out'] === undefined)) return false;
     if (!('quota' in value) || value['quota'] === undefined) return false;
-    if (!('feedbackUp' in value) || value['feedbackUp'] === undefined) return false;
-    if (!('feedbackDown' in value) || value['feedbackDown'] === undefined) return false;
+    if ((!('feedbackUp' in (value as Record<string, any>)) && !('feedback_up' in (value as Record<string, any>))) || ((value as Record<string, any>)['feedbackUp'] === undefined && (value as Record<string, any>)['feedback_up'] === undefined)) return false;
+    if ((!('feedbackDown' in (value as Record<string, any>)) && !('feedback_down' in (value as Record<string, any>))) || ((value as Record<string, any>)['feedbackDown'] === undefined && (value as Record<string, any>)['feedback_down'] === undefined)) return false;
     return true;
 }
 

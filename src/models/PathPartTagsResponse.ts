@@ -29,13 +29,13 @@ import {
 export interface PathPartTagsResponse {
     /**
      * Tags attached to the path part
-     * @type {Array<TagResponse>}
-     * @memberof PathPartTagsResponse
      */
     tags: Array<TagResponse>;
 }
 export const PathPartTagsResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,

@@ -36,20 +36,14 @@ import {
 export interface RunTimeseriesResponse {
     /**
      * IANA timezone the buckets are in.
-     * @type {string}
-     * @memberof RunTimeseriesResponse
      */
     timezone: string;
     /**
      * 
-     * @type {TimeBucket}
-     * @memberof RunTimeseriesResponse
      */
     bucket: TimeBucket;
     /**
      * 
-     * @type {Array<TimeseriesPoint>}
-     * @memberof RunTimeseriesResponse
      */
     points?: Array<TimeseriesPoint>;
 }
@@ -57,6 +51,8 @@ export interface RunTimeseriesResponse {
 
 export const RunTimeseriesResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,

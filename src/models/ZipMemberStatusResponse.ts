@@ -21,43 +21,33 @@ import { mapValues } from '../runtime';
 export interface ZipMemberStatusResponse {
     /**
      * 
-     * @type {string}
-     * @memberof ZipMemberStatusResponse
      */
     zipPath: string;
     /**
      * 
-     * @type {string}
-     * @memberof ZipMemberStatusResponse
      */
     documentId?: string | null;
     /**
      * 
-     * @type {string}
-     * @memberof ZipMemberStatusResponse
      */
     documentVersionId?: string | null;
     /**
      * 
-     * @type {string}
-     * @memberof ZipMemberStatusResponse
      */
     workflowId?: string | null;
     /**
      * 
-     * @type {string}
-     * @memberof ZipMemberStatusResponse
      */
     error?: string | null;
     /**
      * 
-     * @type {boolean}
-     * @memberof ZipMemberStatusResponse
      */
     skipped?: boolean;
 }
 export const ZipMemberStatusResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -78,7 +68,7 @@ export const ZipMemberStatusResponsePropertyValidationAttributesMap: {
  * Check if a given object implements the ZipMemberStatusResponse interface.
  */
 export function instanceOfZipMemberStatusResponse(value: object): value is ZipMemberStatusResponse {
-    if (!('zipPath' in value) || value['zipPath'] === undefined) return false;
+    if ((!('zipPath' in (value as Record<string, any>)) && !('zip_path' in (value as Record<string, any>))) || ((value as Record<string, any>)['zipPath'] === undefined && (value as Record<string, any>)['zip_path'] === undefined)) return false;
     return true;
 }
 
@@ -93,10 +83,10 @@ export function ZipMemberStatusResponseFromJSONTyped(json: any, ignoreDiscrimina
     return {
         
         'zipPath': json['zip_path'],
-        'documentId': json['document_id'] == null ? undefined : json['document_id'],
-        'documentVersionId': json['document_version_id'] == null ? undefined : json['document_version_id'],
-        'workflowId': json['workflow_id'] == null ? undefined : json['workflow_id'],
-        'error': json['error'] == null ? undefined : json['error'],
+        'documentId': json['document_id'] === undefined ? undefined : json['document_id'] === null ? null : json['document_id'],
+        'documentVersionId': json['document_version_id'] === undefined ? undefined : json['document_version_id'] === null ? null : json['document_version_id'],
+        'workflowId': json['workflow_id'] === undefined ? undefined : json['workflow_id'] === null ? null : json['workflow_id'],
+        'error': json['error'] === undefined ? undefined : json['error'] === null ? null : json['error'],
         'skipped': json['skipped'] == null ? undefined : json['skipped'],
     };
 }

@@ -20,7 +20,7 @@
 export const BrandingLogoType = {
     Logo: 'logo',
     LogoDark: 'logo_dark',
-    Favicon: 'favicon'
+    Favicon: 'favicon',
 } as const;
 export type BrandingLogoType = typeof BrandingLogoType[keyof typeof BrandingLogoType];
 

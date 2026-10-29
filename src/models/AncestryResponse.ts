@@ -29,13 +29,13 @@ import {
 export interface AncestryResponse {
     /**
      * Ancestors ordered root-to-leaf
-     * @type {Array<PathPartAncestorItem>}
-     * @memberof AncestryResponse
      */
     ancestors: Array<PathPartAncestorItem>;
 }
 export const AncestryResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,

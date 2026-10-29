@@ -22,7 +22,7 @@ export const ChunkType = {
     Table: 'TABLE',
     Image: 'IMAGE',
     Html: 'HTML',
-    Unknown: 'UNKNOWN'
+    Unknown: 'UNKNOWN',
 } as const;
 export type ChunkType = typeof ChunkType[keyof typeof ChunkType];
 

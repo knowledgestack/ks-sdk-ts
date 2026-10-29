@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
 import type { ChunkContentItem } from './ChunkContentItem';
 import {
     instanceOfChunkContentItem,
@@ -62,9 +63,9 @@ export function SectionContentItemOrChunkContentItemToJSONTyped(value?: SectionC
     }
     switch (value['partType']) {
         case 'CHUNK':
-            return Object.assign({}, ChunkContentItemToJSON(value), { partType: 'CHUNK' } as const);
+            return Object.assign({}, ChunkContentItemToJSON(value), { 'part_type': 'CHUNK' } as const);
         case 'SECTION':
-            return Object.assign({}, SectionContentItemToJSON(value), { partType: 'SECTION' } as const);
+            return Object.assign({}, SectionContentItemToJSON(value), { 'part_type': 'SECTION' } as const);
         default:
             return value;
     }

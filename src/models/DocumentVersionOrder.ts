@@ -19,7 +19,7 @@
  */
 export const DocumentVersionOrder = {
     Version: 'VERSION',
-    CreatedAt: 'CREATED_AT'
+    CreatedAt: 'CREATED_AT',
 } as const;
 export type DocumentVersionOrder = typeof DocumentVersionOrder[keyof typeof DocumentVersionOrder];
 

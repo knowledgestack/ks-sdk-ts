@@ -21,55 +21,41 @@ import { mapValues } from '../runtime';
 export interface CreateUploadRequest {
     /**
      * Parent folder path part ID (FOLDER)
-     * @type {string}
-     * @memberof CreateUploadRequest
      */
     parentPathId: string;
     /**
      * Document name
-     * @type {string}
-     * @memberof CreateUploadRequest
      */
     name: string;
     /**
      * Original filename; its extension selects the type + size cap
-     * @type {string}
-     * @memberof CreateUploadRequest
      */
     filename: string;
     /**
      * Declared total size; fast-rejected against the type cap
-     * @type {number}
-     * @memberof CreateUploadRequest
      */
     sizeBytes: number;
     /**
      * Tags applied to the document on completion (mirrors the buffered ingest endpoints so a mixed submit tags recordings too)
-     * @type {Array<string>}
-     * @memberof CreateUploadRequest
      */
     tagIds?: Array<string>;
     /**
      * Workflow run this upload belongs to; attributes the resulting document to the run in the audit log. Must be sent together with workflow_definition_id, and only by an assumed identity.
-     * @type {string}
-     * @memberof CreateUploadRequest
      */
     workflowRunId?: string | null;
     /**
      * Workflow definition for workflow_run_id.
-     * @type {string}
-     * @memberof CreateUploadRequest
      */
     workflowDefinitionId?: string | null;
     /**
      * Replay key for callers that retry (e.g. the ZIP fan-out); completing twice with the same key replays the existing document instead of creating a duplicate.
-     * @type {string}
-     * @memberof CreateUploadRequest
      */
     idempotencyKey?: string | null;
 }
 export const CreateUploadRequestPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -90,10 +76,10 @@ export const CreateUploadRequestPropertyValidationAttributesMap: {
  * Check if a given object implements the CreateUploadRequest interface.
  */
 export function instanceOfCreateUploadRequest(value: object): value is CreateUploadRequest {
-    if (!('parentPathId' in value) || value['parentPathId'] === undefined) return false;
+    if ((!('parentPathId' in (value as Record<string, any>)) && !('parent_path_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['parentPathId'] === undefined && (value as Record<string, any>)['parent_path_id'] === undefined)) return false;
     if (!('name' in value) || value['name'] === undefined) return false;
     if (!('filename' in value) || value['filename'] === undefined) return false;
-    if (!('sizeBytes' in value) || value['sizeBytes'] === undefined) return false;
+    if ((!('sizeBytes' in (value as Record<string, any>)) && !('size_bytes' in (value as Record<string, any>))) || ((value as Record<string, any>)['sizeBytes'] === undefined && (value as Record<string, any>)['size_bytes'] === undefined)) return false;
     return true;
 }
 
@@ -112,9 +98,9 @@ export function CreateUploadRequestFromJSONTyped(json: any, ignoreDiscriminator:
         'filename': json['filename'],
         'sizeBytes': json['size_bytes'],
         'tagIds': json['tag_ids'] == null ? undefined : json['tag_ids'],
-        'workflowRunId': json['workflow_run_id'] == null ? undefined : json['workflow_run_id'],
-        'workflowDefinitionId': json['workflow_definition_id'] == null ? undefined : json['workflow_definition_id'],
-        'idempotencyKey': json['idempotency_key'] == null ? undefined : json['idempotency_key'],
+        'workflowRunId': json['workflow_run_id'] === undefined ? undefined : json['workflow_run_id'] === null ? null : json['workflow_run_id'],
+        'workflowDefinitionId': json['workflow_definition_id'] === undefined ? undefined : json['workflow_definition_id'] === null ? null : json['workflow_definition_id'],
+        'idempotencyKey': json['idempotency_key'] === undefined ? undefined : json['idempotency_key'] === null ? null : json['idempotency_key'],
     };
 }
 

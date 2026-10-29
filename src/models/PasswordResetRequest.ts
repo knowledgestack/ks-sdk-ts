@@ -21,19 +21,17 @@ import { mapValues } from '../runtime';
 export interface PasswordResetRequest {
     /**
      * Old password
-     * @type {string}
-     * @memberof PasswordResetRequest
      */
     oldPassword: string;
     /**
      * New password
-     * @type {string}
-     * @memberof PasswordResetRequest
      */
     newPassword: string;
 }
 export const PasswordResetRequestPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -48,6 +46,8 @@ export const PasswordResetRequestPropertyValidationAttributesMap: {
     }
 } = {
     newPassword: {
+        dataType: "string",
+        required: true,
         minLength: 8,
     },
 }
@@ -57,8 +57,8 @@ export const PasswordResetRequestPropertyValidationAttributesMap: {
  * Check if a given object implements the PasswordResetRequest interface.
  */
 export function instanceOfPasswordResetRequest(value: object): value is PasswordResetRequest {
-    if (!('oldPassword' in value) || value['oldPassword'] === undefined) return false;
-    if (!('newPassword' in value) || value['newPassword'] === undefined) return false;
+    if ((!('oldPassword' in (value as Record<string, any>)) && !('old_password' in (value as Record<string, any>))) || ((value as Record<string, any>)['oldPassword'] === undefined && (value as Record<string, any>)['old_password'] === undefined)) return false;
+    if ((!('newPassword' in (value as Record<string, any>)) && !('new_password' in (value as Record<string, any>))) || ((value as Record<string, any>)['newPassword'] === undefined && (value as Record<string, any>)['new_password'] === undefined)) return false;
     return true;
 }
 

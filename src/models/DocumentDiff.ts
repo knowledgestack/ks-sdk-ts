@@ -35,61 +35,45 @@ import {
 export interface DocumentDiff {
     /**
      * 
-     * @type {Array<DocumentBlockChange>}
-     * @memberof DocumentDiff
      */
     blocks: Array<DocumentBlockChange>;
     /**
      * 
-     * @type {number}
-     * @memberof DocumentDiff
      */
     added: number;
     /**
      * 
-     * @type {number}
-     * @memberof DocumentDiff
      */
     removed: number;
     /**
      * 
-     * @type {number}
-     * @memberof DocumentDiff
      */
     modified: number;
     /**
      * 
-     * @type {boolean}
-     * @memberof DocumentDiff
      */
     truncated: boolean;
     /**
      * 
-     * @type {number}
-     * @memberof DocumentDiff
      */
     omittedBlocks: number;
     /**
      * 
-     * @type {Array<string>}
-     * @memberof DocumentDiff
      */
     surfacesChecked: Array<string>;
     /**
      * 
-     * @type {number}
-     * @memberof DocumentDiff
      */
     unacceptedRevisions: number;
     /**
      * 
-     * @type {boolean}
-     * @memberof DocumentDiff
      */
     decodeDegraded: boolean;
 }
 export const DocumentDiffPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -115,10 +99,10 @@ export function instanceOfDocumentDiff(value: object): value is DocumentDiff {
     if (!('removed' in value) || value['removed'] === undefined) return false;
     if (!('modified' in value) || value['modified'] === undefined) return false;
     if (!('truncated' in value) || value['truncated'] === undefined) return false;
-    if (!('omittedBlocks' in value) || value['omittedBlocks'] === undefined) return false;
-    if (!('surfacesChecked' in value) || value['surfacesChecked'] === undefined) return false;
-    if (!('unacceptedRevisions' in value) || value['unacceptedRevisions'] === undefined) return false;
-    if (!('decodeDegraded' in value) || value['decodeDegraded'] === undefined) return false;
+    if ((!('omittedBlocks' in (value as Record<string, any>)) && !('omitted_blocks' in (value as Record<string, any>))) || ((value as Record<string, any>)['omittedBlocks'] === undefined && (value as Record<string, any>)['omitted_blocks'] === undefined)) return false;
+    if ((!('surfacesChecked' in (value as Record<string, any>)) && !('surfaces_checked' in (value as Record<string, any>))) || ((value as Record<string, any>)['surfacesChecked'] === undefined && (value as Record<string, any>)['surfaces_checked'] === undefined)) return false;
+    if ((!('unacceptedRevisions' in (value as Record<string, any>)) && !('unaccepted_revisions' in (value as Record<string, any>))) || ((value as Record<string, any>)['unacceptedRevisions'] === undefined && (value as Record<string, any>)['unaccepted_revisions'] === undefined)) return false;
+    if ((!('decodeDegraded' in (value as Record<string, any>)) && !('decode_degraded' in (value as Record<string, any>))) || ((value as Record<string, any>)['decodeDegraded'] === undefined && (value as Record<string, any>)['decode_degraded'] === undefined)) return false;
     return true;
 }
 

@@ -12,61 +12,99 @@
  * Do not edit the class manually.
  */
 
-
 import * as runtime from '../runtime';
-import type {
-  AcceptDisclaimerRequest,
-  ApiConnectionRequestRequest,
-  ApiConnectionRequestResponse,
-  ApiConnectionResponse,
-  CreateApiConnectionRequest,
-  ErrorResponse,
-  HTTPValidationError,
-  UpdateApiConnectionRequest,
-} from '../models/index';
 import {
+    type AcceptDisclaimerRequest,
     AcceptDisclaimerRequestFromJSON,
     AcceptDisclaimerRequestToJSON,
+} from '../models/AcceptDisclaimerRequest';
+import {
+    type ApiConnectionRequestRequest,
     ApiConnectionRequestRequestFromJSON,
     ApiConnectionRequestRequestToJSON,
+} from '../models/ApiConnectionRequestRequest';
+import {
+    type ApiConnectionRequestResponse,
     ApiConnectionRequestResponseFromJSON,
     ApiConnectionRequestResponseToJSON,
+} from '../models/ApiConnectionRequestResponse';
+import {
+    type ApiConnectionResponse,
     ApiConnectionResponseFromJSON,
     ApiConnectionResponseToJSON,
+} from '../models/ApiConnectionResponse';
+import {
+    type CreateApiConnectionRequest,
     CreateApiConnectionRequestFromJSON,
     CreateApiConnectionRequestToJSON,
+} from '../models/CreateApiConnectionRequest';
+import {
+    type ErrorResponse,
     ErrorResponseFromJSON,
     ErrorResponseToJSON,
+} from '../models/ErrorResponse';
+import {
+    type HTTPValidationError,
     HTTPValidationErrorFromJSON,
     HTTPValidationErrorToJSON,
+} from '../models/HTTPValidationError';
+import {
+    type UpdateApiConnectionRequest,
     UpdateApiConnectionRequestFromJSON,
     UpdateApiConnectionRequestToJSON,
-} from '../models/index';
+} from '../models/UpdateApiConnectionRequest';
 
 export interface AcceptApiConnectionDisclaimerRequest {
+    /**
+     * 
+     */
     connectionId: string;
+    /**
+     * 
+     */
     acceptDisclaimerRequest: AcceptDisclaimerRequest;
 }
 
 export interface CreateApiConnectionOperationRequest {
+    /**
+     * 
+     */
     createApiConnectionRequest: CreateApiConnectionRequest;
 }
 
 export interface DeleteApiConnectionRequest {
+    /**
+     * 
+     */
     connectionId: string;
 }
 
 export interface ExecuteApiConnectionRequestRequest {
+    /**
+     * 
+     */
     connectionId: string;
+    /**
+     * 
+     */
     apiConnectionRequestRequest: ApiConnectionRequestRequest;
 }
 
 export interface GetApiConnectionRequest {
+    /**
+     * 
+     */
     connectionId: string;
 }
 
 export interface UpdateApiConnectionOperationRequest {
+    /**
+     * 
+     */
     connectionId: string;
+    /**
+     * 
+     */
     updateApiConnectionRequest: UpdateApiConnectionRequest;
 }
 
@@ -268,7 +306,7 @@ export class ApiConnectionsApi extends runtime.BaseAPI implements ApiConnections
         }
 
         let urlPath = `/v1/api-connections/{connection_id}/disclaimer`;
-        urlPath = urlPath.replace(`{${"connection_id"}}`, encodeURIComponent(String(requestParameters['connectionId'])));
+        urlPath = urlPath.replace('{connection_id}', encodeURIComponent(String(requestParameters['connectionId'])));
 
         return {
             path: urlPath,
@@ -381,7 +419,7 @@ export class ApiConnectionsApi extends runtime.BaseAPI implements ApiConnections
         }
 
         let urlPath = `/v1/api-connections/{connection_id}`;
-        urlPath = urlPath.replace(`{${"connection_id"}}`, encodeURIComponent(String(requestParameters['connectionId'])));
+        urlPath = urlPath.replace('{connection_id}', encodeURIComponent(String(requestParameters['connectionId'])));
 
         return {
             path: urlPath,
@@ -444,7 +482,7 @@ export class ApiConnectionsApi extends runtime.BaseAPI implements ApiConnections
         }
 
         let urlPath = `/v1/api-connections/{connection_id}/request`;
-        urlPath = urlPath.replace(`{${"connection_id"}}`, encodeURIComponent(String(requestParameters['connectionId'])));
+        urlPath = urlPath.replace('{connection_id}', encodeURIComponent(String(requestParameters['connectionId'])));
 
         return {
             path: urlPath,
@@ -500,7 +538,7 @@ export class ApiConnectionsApi extends runtime.BaseAPI implements ApiConnections
         }
 
         let urlPath = `/v1/api-connections/{connection_id}`;
-        urlPath = urlPath.replace(`{${"connection_id"}}`, encodeURIComponent(String(requestParameters['connectionId'])));
+        urlPath = urlPath.replace('{connection_id}', encodeURIComponent(String(requestParameters['connectionId'])));
 
         return {
             path: urlPath,
@@ -564,7 +602,7 @@ export class ApiConnectionsApi extends runtime.BaseAPI implements ApiConnections
         }
 
         let urlPath = `/v1/api-connections/{connection_id}`;
-        urlPath = urlPath.replace(`{${"connection_id"}}`, encodeURIComponent(String(requestParameters['connectionId'])));
+        urlPath = urlPath.replace('{connection_id}', encodeURIComponent(String(requestParameters['connectionId'])));
 
         return {
             path: urlPath,

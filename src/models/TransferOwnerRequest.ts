@@ -21,13 +21,13 @@ import { mapValues } from '../runtime';
 export interface TransferOwnerRequest {
     /**
      * user_id of the new owner
-     * @type {string}
-     * @memberof TransferOwnerRequest
      */
     newOwnerUserId: string;
 }
 export const TransferOwnerRequestPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -48,7 +48,7 @@ export const TransferOwnerRequestPropertyValidationAttributesMap: {
  * Check if a given object implements the TransferOwnerRequest interface.
  */
 export function instanceOfTransferOwnerRequest(value: object): value is TransferOwnerRequest {
-    if (!('newOwnerUserId' in value) || value['newOwnerUserId'] === undefined) return false;
+    if ((!('newOwnerUserId' in (value as Record<string, any>)) && !('new_owner_user_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['newOwnerUserId'] === undefined && (value as Record<string, any>)['new_owner_user_id'] === undefined)) return false;
     return true;
 }
 

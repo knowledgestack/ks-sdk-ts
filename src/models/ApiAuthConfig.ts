@@ -24,19 +24,17 @@ import { mapValues } from '../runtime';
 export interface ApiAuthConfig {
     /**
      * 
-     * @type {string}
-     * @memberof ApiAuthConfig
      */
     headerName: string;
     /**
      * 
-     * @type {string}
-     * @memberof ApiAuthConfig
      */
     headerValue: string;
 }
 export const ApiAuthConfigPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -51,9 +49,13 @@ export const ApiAuthConfigPropertyValidationAttributesMap: {
     }
 } = {
     headerName: {
+        dataType: "string",
+        required: true,
         maxLength: 255,
     },
     headerValue: {
+        dataType: "string",
+        required: true,
         maxLength: 8192,
     },
 }
@@ -63,8 +65,8 @@ export const ApiAuthConfigPropertyValidationAttributesMap: {
  * Check if a given object implements the ApiAuthConfig interface.
  */
 export function instanceOfApiAuthConfig(value: object): value is ApiAuthConfig {
-    if (!('headerName' in value) || value['headerName'] === undefined) return false;
-    if (!('headerValue' in value) || value['headerValue'] === undefined) return false;
+    if ((!('headerName' in (value as Record<string, any>)) && !('header_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['headerName'] === undefined && (value as Record<string, any>)['header_name'] === undefined)) return false;
+    if ((!('headerValue' in (value as Record<string, any>)) && !('header_value' in (value as Record<string, any>))) || ((value as Record<string, any>)['headerValue'] === undefined && (value as Record<string, any>)['header_value'] === undefined)) return false;
     return true;
 }
 

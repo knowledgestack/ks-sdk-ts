@@ -21,13 +21,13 @@ import { mapValues } from '../runtime';
 export interface EmailVerificationRequest {
     /**
      * 
-     * @type {string}
-     * @memberof EmailVerificationRequest
      */
     email: string;
 }
 export const EmailVerificationRequestPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,

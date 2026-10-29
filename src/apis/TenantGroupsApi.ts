@@ -12,138 +12,283 @@
  * Do not edit the class manually.
  */
 
-
 import * as runtime from '../runtime';
-import type {
-  AddMemberRequest,
-  CreateGroupPermissionRequest,
-  CreateGroupRequest,
-  ErrorResponse,
-  GroupMemberOrder,
-  GroupPermissionOrder,
-  GroupPermissionResponse,
-  GroupResponse,
-  HTTPValidationError,
-  MembershipResponse,
-  PaginatedResponseGroupPermissionResponse,
-  PaginatedResponseGroupResponse,
-  PaginatedResponseMembershipResponse,
-  PermissionCapability,
-  SortDirection,
-  TenantGroupOrder,
-  UpdateGroupPermissionRequest,
-  UpdateGroupRequest,
-} from '../models/index';
 import {
+    type AddMemberRequest,
     AddMemberRequestFromJSON,
     AddMemberRequestToJSON,
+} from '../models/AddMemberRequest';
+import {
+    type CreateGroupPermissionRequest,
     CreateGroupPermissionRequestFromJSON,
     CreateGroupPermissionRequestToJSON,
+} from '../models/CreateGroupPermissionRequest';
+import {
+    type CreateGroupRequest,
     CreateGroupRequestFromJSON,
     CreateGroupRequestToJSON,
+} from '../models/CreateGroupRequest';
+import {
+    type ErrorResponse,
     ErrorResponseFromJSON,
     ErrorResponseToJSON,
+} from '../models/ErrorResponse';
+import {
+    type GroupMemberOrder,
     GroupMemberOrderFromJSON,
     GroupMemberOrderToJSON,
+} from '../models/GroupMemberOrder';
+import {
+    type GroupPermissionOrder,
     GroupPermissionOrderFromJSON,
     GroupPermissionOrderToJSON,
+} from '../models/GroupPermissionOrder';
+import {
+    type GroupPermissionResponse,
     GroupPermissionResponseFromJSON,
     GroupPermissionResponseToJSON,
+} from '../models/GroupPermissionResponse';
+import {
+    type GroupResponse,
     GroupResponseFromJSON,
     GroupResponseToJSON,
+} from '../models/GroupResponse';
+import {
+    type HTTPValidationError,
     HTTPValidationErrorFromJSON,
     HTTPValidationErrorToJSON,
+} from '../models/HTTPValidationError';
+import {
+    type MembershipResponse,
     MembershipResponseFromJSON,
     MembershipResponseToJSON,
+} from '../models/MembershipResponse';
+import {
+    type PaginatedResponseGroupPermissionResponse,
     PaginatedResponseGroupPermissionResponseFromJSON,
     PaginatedResponseGroupPermissionResponseToJSON,
+} from '../models/PaginatedResponseGroupPermissionResponse';
+import {
+    type PaginatedResponseGroupResponse,
     PaginatedResponseGroupResponseFromJSON,
     PaginatedResponseGroupResponseToJSON,
+} from '../models/PaginatedResponseGroupResponse';
+import {
+    type PaginatedResponseMembershipResponse,
     PaginatedResponseMembershipResponseFromJSON,
     PaginatedResponseMembershipResponseToJSON,
+} from '../models/PaginatedResponseMembershipResponse';
+import {
+    type PermissionCapability,
     PermissionCapabilityFromJSON,
     PermissionCapabilityToJSON,
+} from '../models/PermissionCapability';
+import {
+    type SortDirection,
     SortDirectionFromJSON,
     SortDirectionToJSON,
+} from '../models/SortDirection';
+import {
+    type TenantGroupOrder,
     TenantGroupOrderFromJSON,
     TenantGroupOrderToJSON,
+} from '../models/TenantGroupOrder';
+import {
+    type UpdateGroupPermissionRequest,
     UpdateGroupPermissionRequestFromJSON,
     UpdateGroupPermissionRequestToJSON,
+} from '../models/UpdateGroupPermissionRequest';
+import {
+    type UpdateGroupRequest,
     UpdateGroupRequestFromJSON,
     UpdateGroupRequestToJSON,
-} from '../models/index';
+} from '../models/UpdateGroupRequest';
 
 export interface AddGroupMemberRequest {
+    /**
+     * 
+     */
     groupId: string;
+    /**
+     * 
+     */
     addMemberRequest: AddMemberRequest;
 }
 
 export interface CreateGroupPermissionOperationRequest {
+    /**
+     * 
+     */
     groupId: string;
+    /**
+     * 
+     */
     createGroupPermissionRequest: CreateGroupPermissionRequest;
 }
 
 export interface CreateTenantGroupRequest {
+    /**
+     * 
+     */
     createGroupRequest: CreateGroupRequest;
 }
 
 export interface DeleteGroupPermissionRequest {
+    /**
+     * 
+     */
     groupId: string;
+    /**
+     * 
+     */
     permissionId: string;
 }
 
 export interface DeleteTenantGroupRequest {
+    /**
+     * 
+     */
     groupId: string;
 }
 
 export interface GetTenantGroupRequest {
+    /**
+     * 
+     */
     groupId: string;
 }
 
 export interface ListGroupMembersRequest {
+    /**
+     * 
+     */
     groupId: string;
+    /**
+     * Field to sort members by (default: ADDED_AT)
+     */
     sortBy?: GroupMemberOrder;
+    /**
+     * Sort direction; overrides the field's natural default
+     */
     sortDir?: SortDirection;
+    /**
+     * Case-insensitive substring filter on member name
+     */
     usernameLike?: string | null;
+    /**
+     * Number of items per page
+     */
     limit?: number;
+    /**
+     * Number of items to skip
+     */
     offset?: number;
 }
 
 export interface ListGroupPermissionsRequest {
+    /**
+     * 
+     */
     groupId: string;
+    /**
+     * Field to sort permissions by (default: CREATED_AT)
+     */
     sortBy?: GroupPermissionOrder;
+    /**
+     * Sort direction; overrides the field's natural default
+     */
     sortDir?: SortDirection;
+    /**
+     * Filter to permissions with this capability
+     */
     capability?: PermissionCapability;
+    /**
+     * Number of items per page
+     */
     limit?: number;
+    /**
+     * Number of items to skip
+     */
     offset?: number;
 }
 
 export interface ListTenantGroupsRequest {
+    /**
+     * Field to sort groups by (default: NAME)
+     */
     sortBy?: TenantGroupOrder;
+    /**
+     * Sort direction; overrides the field's natural default
+     */
     sortDir?: SortDirection;
+    /**
+     * Case-insensitive substring filter on name
+     */
     nameLike?: string | null;
+    /**
+     * Only groups containing ALL of these user ids
+     */
     hasUserIds?: Array<string> | null;
+    /**
+     * Number of items per page
+     */
     limit?: number;
+    /**
+     * Number of items to skip
+     */
     offset?: number;
+    /**
+     * Only items created at or after this timestamp (inclusive)
+     */
     createdAfter?: Date | null;
+    /**
+     * Only items created strictly before this timestamp
+     */
     createdBefore?: Date | null;
+    /**
+     * Only items updated at or after this timestamp (inclusive)
+     */
     updatedAfter?: Date | null;
+    /**
+     * Only items updated strictly before this timestamp
+     */
     updatedBefore?: Date | null;
 }
 
 export interface RemoveGroupMemberRequest {
+    /**
+     * 
+     */
     groupId: string;
+    /**
+     * 
+     */
     userId: string;
 }
 
 export interface UpdateGroupPermissionOperationRequest {
+    /**
+     * 
+     */
     groupId: string;
+    /**
+     * 
+     */
     permissionId: string;
+    /**
+     * 
+     */
     updateGroupPermissionRequest: UpdateGroupPermissionRequest;
 }
 
 export interface UpdateTenantGroupRequest {
+    /**
+     * 
+     */
     groupId: string;
+    /**
+     * 
+     */
     updateGroupRequest: UpdateGroupRequest;
 }
 
@@ -557,7 +702,7 @@ export class TenantGroupsApi extends runtime.BaseAPI implements TenantGroupsApiI
         }
 
         let urlPath = `/v1/tenant-groups/{group_id}/members`;
-        urlPath = urlPath.replace(`{${"group_id"}}`, encodeURIComponent(String(requestParameters['groupId'])));
+        urlPath = urlPath.replace('{group_id}', encodeURIComponent(String(requestParameters['groupId'])));
 
         return {
             path: urlPath,
@@ -622,7 +767,7 @@ export class TenantGroupsApi extends runtime.BaseAPI implements TenantGroupsApiI
         }
 
         let urlPath = `/v1/tenant-groups/{group_id}/permissions`;
-        urlPath = urlPath.replace(`{${"group_id"}}`, encodeURIComponent(String(requestParameters['groupId'])));
+        urlPath = urlPath.replace('{group_id}', encodeURIComponent(String(requestParameters['groupId'])));
 
         return {
             path: urlPath,
@@ -742,8 +887,8 @@ export class TenantGroupsApi extends runtime.BaseAPI implements TenantGroupsApiI
         }
 
         let urlPath = `/v1/tenant-groups/{group_id}/permissions/{permission_id}`;
-        urlPath = urlPath.replace(`{${"group_id"}}`, encodeURIComponent(String(requestParameters['groupId'])));
-        urlPath = urlPath.replace(`{${"permission_id"}}`, encodeURIComponent(String(requestParameters['permissionId'])));
+        urlPath = urlPath.replace('{group_id}', encodeURIComponent(String(requestParameters['groupId'])));
+        urlPath = urlPath.replace('{permission_id}', encodeURIComponent(String(requestParameters['permissionId'])));
 
         return {
             path: urlPath,
@@ -797,7 +942,7 @@ export class TenantGroupsApi extends runtime.BaseAPI implements TenantGroupsApiI
         }
 
         let urlPath = `/v1/tenant-groups/{group_id}`;
-        urlPath = urlPath.replace(`{${"group_id"}}`, encodeURIComponent(String(requestParameters['groupId'])));
+        urlPath = urlPath.replace('{group_id}', encodeURIComponent(String(requestParameters['groupId'])));
 
         return {
             path: urlPath,
@@ -851,7 +996,7 @@ export class TenantGroupsApi extends runtime.BaseAPI implements TenantGroupsApiI
         }
 
         let urlPath = `/v1/tenant-groups/{group_id}`;
-        urlPath = urlPath.replace(`{${"group_id"}}`, encodeURIComponent(String(requestParameters['groupId'])));
+        urlPath = urlPath.replace('{group_id}', encodeURIComponent(String(requestParameters['groupId'])));
 
         return {
             path: urlPath,
@@ -926,7 +1071,7 @@ export class TenantGroupsApi extends runtime.BaseAPI implements TenantGroupsApiI
         }
 
         let urlPath = `/v1/tenant-groups/{group_id}/members`;
-        urlPath = urlPath.replace(`{${"group_id"}}`, encodeURIComponent(String(requestParameters['groupId'])));
+        urlPath = urlPath.replace('{group_id}', encodeURIComponent(String(requestParameters['groupId'])));
 
         return {
             path: urlPath,
@@ -1001,7 +1146,7 @@ export class TenantGroupsApi extends runtime.BaseAPI implements TenantGroupsApiI
         }
 
         let urlPath = `/v1/tenant-groups/{group_id}/permissions`;
-        urlPath = urlPath.replace(`{${"group_id"}}`, encodeURIComponent(String(requestParameters['groupId'])));
+        urlPath = urlPath.replace('{group_id}', encodeURIComponent(String(requestParameters['groupId'])));
 
         return {
             path: urlPath,
@@ -1109,19 +1254,19 @@ export class TenantGroupsApi extends runtime.BaseAPI implements TenantGroupsApiI
         }
 
         if (requestParameters['createdAfter'] != null) {
-            queryParameters['created_after'] = (requestParameters['createdAfter'] as any).toISOString();
+            queryParameters['created_after'] = runtime.serializeDateTime(requestParameters['createdAfter'] as any);
         }
 
         if (requestParameters['createdBefore'] != null) {
-            queryParameters['created_before'] = (requestParameters['createdBefore'] as any).toISOString();
+            queryParameters['created_before'] = runtime.serializeDateTime(requestParameters['createdBefore'] as any);
         }
 
         if (requestParameters['updatedAfter'] != null) {
-            queryParameters['updated_after'] = (requestParameters['updatedAfter'] as any).toISOString();
+            queryParameters['updated_after'] = runtime.serializeDateTime(requestParameters['updatedAfter'] as any);
         }
 
         if (requestParameters['updatedBefore'] != null) {
-            queryParameters['updated_before'] = (requestParameters['updatedBefore'] as any).toISOString();
+            queryParameters['updated_before'] = runtime.serializeDateTime(requestParameters['updatedBefore'] as any);
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -1197,8 +1342,8 @@ export class TenantGroupsApi extends runtime.BaseAPI implements TenantGroupsApiI
         }
 
         let urlPath = `/v1/tenant-groups/{group_id}/members/{user_id}`;
-        urlPath = urlPath.replace(`{${"group_id"}}`, encodeURIComponent(String(requestParameters['groupId'])));
-        urlPath = urlPath.replace(`{${"user_id"}}`, encodeURIComponent(String(requestParameters['userId'])));
+        urlPath = urlPath.replace('{group_id}', encodeURIComponent(String(requestParameters['groupId'])));
+        urlPath = urlPath.replace('{user_id}', encodeURIComponent(String(requestParameters['userId'])));
 
         return {
             path: urlPath,
@@ -1268,8 +1413,8 @@ export class TenantGroupsApi extends runtime.BaseAPI implements TenantGroupsApiI
         }
 
         let urlPath = `/v1/tenant-groups/{group_id}/permissions/{permission_id}`;
-        urlPath = urlPath.replace(`{${"group_id"}}`, encodeURIComponent(String(requestParameters['groupId'])));
-        urlPath = urlPath.replace(`{${"permission_id"}}`, encodeURIComponent(String(requestParameters['permissionId'])));
+        urlPath = urlPath.replace('{group_id}', encodeURIComponent(String(requestParameters['groupId'])));
+        urlPath = urlPath.replace('{permission_id}', encodeURIComponent(String(requestParameters['permissionId'])));
 
         return {
             path: urlPath,
@@ -1334,7 +1479,7 @@ export class TenantGroupsApi extends runtime.BaseAPI implements TenantGroupsApiI
         }
 
         let urlPath = `/v1/tenant-groups/{group_id}`;
-        urlPath = urlPath.replace(`{${"group_id"}}`, encodeURIComponent(String(requestParameters['groupId'])));
+        urlPath = urlPath.replace('{group_id}', encodeURIComponent(String(requestParameters['groupId'])));
 
         return {
             path: urlPath,

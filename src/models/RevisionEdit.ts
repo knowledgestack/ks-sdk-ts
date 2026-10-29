@@ -34,26 +34,18 @@ import {
 export interface RevisionEdit {
     /**
      * 
-     * @type {BlockChangeType}
-     * @memberof RevisionEdit
      */
     type: BlockChangeType;
     /**
      * 
-     * @type {string}
-     * @memberof RevisionEdit
      */
     author: string | null;
     /**
      * 
-     * @type {string}
-     * @memberof RevisionEdit
      */
     date: string | null;
     /**
      * 
-     * @type {string}
-     * @memberof RevisionEdit
      */
     text: string;
 }
@@ -61,6 +53,8 @@ export interface RevisionEdit {
 
 export const RevisionEditPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,

@@ -21,19 +21,17 @@ import { mapValues } from '../runtime';
 export interface HourHistogramResponse {
     /**
      * IANA timezone the hours are in.
-     * @type {string}
-     * @memberof HourHistogramResponse
      */
     timezone: string;
     /**
      * Exactly 24 entries; index i is the run count for hour i.
-     * @type {Array<number>}
-     * @memberof HourHistogramResponse
      */
     countsByHour: Array<number>;
 }
 export const HourHistogramResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -48,6 +46,8 @@ export const HourHistogramResponsePropertyValidationAttributesMap: {
     }
 } = {
     countsByHour: {
+        dataType: "Array<number>",
+        required: true,
         maxItems: 24,
         minItems: 24,
         uniqueItems: false,
@@ -60,7 +60,7 @@ export const HourHistogramResponsePropertyValidationAttributesMap: {
  */
 export function instanceOfHourHistogramResponse(value: object): value is HourHistogramResponse {
     if (!('timezone' in value) || value['timezone'] === undefined) return false;
-    if (!('countsByHour' in value) || value['countsByHour'] === undefined) return false;
+    if ((!('countsByHour' in (value as Record<string, any>)) && !('counts_by_hour' in (value as Record<string, any>))) || ((value as Record<string, any>)['countsByHour'] === undefined && (value as Record<string, any>)['counts_by_hour'] === undefined)) return false;
     return true;
 }
 

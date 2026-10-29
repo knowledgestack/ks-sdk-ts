@@ -36,44 +36,30 @@ import {
 export interface CreateApiConnectionRequest {
     /**
      * 
-     * @type {string}
-     * @memberof CreateApiConnectionRequest
      */
     name: string;
     /**
      * 
-     * @type {string}
-     * @memberof CreateApiConnectionRequest
      */
     parentPathPartId: string;
     /**
      * 
-     * @type {string}
-     * @memberof CreateApiConnectionRequest
      */
     baseUrl: string;
     /**
      * 
-     * @type {NetworkClass}
-     * @memberof CreateApiConnectionRequest
      */
     networkClass: NetworkClass;
     /**
      * 
-     * @type {boolean}
-     * @memberof CreateApiConnectionRequest
      */
     verifyTls?: boolean;
     /**
      * 
-     * @type {ApiAuthConfig}
-     * @memberof CreateApiConnectionRequest
      */
     authConfig: ApiAuthConfig;
     /**
      * 
-     * @type {string}
-     * @memberof CreateApiConnectionRequest
      */
     apiDocs?: string | null;
 }
@@ -81,6 +67,8 @@ export interface CreateApiConnectionRequest {
 
 export const CreateApiConnectionRequestPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -95,12 +83,17 @@ export const CreateApiConnectionRequestPropertyValidationAttributesMap: {
     }
 } = {
     name: {
+        dataType: "string",
+        required: true,
         maxLength: 255,
     },
     baseUrl: {
+        dataType: "string",
+        required: true,
         maxLength: 2048,
     },
     apiDocs: {
+        dataType: "string",
         maxLength: 100000,
     },
 }
@@ -111,10 +104,10 @@ export const CreateApiConnectionRequestPropertyValidationAttributesMap: {
  */
 export function instanceOfCreateApiConnectionRequest(value: object): value is CreateApiConnectionRequest {
     if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('parentPathPartId' in value) || value['parentPathPartId'] === undefined) return false;
-    if (!('baseUrl' in value) || value['baseUrl'] === undefined) return false;
-    if (!('networkClass' in value) || value['networkClass'] === undefined) return false;
-    if (!('authConfig' in value) || value['authConfig'] === undefined) return false;
+    if ((!('parentPathPartId' in (value as Record<string, any>)) && !('parent_path_part_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['parentPathPartId'] === undefined && (value as Record<string, any>)['parent_path_part_id'] === undefined)) return false;
+    if ((!('baseUrl' in (value as Record<string, any>)) && !('base_url' in (value as Record<string, any>))) || ((value as Record<string, any>)['baseUrl'] === undefined && (value as Record<string, any>)['base_url'] === undefined)) return false;
+    if ((!('networkClass' in (value as Record<string, any>)) && !('network_class' in (value as Record<string, any>))) || ((value as Record<string, any>)['networkClass'] === undefined && (value as Record<string, any>)['network_class'] === undefined)) return false;
+    if ((!('authConfig' in (value as Record<string, any>)) && !('auth_config' in (value as Record<string, any>))) || ((value as Record<string, any>)['authConfig'] === undefined && (value as Record<string, any>)['auth_config'] === undefined)) return false;
     return true;
 }
 
@@ -134,7 +127,7 @@ export function CreateApiConnectionRequestFromJSONTyped(json: any, ignoreDiscrim
         'networkClass': NetworkClassFromJSON(json['network_class']),
         'verifyTls': json['verify_tls'] == null ? undefined : json['verify_tls'],
         'authConfig': ApiAuthConfigFromJSON(json['auth_config']),
-        'apiDocs': json['api_docs'] == null ? undefined : json['api_docs'],
+        'apiDocs': json['api_docs'] === undefined ? undefined : json['api_docs'] === null ? null : json['api_docs'],
     };
 }
 

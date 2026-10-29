@@ -29,44 +29,30 @@ import {
 export interface UpdateUserRequest {
     /**
      * Default tenant ID the user shall be logged into
-     * @type {string}
-     * @memberof UpdateUserRequest
      */
     defaultTenantId?: string | null;
     /**
      * First name of the user. Directory-synced users cannot set it.
-     * @type {string}
-     * @memberof UpdateUserRequest
      */
     firstName?: string | null;
     /**
      * Last name of the user. Directory-synced users cannot set it.
-     * @type {string}
-     * @memberof UpdateUserRequest
      */
     lastName?: string | null;
     /**
      * Job title at the current tenant; omit to leave unchanged, empty string to clear. Directory-synced users cannot set it.
-     * @type {string}
-     * @memberof UpdateUserRequest
      */
     jobTitle?: string | null;
     /**
      * Department at the current tenant; omit to leave unchanged, empty string to clear. Directory-synced users cannot set it.
-     * @type {string}
-     * @memberof UpdateUserRequest
      */
     department?: string | null;
     /**
      * About the user at the current tenant, read by the chat agent; omit to leave unchanged, empty string to clear.
-     * @type {string}
-     * @memberof UpdateUserRequest
      */
     bio?: string | null;
     /**
      * 
-     * @type {SupportedLanguage}
-     * @memberof UpdateUserRequest
      */
     languagePreference?: SupportedLanguage;
 }
@@ -74,6 +60,8 @@ export interface UpdateUserRequest {
 
 export const UpdateUserRequestPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -88,18 +76,23 @@ export const UpdateUserRequestPropertyValidationAttributesMap: {
     }
 } = {
     firstName: {
+        dataType: "string",
         maxLength: 255,
     },
     lastName: {
+        dataType: "string",
         maxLength: 255,
     },
     jobTitle: {
+        dataType: "string",
         maxLength: 120,
     },
     department: {
+        dataType: "string",
         maxLength: 120,
     },
     bio: {
+        dataType: "string",
         maxLength: 1000,
     },
 }
@@ -122,12 +115,12 @@ export function UpdateUserRequestFromJSONTyped(json: any, ignoreDiscriminator: b
     }
     return {
         
-        'defaultTenantId': json['default_tenant_id'] == null ? undefined : json['default_tenant_id'],
-        'firstName': json['first_name'] == null ? undefined : json['first_name'],
-        'lastName': json['last_name'] == null ? undefined : json['last_name'],
-        'jobTitle': json['job_title'] == null ? undefined : json['job_title'],
-        'department': json['department'] == null ? undefined : json['department'],
-        'bio': json['bio'] == null ? undefined : json['bio'],
+        'defaultTenantId': json['default_tenant_id'] === undefined ? undefined : json['default_tenant_id'] === null ? null : json['default_tenant_id'],
+        'firstName': json['first_name'] === undefined ? undefined : json['first_name'] === null ? null : json['first_name'],
+        'lastName': json['last_name'] === undefined ? undefined : json['last_name'] === null ? null : json['last_name'],
+        'jobTitle': json['job_title'] === undefined ? undefined : json['job_title'] === null ? null : json['job_title'],
+        'department': json['department'] === undefined ? undefined : json['department'] === null ? null : json['department'],
+        'bio': json['bio'] === undefined ? undefined : json['bio'] === null ? null : json['bio'],
         'languagePreference': json['language_preference'] == null ? undefined : SupportedLanguageFromJSON(json['language_preference']),
     };
 }

@@ -29,20 +29,14 @@ import {
 export interface DocumentVersionActionResponse {
     /**
      * DocumentVersion ID
-     * @type {string}
-     * @memberof DocumentVersionActionResponse
      */
     versionId: string;
     /**
      * 
-     * @type {DocumentVersionAction}
-     * @memberof DocumentVersionActionResponse
      */
     action: DocumentVersionAction;
     /**
      * Temporal workflow ID
-     * @type {string}
-     * @memberof DocumentVersionActionResponse
      */
     workflowId: string;
 }
@@ -50,6 +44,8 @@ export interface DocumentVersionActionResponse {
 
 export const DocumentVersionActionResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -70,9 +66,9 @@ export const DocumentVersionActionResponsePropertyValidationAttributesMap: {
  * Check if a given object implements the DocumentVersionActionResponse interface.
  */
 export function instanceOfDocumentVersionActionResponse(value: object): value is DocumentVersionActionResponse {
-    if (!('versionId' in value) || value['versionId'] === undefined) return false;
+    if ((!('versionId' in (value as Record<string, any>)) && !('version_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['versionId'] === undefined && (value as Record<string, any>)['version_id'] === undefined)) return false;
     if (!('action' in value) || value['action'] === undefined) return false;
-    if (!('workflowId' in value) || value['workflowId'] === undefined) return false;
+    if ((!('workflowId' in (value as Record<string, any>)) && !('workflow_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['workflowId'] === undefined && (value as Record<string, any>)['workflow_id'] === undefined)) return false;
     return true;
 }
 

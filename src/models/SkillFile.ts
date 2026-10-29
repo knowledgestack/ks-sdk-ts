@@ -25,20 +25,14 @@ import { mapValues } from '../runtime';
 export interface SkillFile {
     /**
      * Path relative to the skill root, e.g. scripts/office/run.py
-     * @type {string}
-     * @memberof SkillFile
      */
     path: string;
     /**
      * UTF-8 text, or base64-encoded bytes when encoding=base64.
-     * @type {string}
-     * @memberof SkillFile
      */
     content: string;
     /**
      * How `content` is encoded.
-     * @type {SkillFileEncodingEnum}
-     * @memberof SkillFile
      */
     encoding?: SkillFileEncodingEnum;
 }
@@ -49,12 +43,14 @@ export interface SkillFile {
  */
 export const SkillFileEncodingEnum = {
     Utf8: 'utf-8',
-    Base64: 'base64'
+    Base64: 'base64',
 } as const;
 export type SkillFileEncodingEnum = typeof SkillFileEncodingEnum[keyof typeof SkillFileEncodingEnum];
 
 export const SkillFilePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -69,6 +65,8 @@ export const SkillFilePropertyValidationAttributesMap: {
     }
 } = {
     path: {
+        dataType: "string",
+        required: true,
         maxLength: 1024,
     },
 }

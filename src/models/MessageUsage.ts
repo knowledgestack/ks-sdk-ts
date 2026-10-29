@@ -21,19 +21,17 @@ import { mapValues } from '../runtime';
 export interface MessageUsage {
     /**
      * 
-     * @type {number}
-     * @memberof MessageUsage
      */
     inputTokens: number;
     /**
      * 
-     * @type {number}
-     * @memberof MessageUsage
      */
     outputTokens: number;
 }
 export const MessageUsagePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -48,10 +46,14 @@ export const MessageUsagePropertyValidationAttributesMap: {
     }
 } = {
     inputTokens: {
+        dataType: "number",
+        required: true,
         minimum: 0,
         exclusiveMinimum: false,
     },
     outputTokens: {
+        dataType: "number",
+        required: true,
         minimum: 0,
         exclusiveMinimum: false,
     },
@@ -62,8 +64,8 @@ export const MessageUsagePropertyValidationAttributesMap: {
  * Check if a given object implements the MessageUsage interface.
  */
 export function instanceOfMessageUsage(value: object): value is MessageUsage {
-    if (!('inputTokens' in value) || value['inputTokens'] === undefined) return false;
-    if (!('outputTokens' in value) || value['outputTokens'] === undefined) return false;
+    if ((!('inputTokens' in (value as Record<string, any>)) && !('input_tokens' in (value as Record<string, any>))) || ((value as Record<string, any>)['inputTokens'] === undefined && (value as Record<string, any>)['input_tokens'] === undefined)) return false;
+    if ((!('outputTokens' in (value as Record<string, any>)) && !('output_tokens' in (value as Record<string, any>))) || ((value as Record<string, any>)['outputTokens'] === undefined && (value as Record<string, any>)['output_tokens'] === undefined)) return false;
     return true;
 }
 

@@ -12,23 +12,27 @@
  * Do not edit the class manually.
  */
 
-
 import * as runtime from '../runtime';
-import type {
-  BulkDownloadRequest,
-  ErrorResponse,
-  HTTPValidationError,
-} from '../models/index';
 import {
+    type BulkDownloadRequest,
     BulkDownloadRequestFromJSON,
     BulkDownloadRequestToJSON,
+} from '../models/BulkDownloadRequest';
+import {
+    type ErrorResponse,
     ErrorResponseFromJSON,
     ErrorResponseToJSON,
+} from '../models/ErrorResponse';
+import {
+    type HTTPValidationError,
     HTTPValidationErrorFromJSON,
     HTTPValidationErrorToJSON,
-} from '../models/index';
+} from '../models/HTTPValidationError';
 
 export interface StartBulkDownloadRequest {
+    /**
+     * 
+     */
     bulkDownloadRequest: BulkDownloadRequest;
 }
 
@@ -55,13 +59,13 @@ export interface BulkDownloadApiInterface {
      * @throws {RequiredError}
      * @memberof BulkDownloadApiInterface
      */
-    startBulkDownloadRaw(requestParameters: StartBulkDownloadRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Blob>>;
+    startBulkDownloadRaw(requestParameters: StartBulkDownloadRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<runtime.HttpFile>>;
 
     /**
      * Package the selected folders/documents into one ``.zip`` and stream it.  Folders are enumerated recursively; trashed and unreadable items are excluded, and each included file is recorded as a ``document.downloaded`` audit event. The selection is capped — exceeding it returns ``400``. Files that cannot be included (no source, still ingesting) are skipped; the count is returned in the ``X-Bulk-Download-Skipped`` header.
      * Start Bulk Download Handler
      */
-    startBulkDownload(requestParameters: StartBulkDownloadRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Blob>;
+    startBulkDownload(requestParameters: StartBulkDownloadRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.HttpFile>;
 
 }
 
@@ -111,7 +115,7 @@ export class BulkDownloadApi extends runtime.BaseAPI implements BulkDownloadApiI
      * Package the selected folders/documents into one ``.zip`` and stream it.  Folders are enumerated recursively; trashed and unreadable items are excluded, and each included file is recorded as a ``document.downloaded`` audit event. The selection is capped — exceeding it returns ``400``. Files that cannot be included (no source, still ingesting) are skipped; the count is returned in the ``X-Bulk-Download-Skipped`` header.
      * Start Bulk Download Handler
      */
-    async startBulkDownloadRaw(requestParameters: StartBulkDownloadRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Blob>> {
+    async startBulkDownloadRaw(requestParameters: StartBulkDownloadRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<runtime.HttpFile>> {
         const requestOptions = await this.startBulkDownloadRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -122,7 +126,7 @@ export class BulkDownloadApi extends runtime.BaseAPI implements BulkDownloadApiI
      * Package the selected folders/documents into one ``.zip`` and stream it.  Folders are enumerated recursively; trashed and unreadable items are excluded, and each included file is recorded as a ``document.downloaded`` audit event. The selection is capped — exceeding it returns ``400``. Files that cannot be included (no source, still ingesting) are skipped; the count is returned in the ``X-Bulk-Download-Skipped`` header.
      * Start Bulk Download Handler
      */
-    async startBulkDownload(requestParameters: StartBulkDownloadRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Blob> {
+    async startBulkDownload(requestParameters: StartBulkDownloadRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.HttpFile> {
         const response = await this.startBulkDownloadRaw(requestParameters, initOverrides);
         return await response.value();
     }

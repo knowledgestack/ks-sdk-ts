@@ -25,25 +25,21 @@ import { mapValues } from '../runtime';
 export interface SheetVisibilityChange {
     /**
      * 
-     * @type {string}
-     * @memberof SheetVisibilityChange
      */
     sheet: string;
     /**
      * 
-     * @type {string}
-     * @memberof SheetVisibilityChange
      */
     oldState: string | null;
     /**
      * 
-     * @type {string}
-     * @memberof SheetVisibilityChange
      */
     newState: string | null;
 }
 export const SheetVisibilityChangePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -65,8 +61,8 @@ export const SheetVisibilityChangePropertyValidationAttributesMap: {
  */
 export function instanceOfSheetVisibilityChange(value: object): value is SheetVisibilityChange {
     if (!('sheet' in value) || value['sheet'] === undefined) return false;
-    if (!('oldState' in value) || value['oldState'] === undefined) return false;
-    if (!('newState' in value) || value['newState'] === undefined) return false;
+    if ((!('oldState' in (value as Record<string, any>)) && !('old_state' in (value as Record<string, any>))) || ((value as Record<string, any>)['oldState'] === undefined && (value as Record<string, any>)['old_state'] === undefined)) return false;
+    if ((!('newState' in (value as Record<string, any>)) && !('new_state' in (value as Record<string, any>))) || ((value as Record<string, any>)['newState'] === undefined && (value as Record<string, any>)['new_state'] === undefined)) return false;
     return true;
 }
 

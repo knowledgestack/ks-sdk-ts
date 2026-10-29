@@ -29,13 +29,13 @@ import {
 export interface SectionSystemMetadata {
     /**
      * 
-     * @type {InformationStatistics}
-     * @memberof SectionSystemMetadata
      */
     informationStatistics?: InformationStatistics | null;
 }
 export const SectionSystemMetadataPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -69,7 +69,7 @@ export function SectionSystemMetadataFromJSONTyped(json: any, ignoreDiscriminato
     }
     return {
         
-        'informationStatistics': json['information_statistics'] == null ? undefined : InformationStatisticsFromJSON(json['information_statistics']),
+        'informationStatistics': json['information_statistics'] === undefined ? undefined : json['information_statistics'] === null ? null : InformationStatisticsFromJSON(json['information_statistics']),
     };
 }
 

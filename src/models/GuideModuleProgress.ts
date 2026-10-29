@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
 import type { GuideModuleStatus } from './GuideModuleStatus';
 import {
     GuideModuleStatusFromJSON,
@@ -29,26 +29,18 @@ import {
 export interface GuideModuleProgress {
     /**
      * 
-     * @type {GuideModuleStatus}
-     * @memberof GuideModuleProgress
      */
     status: GuideModuleStatus;
     /**
      * Index of the last step the person reached
-     * @type {number}
-     * @memberof GuideModuleProgress
      */
     step: number;
     /**
      * Version of the module definition
-     * @type {number}
-     * @memberof GuideModuleProgress
      */
     version: number;
     /**
      * Server-stamped when the module first became COMPLETED; a client value is ignored. Null while not completed.
-     * @type {Date}
-     * @memberof GuideModuleProgress
      */
     completedAt?: Date | null;
 }
@@ -56,6 +48,8 @@ export interface GuideModuleProgress {
 
 export const GuideModuleProgressPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -70,10 +64,14 @@ export const GuideModuleProgressPropertyValidationAttributesMap: {
     }
 } = {
     step: {
+        dataType: "number",
+        required: true,
         minimum: 0,
         exclusiveMinimum: false,
     },
     version: {
+        dataType: "number",
+        required: true,
         minimum: 1,
         exclusiveMinimum: false,
     },
@@ -103,7 +101,7 @@ export function GuideModuleProgressFromJSONTyped(json: any, ignoreDiscriminator:
         'status': GuideModuleStatusFromJSON(json['status']),
         'step': json['step'],
         'version': json['version'],
-        'completedAt': json['completed_at'] == null ? undefined : (new Date(json['completed_at'])),
+        'completedAt': json['completed_at'] === undefined ? undefined : json['completed_at'] === null ? null : (parseDateTime(json['completed_at'])),
     };
 }
 
@@ -121,7 +119,7 @@ export function GuideModuleProgressToJSONTyped(value?: GuideModuleProgress | nul
         'status': GuideModuleStatusToJSON(value['status']),
         'step': value['step'],
         'version': value['version'],
-        'completed_at': value['completedAt'] == null ? value['completedAt'] : value['completedAt'].toISOString(),
+        'completed_at': value['completedAt'] == null ? value['completedAt'] : serializeDateTime(value['completedAt']),
     };
 }
 

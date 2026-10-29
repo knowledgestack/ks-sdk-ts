@@ -12,52 +12,97 @@
  * Do not edit the class manually.
  */
 
-
 import * as runtime from '../runtime';
-import type {
-  CreateThreadMessageRequest,
-  ErrorResponse,
-  HTTPValidationError,
-  MessageRole,
-  PaginatedResponseThreadMessageResponse,
-  SortDirection,
-  ThreadMessageResponse,
-} from '../models/index';
 import {
+    type CreateThreadMessageRequest,
     CreateThreadMessageRequestFromJSON,
     CreateThreadMessageRequestToJSON,
+} from '../models/CreateThreadMessageRequest';
+import {
+    type ErrorResponse,
     ErrorResponseFromJSON,
     ErrorResponseToJSON,
+} from '../models/ErrorResponse';
+import {
+    type HTTPValidationError,
     HTTPValidationErrorFromJSON,
     HTTPValidationErrorToJSON,
+} from '../models/HTTPValidationError';
+import {
+    type MessageRole,
     MessageRoleFromJSON,
     MessageRoleToJSON,
+} from '../models/MessageRole';
+import {
+    type PaginatedResponseThreadMessageResponse,
     PaginatedResponseThreadMessageResponseFromJSON,
     PaginatedResponseThreadMessageResponseToJSON,
+} from '../models/PaginatedResponseThreadMessageResponse';
+import {
+    type SortDirection,
     SortDirectionFromJSON,
     SortDirectionToJSON,
+} from '../models/SortDirection';
+import {
+    type ThreadMessageResponse,
     ThreadMessageResponseFromJSON,
     ThreadMessageResponseToJSON,
-} from '../models/index';
+} from '../models/ThreadMessageResponse';
 
 export interface CreateThreadMessageOperationRequest {
+    /**
+     * 
+     */
     threadId: string;
+    /**
+     * 
+     */
     createThreadMessageRequest: CreateThreadMessageRequest;
 }
 
 export interface GetThreadMessageRequest {
+    /**
+     * 
+     */
     threadId: string;
+    /**
+     * 
+     */
     messageId: string;
+    /**
+     * Include execution steps in response (default true)
+     */
     withDetails?: boolean;
 }
 
 export interface ListThreadMessagesRequest {
+    /**
+     * 
+     */
     threadId: string;
+    /**
+     * Cursor for keyset pagination: only return messages with created_at < this value
+     */
     before?: Date | null;
+    /**
+     * Filter messages by role (USER, ASSISTANT, SYSTEM)
+     */
     role?: MessageRole;
+    /**
+     * ASC for oldest-first; default/DESC keeps newest-first
+     */
     sortDir?: SortDirection;
+    /**
+     * Include execution steps in response (default true)
+     */
     withDetails?: boolean;
+    /**
+     * Number of items per page
+     */
     limit?: number;
+    /**
+     * Number of items to skip
+     */
     offset?: number;
 }
 
@@ -199,7 +244,7 @@ export class ThreadMessagesApi extends runtime.BaseAPI implements ThreadMessages
         }
 
         let urlPath = `/v1/threads/{thread_id}/messages`;
-        urlPath = urlPath.replace(`{${"thread_id"}}`, encodeURIComponent(String(requestParameters['threadId'])));
+        urlPath = urlPath.replace('{thread_id}', encodeURIComponent(String(requestParameters['threadId'])));
 
         return {
             path: urlPath,
@@ -266,8 +311,8 @@ export class ThreadMessagesApi extends runtime.BaseAPI implements ThreadMessages
         }
 
         let urlPath = `/v1/threads/{thread_id}/messages/{message_id}`;
-        urlPath = urlPath.replace(`{${"thread_id"}}`, encodeURIComponent(String(requestParameters['threadId'])));
-        urlPath = urlPath.replace(`{${"message_id"}}`, encodeURIComponent(String(requestParameters['messageId'])));
+        urlPath = urlPath.replace('{thread_id}', encodeURIComponent(String(requestParameters['threadId'])));
+        urlPath = urlPath.replace('{message_id}', encodeURIComponent(String(requestParameters['messageId'])));
 
         return {
             path: urlPath,
@@ -311,7 +356,7 @@ export class ThreadMessagesApi extends runtime.BaseAPI implements ThreadMessages
         const queryParameters: any = {};
 
         if (requestParameters['before'] != null) {
-            queryParameters['before'] = (requestParameters['before'] as any).toISOString();
+            queryParameters['before'] = runtime.serializeDateTime(requestParameters['before'] as any);
         }
 
         if (requestParameters['role'] != null) {
@@ -346,7 +391,7 @@ export class ThreadMessagesApi extends runtime.BaseAPI implements ThreadMessages
         }
 
         let urlPath = `/v1/threads/{thread_id}/messages`;
-        urlPath = urlPath.replace(`{${"thread_id"}}`, encodeURIComponent(String(requestParameters['threadId'])));
+        urlPath = urlPath.replace('{thread_id}', encodeURIComponent(String(requestParameters['threadId'])));
 
         return {
             path: urlPath,

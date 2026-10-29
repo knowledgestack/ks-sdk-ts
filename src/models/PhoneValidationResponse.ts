@@ -21,13 +21,13 @@ import { mapValues } from '../runtime';
 export interface PhoneValidationResponse {
     /**
      * 
-     * @type {string}
-     * @memberof PhoneValidationResponse
      */
     phoneValidationId: string;
 }
 export const PhoneValidationResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -48,7 +48,7 @@ export const PhoneValidationResponsePropertyValidationAttributesMap: {
  * Check if a given object implements the PhoneValidationResponse interface.
  */
 export function instanceOfPhoneValidationResponse(value: object): value is PhoneValidationResponse {
-    if (!('phoneValidationId' in value) || value['phoneValidationId'] === undefined) return false;
+    if ((!('phoneValidationId' in (value as Record<string, any>)) && !('phone_validation_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['phoneValidationId'] === undefined && (value as Record<string, any>)['phone_validation_id'] === undefined)) return false;
     return true;
 }
 

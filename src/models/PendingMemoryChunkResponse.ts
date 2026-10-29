@@ -36,50 +36,34 @@ import {
 export interface PendingMemoryChunkResponse {
     /**
      * 
-     * @type {string}
-     * @memberof PendingMemoryChunkResponse
      */
     chunkId: string;
     /**
      * 
-     * @type {MemoryKind}
-     * @memberof PendingMemoryChunkResponse
      */
     kind: MemoryKind;
     /**
      * 
-     * @type {MemoryScope}
-     * @memberof PendingMemoryChunkResponse
      */
     scope: MemoryScope;
     /**
      * 
-     * @type {string}
-     * @memberof PendingMemoryChunkResponse
      */
     ownerPathPartId: string;
     /**
      * 
-     * @type {string}
-     * @memberof PendingMemoryChunkResponse
      */
     proposerTenantUserId: string;
     /**
      * 
-     * @type {string}
-     * @memberof PendingMemoryChunkResponse
      */
     runId: string | null;
     /**
      * 
-     * @type {string}
-     * @memberof PendingMemoryChunkResponse
      */
     rationale: string;
     /**
      * 
-     * @type {string}
-     * @memberof PendingMemoryChunkResponse
      */
     body: string;
 }
@@ -87,6 +71,8 @@ export interface PendingMemoryChunkResponse {
 
 export const PendingMemoryChunkResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -107,12 +93,12 @@ export const PendingMemoryChunkResponsePropertyValidationAttributesMap: {
  * Check if a given object implements the PendingMemoryChunkResponse interface.
  */
 export function instanceOfPendingMemoryChunkResponse(value: object): value is PendingMemoryChunkResponse {
-    if (!('chunkId' in value) || value['chunkId'] === undefined) return false;
+    if ((!('chunkId' in (value as Record<string, any>)) && !('chunk_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['chunkId'] === undefined && (value as Record<string, any>)['chunk_id'] === undefined)) return false;
     if (!('kind' in value) || value['kind'] === undefined) return false;
     if (!('scope' in value) || value['scope'] === undefined) return false;
-    if (!('ownerPathPartId' in value) || value['ownerPathPartId'] === undefined) return false;
-    if (!('proposerTenantUserId' in value) || value['proposerTenantUserId'] === undefined) return false;
-    if (!('runId' in value) || value['runId'] === undefined) return false;
+    if ((!('ownerPathPartId' in (value as Record<string, any>)) && !('owner_path_part_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['ownerPathPartId'] === undefined && (value as Record<string, any>)['owner_path_part_id'] === undefined)) return false;
+    if ((!('proposerTenantUserId' in (value as Record<string, any>)) && !('proposer_tenant_user_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['proposerTenantUserId'] === undefined && (value as Record<string, any>)['proposer_tenant_user_id'] === undefined)) return false;
+    if ((!('runId' in (value as Record<string, any>)) && !('run_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['runId'] === undefined && (value as Record<string, any>)['run_id'] === undefined)) return false;
     if (!('rationale' in value) || value['rationale'] === undefined) return false;
     if (!('body' in value) || value['body'] === undefined) return false;
     return true;

@@ -25,31 +25,25 @@ import { mapValues } from '../runtime';
 export interface SegmentSpan {
     /**
      * Segment start in the media, ms from start.
-     * @type {number}
-     * @memberof SegmentSpan
      */
     s: number;
     /**
      * Segment end in the media, ms from start.
-     * @type {number}
-     * @memberof SegmentSpan
      */
     e: number;
     /**
      * Character offset of this segment's text within the chunk's joined content — maps a position in the chunk text back to a moment in the recording.
-     * @type {number}
-     * @memberof SegmentSpan
      */
     c: number;
     /**
      * Speaker label for this segment, 0-indexed within the recording. It identifies turns, not people — there is no voiceprint enrollment, so label 0 in one meeting is unrelated to label 0 in another. None when the ASR provider does not diarize.
-     * @type {number}
-     * @memberof SegmentSpan
      */
     k?: number | null;
 }
 export const SegmentSpanPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -89,7 +83,7 @@ export function SegmentSpanFromJSONTyped(json: any, ignoreDiscriminator: boolean
         's': json['s'],
         'e': json['e'],
         'c': json['c'],
-        'k': json['k'] == null ? undefined : json['k'],
+        'k': json['k'] === undefined ? undefined : json['k'] === null ? null : json['k'],
     };
 }
 

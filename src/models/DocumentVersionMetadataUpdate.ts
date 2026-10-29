@@ -46,175 +46,121 @@ import {
 export interface DocumentVersionMetadataUpdate {
     /**
      * 
-     * @type {string}
-     * @memberof DocumentVersionMetadataUpdate
      */
     sourceS3?: string | null;
     /**
      * 
-     * @type {string}
-     * @memberof DocumentVersionMetadataUpdate
      */
     cleanedSourceS3?: string | null;
     /**
      * 
-     * @type {string}
-     * @memberof DocumentVersionMetadataUpdate
      */
     preconversionSourceS3?: string | null;
     /**
      * 
-     * @type {string}
-     * @memberof DocumentVersionMetadataUpdate
      */
     citedSourceS3?: string | null;
     /**
      * 
-     * @type {string}
-     * @memberof DocumentVersionMetadataUpdate
      */
     standardPipelineJsonS3?: string | null;
     /**
      * 
-     * @type {string}
-     * @memberof DocumentVersionMetadataUpdate
      */
     fastPlaintextS3?: string | null;
     /**
      * 
-     * @type {string}
-     * @memberof DocumentVersionMetadataUpdate
      */
     transcriptS3?: string | null;
     /**
      * 
-     * @type {string}
-     * @memberof DocumentVersionMetadataUpdate
      */
     highAccuracyContentListS3?: string | null;
     /**
      * 
-     * @type {string}
-     * @memberof DocumentVersionMetadataUpdate
      */
     highAccuracyMiddleS3?: string | null;
     /**
      * 
-     * @type {string}
-     * @memberof DocumentVersionMetadataUpdate
      */
     hash?: string | null;
     /**
      * 
-     * @type {PipelineState}
-     * @memberof DocumentVersionMetadataUpdate
      */
     pipelineState?: PipelineState | null;
     /**
      * 
-     * @type {number}
-     * @memberof DocumentVersionMetadataUpdate
      */
     totalPages?: number | null;
     /**
      * 
-     * @type {number}
-     * @memberof DocumentVersionMetadataUpdate
      */
     totalSections?: number | null;
     /**
      * 
-     * @type {number}
-     * @memberof DocumentVersionMetadataUpdate
      */
     totalChunks?: number | null;
     /**
      * 
-     * @type {number}
-     * @memberof DocumentVersionMetadataUpdate
      */
     durationMs?: number | null;
     /**
      * 
-     * @type {string}
-     * @memberof DocumentVersionMetadataUpdate
      */
     language?: string | null;
     /**
      * 
-     * @type {number}
-     * @memberof DocumentVersionMetadataUpdate
      */
     segmentCount?: number | null;
     /**
      * 
-     * @type {number}
-     * @memberof DocumentVersionMetadataUpdate
      */
     totalFormulas?: number | null;
     /**
      * 
-     * @type {string}
-     * @memberof DocumentVersionMetadataUpdate
      */
     xlsxParseResultS3?: string | null;
     /**
      * 
-     * @type {Array<{ [key: string]: any; }>}
-     * @memberof DocumentVersionMetadataUpdate
      */
     xlsxNamedRanges?: Array<{ [key: string]: any; }> | null;
     /**
      * 
-     * @type {Array<{ [key: string]: any; }>}
-     * @memberof DocumentVersionMetadataUpdate
      */
     xlsxKpiCatalog?: Array<{ [key: string]: any; }> | null;
     /**
      * 
-     * @type {Array<XlsxCellAnchorInputOrDocxParagraphAnchorInput>}
-     * @memberof DocumentVersionMetadataUpdate
      */
     citationAnchors?: Array<XlsxCellAnchorInputOrDocxParagraphAnchorInput> | null;
     /**
      * 
-     * @type {InformationStatistics}
-     * @memberof DocumentVersionMetadataUpdate
      */
     informationStatistics?: InformationStatistics | null;
     /**
      * 
-     * @type {boolean}
-     * @memberof DocumentVersionMetadataUpdate
      */
     quotaCharged?: boolean | null;
     /**
      * 
-     * @type {number}
-     * @memberof DocumentVersionMetadataUpdate
      */
     quotaPageCount?: number | null;
     /**
      * 
-     * @type {number}
-     * @memberof DocumentVersionMetadataUpdate
      */
     quotaMediaMinutes?: number | null;
     /**
      * 
-     * @type {string}
-     * @memberof DocumentVersionMetadataUpdate
      */
     quotaIdempotencyKey?: string | null;
     /**
      * 
-     * @type {string}
-     * @memberof DocumentVersionMetadataUpdate
      */
     fileMd5?: string | null;
 }
 export const DocumentVersionMetadataUpdatePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -248,34 +194,34 @@ export function DocumentVersionMetadataUpdateFromJSONTyped(json: any, ignoreDisc
     }
     return {
         
-        'sourceS3': json['source_s3'] == null ? undefined : json['source_s3'],
-        'cleanedSourceS3': json['cleaned_source_s3'] == null ? undefined : json['cleaned_source_s3'],
-        'preconversionSourceS3': json['preconversion_source_s3'] == null ? undefined : json['preconversion_source_s3'],
-        'citedSourceS3': json['cited_source_s3'] == null ? undefined : json['cited_source_s3'],
-        'standardPipelineJsonS3': json['standard_pipeline_json_s3'] == null ? undefined : json['standard_pipeline_json_s3'],
-        'fastPlaintextS3': json['fast_plaintext_s3'] == null ? undefined : json['fast_plaintext_s3'],
-        'transcriptS3': json['transcript_s3'] == null ? undefined : json['transcript_s3'],
-        'highAccuracyContentListS3': json['high_accuracy_content_list_s3'] == null ? undefined : json['high_accuracy_content_list_s3'],
-        'highAccuracyMiddleS3': json['high_accuracy_middle_s3'] == null ? undefined : json['high_accuracy_middle_s3'],
-        'hash': json['hash'] == null ? undefined : json['hash'],
-        'pipelineState': json['pipeline_state'] == null ? undefined : PipelineStateFromJSON(json['pipeline_state']),
-        'totalPages': json['total_pages'] == null ? undefined : json['total_pages'],
-        'totalSections': json['total_sections'] == null ? undefined : json['total_sections'],
-        'totalChunks': json['total_chunks'] == null ? undefined : json['total_chunks'],
-        'durationMs': json['duration_ms'] == null ? undefined : json['duration_ms'],
-        'language': json['language'] == null ? undefined : json['language'],
-        'segmentCount': json['segment_count'] == null ? undefined : json['segment_count'],
-        'totalFormulas': json['total_formulas'] == null ? undefined : json['total_formulas'],
-        'xlsxParseResultS3': json['xlsx_parse_result_s3'] == null ? undefined : json['xlsx_parse_result_s3'],
-        'xlsxNamedRanges': json['xlsx_named_ranges'] == null ? undefined : json['xlsx_named_ranges'],
-        'xlsxKpiCatalog': json['xlsx_kpi_catalog'] == null ? undefined : json['xlsx_kpi_catalog'],
-        'citationAnchors': json['citation_anchors'] == null ? undefined : ((json['citation_anchors'] as Array<any>).map(XlsxCellAnchorInputOrDocxParagraphAnchorInputFromJSON)),
-        'informationStatistics': json['information_statistics'] == null ? undefined : InformationStatisticsFromJSON(json['information_statistics']),
-        'quotaCharged': json['quota_charged'] == null ? undefined : json['quota_charged'],
-        'quotaPageCount': json['quota_page_count'] == null ? undefined : json['quota_page_count'],
-        'quotaMediaMinutes': json['quota_media_minutes'] == null ? undefined : json['quota_media_minutes'],
-        'quotaIdempotencyKey': json['quota_idempotency_key'] == null ? undefined : json['quota_idempotency_key'],
-        'fileMd5': json['file_md5'] == null ? undefined : json['file_md5'],
+        'sourceS3': json['source_s3'] === undefined ? undefined : json['source_s3'] === null ? null : json['source_s3'],
+        'cleanedSourceS3': json['cleaned_source_s3'] === undefined ? undefined : json['cleaned_source_s3'] === null ? null : json['cleaned_source_s3'],
+        'preconversionSourceS3': json['preconversion_source_s3'] === undefined ? undefined : json['preconversion_source_s3'] === null ? null : json['preconversion_source_s3'],
+        'citedSourceS3': json['cited_source_s3'] === undefined ? undefined : json['cited_source_s3'] === null ? null : json['cited_source_s3'],
+        'standardPipelineJsonS3': json['standard_pipeline_json_s3'] === undefined ? undefined : json['standard_pipeline_json_s3'] === null ? null : json['standard_pipeline_json_s3'],
+        'fastPlaintextS3': json['fast_plaintext_s3'] === undefined ? undefined : json['fast_plaintext_s3'] === null ? null : json['fast_plaintext_s3'],
+        'transcriptS3': json['transcript_s3'] === undefined ? undefined : json['transcript_s3'] === null ? null : json['transcript_s3'],
+        'highAccuracyContentListS3': json['high_accuracy_content_list_s3'] === undefined ? undefined : json['high_accuracy_content_list_s3'] === null ? null : json['high_accuracy_content_list_s3'],
+        'highAccuracyMiddleS3': json['high_accuracy_middle_s3'] === undefined ? undefined : json['high_accuracy_middle_s3'] === null ? null : json['high_accuracy_middle_s3'],
+        'hash': json['hash'] === undefined ? undefined : json['hash'] === null ? null : json['hash'],
+        'pipelineState': json['pipeline_state'] === undefined ? undefined : json['pipeline_state'] === null ? null : PipelineStateFromJSON(json['pipeline_state']),
+        'totalPages': json['total_pages'] === undefined ? undefined : json['total_pages'] === null ? null : json['total_pages'],
+        'totalSections': json['total_sections'] === undefined ? undefined : json['total_sections'] === null ? null : json['total_sections'],
+        'totalChunks': json['total_chunks'] === undefined ? undefined : json['total_chunks'] === null ? null : json['total_chunks'],
+        'durationMs': json['duration_ms'] === undefined ? undefined : json['duration_ms'] === null ? null : json['duration_ms'],
+        'language': json['language'] === undefined ? undefined : json['language'] === null ? null : json['language'],
+        'segmentCount': json['segment_count'] === undefined ? undefined : json['segment_count'] === null ? null : json['segment_count'],
+        'totalFormulas': json['total_formulas'] === undefined ? undefined : json['total_formulas'] === null ? null : json['total_formulas'],
+        'xlsxParseResultS3': json['xlsx_parse_result_s3'] === undefined ? undefined : json['xlsx_parse_result_s3'] === null ? null : json['xlsx_parse_result_s3'],
+        'xlsxNamedRanges': json['xlsx_named_ranges'] === undefined ? undefined : json['xlsx_named_ranges'] === null ? null : json['xlsx_named_ranges'],
+        'xlsxKpiCatalog': json['xlsx_kpi_catalog'] === undefined ? undefined : json['xlsx_kpi_catalog'] === null ? null : json['xlsx_kpi_catalog'],
+        'citationAnchors': json['citation_anchors'] === undefined ? undefined : json['citation_anchors'] === null ? null : ((json['citation_anchors'] as Array<any>).map(XlsxCellAnchorInputOrDocxParagraphAnchorInputFromJSON)),
+        'informationStatistics': json['information_statistics'] === undefined ? undefined : json['information_statistics'] === null ? null : InformationStatisticsFromJSON(json['information_statistics']),
+        'quotaCharged': json['quota_charged'] === undefined ? undefined : json['quota_charged'] === null ? null : json['quota_charged'],
+        'quotaPageCount': json['quota_page_count'] === undefined ? undefined : json['quota_page_count'] === null ? null : json['quota_page_count'],
+        'quotaMediaMinutes': json['quota_media_minutes'] === undefined ? undefined : json['quota_media_minutes'] === null ? null : json['quota_media_minutes'],
+        'quotaIdempotencyKey': json['quota_idempotency_key'] === undefined ? undefined : json['quota_idempotency_key'] === null ? null : json['quota_idempotency_key'],
+        'fileMd5': json['file_md5'] === undefined ? undefined : json['file_md5'] === null ? null : json['file_md5'],
     };
 }
 

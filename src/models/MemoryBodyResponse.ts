@@ -29,20 +29,14 @@ import {
 export interface MemoryBodyResponse {
     /**
      * 
-     * @type {MemoryScope}
-     * @memberof MemoryBodyResponse
      */
     scope: MemoryScope;
     /**
      * 
-     * @type {string}
-     * @memberof MemoryBodyResponse
      */
     ownerId: string;
     /**
      * 
-     * @type {string}
-     * @memberof MemoryBodyResponse
      */
     body: string;
 }
@@ -50,6 +44,8 @@ export interface MemoryBodyResponse {
 
 export const MemoryBodyResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -71,7 +67,7 @@ export const MemoryBodyResponsePropertyValidationAttributesMap: {
  */
 export function instanceOfMemoryBodyResponse(value: object): value is MemoryBodyResponse {
     if (!('scope' in value) || value['scope'] === undefined) return false;
-    if (!('ownerId' in value) || value['ownerId'] === undefined) return false;
+    if ((!('ownerId' in (value as Record<string, any>)) && !('owner_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['ownerId'] === undefined && (value as Record<string, any>)['owner_id'] === undefined)) return false;
     if (!('body' in value) || value['body'] === undefined) return false;
     return true;
 }

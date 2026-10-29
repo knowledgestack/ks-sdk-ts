@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
 import type { RepoTreeEntry } from './RepoTreeEntry';
 import {
     RepoTreeEntryFromJSON,
@@ -29,91 +29,65 @@ import {
 export interface RepoBranchResponse {
     /**
      * 
-     * @type {string}
-     * @memberof RepoBranchResponse
      */
     versionId: string;
     /**
      * 
-     * @type {string}
-     * @memberof RepoBranchResponse
      */
     headSha: string;
     /**
      * 
-     * @type {string}
-     * @memberof RepoBranchResponse
      */
     previousHeadSha: string | null;
     /**
      * 
-     * @type {number}
-     * @memberof RepoBranchResponse
      */
     commitsAdded: number;
     /**
      * 
-     * @type {string}
-     * @memberof RepoBranchResponse
      */
     runId: string | null;
     /**
      * 
-     * @type {string}
-     * @memberof RepoBranchResponse
      */
     savedByUserId: string;
     /**
      * 
-     * @type {Date}
-     * @memberof RepoBranchResponse
      */
     savedAt: Date;
     /**
      * 
-     * @type {string}
-     * @memberof RepoBranchResponse
      */
     instructionVersionId: string | null;
     /**
      * Retained run-branch version this publication integrated.
-     * @type {string}
-     * @memberof RepoBranchResponse
      */
     candidateVersionId?: string | null;
     /**
      * 
-     * @type {string}
-     * @memberof RepoBranchResponse
      */
     branch: string;
     /**
      * 
-     * @type {string}
-     * @memberof RepoBranchResponse
      */
     baseVersionId: string | null;
     /**
      * 
-     * @type {string}
-     * @memberof RepoBranchResponse
      */
     integratedVersionId: string | null;
     /**
      * 
-     * @type {string}
-     * @memberof RepoBranchResponse
      */
     integratedHeadSha: string | null;
     /**
      * 
-     * @type {Array<RepoTreeEntry>}
-     * @memberof RepoBranchResponse
      */
     files: Array<RepoTreeEntry>;
 }
 export const RepoBranchResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -134,18 +108,18 @@ export const RepoBranchResponsePropertyValidationAttributesMap: {
  * Check if a given object implements the RepoBranchResponse interface.
  */
 export function instanceOfRepoBranchResponse(value: object): value is RepoBranchResponse {
-    if (!('versionId' in value) || value['versionId'] === undefined) return false;
-    if (!('headSha' in value) || value['headSha'] === undefined) return false;
-    if (!('previousHeadSha' in value) || value['previousHeadSha'] === undefined) return false;
-    if (!('commitsAdded' in value) || value['commitsAdded'] === undefined) return false;
-    if (!('runId' in value) || value['runId'] === undefined) return false;
-    if (!('savedByUserId' in value) || value['savedByUserId'] === undefined) return false;
-    if (!('savedAt' in value) || value['savedAt'] === undefined) return false;
-    if (!('instructionVersionId' in value) || value['instructionVersionId'] === undefined) return false;
+    if ((!('versionId' in (value as Record<string, any>)) && !('version_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['versionId'] === undefined && (value as Record<string, any>)['version_id'] === undefined)) return false;
+    if ((!('headSha' in (value as Record<string, any>)) && !('head_sha' in (value as Record<string, any>))) || ((value as Record<string, any>)['headSha'] === undefined && (value as Record<string, any>)['head_sha'] === undefined)) return false;
+    if ((!('previousHeadSha' in (value as Record<string, any>)) && !('previous_head_sha' in (value as Record<string, any>))) || ((value as Record<string, any>)['previousHeadSha'] === undefined && (value as Record<string, any>)['previous_head_sha'] === undefined)) return false;
+    if ((!('commitsAdded' in (value as Record<string, any>)) && !('commits_added' in (value as Record<string, any>))) || ((value as Record<string, any>)['commitsAdded'] === undefined && (value as Record<string, any>)['commits_added'] === undefined)) return false;
+    if ((!('runId' in (value as Record<string, any>)) && !('run_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['runId'] === undefined && (value as Record<string, any>)['run_id'] === undefined)) return false;
+    if ((!('savedByUserId' in (value as Record<string, any>)) && !('saved_by_user_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['savedByUserId'] === undefined && (value as Record<string, any>)['saved_by_user_id'] === undefined)) return false;
+    if ((!('savedAt' in (value as Record<string, any>)) && !('saved_at' in (value as Record<string, any>))) || ((value as Record<string, any>)['savedAt'] === undefined && (value as Record<string, any>)['saved_at'] === undefined)) return false;
+    if ((!('instructionVersionId' in (value as Record<string, any>)) && !('instruction_version_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['instructionVersionId'] === undefined && (value as Record<string, any>)['instruction_version_id'] === undefined)) return false;
     if (!('branch' in value) || value['branch'] === undefined) return false;
-    if (!('baseVersionId' in value) || value['baseVersionId'] === undefined) return false;
-    if (!('integratedVersionId' in value) || value['integratedVersionId'] === undefined) return false;
-    if (!('integratedHeadSha' in value) || value['integratedHeadSha'] === undefined) return false;
+    if ((!('baseVersionId' in (value as Record<string, any>)) && !('base_version_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['baseVersionId'] === undefined && (value as Record<string, any>)['base_version_id'] === undefined)) return false;
+    if ((!('integratedVersionId' in (value as Record<string, any>)) && !('integrated_version_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['integratedVersionId'] === undefined && (value as Record<string, any>)['integrated_version_id'] === undefined)) return false;
+    if ((!('integratedHeadSha' in (value as Record<string, any>)) && !('integrated_head_sha' in (value as Record<string, any>))) || ((value as Record<string, any>)['integratedHeadSha'] === undefined && (value as Record<string, any>)['integrated_head_sha'] === undefined)) return false;
     if (!('files' in value) || value['files'] === undefined) return false;
     return true;
 }
@@ -166,9 +140,9 @@ export function RepoBranchResponseFromJSONTyped(json: any, ignoreDiscriminator: 
         'commitsAdded': json['commits_added'],
         'runId': json['run_id'],
         'savedByUserId': json['saved_by_user_id'],
-        'savedAt': (new Date(json['saved_at'])),
+        'savedAt': (json['saved_at'] == null ? json['saved_at'] : parseDateTime(json['saved_at'])),
         'instructionVersionId': json['instruction_version_id'],
-        'candidateVersionId': json['candidate_version_id'] == null ? undefined : json['candidate_version_id'],
+        'candidateVersionId': json['candidate_version_id'] === undefined ? undefined : json['candidate_version_id'] === null ? null : json['candidate_version_id'],
         'branch': json['branch'],
         'baseVersionId': json['base_version_id'],
         'integratedVersionId': json['integrated_version_id'],
@@ -194,7 +168,7 @@ export function RepoBranchResponseToJSONTyped(value?: RepoBranchResponse | null,
         'commits_added': value['commitsAdded'],
         'run_id': value['runId'],
         'saved_by_user_id': value['savedByUserId'],
-        'saved_at': value['savedAt'].toISOString(),
+        'saved_at': value['savedAt'] == null ? value['savedAt'] : serializeDateTime(value['savedAt']),
         'instruction_version_id': value['instructionVersionId'],
         'candidate_version_id': value['candidateVersionId'],
         'branch': value['branch'],

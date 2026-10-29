@@ -35,7 +35,7 @@ export const ReferenceType = {
     Image: 'image',
     Memory: 'memory',
     Tag: 'tag',
-    User: 'user'
+    User: 'user',
 } as const;
 export type ReferenceType = typeof ReferenceType[keyof typeof ReferenceType];
 

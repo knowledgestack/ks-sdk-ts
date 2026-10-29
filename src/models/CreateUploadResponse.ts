@@ -21,31 +21,25 @@ import { mapValues } from '../runtime';
 export interface CreateUploadResponse {
     /**
      * 
-     * @type {string}
-     * @memberof CreateUploadResponse
      */
     documentId: string;
     /**
      * 
-     * @type {string}
-     * @memberof CreateUploadResponse
      */
     documentVersionId: string;
     /**
      * Opaque token; return it on every part/status/complete/abort
-     * @type {string}
-     * @memberof CreateUploadResponse
      */
     uploadToken: string;
     /**
      * Recommended part size in bytes; every part except the last must be at least 5 MiB
-     * @type {number}
-     * @memberof CreateUploadResponse
      */
     partSize: number;
 }
 export const CreateUploadResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -66,10 +60,10 @@ export const CreateUploadResponsePropertyValidationAttributesMap: {
  * Check if a given object implements the CreateUploadResponse interface.
  */
 export function instanceOfCreateUploadResponse(value: object): value is CreateUploadResponse {
-    if (!('documentId' in value) || value['documentId'] === undefined) return false;
-    if (!('documentVersionId' in value) || value['documentVersionId'] === undefined) return false;
-    if (!('uploadToken' in value) || value['uploadToken'] === undefined) return false;
-    if (!('partSize' in value) || value['partSize'] === undefined) return false;
+    if ((!('documentId' in (value as Record<string, any>)) && !('document_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['documentId'] === undefined && (value as Record<string, any>)['document_id'] === undefined)) return false;
+    if ((!('documentVersionId' in (value as Record<string, any>)) && !('document_version_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['documentVersionId'] === undefined && (value as Record<string, any>)['document_version_id'] === undefined)) return false;
+    if ((!('uploadToken' in (value as Record<string, any>)) && !('upload_token' in (value as Record<string, any>))) || ((value as Record<string, any>)['uploadToken'] === undefined && (value as Record<string, any>)['upload_token'] === undefined)) return false;
+    if ((!('partSize' in (value as Record<string, any>)) && !('part_size' in (value as Record<string, any>))) || ((value as Record<string, any>)['partSize'] === undefined && (value as Record<string, any>)['part_size'] === undefined)) return false;
     return true;
 }
 

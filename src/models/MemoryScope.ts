@@ -23,7 +23,7 @@
  */
 export const MemoryScope = {
     User: 'user',
-    Workflow: 'workflow'
+    Workflow: 'workflow',
 } as const;
 export type MemoryScope = typeof MemoryScope[keyof typeof MemoryScope];
 

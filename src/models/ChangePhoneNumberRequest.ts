@@ -21,19 +21,17 @@ import { mapValues } from '../runtime';
 export interface ChangePhoneNumberRequest {
     /**
      * 
-     * @type {string}
-     * @memberof ChangePhoneNumberRequest
      */
     phoneValidationId: string;
     /**
      * 
-     * @type {string}
-     * @memberof ChangePhoneNumberRequest
      */
     code: string;
 }
 export const ChangePhoneNumberRequestPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -54,7 +52,7 @@ export const ChangePhoneNumberRequestPropertyValidationAttributesMap: {
  * Check if a given object implements the ChangePhoneNumberRequest interface.
  */
 export function instanceOfChangePhoneNumberRequest(value: object): value is ChangePhoneNumberRequest {
-    if (!('phoneValidationId' in value) || value['phoneValidationId'] === undefined) return false;
+    if ((!('phoneValidationId' in (value as Record<string, any>)) && !('phone_validation_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['phoneValidationId'] === undefined && (value as Record<string, any>)['phone_validation_id'] === undefined)) return false;
     if (!('code' in value) || value['code'] === undefined) return false;
     return true;
 }

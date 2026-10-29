@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
 import type { ApiConnectionResponse } from './ApiConnectionResponse';
 import {
     instanceOfApiConnectionResponse,
@@ -125,23 +126,23 @@ export function FolderResponseOrDocumentResponseOrWorkflowDefinitionResponseOrWo
     }
     switch (value['partType']) {
         case 'API_CONNECTION':
-            return Object.assign({}, ApiConnectionResponseToJSON(value), { partType: 'API_CONNECTION' } as const);
+            return Object.assign({}, ApiConnectionResponseToJSON(value), { 'part_type': 'API_CONNECTION' } as const);
         case 'DATA_SOURCE':
-            return Object.assign({}, DataSourceResponseToJSON(value), { partType: 'DATA_SOURCE' } as const);
+            return Object.assign({}, DataSourceResponseToJSON(value), { 'part_type': 'DATA_SOURCE' } as const);
         case 'DATA_SOURCE_SCHEMA':
-            return Object.assign({}, DataSourceSchemaResponseToJSON(value), { partType: 'DATA_SOURCE_SCHEMA' } as const);
+            return Object.assign({}, DataSourceSchemaResponseToJSON(value), { 'part_type': 'DATA_SOURCE_SCHEMA' } as const);
         case 'DATA_SOURCE_TABLE':
-            return Object.assign({}, DataSourceTableResponseToJSON(value), { partType: 'DATA_SOURCE_TABLE' } as const);
+            return Object.assign({}, DataSourceTableResponseToJSON(value), { 'part_type': 'DATA_SOURCE_TABLE' } as const);
         case 'DOCUMENT':
-            return Object.assign({}, DocumentResponseToJSON(value), { partType: 'DOCUMENT' } as const);
+            return Object.assign({}, DocumentResponseToJSON(value), { 'part_type': 'DOCUMENT' } as const);
         case 'FOLDER':
-            return Object.assign({}, FolderResponseToJSON(value), { partType: 'FOLDER' } as const);
+            return Object.assign({}, FolderResponseToJSON(value), { 'part_type': 'FOLDER' } as const);
         case 'SKILL':
-            return Object.assign({}, SkillResponseToJSON(value), { partType: 'SKILL' } as const);
+            return Object.assign({}, SkillResponseToJSON(value), { 'part_type': 'SKILL' } as const);
         case 'WORKFLOW_DEFINITION':
-            return Object.assign({}, WorkflowDefinitionResponseToJSON(value), { partType: 'WORKFLOW_DEFINITION' } as const);
+            return Object.assign({}, WorkflowDefinitionResponseToJSON(value), { 'part_type': 'WORKFLOW_DEFINITION' } as const);
         case 'WORKFLOW_RUN':
-            return Object.assign({}, WorkflowRunResponseToJSON(value), { partType: 'WORKFLOW_RUN' } as const);
+            return Object.assign({}, WorkflowRunResponseToJSON(value), { 'part_type': 'WORKFLOW_RUN' } as const);
         default:
             return value;
     }

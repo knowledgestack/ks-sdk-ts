@@ -27,26 +27,18 @@ import { mapValues } from '../runtime';
 export interface ResolvedRef {
     /**
      * 
-     * @type {ResolvedRefEntityTypeEnum}
-     * @memberof ResolvedRef
      */
     entityType: ResolvedRefEntityTypeEnum;
     /**
      * 
-     * @type {string}
-     * @memberof ResolvedRef
      */
     objectId: string;
     /**
      * 
-     * @type {string}
-     * @memberof ResolvedRef
      */
     displayName?: string | null;
     /**
      * 
-     * @type {string}
-     * @memberof ResolvedRef
      */
     partType?: string | null;
 }
@@ -57,12 +49,14 @@ export interface ResolvedRef {
  */
 export const ResolvedRefEntityTypeEnum = {
     PathPart: 'path_part',
-    User: 'user'
+    User: 'user',
 } as const;
 export type ResolvedRefEntityTypeEnum = typeof ResolvedRefEntityTypeEnum[keyof typeof ResolvedRefEntityTypeEnum];
 
 export const ResolvedRefPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -83,8 +77,8 @@ export const ResolvedRefPropertyValidationAttributesMap: {
  * Check if a given object implements the ResolvedRef interface.
  */
 export function instanceOfResolvedRef(value: object): value is ResolvedRef {
-    if (!('entityType' in value) || value['entityType'] === undefined) return false;
-    if (!('objectId' in value) || value['objectId'] === undefined) return false;
+    if ((!('entityType' in (value as Record<string, any>)) && !('entity_type' in (value as Record<string, any>))) || ((value as Record<string, any>)['entityType'] === undefined && (value as Record<string, any>)['entity_type'] === undefined)) return false;
+    if ((!('objectId' in (value as Record<string, any>)) && !('object_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['objectId'] === undefined && (value as Record<string, any>)['object_id'] === undefined)) return false;
     return true;
 }
 
@@ -100,8 +94,8 @@ export function ResolvedRefFromJSONTyped(json: any, ignoreDiscriminator: boolean
         
         'entityType': json['entity_type'],
         'objectId': json['object_id'],
-        'displayName': json['display_name'] == null ? undefined : json['display_name'],
-        'partType': json['part_type'] == null ? undefined : json['part_type'],
+        'displayName': json['display_name'] === undefined ? undefined : json['display_name'] === null ? null : json['display_name'],
+        'partType': json['part_type'] === undefined ? undefined : json['part_type'] === null ? null : json['part_type'],
     };
 }
 

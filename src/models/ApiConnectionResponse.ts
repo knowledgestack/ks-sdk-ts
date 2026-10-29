@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
 import type { ItemPermissions } from './ItemPermissions';
 import {
     ItemPermissionsFromJSON,
@@ -53,110 +53,74 @@ import {
 export interface ApiConnectionResponse {
     /**
      * Path part type
-     * @type {ApiConnectionResponsePartTypeEnum}
-     * @memberof ApiConnectionResponse
      */
     partType?: ApiConnectionResponsePartTypeEnum;
     /**
      * 
-     * @type {string}
-     * @memberof ApiConnectionResponse
      */
     id: string;
     /**
      * 
-     * @type {string}
-     * @memberof ApiConnectionResponse
      */
     pathPartId: string;
     /**
      * 
-     * @type {string}
-     * @memberof ApiConnectionResponse
      */
     parentPathPartId: string | null;
     /**
      * 
-     * @type {string}
-     * @memberof ApiConnectionResponse
      */
     materializedPath: string;
     /**
      * 
-     * @type {string}
-     * @memberof ApiConnectionResponse
      */
     tenantId: string;
     /**
      * 
-     * @type {string}
-     * @memberof ApiConnectionResponse
      */
     name: string;
     /**
      * 
-     * @type {string}
-     * @memberof ApiConnectionResponse
      */
     baseUrl: string;
     /**
      * 
-     * @type {NetworkClass}
-     * @memberof ApiConnectionResponse
      */
     networkClass: NetworkClass;
     /**
      * 
-     * @type {boolean}
-     * @memberof ApiConnectionResponse
      */
     verifyTls: boolean;
     /**
      * 
-     * @type {string}
-     * @memberof ApiConnectionResponse
      */
     apiDocs: string | null;
     /**
      * 
-     * @type {Date}
-     * @memberof ApiConnectionResponse
      */
     disclaimerAcceptedAt: Date | null;
     /**
      * 
-     * @type {string}
-     * @memberof ApiConnectionResponse
      */
     disclaimerAcceptedBy: string | null;
     /**
      * 
-     * @type {PathPartApprovalState}
-     * @memberof ApiConnectionResponse
      */
     approvalState: PathPartApprovalState;
     /**
      * 
-     * @type {UserInfo}
-     * @memberof ApiConnectionResponse
      */
     owner?: UserInfo | null;
     /**
      * 
-     * @type {ItemPermissions}
-     * @memberof ApiConnectionResponse
      */
     permissions: ItemPermissions;
     /**
      * 
-     * @type {Date}
-     * @memberof ApiConnectionResponse
      */
     createdAt: Date;
     /**
      * 
-     * @type {Date}
-     * @memberof ApiConnectionResponse
      */
     updatedAt: Date;
 }
@@ -166,12 +130,14 @@ export interface ApiConnectionResponse {
  * @export
  */
 export const ApiConnectionResponsePartTypeEnum = {
-    ApiConnection: 'API_CONNECTION'
+    ApiConnection: 'API_CONNECTION',
 } as const;
 export type ApiConnectionResponsePartTypeEnum = typeof ApiConnectionResponsePartTypeEnum[keyof typeof ApiConnectionResponsePartTypeEnum];
 
 export const ApiConnectionResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -193,21 +159,21 @@ export const ApiConnectionResponsePropertyValidationAttributesMap: {
  */
 export function instanceOfApiConnectionResponse(value: object): value is ApiConnectionResponse {
     if (!('id' in value) || value['id'] === undefined) return false;
-    if (!('pathPartId' in value) || value['pathPartId'] === undefined) return false;
-    if (!('parentPathPartId' in value) || value['parentPathPartId'] === undefined) return false;
-    if (!('materializedPath' in value) || value['materializedPath'] === undefined) return false;
-    if (!('tenantId' in value) || value['tenantId'] === undefined) return false;
+    if ((!('pathPartId' in (value as Record<string, any>)) && !('path_part_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['pathPartId'] === undefined && (value as Record<string, any>)['path_part_id'] === undefined)) return false;
+    if ((!('parentPathPartId' in (value as Record<string, any>)) && !('parent_path_part_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['parentPathPartId'] === undefined && (value as Record<string, any>)['parent_path_part_id'] === undefined)) return false;
+    if ((!('materializedPath' in (value as Record<string, any>)) && !('materialized_path' in (value as Record<string, any>))) || ((value as Record<string, any>)['materializedPath'] === undefined && (value as Record<string, any>)['materialized_path'] === undefined)) return false;
+    if ((!('tenantId' in (value as Record<string, any>)) && !('tenant_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['tenantId'] === undefined && (value as Record<string, any>)['tenant_id'] === undefined)) return false;
     if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('baseUrl' in value) || value['baseUrl'] === undefined) return false;
-    if (!('networkClass' in value) || value['networkClass'] === undefined) return false;
-    if (!('verifyTls' in value) || value['verifyTls'] === undefined) return false;
-    if (!('apiDocs' in value) || value['apiDocs'] === undefined) return false;
-    if (!('disclaimerAcceptedAt' in value) || value['disclaimerAcceptedAt'] === undefined) return false;
-    if (!('disclaimerAcceptedBy' in value) || value['disclaimerAcceptedBy'] === undefined) return false;
-    if (!('approvalState' in value) || value['approvalState'] === undefined) return false;
+    if ((!('baseUrl' in (value as Record<string, any>)) && !('base_url' in (value as Record<string, any>))) || ((value as Record<string, any>)['baseUrl'] === undefined && (value as Record<string, any>)['base_url'] === undefined)) return false;
+    if ((!('networkClass' in (value as Record<string, any>)) && !('network_class' in (value as Record<string, any>))) || ((value as Record<string, any>)['networkClass'] === undefined && (value as Record<string, any>)['network_class'] === undefined)) return false;
+    if ((!('verifyTls' in (value as Record<string, any>)) && !('verify_tls' in (value as Record<string, any>))) || ((value as Record<string, any>)['verifyTls'] === undefined && (value as Record<string, any>)['verify_tls'] === undefined)) return false;
+    if ((!('apiDocs' in (value as Record<string, any>)) && !('api_docs' in (value as Record<string, any>))) || ((value as Record<string, any>)['apiDocs'] === undefined && (value as Record<string, any>)['api_docs'] === undefined)) return false;
+    if ((!('disclaimerAcceptedAt' in (value as Record<string, any>)) && !('disclaimer_accepted_at' in (value as Record<string, any>))) || ((value as Record<string, any>)['disclaimerAcceptedAt'] === undefined && (value as Record<string, any>)['disclaimer_accepted_at'] === undefined)) return false;
+    if ((!('disclaimerAcceptedBy' in (value as Record<string, any>)) && !('disclaimer_accepted_by' in (value as Record<string, any>))) || ((value as Record<string, any>)['disclaimerAcceptedBy'] === undefined && (value as Record<string, any>)['disclaimer_accepted_by'] === undefined)) return false;
+    if ((!('approvalState' in (value as Record<string, any>)) && !('approval_state' in (value as Record<string, any>))) || ((value as Record<string, any>)['approvalState'] === undefined && (value as Record<string, any>)['approval_state'] === undefined)) return false;
     if (!('permissions' in value) || value['permissions'] === undefined) return false;
-    if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
-    if (!('updatedAt' in value) || value['updatedAt'] === undefined) return false;
+    if ((!('createdAt' in (value as Record<string, any>)) && !('created_at' in (value as Record<string, any>))) || ((value as Record<string, any>)['createdAt'] === undefined && (value as Record<string, any>)['created_at'] === undefined)) return false;
+    if ((!('updatedAt' in (value as Record<string, any>)) && !('updated_at' in (value as Record<string, any>))) || ((value as Record<string, any>)['updatedAt'] === undefined && (value as Record<string, any>)['updated_at'] === undefined)) return false;
     return true;
 }
 
@@ -232,13 +198,13 @@ export function ApiConnectionResponseFromJSONTyped(json: any, ignoreDiscriminato
         'networkClass': NetworkClassFromJSON(json['network_class']),
         'verifyTls': json['verify_tls'],
         'apiDocs': json['api_docs'],
-        'disclaimerAcceptedAt': (json['disclaimer_accepted_at'] == null ? null : new Date(json['disclaimer_accepted_at'])),
+        'disclaimerAcceptedAt': (json['disclaimer_accepted_at'] == null ? null : parseDateTime(json['disclaimer_accepted_at'])),
         'disclaimerAcceptedBy': json['disclaimer_accepted_by'],
         'approvalState': PathPartApprovalStateFromJSON(json['approval_state']),
-        'owner': json['owner'] == null ? undefined : UserInfoFromJSON(json['owner']),
+        'owner': json['owner'] === undefined ? undefined : json['owner'] === null ? null : UserInfoFromJSON(json['owner']),
         'permissions': ItemPermissionsFromJSON(json['permissions']),
-        'createdAt': (new Date(json['created_at'])),
-        'updatedAt': (new Date(json['updated_at'])),
+        'createdAt': (json['created_at'] == null ? json['created_at'] : parseDateTime(json['created_at'])),
+        'updatedAt': (json['updated_at'] == null ? json['updated_at'] : parseDateTime(json['updated_at'])),
     };
 }
 
@@ -264,13 +230,13 @@ export function ApiConnectionResponseToJSONTyped(value?: ApiConnectionResponse |
         'network_class': NetworkClassToJSON(value['networkClass']),
         'verify_tls': value['verifyTls'],
         'api_docs': value['apiDocs'],
-        'disclaimer_accepted_at': value['disclaimerAcceptedAt'] == null ? value['disclaimerAcceptedAt'] : value['disclaimerAcceptedAt'].toISOString(),
+        'disclaimer_accepted_at': value['disclaimerAcceptedAt'] == null ? value['disclaimerAcceptedAt'] : serializeDateTime(value['disclaimerAcceptedAt']),
         'disclaimer_accepted_by': value['disclaimerAcceptedBy'],
         'approval_state': PathPartApprovalStateToJSON(value['approvalState']),
         'owner': UserInfoToJSON(value['owner']),
         'permissions': ItemPermissionsToJSON(value['permissions']),
-        'created_at': value['createdAt'].toISOString(),
-        'updated_at': value['updatedAt'].toISOString(),
+        'created_at': value['createdAt'] == null ? value['createdAt'] : serializeDateTime(value['createdAt']),
+        'updated_at': value['updatedAt'] == null ? value['updatedAt'] : serializeDateTime(value['updatedAt']),
     };
 }
 

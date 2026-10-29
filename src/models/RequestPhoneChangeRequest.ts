@@ -21,13 +21,13 @@ import { mapValues } from '../runtime';
 export interface RequestPhoneChangeRequest {
     /**
      * Subscriber number as a string of digits, no country code (e.g. '13800138000'). The SMS provider determines routing.
-     * @type {string}
-     * @memberof RequestPhoneChangeRequest
      */
     phoneNumber: string;
 }
 export const RequestPhoneChangeRequestPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -48,7 +48,7 @@ export const RequestPhoneChangeRequestPropertyValidationAttributesMap: {
  * Check if a given object implements the RequestPhoneChangeRequest interface.
  */
 export function instanceOfRequestPhoneChangeRequest(value: object): value is RequestPhoneChangeRequest {
-    if (!('phoneNumber' in value) || value['phoneNumber'] === undefined) return false;
+    if ((!('phoneNumber' in (value as Record<string, any>)) && !('phone_number' in (value as Record<string, any>))) || ((value as Record<string, any>)['phoneNumber'] === undefined && (value as Record<string, any>)['phone_number'] === undefined)) return false;
     return true;
 }
 

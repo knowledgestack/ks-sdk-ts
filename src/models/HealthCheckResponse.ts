@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
 /**
  * 
  * @export
@@ -21,19 +21,17 @@ import { mapValues } from '../runtime';
 export interface HealthCheckResponse {
     /**
      * 
-     * @type {string}
-     * @memberof HealthCheckResponse
      */
     status?: string;
     /**
      * 
-     * @type {Date}
-     * @memberof HealthCheckResponse
      */
     databaseTs: Date;
 }
 export const HealthCheckResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -54,7 +52,7 @@ export const HealthCheckResponsePropertyValidationAttributesMap: {
  * Check if a given object implements the HealthCheckResponse interface.
  */
 export function instanceOfHealthCheckResponse(value: object): value is HealthCheckResponse {
-    if (!('databaseTs' in value) || value['databaseTs'] === undefined) return false;
+    if ((!('databaseTs' in (value as Record<string, any>)) && !('database_ts' in (value as Record<string, any>))) || ((value as Record<string, any>)['databaseTs'] === undefined && (value as Record<string, any>)['database_ts'] === undefined)) return false;
     return true;
 }
 
@@ -69,7 +67,7 @@ export function HealthCheckResponseFromJSONTyped(json: any, ignoreDiscriminator:
     return {
         
         'status': json['status'] == null ? undefined : json['status'],
-        'databaseTs': (new Date(json['database_ts'])),
+        'databaseTs': (json['database_ts'] == null ? json['database_ts'] : parseDateTime(json['database_ts'])),
     };
 }
 
@@ -85,7 +83,7 @@ export function HealthCheckResponseToJSONTyped(value?: HealthCheckResponse | nul
     return {
         
         'status': value['status'],
-        'database_ts': value['databaseTs'].toISOString(),
+        'database_ts': value['databaseTs'] == null ? value['databaseTs'] : serializeDateTime(value['databaseTs']),
     };
 }
 

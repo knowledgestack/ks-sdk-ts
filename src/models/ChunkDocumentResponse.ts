@@ -36,26 +36,18 @@ import {
 export interface ChunkDocumentResponse {
     /**
      * Document ID
-     * @type {string}
-     * @memberof ChunkDocumentResponse
      */
     id: string;
     /**
      * Document name
-     * @type {string}
-     * @memberof ChunkDocumentResponse
      */
     name: string;
     /**
      * 
-     * @type {DocumentType}
-     * @memberof ChunkDocumentResponse
      */
     documentType: DocumentType;
     /**
      * 
-     * @type {DocumentOrigin}
-     * @memberof ChunkDocumentResponse
      */
     documentOrigin: DocumentOrigin;
 }
@@ -63,6 +55,8 @@ export interface ChunkDocumentResponse {
 
 export const ChunkDocumentResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -85,8 +79,8 @@ export const ChunkDocumentResponsePropertyValidationAttributesMap: {
 export function instanceOfChunkDocumentResponse(value: object): value is ChunkDocumentResponse {
     if (!('id' in value) || value['id'] === undefined) return false;
     if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('documentType' in value) || value['documentType'] === undefined) return false;
-    if (!('documentOrigin' in value) || value['documentOrigin'] === undefined) return false;
+    if ((!('documentType' in (value as Record<string, any>)) && !('document_type' in (value as Record<string, any>))) || ((value as Record<string, any>)['documentType'] === undefined && (value as Record<string, any>)['document_type'] === undefined)) return false;
+    if ((!('documentOrigin' in (value as Record<string, any>)) && !('document_origin' in (value as Record<string, any>))) || ((value as Record<string, any>)['documentOrigin'] === undefined && (value as Record<string, any>)['document_origin'] === undefined)) return false;
     return true;
 }
 

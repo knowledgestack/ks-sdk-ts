@@ -29,19 +29,17 @@ import {
 export interface RepoTreeResponse {
     /**
      * Null when the repository does not exist.
-     * @type {string}
-     * @memberof RepoTreeResponse
      */
     commit: string | null;
     /**
      * Every file, path-sorted.
-     * @type {Array<RepoTreeEntry>}
-     * @memberof RepoTreeResponse
      */
     entries: Array<RepoTreeEntry>;
 }
 export const RepoTreeResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,

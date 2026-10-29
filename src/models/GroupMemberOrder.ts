@@ -19,7 +19,7 @@
  */
 export const GroupMemberOrder = {
     AddedAt: 'ADDED_AT',
-    Username: 'USERNAME'
+    Username: 'USERNAME',
 } as const;
 export type GroupMemberOrder = typeof GroupMemberOrder[keyof typeof GroupMemberOrder];
 

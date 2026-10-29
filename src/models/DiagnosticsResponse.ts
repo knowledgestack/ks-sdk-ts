@@ -29,19 +29,17 @@ import {
 export interface DiagnosticsResponse {
     /**
      * True when no item is pending.
-     * @type {boolean}
-     * @memberof DiagnosticsResponse
      */
     _final: boolean;
     /**
      * 
-     * @type {Array<DiagnosticTraceItem>}
-     * @memberof DiagnosticsResponse
      */
     traces: Array<DiagnosticTraceItem>;
 }
 export const DiagnosticsResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -62,7 +60,7 @@ export const DiagnosticsResponsePropertyValidationAttributesMap: {
  * Check if a given object implements the DiagnosticsResponse interface.
  */
 export function instanceOfDiagnosticsResponse(value: object): value is DiagnosticsResponse {
-    if (!('_final' in value) || value['_final'] === undefined) return false;
+    if ((!('_final' in (value as Record<string, any>)) && !('final' in (value as Record<string, any>))) || ((value as Record<string, any>)['_final'] === undefined && (value as Record<string, any>)['final'] === undefined)) return false;
     if (!('traces' in value) || value['traces'] === undefined) return false;
     return true;
 }

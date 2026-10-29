@@ -19,7 +19,7 @@
  */
 export const StepKind = {
     Reasoning: 'reasoning',
-    ToolCall: 'tool_call'
+    ToolCall: 'tool_call',
 } as const;
 export type StepKind = typeof StepKind[keyof typeof StepKind];
 

@@ -21,13 +21,13 @@ import { mapValues } from '../runtime';
 export interface PhoneVerificationRequest {
     /**
      * Subscriber number as a string of digits, no country code (e.g. '13800138000'). The SMS provider determines routing.
-     * @type {string}
-     * @memberof PhoneVerificationRequest
      */
     phoneNumber: string;
 }
 export const PhoneVerificationRequestPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -48,7 +48,7 @@ export const PhoneVerificationRequestPropertyValidationAttributesMap: {
  * Check if a given object implements the PhoneVerificationRequest interface.
  */
 export function instanceOfPhoneVerificationRequest(value: object): value is PhoneVerificationRequest {
-    if (!('phoneNumber' in value) || value['phoneNumber'] === undefined) return false;
+    if ((!('phoneNumber' in (value as Record<string, any>)) && !('phone_number' in (value as Record<string, any>))) || ((value as Record<string, any>)['phoneNumber'] === undefined && (value as Record<string, any>)['phone_number'] === undefined)) return false;
     return true;
 }
 

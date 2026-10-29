@@ -12,36 +12,49 @@
  * Do not edit the class manually.
  */
 
-
 import * as runtime from '../runtime';
-import type {
-  AskRequest,
-  AskResponse,
-  ErrorResponse,
-  ExtractRequest,
-  ExtractResponse,
-  HTTPValidationError,
-} from '../models/index';
 import {
+    type AskRequest,
     AskRequestFromJSON,
     AskRequestToJSON,
+} from '../models/AskRequest';
+import {
+    type AskResponse,
     AskResponseFromJSON,
     AskResponseToJSON,
+} from '../models/AskResponse';
+import {
+    type ErrorResponse,
     ErrorResponseFromJSON,
     ErrorResponseToJSON,
+} from '../models/ErrorResponse';
+import {
+    type ExtractRequest,
     ExtractRequestFromJSON,
     ExtractRequestToJSON,
+} from '../models/ExtractRequest';
+import {
+    type ExtractResponse,
     ExtractResponseFromJSON,
     ExtractResponseToJSON,
+} from '../models/ExtractResponse';
+import {
+    type HTTPValidationError,
     HTTPValidationErrorFromJSON,
     HTTPValidationErrorToJSON,
-} from '../models/index';
+} from '../models/HTTPValidationError';
 
 export interface AgentAskRequest {
+    /**
+     * 
+     */
     askRequest: AskRequest;
 }
 
 export interface AgentExtractRequest {
+    /**
+     * 
+     */
     extractRequest: ExtractRequest;
 }
 

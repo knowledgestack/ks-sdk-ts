@@ -29,13 +29,13 @@ import {
 export interface UpdateTableRequest {
     /**
      * 
-     * @type {Array<ColumnConfig>}
-     * @memberof UpdateTableRequest
      */
     columnConfig?: Array<ColumnConfig> | null;
 }
 export const UpdateTableRequestPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -69,7 +69,7 @@ export function UpdateTableRequestFromJSONTyped(json: any, ignoreDiscriminator: 
     }
     return {
         
-        'columnConfig': json['column_config'] == null ? undefined : ((json['column_config'] as Array<any>).map(ColumnConfigFromJSON)),
+        'columnConfig': json['column_config'] === undefined ? undefined : json['column_config'] === null ? null : ((json['column_config'] as Array<any>).map(ColumnConfigFromJSON)),
     };
 }
 

@@ -12,31 +12,43 @@
  * Do not edit the class manually.
  */
 
-
 import * as runtime from '../runtime';
-import type {
-  ErrorResponse,
-  HTTPValidationError,
-  PathPartApprovalResponse,
-  SetApprovalStateRequest,
-} from '../models/index';
 import {
+    type ErrorResponse,
     ErrorResponseFromJSON,
     ErrorResponseToJSON,
+} from '../models/ErrorResponse';
+import {
+    type HTTPValidationError,
     HTTPValidationErrorFromJSON,
     HTTPValidationErrorToJSON,
+} from '../models/HTTPValidationError';
+import {
+    type PathPartApprovalResponse,
     PathPartApprovalResponseFromJSON,
     PathPartApprovalResponseToJSON,
+} from '../models/PathPartApprovalResponse';
+import {
+    type SetApprovalStateRequest,
     SetApprovalStateRequestFromJSON,
     SetApprovalStateRequestToJSON,
-} from '../models/index';
+} from '../models/SetApprovalStateRequest';
 
 export interface GetPathPartApprovalRequest {
+    /**
+     * 
+     */
     pathPartId: string;
 }
 
 export interface SetPathPartApprovalRequest {
+    /**
+     * 
+     */
     pathPartId: string;
+    /**
+     * 
+     */
     setApprovalStateRequest: SetApprovalStateRequest;
 }
 
@@ -129,7 +141,7 @@ export class PathPartApprovalsApi extends runtime.BaseAPI implements PathPartApp
         }
 
         let urlPath = `/v1/path-parts/{path_part_id}/approval`;
-        urlPath = urlPath.replace(`{${"path_part_id"}}`, encodeURIComponent(String(requestParameters['pathPartId'])));
+        urlPath = urlPath.replace('{path_part_id}', encodeURIComponent(String(requestParameters['pathPartId'])));
 
         return {
             path: urlPath,
@@ -193,7 +205,7 @@ export class PathPartApprovalsApi extends runtime.BaseAPI implements PathPartApp
         }
 
         let urlPath = `/v1/path-parts/{path_part_id}/approval`;
-        urlPath = urlPath.replace(`{${"path_part_id"}}`, encodeURIComponent(String(requestParameters['pathPartId'])));
+        urlPath = urlPath.replace('{path_part_id}', encodeURIComponent(String(requestParameters['pathPartId'])));
 
         return {
             path: urlPath,

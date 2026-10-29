@@ -12,150 +12,265 @@
  * Do not edit the class manually.
  */
 
-
 import * as runtime from '../runtime';
-import type {
-  BulkModelTablesRequest,
-  BulkModelTablesResponse,
-  CreateDataSourceRequest,
-  DataSourceCatalogResponse,
-  DataSourceDescribeResponse,
-  DataSourceDetailResponse,
-  DataSourceQueryRequest,
-  DataSourceQueryResponse,
-  DataSourceResponse,
-  DataSourceSchemaListResponse,
-  DataSourceSyncResponse,
-  DataSourceTableResponse,
-  ErrorResponse,
-  HTTPValidationError,
-  ModelTableRequest,
-  SearchTablesRequest,
-  SearchTablesResponse,
-  TestConnectionRequest,
-  TestConnectionResponse,
-  UpdateDataSourceRequest,
-  UpdateTableRequest,
-} from '../models/index';
 import {
+    type BulkModelTablesRequest,
     BulkModelTablesRequestFromJSON,
     BulkModelTablesRequestToJSON,
+} from '../models/BulkModelTablesRequest';
+import {
+    type BulkModelTablesResponse,
     BulkModelTablesResponseFromJSON,
     BulkModelTablesResponseToJSON,
+} from '../models/BulkModelTablesResponse';
+import {
+    type CreateDataSourceRequest,
     CreateDataSourceRequestFromJSON,
     CreateDataSourceRequestToJSON,
+} from '../models/CreateDataSourceRequest';
+import {
+    type DataSourceCatalogResponse,
     DataSourceCatalogResponseFromJSON,
     DataSourceCatalogResponseToJSON,
+} from '../models/DataSourceCatalogResponse';
+import {
+    type DataSourceDescribeResponse,
     DataSourceDescribeResponseFromJSON,
     DataSourceDescribeResponseToJSON,
+} from '../models/DataSourceDescribeResponse';
+import {
+    type DataSourceDetailResponse,
     DataSourceDetailResponseFromJSON,
     DataSourceDetailResponseToJSON,
+} from '../models/DataSourceDetailResponse';
+import {
+    type DataSourceQueryRequest,
     DataSourceQueryRequestFromJSON,
     DataSourceQueryRequestToJSON,
+} from '../models/DataSourceQueryRequest';
+import {
+    type DataSourceQueryResponse,
     DataSourceQueryResponseFromJSON,
     DataSourceQueryResponseToJSON,
+} from '../models/DataSourceQueryResponse';
+import {
+    type DataSourceResponse,
     DataSourceResponseFromJSON,
     DataSourceResponseToJSON,
+} from '../models/DataSourceResponse';
+import {
+    type DataSourceSchemaListResponse,
     DataSourceSchemaListResponseFromJSON,
     DataSourceSchemaListResponseToJSON,
+} from '../models/DataSourceSchemaListResponse';
+import {
+    type DataSourceSyncResponse,
     DataSourceSyncResponseFromJSON,
     DataSourceSyncResponseToJSON,
+} from '../models/DataSourceSyncResponse';
+import {
+    type DataSourceTableResponse,
     DataSourceTableResponseFromJSON,
     DataSourceTableResponseToJSON,
+} from '../models/DataSourceTableResponse';
+import {
+    type ErrorResponse,
     ErrorResponseFromJSON,
     ErrorResponseToJSON,
+} from '../models/ErrorResponse';
+import {
+    type HTTPValidationError,
     HTTPValidationErrorFromJSON,
     HTTPValidationErrorToJSON,
+} from '../models/HTTPValidationError';
+import {
+    type ModelTableRequest,
     ModelTableRequestFromJSON,
     ModelTableRequestToJSON,
+} from '../models/ModelTableRequest';
+import {
+    type SearchTablesRequest,
     SearchTablesRequestFromJSON,
     SearchTablesRequestToJSON,
+} from '../models/SearchTablesRequest';
+import {
+    type SearchTablesResponse,
     SearchTablesResponseFromJSON,
     SearchTablesResponseToJSON,
+} from '../models/SearchTablesResponse';
+import {
+    type TestConnectionRequest,
     TestConnectionRequestFromJSON,
     TestConnectionRequestToJSON,
+} from '../models/TestConnectionRequest';
+import {
+    type TestConnectionResponse,
     TestConnectionResponseFromJSON,
     TestConnectionResponseToJSON,
+} from '../models/TestConnectionResponse';
+import {
+    type UpdateDataSourceRequest,
     UpdateDataSourceRequestFromJSON,
     UpdateDataSourceRequestToJSON,
+} from '../models/UpdateDataSourceRequest';
+import {
+    type UpdateTableRequest,
     UpdateTableRequestFromJSON,
     UpdateTableRequestToJSON,
-} from '../models/index';
+} from '../models/UpdateTableRequest';
 
 export interface CreateDataSourceOperationRequest {
+    /**
+     * 
+     */
     createDataSourceRequest: CreateDataSourceRequest;
 }
 
 export interface DeleteDataSourceRequest {
+    /**
+     * 
+     */
     dataSourceId: string;
 }
 
 export interface DeleteDataSourceSchemaRequest {
+    /**
+     * 
+     */
     dataSourceId: string;
+    /**
+     * 
+     */
     schemaId: string;
 }
 
 export interface DeleteDataSourceTableRequest {
+    /**
+     * 
+     */
     dataSourceId: string;
+    /**
+     * 
+     */
     tableId: string;
 }
 
 export interface DescribeDataSourceTablesRequest {
+    /**
+     * 
+     */
     dataSourceId: string;
 }
 
 export interface GetDataSourceRequest {
+    /**
+     * 
+     */
     dataSourceId: string;
 }
 
 export interface GetDataSourceCatalogRequest {
+    /**
+     * 
+     */
     dataSourceId: string;
+    /**
+     * Schema/namespace to introspect (default: connection default)
+     */
     schema?: string | null;
 }
 
 export interface ListDataSourceSchemasRequest {
+    /**
+     * 
+     */
     dataSourceId: string;
 }
 
 export interface ModelDataSourceTableRequest {
+    /**
+     * 
+     */
     dataSourceId: string;
+    /**
+     * 
+     */
     modelTableRequest: ModelTableRequest;
 }
 
 export interface ModelDataSourceTablesRequest {
+    /**
+     * 
+     */
     dataSourceId: string;
+    /**
+     * 
+     */
     bulkModelTablesRequest: BulkModelTablesRequest;
 }
 
 export interface QueryDataSourceRequest {
+    /**
+     * 
+     */
     dataSourceId: string;
+    /**
+     * 
+     */
     dataSourceQueryRequest: DataSourceQueryRequest;
 }
 
 export interface SearchDataSourceTablesRequest {
+    /**
+     * 
+     */
     searchTablesRequest: SearchTablesRequest;
 }
 
 export interface SyncDataSourceRequest {
+    /**
+     * 
+     */
     dataSourceId: string;
 }
 
 export interface TestDataSourceConnectionRequest {
+    /**
+     * 
+     */
     dataSourceId: string;
 }
 
 export interface TestDataSourceConnectionFreshRequest {
+    /**
+     * 
+     */
     testConnectionRequest: TestConnectionRequest;
 }
 
 export interface UpdateDataSourceOperationRequest {
+    /**
+     * 
+     */
     dataSourceId: string;
+    /**
+     * 
+     */
     updateDataSourceRequest: UpdateDataSourceRequest;
 }
 
 export interface UpdateDataSourceTableRequest {
+    /**
+     * 
+     */
     dataSourceId: string;
+    /**
+     * 
+     */
     tableId: string;
+    /**
+     * 
+     */
     updateTableRequest: UpdateTableRequest;
 }
 
@@ -681,7 +796,7 @@ export class DataSourcesApi extends runtime.BaseAPI implements DataSourcesApiInt
         }
 
         let urlPath = `/v1/data-sources/{data_source_id}`;
-        urlPath = urlPath.replace(`{${"data_source_id"}}`, encodeURIComponent(String(requestParameters['dataSourceId'])));
+        urlPath = urlPath.replace('{data_source_id}', encodeURIComponent(String(requestParameters['dataSourceId'])));
 
         return {
             path: urlPath,
@@ -742,8 +857,8 @@ export class DataSourcesApi extends runtime.BaseAPI implements DataSourcesApiInt
         }
 
         let urlPath = `/v1/data-sources/{data_source_id}/schemas/{schema_id}`;
-        urlPath = urlPath.replace(`{${"data_source_id"}}`, encodeURIComponent(String(requestParameters['dataSourceId'])));
-        urlPath = urlPath.replace(`{${"schema_id"}}`, encodeURIComponent(String(requestParameters['schemaId'])));
+        urlPath = urlPath.replace('{data_source_id}', encodeURIComponent(String(requestParameters['dataSourceId'])));
+        urlPath = urlPath.replace('{schema_id}', encodeURIComponent(String(requestParameters['schemaId'])));
 
         return {
             path: urlPath,
@@ -804,8 +919,8 @@ export class DataSourcesApi extends runtime.BaseAPI implements DataSourcesApiInt
         }
 
         let urlPath = `/v1/data-sources/{data_source_id}/tables/{table_id}`;
-        urlPath = urlPath.replace(`{${"data_source_id"}}`, encodeURIComponent(String(requestParameters['dataSourceId'])));
-        urlPath = urlPath.replace(`{${"table_id"}}`, encodeURIComponent(String(requestParameters['tableId'])));
+        urlPath = urlPath.replace('{data_source_id}', encodeURIComponent(String(requestParameters['dataSourceId'])));
+        urlPath = urlPath.replace('{table_id}', encodeURIComponent(String(requestParameters['tableId'])));
 
         return {
             path: urlPath,
@@ -859,7 +974,7 @@ export class DataSourcesApi extends runtime.BaseAPI implements DataSourcesApiInt
         }
 
         let urlPath = `/v1/data-sources/{data_source_id}/describe`;
-        urlPath = urlPath.replace(`{${"data_source_id"}}`, encodeURIComponent(String(requestParameters['dataSourceId'])));
+        urlPath = urlPath.replace('{data_source_id}', encodeURIComponent(String(requestParameters['dataSourceId'])));
 
         return {
             path: urlPath,
@@ -914,7 +1029,7 @@ export class DataSourcesApi extends runtime.BaseAPI implements DataSourcesApiInt
         }
 
         let urlPath = `/v1/data-sources/{data_source_id}`;
-        urlPath = urlPath.replace(`{${"data_source_id"}}`, encodeURIComponent(String(requestParameters['dataSourceId'])));
+        urlPath = urlPath.replace('{data_source_id}', encodeURIComponent(String(requestParameters['dataSourceId'])));
 
         return {
             path: urlPath,
@@ -973,7 +1088,7 @@ export class DataSourcesApi extends runtime.BaseAPI implements DataSourcesApiInt
         }
 
         let urlPath = `/v1/data-sources/{data_source_id}/catalog`;
-        urlPath = urlPath.replace(`{${"data_source_id"}}`, encodeURIComponent(String(requestParameters['dataSourceId'])));
+        urlPath = urlPath.replace('{data_source_id}', encodeURIComponent(String(requestParameters['dataSourceId'])));
 
         return {
             path: urlPath,
@@ -1028,7 +1143,7 @@ export class DataSourcesApi extends runtime.BaseAPI implements DataSourcesApiInt
         }
 
         let urlPath = `/v1/data-sources/{data_source_id}/schemas`;
-        urlPath = urlPath.replace(`{${"data_source_id"}}`, encodeURIComponent(String(requestParameters['dataSourceId'])));
+        urlPath = urlPath.replace('{data_source_id}', encodeURIComponent(String(requestParameters['dataSourceId'])));
 
         return {
             path: urlPath,
@@ -1092,7 +1207,7 @@ export class DataSourcesApi extends runtime.BaseAPI implements DataSourcesApiInt
         }
 
         let urlPath = `/v1/data-sources/{data_source_id}/tables`;
-        urlPath = urlPath.replace(`{${"data_source_id"}}`, encodeURIComponent(String(requestParameters['dataSourceId'])));
+        urlPath = urlPath.replace('{data_source_id}', encodeURIComponent(String(requestParameters['dataSourceId'])));
 
         return {
             path: urlPath,
@@ -1157,7 +1272,7 @@ export class DataSourcesApi extends runtime.BaseAPI implements DataSourcesApiInt
         }
 
         let urlPath = `/v1/data-sources/{data_source_id}/tables/batch`;
-        urlPath = urlPath.replace(`{${"data_source_id"}}`, encodeURIComponent(String(requestParameters['dataSourceId'])));
+        urlPath = urlPath.replace('{data_source_id}', encodeURIComponent(String(requestParameters['dataSourceId'])));
 
         return {
             path: urlPath,
@@ -1222,7 +1337,7 @@ export class DataSourcesApi extends runtime.BaseAPI implements DataSourcesApiInt
         }
 
         let urlPath = `/v1/data-sources/{data_source_id}/query`;
-        urlPath = urlPath.replace(`{${"data_source_id"}}`, encodeURIComponent(String(requestParameters['dataSourceId'])));
+        urlPath = urlPath.replace('{data_source_id}', encodeURIComponent(String(requestParameters['dataSourceId'])));
 
         return {
             path: urlPath,
@@ -1335,7 +1450,7 @@ export class DataSourcesApi extends runtime.BaseAPI implements DataSourcesApiInt
         }
 
         let urlPath = `/v1/data-sources/{data_source_id}/sync`;
-        urlPath = urlPath.replace(`{${"data_source_id"}}`, encodeURIComponent(String(requestParameters['dataSourceId'])));
+        urlPath = urlPath.replace('{data_source_id}', encodeURIComponent(String(requestParameters['dataSourceId'])));
 
         return {
             path: urlPath,
@@ -1397,7 +1512,7 @@ export class DataSourcesApi extends runtime.BaseAPI implements DataSourcesApiInt
         }
 
         let urlPath = `/v1/data-sources/{data_source_id}/test`;
-        urlPath = urlPath.replace(`{${"data_source_id"}}`, encodeURIComponent(String(requestParameters['dataSourceId'])));
+        urlPath = urlPath.replace('{data_source_id}', encodeURIComponent(String(requestParameters['dataSourceId'])));
 
         return {
             path: urlPath,
@@ -1517,7 +1632,7 @@ export class DataSourcesApi extends runtime.BaseAPI implements DataSourcesApiInt
         }
 
         let urlPath = `/v1/data-sources/{data_source_id}`;
-        urlPath = urlPath.replace(`{${"data_source_id"}}`, encodeURIComponent(String(requestParameters['dataSourceId'])));
+        urlPath = urlPath.replace('{data_source_id}', encodeURIComponent(String(requestParameters['dataSourceId'])));
 
         return {
             path: urlPath,
@@ -1589,8 +1704,8 @@ export class DataSourcesApi extends runtime.BaseAPI implements DataSourcesApiInt
         }
 
         let urlPath = `/v1/data-sources/{data_source_id}/tables/{table_id}`;
-        urlPath = urlPath.replace(`{${"data_source_id"}}`, encodeURIComponent(String(requestParameters['dataSourceId'])));
-        urlPath = urlPath.replace(`{${"table_id"}}`, encodeURIComponent(String(requestParameters['tableId'])));
+        urlPath = urlPath.replace('{data_source_id}', encodeURIComponent(String(requestParameters['dataSourceId'])));
+        urlPath = urlPath.replace('{table_id}', encodeURIComponent(String(requestParameters['tableId'])));
 
         return {
             path: urlPath,

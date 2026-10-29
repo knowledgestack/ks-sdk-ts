@@ -21,19 +21,17 @@ import { mapValues } from '../runtime';
 export interface UpdateGroupRequest {
     /**
      * 
-     * @type {string}
-     * @memberof UpdateGroupRequest
      */
     name?: string | null;
     /**
      * 
-     * @type {string}
-     * @memberof UpdateGroupRequest
      */
     description?: string | null;
 }
 export const UpdateGroupRequestPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -48,6 +46,7 @@ export const UpdateGroupRequestPropertyValidationAttributesMap: {
     }
 } = {
     name: {
+        dataType: "string",
         maxLength: 255,
         minLength: 1,
     },
@@ -71,8 +70,8 @@ export function UpdateGroupRequestFromJSONTyped(json: any, ignoreDiscriminator: 
     }
     return {
         
-        'name': json['name'] == null ? undefined : json['name'],
-        'description': json['description'] == null ? undefined : json['description'],
+        'name': json['name'] === undefined ? undefined : json['name'] === null ? null : json['name'],
+        'description': json['description'] === undefined ? undefined : json['description'] === null ? null : json['description'],
     };
 }
 

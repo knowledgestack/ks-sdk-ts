@@ -29,32 +29,22 @@ import {
 export interface DocxParagraphAnchorOutput {
     /**
      * 
-     * @type {DocxParagraphAnchorOutputTypeEnum}
-     * @memberof DocxParagraphAnchorOutput
      */
     type?: DocxParagraphAnchorOutputTypeEnum;
     /**
      * 0-based position of the <w:p> in word/document.xml body.
-     * @type {number}
-     * @memberof DocxParagraphAnchorOutput
      */
     paragraphIndex: number;
     /**
      * w:id of the comment in word/comments.xml.
-     * @type {number}
-     * @memberof DocxParagraphAnchorOutput
      */
     commentId: number;
     /**
      * Cited chunks in the order they appeared in the comment body, each with the source-document snapshot resolved at save time.
-     * @type {Array<CitedChunk>}
-     * @memberof DocxParagraphAnchorOutput
      */
     citations: Array<CitedChunk>;
     /**
      * Paragraph text at this anchor (first 160 chars), for FE display. NOT the cited quote.
-     * @type {string}
-     * @memberof DocxParagraphAnchorOutput
      */
     anchorText?: string;
     /**
@@ -62,8 +52,6 @@ export interface DocxParagraphAnchorOutput {
      * 
      * Prefer ``citations`` for new code. See ``XlsxCellAnchor.chunk_ids``
      * for the full rationale.
-     * @type {Array<string>}
-     * @memberof DocxParagraphAnchorOutput
      */
     readonly chunkIds: Array<string>;
 }
@@ -73,12 +61,14 @@ export interface DocxParagraphAnchorOutput {
  * @export
  */
 export const DocxParagraphAnchorOutputTypeEnum = {
-    DocxParagraph: 'docx_paragraph'
+    DocxParagraph: 'docx_paragraph',
 } as const;
 export type DocxParagraphAnchorOutputTypeEnum = typeof DocxParagraphAnchorOutputTypeEnum[keyof typeof DocxParagraphAnchorOutputTypeEnum];
 
 export const DocxParagraphAnchorOutputPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -93,10 +83,13 @@ export const DocxParagraphAnchorOutputPropertyValidationAttributesMap: {
     }
 } = {
     paragraphIndex: {
+        dataType: "number",
+        required: true,
         minimum: 0,
         exclusiveMinimum: false,
     },
     anchorText: {
+        dataType: "string",
         maxLength: 160,
     },
 }
@@ -106,10 +99,10 @@ export const DocxParagraphAnchorOutputPropertyValidationAttributesMap: {
  * Check if a given object implements the DocxParagraphAnchorOutput interface.
  */
 export function instanceOfDocxParagraphAnchorOutput(value: object): value is DocxParagraphAnchorOutput {
-    if (!('paragraphIndex' in value) || value['paragraphIndex'] === undefined) return false;
-    if (!('commentId' in value) || value['commentId'] === undefined) return false;
+    if ((!('paragraphIndex' in (value as Record<string, any>)) && !('paragraph_index' in (value as Record<string, any>))) || ((value as Record<string, any>)['paragraphIndex'] === undefined && (value as Record<string, any>)['paragraph_index'] === undefined)) return false;
+    if ((!('commentId' in (value as Record<string, any>)) && !('comment_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['commentId'] === undefined && (value as Record<string, any>)['comment_id'] === undefined)) return false;
     if (!('citations' in value) || value['citations'] === undefined) return false;
-    if (!('chunkIds' in value) || value['chunkIds'] === undefined) return false;
+    if ((!('chunkIds' in (value as Record<string, any>)) && !('chunk_ids' in (value as Record<string, any>))) || ((value as Record<string, any>)['chunkIds'] === undefined && (value as Record<string, any>)['chunk_ids'] === undefined)) return false;
     return true;
 }
 
@@ -136,7 +129,7 @@ export function DocxParagraphAnchorOutputToJSON(json: any): DocxParagraphAnchorO
     return DocxParagraphAnchorOutputToJSONTyped(json, false);
 }
 
-export function DocxParagraphAnchorOutputToJSONTyped(value?: Omit<DocxParagraphAnchorOutput, 'chunk_ids'> | null, ignoreDiscriminator: boolean = false): any {
+export function DocxParagraphAnchorOutputToJSONTyped(value?: Omit<DocxParagraphAnchorOutput, 'chunkIds'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }

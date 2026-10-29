@@ -21,7 +21,7 @@ export const OnboardingStep = {
     Workspace: 'WORKSPACE',
     Knowledge: 'KNOWLEDGE',
     Team: 'TEAM',
-    Destination: 'DESTINATION'
+    Destination: 'DESTINATION',
 } as const;
 export type OnboardingStep = typeof OnboardingStep[keyof typeof OnboardingStep];
 

@@ -21,20 +21,14 @@ import { mapValues } from '../runtime';
 export interface SendPasswordResetRequest {
     /**
      * Delivery channel for the password-reset code/link.
-     * @type {SendPasswordResetRequestMethodEnum}
-     * @memberof SendPasswordResetRequest
      */
     method?: SendPasswordResetRequestMethodEnum;
     /**
      * Email address
-     * @type {string}
-     * @memberof SendPasswordResetRequest
      */
     email?: string | null;
     /**
      * Subscriber number as a string of digits, no country code (e.g. '13800138000').
-     * @type {string}
-     * @memberof SendPasswordResetRequest
      */
     phoneNumber?: string | null;
 }
@@ -45,12 +39,14 @@ export interface SendPasswordResetRequest {
  */
 export const SendPasswordResetRequestMethodEnum = {
     Email: 'EMAIL',
-    Sms: 'SMS'
+    Sms: 'SMS',
 } as const;
 export type SendPasswordResetRequestMethodEnum = typeof SendPasswordResetRequestMethodEnum[keyof typeof SendPasswordResetRequestMethodEnum];
 
 export const SendPasswordResetRequestPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -85,8 +81,8 @@ export function SendPasswordResetRequestFromJSONTyped(json: any, ignoreDiscrimin
     return {
         
         'method': json['method'] == null ? undefined : json['method'],
-        'email': json['email'] == null ? undefined : json['email'],
-        'phoneNumber': json['phone_number'] == null ? undefined : json['phone_number'],
+        'email': json['email'] === undefined ? undefined : json['email'] === null ? null : json['email'],
+        'phoneNumber': json['phone_number'] === undefined ? undefined : json['phone_number'] === null ? null : json['phone_number'],
     };
 }
 

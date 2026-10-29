@@ -36,25 +36,21 @@ import {
 export interface UpdateTenantRequest {
     /**
      * Optional tenant name to update
-     * @type {string}
-     * @memberof UpdateTenantRequest
      */
     name?: string | null;
     /**
      * Optional external IdP configuration to update
-     * @type {IdpConfig}
-     * @memberof UpdateTenantRequest
      */
     idpConfig?: IdpConfig | null;
     /**
      * Optional tenant settings to update
-     * @type {TenantSettingsUpdate}
-     * @memberof UpdateTenantRequest
      */
     settings?: TenantSettingsUpdate | null;
 }
 export const UpdateTenantRequestPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -88,9 +84,9 @@ export function UpdateTenantRequestFromJSONTyped(json: any, ignoreDiscriminator:
     }
     return {
         
-        'name': json['name'] == null ? undefined : json['name'],
-        'idpConfig': json['idp_config'] == null ? undefined : IdpConfigFromJSON(json['idp_config']),
-        'settings': json['settings'] == null ? undefined : TenantSettingsUpdateFromJSON(json['settings']),
+        'name': json['name'] === undefined ? undefined : json['name'] === null ? null : json['name'],
+        'idpConfig': json['idp_config'] === undefined ? undefined : json['idp_config'] === null ? null : IdpConfigFromJSON(json['idp_config']),
+        'settings': json['settings'] === undefined ? undefined : json['settings'] === null ? null : TenantSettingsUpdateFromJSON(json['settings']),
     };
 }
 

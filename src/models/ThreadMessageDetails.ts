@@ -50,37 +50,29 @@ import {
 export interface ThreadMessageDetails {
     /**
      * 
-     * @type {Array<TextPartOrReasoningPartOrToolPartOrDocEditPart>}
-     * @memberof ThreadMessageDetails
      */
     parts?: Array<TextPartOrReasoningPartOrToolPartOrDocEditPart>;
     /**
      * 
-     * @type {MessageUsage}
-     * @memberof ThreadMessageDetails
      */
     usage?: MessageUsage | null;
     /**
      * 
-     * @type {Array<Step>}
-     * @memberof ThreadMessageDetails
      */
     steps?: Array<Step>;
     /**
      * Agent history checkpoint. Present only on role=SYSTEM messages written by the agent's archival path.
-     * @type {CheckpointDetails}
-     * @memberof ThreadMessageDetails
      */
     checkpoint?: CheckpointDetails | null;
     /**
      * Model registry id (FE-stable, e.g. ``qwen-flash``) that produced this assistant message. ``None`` for legacy rows that pre-date model selection.
-     * @type {string}
-     * @memberof ThreadMessageDetails
      */
     modelId?: string | null;
 }
 export const ThreadMessageDetailsPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -95,6 +87,7 @@ export const ThreadMessageDetailsPropertyValidationAttributesMap: {
     }
 } = {
     modelId: {
+        dataType: "string",
         maxLength: 64,
     },
 }
@@ -118,10 +111,10 @@ export function ThreadMessageDetailsFromJSONTyped(json: any, ignoreDiscriminator
     return {
         
         'parts': json['parts'] == null ? undefined : ((json['parts'] as Array<any>).map(TextPartOrReasoningPartOrToolPartOrDocEditPartFromJSON)),
-        'usage': json['usage'] == null ? undefined : MessageUsageFromJSON(json['usage']),
+        'usage': json['usage'] === undefined ? undefined : json['usage'] === null ? null : MessageUsageFromJSON(json['usage']),
         'steps': json['steps'] == null ? undefined : ((json['steps'] as Array<any>).map(StepFromJSON)),
-        'checkpoint': json['checkpoint'] == null ? undefined : CheckpointDetailsFromJSON(json['checkpoint']),
-        'modelId': json['model_id'] == null ? undefined : json['model_id'],
+        'checkpoint': json['checkpoint'] === undefined ? undefined : json['checkpoint'] === null ? null : CheckpointDetailsFromJSON(json['checkpoint']),
+        'modelId': json['model_id'] === undefined ? undefined : json['model_id'] === null ? null : json['model_id'],
     };
 }
 

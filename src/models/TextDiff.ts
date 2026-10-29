@@ -29,37 +29,29 @@ import {
 export interface TextDiff {
     /**
      * 
-     * @type {Array<DiffRow>}
-     * @memberof TextDiff
      */
     rows: Array<DiffRow>;
     /**
      * 
-     * @type {number}
-     * @memberof TextDiff
      */
     added: number;
     /**
      * 
-     * @type {number}
-     * @memberof TextDiff
      */
     removed: number;
     /**
      * 
-     * @type {number}
-     * @memberof TextDiff
      */
     changed: number;
     /**
      * 
-     * @type {boolean}
-     * @memberof TextDiff
      */
     truncated: boolean;
 }
 export const TextDiffPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,

@@ -21,25 +21,21 @@ import { mapValues } from '../runtime';
 export interface SignInRequest {
     /**
      * Email address or phone number (digit string). The system looks the user up by either field.
-     * @type {string}
-     * @memberof SignInRequest
      */
     username: string;
     /**
      * 
-     * @type {string}
-     * @memberof SignInRequest
      */
     password: string;
     /**
      * Target tenant ID to sign into
-     * @type {string}
-     * @memberof SignInRequest
      */
     tenantId?: string | null;
 }
 export const SignInRequestPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -77,7 +73,7 @@ export function SignInRequestFromJSONTyped(json: any, ignoreDiscriminator: boole
         
         'username': json['username'],
         'password': json['password'],
-        'tenantId': json['tenant_id'] == null ? undefined : json['tenant_id'],
+        'tenantId': json['tenant_id'] === undefined ? undefined : json['tenant_id'] === null ? null : json['tenant_id'],
     };
 }
 

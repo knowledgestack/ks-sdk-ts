@@ -43,38 +43,26 @@ import {
 export interface SubmitFeedbackRequest {
     /**
      * 
-     * @type {FeedbackTargetType}
-     * @memberof SubmitFeedbackRequest
      */
     targetType: FeedbackTargetType;
     /**
      * 
-     * @type {string}
-     * @memberof SubmitFeedbackRequest
      */
     targetId: string;
     /**
      * 
-     * @type {FeedbackRating}
-     * @memberof SubmitFeedbackRequest
      */
     rating: FeedbackRating;
     /**
      * 
-     * @type {FeedbackReason}
-     * @memberof SubmitFeedbackRequest
      */
     reason?: FeedbackReason;
     /**
      * 
-     * @type {string}
-     * @memberof SubmitFeedbackRequest
      */
     comment?: string | null;
     /**
      * 
-     * @type {{ [key: string]: any; }}
-     * @memberof SubmitFeedbackRequest
      */
     extraMetadata?: { [key: string]: any; } | null;
 }
@@ -82,6 +70,8 @@ export interface SubmitFeedbackRequest {
 
 export const SubmitFeedbackRequestPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -96,6 +86,7 @@ export const SubmitFeedbackRequestPropertyValidationAttributesMap: {
     }
 } = {
     comment: {
+        dataType: "string",
         maxLength: 4000,
     },
 }
@@ -105,8 +96,8 @@ export const SubmitFeedbackRequestPropertyValidationAttributesMap: {
  * Check if a given object implements the SubmitFeedbackRequest interface.
  */
 export function instanceOfSubmitFeedbackRequest(value: object): value is SubmitFeedbackRequest {
-    if (!('targetType' in value) || value['targetType'] === undefined) return false;
-    if (!('targetId' in value) || value['targetId'] === undefined) return false;
+    if ((!('targetType' in (value as Record<string, any>)) && !('target_type' in (value as Record<string, any>))) || ((value as Record<string, any>)['targetType'] === undefined && (value as Record<string, any>)['target_type'] === undefined)) return false;
+    if ((!('targetId' in (value as Record<string, any>)) && !('target_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['targetId'] === undefined && (value as Record<string, any>)['target_id'] === undefined)) return false;
     if (!('rating' in value) || value['rating'] === undefined) return false;
     return true;
 }
@@ -125,8 +116,8 @@ export function SubmitFeedbackRequestFromJSONTyped(json: any, ignoreDiscriminato
         'targetId': json['target_id'],
         'rating': FeedbackRatingFromJSON(json['rating']),
         'reason': json['reason'] == null ? undefined : FeedbackReasonFromJSON(json['reason']),
-        'comment': json['comment'] == null ? undefined : json['comment'],
-        'extraMetadata': json['extra_metadata'] == null ? undefined : json['extra_metadata'],
+        'comment': json['comment'] === undefined ? undefined : json['comment'] === null ? null : json['comment'],
+        'extraMetadata': json['extra_metadata'] === undefined ? undefined : json['extra_metadata'] === null ? null : json['extra_metadata'],
     };
 }
 

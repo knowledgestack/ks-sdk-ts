@@ -19,7 +19,7 @@
  */
 export const ThreadOrder = {
     CreatedAt: 'CREATED_AT',
-    UpdatedAt: 'UPDATED_AT'
+    UpdatedAt: 'UPDATED_AT',
 } as const;
 export type ThreadOrder = typeof ThreadOrder[keyof typeof ThreadOrder];
 

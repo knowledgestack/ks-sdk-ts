@@ -21,79 +21,57 @@ import { mapValues } from '../runtime';
 export interface EnrichedCitation {
     /**
      * 
-     * @type {string}
-     * @memberof EnrichedCitation
      */
     chunkId: string;
     /**
      * The quote from the chunk
-     * @type {string}
-     * @memberof EnrichedCitation
      */
     quote: string;
     /**
      * The 0-based start character of the quote in the chunk
-     * @type {number}
-     * @memberof EnrichedCitation
      */
     startChar: number;
     /**
      * The length of the quote
-     * @type {number}
-     * @memberof EnrichedCitation
      */
     length: number;
     /**
      * Start time (ms) of the cited chunk in the source media, for AUDIO/VIDEO — lets the client deep-link playback to the moment. None for non-media chunks.
-     * @type {number}
-     * @memberof EnrichedCitation
      */
     startMs?: number | null;
     /**
      * End time (ms) of the cited chunk in the source media (AUDIO/VIDEO); None for non-media chunks.
-     * @type {number}
-     * @memberof EnrichedCitation
      */
     endMs?: number | null;
     /**
      * 
-     * @type {string}
-     * @memberof EnrichedCitation
      */
     documentId?: string | null;
     /**
      * 
-     * @type {string}
-     * @memberof EnrichedCitation
      */
     documentVersionId?: string | null;
     /**
      * 
-     * @type {string}
-     * @memberof EnrichedCitation
      */
     documentName?: string | null;
     /**
      * 
-     * @type {number}
-     * @memberof EnrichedCitation
      */
     versionNumber?: number | null;
     /**
      * 
-     * @type {string}
-     * @memberof EnrichedCitation
      */
     pathPartId?: string | null;
     /**
      * 
-     * @type {string}
-     * @memberof EnrichedCitation
      */
     materializedPath?: string | null;
 }
 export const EnrichedCitationPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -108,6 +86,8 @@ export const EnrichedCitationPropertyValidationAttributesMap: {
     }
 } = {
     startChar: {
+        dataType: "number",
+        required: true,
         minimum: 0,
         exclusiveMinimum: false,
     },
@@ -118,9 +98,9 @@ export const EnrichedCitationPropertyValidationAttributesMap: {
  * Check if a given object implements the EnrichedCitation interface.
  */
 export function instanceOfEnrichedCitation(value: object): value is EnrichedCitation {
-    if (!('chunkId' in value) || value['chunkId'] === undefined) return false;
+    if ((!('chunkId' in (value as Record<string, any>)) && !('chunk_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['chunkId'] === undefined && (value as Record<string, any>)['chunk_id'] === undefined)) return false;
     if (!('quote' in value) || value['quote'] === undefined) return false;
-    if (!('startChar' in value) || value['startChar'] === undefined) return false;
+    if ((!('startChar' in (value as Record<string, any>)) && !('start_char' in (value as Record<string, any>))) || ((value as Record<string, any>)['startChar'] === undefined && (value as Record<string, any>)['start_char'] === undefined)) return false;
     if (!('length' in value) || value['length'] === undefined) return false;
     return true;
 }
@@ -139,14 +119,14 @@ export function EnrichedCitationFromJSONTyped(json: any, ignoreDiscriminator: bo
         'quote': json['quote'],
         'startChar': json['start_char'],
         'length': json['length'],
-        'startMs': json['start_ms'] == null ? undefined : json['start_ms'],
-        'endMs': json['end_ms'] == null ? undefined : json['end_ms'],
-        'documentId': json['document_id'] == null ? undefined : json['document_id'],
-        'documentVersionId': json['document_version_id'] == null ? undefined : json['document_version_id'],
-        'documentName': json['document_name'] == null ? undefined : json['document_name'],
-        'versionNumber': json['version_number'] == null ? undefined : json['version_number'],
-        'pathPartId': json['path_part_id'] == null ? undefined : json['path_part_id'],
-        'materializedPath': json['materialized_path'] == null ? undefined : json['materialized_path'],
+        'startMs': json['start_ms'] === undefined ? undefined : json['start_ms'] === null ? null : json['start_ms'],
+        'endMs': json['end_ms'] === undefined ? undefined : json['end_ms'] === null ? null : json['end_ms'],
+        'documentId': json['document_id'] === undefined ? undefined : json['document_id'] === null ? null : json['document_id'],
+        'documentVersionId': json['document_version_id'] === undefined ? undefined : json['document_version_id'] === null ? null : json['document_version_id'],
+        'documentName': json['document_name'] === undefined ? undefined : json['document_name'] === null ? null : json['document_name'],
+        'versionNumber': json['version_number'] === undefined ? undefined : json['version_number'] === null ? null : json['version_number'],
+        'pathPartId': json['path_part_id'] === undefined ? undefined : json['path_part_id'] === null ? null : json['path_part_id'],
+        'materializedPath': json['materialized_path'] === undefined ? undefined : json['materialized_path'] === null ? null : json['materialized_path'],
     };
 }
 

@@ -19,7 +19,7 @@
  */
 export const AddedBy = {
     DirectorySync: 'directory_sync',
-    Operator: 'operator'
+    Operator: 'operator',
 } as const;
 export type AddedBy = typeof AddedBy[keyof typeof AddedBy];
 

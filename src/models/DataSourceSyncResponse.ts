@@ -21,31 +21,25 @@ import { mapValues } from '../runtime';
 export interface DataSourceSyncResponse {
     /**
      * 
-     * @type {string}
-     * @memberof DataSourceSyncResponse
      */
     dataSourceId: string;
     /**
      * Tables whose columns changed → column_config + summary refreshed
-     * @type {number}
-     * @memberof DataSourceSyncResponse
      */
     updated: number;
     /**
      * Tables still present with no schema change
-     * @type {number}
-     * @memberof DataSourceSyncResponse
      */
     unchanged: number;
     /**
      * Tables dropped externally → soft-deleted + embedding purged
-     * @type {number}
-     * @memberof DataSourceSyncResponse
      */
     deleted: number;
 }
 export const DataSourceSyncResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -66,7 +60,7 @@ export const DataSourceSyncResponsePropertyValidationAttributesMap: {
  * Check if a given object implements the DataSourceSyncResponse interface.
  */
 export function instanceOfDataSourceSyncResponse(value: object): value is DataSourceSyncResponse {
-    if (!('dataSourceId' in value) || value['dataSourceId'] === undefined) return false;
+    if ((!('dataSourceId' in (value as Record<string, any>)) && !('data_source_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['dataSourceId'] === undefined && (value as Record<string, any>)['data_source_id'] === undefined)) return false;
     if (!('updated' in value) || value['updated'] === undefined) return false;
     if (!('unchanged' in value) || value['unchanged'] === undefined) return false;
     if (!('deleted' in value) || value['deleted'] === undefined) return false;

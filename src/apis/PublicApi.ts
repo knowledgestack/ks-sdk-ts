@@ -12,18 +12,17 @@
  * Do not edit the class manually.
  */
 
-
 import * as runtime from '../runtime';
-import type {
-  ErrorResponse,
-  SubscriptionPlanResponse,
-} from '../models/index';
 import {
+    type ErrorResponse,
     ErrorResponseFromJSON,
     ErrorResponseToJSON,
+} from '../models/ErrorResponse';
+import {
+    type SubscriptionPlanResponse,
     SubscriptionPlanResponseFromJSON,
     SubscriptionPlanResponseToJSON,
-} from '../models/index';
+} from '../models/SubscriptionPlanResponse';
 
 /**
  * PublicApi - interface

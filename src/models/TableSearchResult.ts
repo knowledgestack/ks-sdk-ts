@@ -21,49 +21,37 @@ import { mapValues } from '../runtime';
 export interface TableSearchResult {
     /**
      * 
-     * @type {string}
-     * @memberof TableSearchResult
      */
     dataSourceId: string;
     /**
      * 
-     * @type {string}
-     * @memberof TableSearchResult
      */
     tableId: string;
     /**
      * 
-     * @type {string}
-     * @memberof TableSearchResult
      */
     schemaName: string;
     /**
      * 
-     * @type {string}
-     * @memberof TableSearchResult
      */
     tableName: string;
     /**
      * 
-     * @type {string}
-     * @memberof TableSearchResult
      */
     name: string;
     /**
      * 
-     * @type {string}
-     * @memberof TableSearchResult
      */
     summary: string | null;
     /**
      * 
-     * @type {number}
-     * @memberof TableSearchResult
      */
     score: number;
 }
 export const TableSearchResultPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -84,10 +72,10 @@ export const TableSearchResultPropertyValidationAttributesMap: {
  * Check if a given object implements the TableSearchResult interface.
  */
 export function instanceOfTableSearchResult(value: object): value is TableSearchResult {
-    if (!('dataSourceId' in value) || value['dataSourceId'] === undefined) return false;
-    if (!('tableId' in value) || value['tableId'] === undefined) return false;
-    if (!('schemaName' in value) || value['schemaName'] === undefined) return false;
-    if (!('tableName' in value) || value['tableName'] === undefined) return false;
+    if ((!('dataSourceId' in (value as Record<string, any>)) && !('data_source_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['dataSourceId'] === undefined && (value as Record<string, any>)['data_source_id'] === undefined)) return false;
+    if ((!('tableId' in (value as Record<string, any>)) && !('table_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['tableId'] === undefined && (value as Record<string, any>)['table_id'] === undefined)) return false;
+    if ((!('schemaName' in (value as Record<string, any>)) && !('schema_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['schemaName'] === undefined && (value as Record<string, any>)['schema_name'] === undefined)) return false;
+    if ((!('tableName' in (value as Record<string, any>)) && !('table_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['tableName'] === undefined && (value as Record<string, any>)['table_name'] === undefined)) return false;
     if (!('name' in value) || value['name'] === undefined) return false;
     if (!('summary' in value) || value['summary'] === undefined) return false;
     if (!('score' in value) || value['score'] === undefined) return false;

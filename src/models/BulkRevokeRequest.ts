@@ -21,19 +21,17 @@ import { mapValues } from '../runtime';
 export interface BulkRevokeRequest {
     /**
      * 
-     * @type {string}
-     * @memberof BulkRevokeRequest
      */
     tenantId: string;
     /**
      * 
-     * @type {Array<string>}
-     * @memberof BulkRevokeRequest
      */
     permissionIds?: Array<string>;
 }
 export const BulkRevokeRequestPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -54,7 +52,7 @@ export const BulkRevokeRequestPropertyValidationAttributesMap: {
  * Check if a given object implements the BulkRevokeRequest interface.
  */
 export function instanceOfBulkRevokeRequest(value: object): value is BulkRevokeRequest {
-    if (!('tenantId' in value) || value['tenantId'] === undefined) return false;
+    if ((!('tenantId' in (value as Record<string, any>)) && !('tenant_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['tenantId'] === undefined && (value as Record<string, any>)['tenant_id'] === undefined)) return false;
     return true;
 }
 

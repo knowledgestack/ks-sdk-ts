@@ -21,13 +21,13 @@ import { mapValues } from '../runtime';
 export interface WorkflowCallbackResponse {
     /**
      * 
-     * @type {string}
-     * @memberof WorkflowCallbackResponse
      */
     status: string;
 }
 export const WorkflowCallbackResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,

@@ -21,19 +21,17 @@ import { mapValues } from '../runtime';
 export interface RootResponse {
     /**
      * 
-     * @type {string}
-     * @memberof RootResponse
      */
     service?: string;
     /**
      * 
-     * @type {string}
-     * @memberof RootResponse
      */
     docs?: string;
 }
 export const RootResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,

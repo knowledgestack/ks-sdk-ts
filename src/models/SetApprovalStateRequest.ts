@@ -29,14 +29,10 @@ import { mapValues } from '../runtime';
 export interface SetApprovalStateRequest {
     /**
      * Target approval state. ``pending`` means 'request approval' (from not_required) or 'unapprove' (from approved) — server dispatches on current state.
-     * @type {SetApprovalStateRequestStateEnum}
-     * @memberof SetApprovalStateRequest
      */
     state: SetApprovalStateRequestStateEnum;
     /**
      * Optional reviewer note attached to the decision.
-     * @type {string}
-     * @memberof SetApprovalStateRequest
      */
     reason?: string | null;
 }
@@ -47,12 +43,14 @@ export interface SetApprovalStateRequest {
  */
 export const SetApprovalStateRequestStateEnum = {
     Pending: 'pending',
-    Approved: 'approved'
+    Approved: 'approved',
 } as const;
 export type SetApprovalStateRequestStateEnum = typeof SetApprovalStateRequestStateEnum[keyof typeof SetApprovalStateRequestStateEnum];
 
 export const SetApprovalStateRequestPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -67,6 +65,7 @@ export const SetApprovalStateRequestPropertyValidationAttributesMap: {
     }
 } = {
     reason: {
+        dataType: "string",
         maxLength: 2048,
     },
 }
@@ -91,7 +90,7 @@ export function SetApprovalStateRequestFromJSONTyped(json: any, ignoreDiscrimina
     return {
         
         'state': json['state'],
-        'reason': json['reason'] == null ? undefined : json['reason'],
+        'reason': json['reason'] === undefined ? undefined : json['reason'] === null ? null : json['reason'],
     };
 }
 

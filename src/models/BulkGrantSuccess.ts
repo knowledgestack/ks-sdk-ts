@@ -29,32 +29,22 @@ import {
 export interface BulkGrantSuccess {
     /**
      * 
-     * @type {string}
-     * @memberof BulkGrantSuccess
      */
     userId: string;
     /**
      * 
-     * @type {string}
-     * @memberof BulkGrantSuccess
      */
     objectId: string;
     /**
      * 
-     * @type {string}
-     * @memberof BulkGrantSuccess
      */
     permissionId: string;
     /**
      * 
-     * @type {PermissionCapability}
-     * @memberof BulkGrantSuccess
      */
     capability: PermissionCapability;
     /**
      * 
-     * @type {boolean}
-     * @memberof BulkGrantSuccess
      */
     canApprove: boolean;
 }
@@ -62,6 +52,8 @@ export interface BulkGrantSuccess {
 
 export const BulkGrantSuccessPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -82,11 +74,11 @@ export const BulkGrantSuccessPropertyValidationAttributesMap: {
  * Check if a given object implements the BulkGrantSuccess interface.
  */
 export function instanceOfBulkGrantSuccess(value: object): value is BulkGrantSuccess {
-    if (!('userId' in value) || value['userId'] === undefined) return false;
-    if (!('objectId' in value) || value['objectId'] === undefined) return false;
-    if (!('permissionId' in value) || value['permissionId'] === undefined) return false;
+    if ((!('userId' in (value as Record<string, any>)) && !('user_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['userId'] === undefined && (value as Record<string, any>)['user_id'] === undefined)) return false;
+    if ((!('objectId' in (value as Record<string, any>)) && !('object_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['objectId'] === undefined && (value as Record<string, any>)['object_id'] === undefined)) return false;
+    if ((!('permissionId' in (value as Record<string, any>)) && !('permission_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['permissionId'] === undefined && (value as Record<string, any>)['permission_id'] === undefined)) return false;
     if (!('capability' in value) || value['capability'] === undefined) return false;
-    if (!('canApprove' in value) || value['canApprove'] === undefined) return false;
+    if ((!('canApprove' in (value as Record<string, any>)) && !('can_approve' in (value as Record<string, any>))) || ((value as Record<string, any>)['canApprove'] === undefined && (value as Record<string, any>)['can_approve'] === undefined)) return false;
     return true;
 }
 

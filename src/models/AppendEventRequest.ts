@@ -28,19 +28,17 @@ import { mapValues } from '../runtime';
 export interface AppendEventRequest {
     /**
      * 
-     * @type {string}
-     * @memberof AppendEventRequest
      */
     kind: string;
     /**
      * 
-     * @type {{ [key: string]: any; }}
-     * @memberof AppendEventRequest
      */
     payload?: { [key: string]: any; };
 }
 export const AppendEventRequestPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -55,6 +53,8 @@ export const AppendEventRequestPropertyValidationAttributesMap: {
     }
 } = {
     kind: {
+        dataType: "string",
+        required: true,
         maxLength: 255,
         minLength: 1,
     },

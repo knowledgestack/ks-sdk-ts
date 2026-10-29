@@ -21,31 +21,25 @@ import { mapValues } from '../runtime';
 export interface Polygon {
     /**
      * The x-coordinate of the top-left corner of the bounding box.
-     * @type {number}
-     * @memberof Polygon
      */
     x: number;
     /**
      * The y-coordinate of the top-left corner of the bounding box.
-     * @type {number}
-     * @memberof Polygon
      */
     y: number;
     /**
      * The width of the bounding box.
-     * @type {number}
-     * @memberof Polygon
      */
     width: number;
     /**
      * The height of the bounding box.
-     * @type {number}
-     * @memberof Polygon
      */
     height: number;
 }
 export const PolygonPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,

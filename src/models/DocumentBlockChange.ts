@@ -77,122 +77,82 @@ import {
 export interface DocumentBlockChange {
     /**
      * 
-     * @type {BlockChangeType}
-     * @memberof DocumentBlockChange
      */
     type: BlockChangeType;
     /**
      * 
-     * @type {BlockKind}
-     * @memberof DocumentBlockChange
      */
     kind: BlockKind;
     /**
      * 
-     * @type {ChangeClass}
-     * @memberof DocumentBlockChange
      */
     changeClass: ChangeClass;
     /**
      * 
-     * @type {number}
-     * @memberof DocumentBlockChange
      */
     fromParagraphIndex: number | null;
     /**
      * 
-     * @type {number}
-     * @memberof DocumentBlockChange
      */
     toParagraphIndex: number | null;
     /**
      * 
-     * @type {string}
-     * @memberof DocumentBlockChange
      */
     oldText?: string | null;
     /**
      * 
-     * @type {string}
-     * @memberof DocumentBlockChange
      */
     newText?: string | null;
     /**
      * 
-     * @type {Array<DiffSpan>}
-     * @memberof DocumentBlockChange
      */
     oldSpans?: Array<DiffSpan> | null;
     /**
      * 
-     * @type {Array<DiffSpan>}
-     * @memberof DocumentBlockChange
      */
     newSpans?: Array<DiffSpan> | null;
     /**
      * 
-     * @type {boolean}
-     * @memberof DocumentBlockChange
      */
     formattingChanged?: boolean;
     /**
      * 
-     * @type {string}
-     * @memberof DocumentBlockChange
      */
     numericDelta?: string | null;
     /**
      * 
-     * @type {string}
-     * @memberof DocumentBlockChange
      */
     numericPct?: string | null;
     /**
      * 
-     * @type {string}
-     * @memberof DocumentBlockChange
      */
     anchorText?: string | null;
     /**
      * 
-     * @type {string}
-     * @memberof DocumentBlockChange
      */
     surface?: string;
     /**
      * 
-     * @type {Array<TableCellChange>}
-     * @memberof DocumentBlockChange
      */
     cellChanges?: Array<TableCellChange> | null;
     /**
      * 
-     * @type {Array<RevisionEdit>}
-     * @memberof DocumentBlockChange
      */
     revisions?: Array<RevisionEdit> | null;
     /**
      * 
-     * @type {string}
-     * @memberof DocumentBlockChange
      */
     oldImageRef?: string | null;
     /**
      * 
-     * @type {string}
-     * @memberof DocumentBlockChange
      */
     newImageRef?: string | null;
     /**
      * 
-     * @type {Array<PixelRegion>}
-     * @memberof DocumentBlockChange
      */
     imageRegions?: Array<PixelRegion> | null;
     /**
      * 
-     * @type {string}
-     * @memberof DocumentBlockChange
      */
     imageNote?: string | null;
 }
@@ -200,6 +160,8 @@ export interface DocumentBlockChange {
 
 export const DocumentBlockChangePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -222,9 +184,9 @@ export const DocumentBlockChangePropertyValidationAttributesMap: {
 export function instanceOfDocumentBlockChange(value: object): value is DocumentBlockChange {
     if (!('type' in value) || value['type'] === undefined) return false;
     if (!('kind' in value) || value['kind'] === undefined) return false;
-    if (!('changeClass' in value) || value['changeClass'] === undefined) return false;
-    if (!('fromParagraphIndex' in value) || value['fromParagraphIndex'] === undefined) return false;
-    if (!('toParagraphIndex' in value) || value['toParagraphIndex'] === undefined) return false;
+    if ((!('changeClass' in (value as Record<string, any>)) && !('change_class' in (value as Record<string, any>))) || ((value as Record<string, any>)['changeClass'] === undefined && (value as Record<string, any>)['change_class'] === undefined)) return false;
+    if ((!('fromParagraphIndex' in (value as Record<string, any>)) && !('from_paragraph_index' in (value as Record<string, any>))) || ((value as Record<string, any>)['fromParagraphIndex'] === undefined && (value as Record<string, any>)['from_paragraph_index'] === undefined)) return false;
+    if ((!('toParagraphIndex' in (value as Record<string, any>)) && !('to_paragraph_index' in (value as Record<string, any>))) || ((value as Record<string, any>)['toParagraphIndex'] === undefined && (value as Record<string, any>)['to_paragraph_index'] === undefined)) return false;
     return true;
 }
 
@@ -243,21 +205,21 @@ export function DocumentBlockChangeFromJSONTyped(json: any, ignoreDiscriminator:
         'changeClass': ChangeClassFromJSON(json['change_class']),
         'fromParagraphIndex': json['from_paragraph_index'],
         'toParagraphIndex': json['to_paragraph_index'],
-        'oldText': json['old_text'] == null ? undefined : json['old_text'],
-        'newText': json['new_text'] == null ? undefined : json['new_text'],
-        'oldSpans': json['old_spans'] == null ? undefined : ((json['old_spans'] as Array<any>).map(DiffSpanFromJSON)),
-        'newSpans': json['new_spans'] == null ? undefined : ((json['new_spans'] as Array<any>).map(DiffSpanFromJSON)),
+        'oldText': json['old_text'] === undefined ? undefined : json['old_text'] === null ? null : json['old_text'],
+        'newText': json['new_text'] === undefined ? undefined : json['new_text'] === null ? null : json['new_text'],
+        'oldSpans': json['old_spans'] === undefined ? undefined : json['old_spans'] === null ? null : ((json['old_spans'] as Array<any>).map(DiffSpanFromJSON)),
+        'newSpans': json['new_spans'] === undefined ? undefined : json['new_spans'] === null ? null : ((json['new_spans'] as Array<any>).map(DiffSpanFromJSON)),
         'formattingChanged': json['formatting_changed'] == null ? undefined : json['formatting_changed'],
-        'numericDelta': json['numeric_delta'] == null ? undefined : json['numeric_delta'],
-        'numericPct': json['numeric_pct'] == null ? undefined : json['numeric_pct'],
-        'anchorText': json['anchor_text'] == null ? undefined : json['anchor_text'],
+        'numericDelta': json['numeric_delta'] === undefined ? undefined : json['numeric_delta'] === null ? null : json['numeric_delta'],
+        'numericPct': json['numeric_pct'] === undefined ? undefined : json['numeric_pct'] === null ? null : json['numeric_pct'],
+        'anchorText': json['anchor_text'] === undefined ? undefined : json['anchor_text'] === null ? null : json['anchor_text'],
         'surface': json['surface'] == null ? undefined : json['surface'],
-        'cellChanges': json['cell_changes'] == null ? undefined : ((json['cell_changes'] as Array<any>).map(TableCellChangeFromJSON)),
-        'revisions': json['revisions'] == null ? undefined : ((json['revisions'] as Array<any>).map(RevisionEditFromJSON)),
-        'oldImageRef': json['old_image_ref'] == null ? undefined : json['old_image_ref'],
-        'newImageRef': json['new_image_ref'] == null ? undefined : json['new_image_ref'],
-        'imageRegions': json['image_regions'] == null ? undefined : ((json['image_regions'] as Array<any>).map(PixelRegionFromJSON)),
-        'imageNote': json['image_note'] == null ? undefined : json['image_note'],
+        'cellChanges': json['cell_changes'] === undefined ? undefined : json['cell_changes'] === null ? null : ((json['cell_changes'] as Array<any>).map(TableCellChangeFromJSON)),
+        'revisions': json['revisions'] === undefined ? undefined : json['revisions'] === null ? null : ((json['revisions'] as Array<any>).map(RevisionEditFromJSON)),
+        'oldImageRef': json['old_image_ref'] === undefined ? undefined : json['old_image_ref'] === null ? null : json['old_image_ref'],
+        'newImageRef': json['new_image_ref'] === undefined ? undefined : json['new_image_ref'] === null ? null : json['new_image_ref'],
+        'imageRegions': json['image_regions'] === undefined ? undefined : json['image_regions'] === null ? null : ((json['image_regions'] as Array<any>).map(PixelRegionFromJSON)),
+        'imageNote': json['image_note'] === undefined ? undefined : json['image_note'] === null ? null : json['image_note'],
     };
 }
 

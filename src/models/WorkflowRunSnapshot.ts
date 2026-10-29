@@ -58,55 +58,41 @@ import {
 export interface WorkflowRunSnapshot {
     /**
      * 
-     * @type {string}
-     * @memberof WorkflowRunSnapshot
      */
     workflowName: string;
     /**
      * 
-     * @type {number}
-     * @memberof WorkflowRunSnapshot
      */
     maxRunDurationSeconds: number;
     /**
      * 
-     * @type {InstructionSnapshot}
-     * @memberof WorkflowRunSnapshot
      */
     instruction: InstructionSnapshot;
     /**
      * 
-     * @type {Array<InputSnapshot>}
-     * @memberof WorkflowRunSnapshot
      */
     inputs: Array<InputSnapshot>;
     /**
      * Definition common files left out of this run at Start (deleted or unreadable by the starter), each with its exclusion reason. Empty for the common happy path; pre-feature snapshots default to empty.
-     * @type {Array<ExcludedCommonFile>}
-     * @memberof WorkflowRunSnapshot
      */
     excludedCommonFiles?: Array<ExcludedCommonFile>;
     /**
      * Optional free-text message the caller supplied at Start. Pinned here so the runner injects it into the agent's first user turn and it survives retry, redrive, and workflow-thread follow-ups (all of which re-assemble the prompt from this snapshot).
-     * @type {string}
-     * @memberof WorkflowRunSnapshot
      */
     userMessage?: string | null;
     /**
      * Skill PDO ids to force-load into the run at turn 0, merged with the definition's prefill. Definition selections are validated readable + SKILL at write time; every id is re-checked fail-closed when the run materializes (a skill deleted or revoked after selection is dropped, never bricking the run). The runner materializes each skill's ACTIVE published version into the agent's skills dir; the agent can still discover others via search. Empty for the common case; pre-feature snapshots default to empty.
-     * @type {Array<string>}
-     * @memberof WorkflowRunSnapshot
      */
     selectedSkillIds?: Array<string>;
     /**
      * The workflow repository's main when the run started; absent when the workflow had no repository.
-     * @type {RepoSnapshot}
-     * @memberof WorkflowRunSnapshot
      */
     repo?: RepoSnapshot | null;
 }
 export const WorkflowRunSnapshotPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -121,6 +107,7 @@ export const WorkflowRunSnapshotPropertyValidationAttributesMap: {
     }
 } = {
     userMessage: {
+        dataType: "string",
         maxLength: 4000,
     },
 }
@@ -130,8 +117,8 @@ export const WorkflowRunSnapshotPropertyValidationAttributesMap: {
  * Check if a given object implements the WorkflowRunSnapshot interface.
  */
 export function instanceOfWorkflowRunSnapshot(value: object): value is WorkflowRunSnapshot {
-    if (!('workflowName' in value) || value['workflowName'] === undefined) return false;
-    if (!('maxRunDurationSeconds' in value) || value['maxRunDurationSeconds'] === undefined) return false;
+    if ((!('workflowName' in (value as Record<string, any>)) && !('workflow_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['workflowName'] === undefined && (value as Record<string, any>)['workflow_name'] === undefined)) return false;
+    if ((!('maxRunDurationSeconds' in (value as Record<string, any>)) && !('max_run_duration_seconds' in (value as Record<string, any>))) || ((value as Record<string, any>)['maxRunDurationSeconds'] === undefined && (value as Record<string, any>)['max_run_duration_seconds'] === undefined)) return false;
     if (!('instruction' in value) || value['instruction'] === undefined) return false;
     if (!('inputs' in value) || value['inputs'] === undefined) return false;
     return true;
@@ -152,9 +139,9 @@ export function WorkflowRunSnapshotFromJSONTyped(json: any, ignoreDiscriminator:
         'instruction': InstructionSnapshotFromJSON(json['instruction']),
         'inputs': ((json['inputs'] as Array<any>).map(InputSnapshotFromJSON)),
         'excludedCommonFiles': json['excluded_common_files'] == null ? undefined : ((json['excluded_common_files'] as Array<any>).map(ExcludedCommonFileFromJSON)),
-        'userMessage': json['user_message'] == null ? undefined : json['user_message'],
+        'userMessage': json['user_message'] === undefined ? undefined : json['user_message'] === null ? null : json['user_message'],
         'selectedSkillIds': json['selected_skill_ids'] == null ? undefined : json['selected_skill_ids'],
-        'repo': json['repo'] == null ? undefined : RepoSnapshotFromJSON(json['repo']),
+        'repo': json['repo'] === undefined ? undefined : json['repo'] === null ? null : RepoSnapshotFromJSON(json['repo']),
     };
 }
 

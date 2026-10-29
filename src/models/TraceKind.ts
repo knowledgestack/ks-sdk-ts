@@ -19,7 +19,7 @@
  */
 export const TraceKind = {
     WorkflowRun: 'workflow_run',
-    ChatTurn: 'chat_turn'
+    ChatTurn: 'chat_turn',
 } as const;
 export type TraceKind = typeof TraceKind[keyof typeof TraceKind];
 

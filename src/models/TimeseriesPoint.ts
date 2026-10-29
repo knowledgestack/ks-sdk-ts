@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
 /**
  * One bucket of a time series.
  * @export
@@ -21,19 +21,17 @@ import { mapValues } from '../runtime';
 export interface TimeseriesPoint {
     /**
      * Start of the bucket, in the resolved timezone.
-     * @type {Date}
-     * @memberof TimeseriesPoint
      */
     bucketStart: Date;
     /**
      * Row count in this bucket.
-     * @type {number}
-     * @memberof TimeseriesPoint
      */
     count: number;
 }
 export const TimeseriesPointPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -54,7 +52,7 @@ export const TimeseriesPointPropertyValidationAttributesMap: {
  * Check if a given object implements the TimeseriesPoint interface.
  */
 export function instanceOfTimeseriesPoint(value: object): value is TimeseriesPoint {
-    if (!('bucketStart' in value) || value['bucketStart'] === undefined) return false;
+    if ((!('bucketStart' in (value as Record<string, any>)) && !('bucket_start' in (value as Record<string, any>))) || ((value as Record<string, any>)['bucketStart'] === undefined && (value as Record<string, any>)['bucket_start'] === undefined)) return false;
     if (!('count' in value) || value['count'] === undefined) return false;
     return true;
 }
@@ -69,7 +67,7 @@ export function TimeseriesPointFromJSONTyped(json: any, ignoreDiscriminator: boo
     }
     return {
         
-        'bucketStart': (new Date(json['bucket_start'])),
+        'bucketStart': (json['bucket_start'] == null ? json['bucket_start'] : parseDateTime(json['bucket_start'])),
         'count': json['count'],
     };
 }
@@ -85,7 +83,7 @@ export function TimeseriesPointToJSONTyped(value?: TimeseriesPoint | null, ignor
 
     return {
         
-        'bucket_start': value['bucketStart'].toISOString(),
+        'bucket_start': value['bucketStart'] == null ? value['bucketStart'] : serializeDateTime(value['bucketStart']),
         'count': value['count'],
     };
 }

@@ -21,20 +21,14 @@ import { mapValues } from '../runtime';
 export interface ErrorResponse {
     /**
      * Human-readable explanation of the error.
-     * @type {string}
-     * @memberof ErrorResponse
      */
     detail: string;
     /**
      * Stable, machine-readable error code from a closed set. Branch on this instead of parsing 'detail'. 'quota_exceeded'/'too_many_requests' carry a Retry-After header; 'service_unavailable' is retryable.
-     * @type {ErrorResponseCodeEnum}
-     * @memberof ErrorResponse
      */
     code: ErrorResponseCodeEnum;
     /**
      * Correlates to the x-request-id response header; quote it to support.
-     * @type {string}
-     * @memberof ErrorResponse
      */
     requestId?: string;
 }
@@ -70,12 +64,14 @@ export const ErrorResponseCodeEnum = {
     ServiceConfigurationError: 'service_configuration_error',
     QuotaPeriodMissing: 'quota_period_missing',
     InternalError: 'internal_error',
-    ServiceUnavailable: 'service_unavailable'
+    ServiceUnavailable: 'service_unavailable',
 } as const;
 export type ErrorResponseCodeEnum = typeof ErrorResponseCodeEnum[keyof typeof ErrorResponseCodeEnum];
 
 export const ErrorResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,

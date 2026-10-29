@@ -43,26 +43,18 @@ import {
 export interface CreateThreadMessageRequest {
     /**
      * Optional caller-supplied ThreadMessage ID for idempotent creates.
-     * @type {string}
-     * @memberof CreateThreadMessageRequest
      */
     messageId?: string | null;
     /**
      * 
-     * @type {MessageRole}
-     * @memberof CreateThreadMessageRequest
      */
     role: MessageRole;
     /**
      * 
-     * @type {ThreadMessageContent}
-     * @memberof CreateThreadMessageRequest
      */
     content: ThreadMessageContent;
     /**
      * Message details (execution steps). Omit for user messages.
-     * @type {ThreadMessageDetails}
-     * @memberof CreateThreadMessageRequest
      */
     details?: ThreadMessageDetails | null;
 }
@@ -70,6 +62,8 @@ export interface CreateThreadMessageRequest {
 
 export const CreateThreadMessageRequestPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -105,10 +99,10 @@ export function CreateThreadMessageRequestFromJSONTyped(json: any, ignoreDiscrim
     }
     return {
         
-        'messageId': json['message_id'] == null ? undefined : json['message_id'],
+        'messageId': json['message_id'] === undefined ? undefined : json['message_id'] === null ? null : json['message_id'],
         'role': MessageRoleFromJSON(json['role']),
         'content': ThreadMessageContentFromJSON(json['content']),
-        'details': json['details'] == null ? undefined : ThreadMessageDetailsFromJSON(json['details']),
+        'details': json['details'] === undefined ? undefined : json['details'] === null ? null : ThreadMessageDetailsFromJSON(json['details']),
     };
 }
 

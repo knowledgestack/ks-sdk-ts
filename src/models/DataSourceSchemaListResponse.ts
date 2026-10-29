@@ -29,13 +29,13 @@ import {
 export interface DataSourceSchemaListResponse {
     /**
      * 
-     * @type {Array<DataSourceSchemaListItem>}
-     * @memberof DataSourceSchemaListResponse
      */
     schemas: Array<DataSourceSchemaListItem>;
 }
 export const DataSourceSchemaListResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,

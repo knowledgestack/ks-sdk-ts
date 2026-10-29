@@ -21,37 +21,29 @@ import { mapValues } from '../runtime';
 export interface ApiConnectionRequestResponse {
     /**
      * 
-     * @type {number}
-     * @memberof ApiConnectionRequestResponse
      */
     statusCode: number;
     /**
      * 
-     * @type {{ [key: string]: string; }}
-     * @memberof ApiConnectionRequestResponse
      */
     headers: { [key: string]: string; };
     /**
      * 
-     * @type {string}
-     * @memberof ApiConnectionRequestResponse
      */
     body: string;
     /**
      * 
-     * @type {boolean}
-     * @memberof ApiConnectionRequestResponse
      */
     truncated: boolean;
     /**
      * 
-     * @type {number}
-     * @memberof ApiConnectionRequestResponse
      */
     latencyMs: number;
 }
 export const ApiConnectionRequestResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -72,11 +64,11 @@ export const ApiConnectionRequestResponsePropertyValidationAttributesMap: {
  * Check if a given object implements the ApiConnectionRequestResponse interface.
  */
 export function instanceOfApiConnectionRequestResponse(value: object): value is ApiConnectionRequestResponse {
-    if (!('statusCode' in value) || value['statusCode'] === undefined) return false;
+    if ((!('statusCode' in (value as Record<string, any>)) && !('status_code' in (value as Record<string, any>))) || ((value as Record<string, any>)['statusCode'] === undefined && (value as Record<string, any>)['status_code'] === undefined)) return false;
     if (!('headers' in value) || value['headers'] === undefined) return false;
     if (!('body' in value) || value['body'] === undefined) return false;
     if (!('truncated' in value) || value['truncated'] === undefined) return false;
-    if (!('latencyMs' in value) || value['latencyMs'] === undefined) return false;
+    if ((!('latencyMs' in (value as Record<string, any>)) && !('latency_ms' in (value as Record<string, any>))) || ((value as Record<string, any>)['latencyMs'] === undefined && (value as Record<string, any>)['latency_ms'] === undefined)) return false;
     return true;
 }
 

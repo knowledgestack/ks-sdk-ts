@@ -19,7 +19,7 @@
  */
 export const UserPermissionOrder = {
     CreatedAt: 'CREATED_AT',
-    Capability: 'CAPABILITY'
+    Capability: 'CAPABILITY',
 } as const;
 export type UserPermissionOrder = typeof UserPermissionOrder[keyof typeof UserPermissionOrder];
 

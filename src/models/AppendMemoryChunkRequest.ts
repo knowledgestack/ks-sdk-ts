@@ -29,14 +29,10 @@ import {
 export interface AppendMemoryChunkRequest {
     /**
      * 
-     * @type {string}
-     * @memberof AppendMemoryChunkRequest
      */
     body: string;
     /**
      * 
-     * @type {MemoryKind}
-     * @memberof AppendMemoryChunkRequest
      */
     kind?: MemoryKind;
 }
@@ -44,6 +40,8 @@ export interface AppendMemoryChunkRequest {
 
 export const AppendMemoryChunkRequestPropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -58,6 +56,8 @@ export const AppendMemoryChunkRequestPropertyValidationAttributesMap: {
     }
 } = {
     body: {
+        dataType: "string",
+        required: true,
         maxLength: 16384,
         minLength: 1,
     },

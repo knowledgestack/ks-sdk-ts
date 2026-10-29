@@ -29,31 +29,25 @@ import {
 export interface PaginatedResponseBillingPaymentResponse {
     /**
      * List of items
-     * @type {Array<BillingPaymentResponse>}
-     * @memberof PaginatedResponseBillingPaymentResponse
      */
     items: Array<BillingPaymentResponse>;
     /**
      * Total number of items
-     * @type {number}
-     * @memberof PaginatedResponseBillingPaymentResponse
      */
     total: number;
     /**
      * Number of items per page
-     * @type {number}
-     * @memberof PaginatedResponseBillingPaymentResponse
      */
     limit: number;
     /**
      * Number of items to skip
-     * @type {number}
-     * @memberof PaginatedResponseBillingPaymentResponse
      */
     offset: number;
 }
 export const PaginatedResponseBillingPaymentResponsePropertyValidationAttributesMap: {
     [property: string]: {
+        dataType?: string,
+        required?: boolean,
         maxLength?: number,
         minLength?: number,
         pattern?: string,
@@ -68,14 +62,20 @@ export const PaginatedResponseBillingPaymentResponsePropertyValidationAttributes
     }
 } = {
     total: {
+        dataType: "number",
+        required: true,
         minimum: 0,
         exclusiveMinimum: false,
     },
     limit: {
+        dataType: "number",
+        required: true,
         minimum: 1,
         exclusiveMinimum: false,
     },
     offset: {
+        dataType: "number",
+        required: true,
         minimum: 0,
         exclusiveMinimum: false,
     },
