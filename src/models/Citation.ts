@@ -20,21 +20,33 @@ import { mapValues } from '../runtime';
  */
 export interface Citation {
     /**
-     * 
+     * Chunk source; absent for Excel selections
      */
-    chunkId: string;
+    chunkId?: string | null;
     /**
-     * The quote from the chunk
+     * Exact source workbook version for Excel citations
      */
-    quote: string;
+    documentVersionId?: string | null;
+    /**
+     * Exact Excel worksheet name
+     */
+    sheetName?: string | null;
+    /**
+     * Ordered A1 cells/rectangles on one worksheet
+     */
+    cellRanges?: Array<string> | null;
+    /**
+     * The quote from the chunk; empty for Excel
+     */
+    quote?: string;
     /**
      * The 0-based start character of the quote in the chunk
      */
-    startChar: number;
+    startChar?: number;
     /**
-     * The length of the quote
+     * Quote length; positive for chunks, zero for Excel
      */
-    length: number;
+    length?: number;
     /**
      * Start time (ms) of the cited chunk in the source media, for AUDIO/VIDEO — lets the client deep-link playback to the moment. None for non-media chunks.
      */
@@ -63,7 +75,11 @@ export const CitationPropertyValidationAttributesMap: {
 } = {
     startChar: {
         dataType: "number",
-        required: true,
+        minimum: 0,
+        exclusiveMinimum: false,
+    },
+    length: {
+        dataType: "number",
         minimum: 0,
         exclusiveMinimum: false,
     },
@@ -74,10 +90,6 @@ export const CitationPropertyValidationAttributesMap: {
  * Check if a given object implements the Citation interface.
  */
 export function instanceOfCitation(value: object): value is Citation {
-    if ((!('chunkId' in (value as Record<string, any>)) && !('chunk_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['chunkId'] === undefined && (value as Record<string, any>)['chunk_id'] === undefined)) return false;
-    if (!('quote' in value) || value['quote'] === undefined) return false;
-    if ((!('startChar' in (value as Record<string, any>)) && !('start_char' in (value as Record<string, any>))) || ((value as Record<string, any>)['startChar'] === undefined && (value as Record<string, any>)['start_char'] === undefined)) return false;
-    if (!('length' in value) || value['length'] === undefined) return false;
     return true;
 }
 
@@ -91,10 +103,13 @@ export function CitationFromJSONTyped(json: any, ignoreDiscriminator: boolean): 
     }
     return {
         
-        'chunkId': json['chunk_id'],
-        'quote': json['quote'],
-        'startChar': json['start_char'],
-        'length': json['length'],
+        'chunkId': json['chunk_id'] === undefined ? undefined : json['chunk_id'] === null ? null : json['chunk_id'],
+        'documentVersionId': json['document_version_id'] === undefined ? undefined : json['document_version_id'] === null ? null : json['document_version_id'],
+        'sheetName': json['sheet_name'] === undefined ? undefined : json['sheet_name'] === null ? null : json['sheet_name'],
+        'cellRanges': json['cell_ranges'] === undefined ? undefined : json['cell_ranges'] === null ? null : json['cell_ranges'],
+        'quote': json['quote'] == null ? undefined : json['quote'],
+        'startChar': json['start_char'] == null ? undefined : json['start_char'],
+        'length': json['length'] == null ? undefined : json['length'],
         'startMs': json['start_ms'] === undefined ? undefined : json['start_ms'] === null ? null : json['start_ms'],
         'endMs': json['end_ms'] === undefined ? undefined : json['end_ms'] === null ? null : json['end_ms'],
     };
@@ -112,6 +127,9 @@ export function CitationToJSONTyped(value?: Citation | null, ignoreDiscriminator
     return {
         
         'chunk_id': value['chunkId'],
+        'document_version_id': value['documentVersionId'],
+        'sheet_name': value['sheetName'],
+        'cell_ranges': value['cellRanges'],
         'quote': value['quote'],
         'start_char': value['startChar'],
         'length': value['length'],
