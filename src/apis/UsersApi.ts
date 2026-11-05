@@ -19,6 +19,11 @@ import {
     AccessRequestResponseToJSON,
 } from '../models/AccessRequestResponse';
 import {
+    type CurrentUserResponse,
+    CurrentUserResponseFromJSON,
+    CurrentUserResponseToJSON,
+} from '../models/CurrentUserResponse';
+import {
     type ErrorResponse,
     ErrorResponseFromJSON,
     ErrorResponseToJSON,
@@ -38,11 +43,6 @@ import {
     UpdateUserRequestFromJSON,
     UpdateUserRequestToJSON,
 } from '../models/UpdateUserRequest';
-import {
-    type UserResponse,
-    UserResponseFromJSON,
-    UserResponseToJSON,
-} from '../models/UserResponse';
 
 export interface UpdateMeRequest {
     /**
@@ -86,13 +86,13 @@ export interface UsersApiInterface {
      * @throws {RequiredError}
      * @memberof UsersApiInterface
      */
-    deleteMyAvatarRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserResponse>>;
+    deleteMyAvatarRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<CurrentUserResponse>>;
 
     /**
      * Remove the profile photo for the current tenant. No photo is a no-op.
      * Delete My Avatar Handler
      */
-    deleteMyAvatar(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserResponse>;
+    deleteMyAvatar(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CurrentUserResponse>;
 
     /**
      * Creates request options for getMe without sending the request
@@ -108,13 +108,13 @@ export interface UsersApiInterface {
      * @throws {RequiredError}
      * @memberof UsersApiInterface
      */
-    getMeRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserResponse>>;
+    getMeRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<CurrentUserResponse>>;
 
     /**
      * Get current user information including current tenant context.  Returns the authenticated user\'s profile along with their current tenant ID (from the UAT token) and default tenant ID (from user record).
      * Get Me Handler
      */
-    getMe(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserResponse>;
+    getMe(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CurrentUserResponse>;
 
     /**
      * Creates request options for requestAccess without sending the request
@@ -152,13 +152,13 @@ export interface UsersApiInterface {
      * @throws {RequiredError}
      * @memberof UsersApiInterface
      */
-    skipOnboardingRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserResponse>>;
+    skipOnboardingRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<CurrentUserResponse>>;
 
     /**
      * Mark onboarding complete without writing any profile/company fields.  Idempotent — calling this after onboarding is already complete returns the current state unchanged (the CRUD only stamps the timestamp when it is NULL).
      * Skip Onboarding Handler
      */
-    skipOnboarding(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserResponse>;
+    skipOnboarding(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CurrentUserResponse>;
 
     /**
      * Creates request options for updateMe without sending the request
@@ -176,13 +176,13 @@ export interface UsersApiInterface {
      * @throws {RequiredError}
      * @memberof UsersApiInterface
      */
-    updateMeRaw(requestParameters: UpdateMeRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserResponse>>;
+    updateMeRaw(requestParameters: UpdateMeRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<CurrentUserResponse>>;
 
     /**
      * Update the user\'s name and default tenant, and the membership\'s profile.  When updating default_tenant_id, the user must belong to the specified tenant.
      * Update Me Handler
      */
-    updateMe(requestParameters: UpdateMeRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserResponse>;
+    updateMe(requestParameters: UpdateMeRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CurrentUserResponse>;
 
     /**
      * Creates request options for updateOnboardingState without sending the request
@@ -200,12 +200,12 @@ export interface UsersApiInterface {
      * @throws {RequiredError}
      * @memberof UsersApiInterface
      */
-    updateOnboardingStateRaw(requestParameters: UpdateOnboardingStateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserResponse>>;
+    updateOnboardingStateRaw(requestParameters: UpdateOnboardingStateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<CurrentUserResponse>>;
 
     /**
      * Update Onboarding State Handler
      */
-    updateOnboardingState(requestParameters: UpdateOnboardingStateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserResponse>;
+    updateOnboardingState(requestParameters: UpdateOnboardingStateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CurrentUserResponse>;
 
     /**
      * Creates request options for uploadMyAvatar without sending the request
@@ -223,13 +223,13 @@ export interface UsersApiInterface {
      * @throws {RequiredError}
      * @memberof UsersApiInterface
      */
-    uploadMyAvatarRaw(requestParameters: UploadMyAvatarRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserResponse>>;
+    uploadMyAvatarRaw(requestParameters: UploadMyAvatarRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<CurrentUserResponse>>;
 
     /**
      * Set the profile photo for the current tenant. PNG, JPEG, WebP or GIF, at most 2 MB and 4096 px per side; the format is read from the bytes, not the content type.
      * Upload My Avatar Handler
      */
-    uploadMyAvatar(requestParameters: UploadMyAvatarRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserResponse>;
+    uploadMyAvatar(requestParameters: UploadMyAvatarRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CurrentUserResponse>;
 
 }
 
@@ -269,18 +269,18 @@ export class UsersApi extends runtime.BaseAPI implements UsersApiInterface {
      * Remove the profile photo for the current tenant. No photo is a no-op.
      * Delete My Avatar Handler
      */
-    async deleteMyAvatarRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserResponse>> {
+    async deleteMyAvatarRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<CurrentUserResponse>> {
         const requestOptions = await this.deleteMyAvatarRequestOpts();
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => UserResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => CurrentUserResponseFromJSON(jsonValue));
     }
 
     /**
      * Remove the profile photo for the current tenant. No photo is a no-op.
      * Delete My Avatar Handler
      */
-    async deleteMyAvatar(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserResponse> {
+    async deleteMyAvatar(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CurrentUserResponse> {
         const response = await this.deleteMyAvatarRaw(initOverrides);
         return await response.value();
     }
@@ -316,18 +316,18 @@ export class UsersApi extends runtime.BaseAPI implements UsersApiInterface {
      * Get current user information including current tenant context.  Returns the authenticated user\'s profile along with their current tenant ID (from the UAT token) and default tenant ID (from user record).
      * Get Me Handler
      */
-    async getMeRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserResponse>> {
+    async getMeRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<CurrentUserResponse>> {
         const requestOptions = await this.getMeRequestOpts();
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => UserResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => CurrentUserResponseFromJSON(jsonValue));
     }
 
     /**
      * Get current user information including current tenant context.  Returns the authenticated user\'s profile along with their current tenant ID (from the UAT token) and default tenant ID (from user record).
      * Get Me Handler
      */
-    async getMe(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserResponse> {
+    async getMe(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CurrentUserResponse> {
         const response = await this.getMeRaw(initOverrides);
         return await response.value();
     }
@@ -410,18 +410,18 @@ export class UsersApi extends runtime.BaseAPI implements UsersApiInterface {
      * Mark onboarding complete without writing any profile/company fields.  Idempotent — calling this after onboarding is already complete returns the current state unchanged (the CRUD only stamps the timestamp when it is NULL).
      * Skip Onboarding Handler
      */
-    async skipOnboardingRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserResponse>> {
+    async skipOnboardingRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<CurrentUserResponse>> {
         const requestOptions = await this.skipOnboardingRequestOpts();
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => UserResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => CurrentUserResponseFromJSON(jsonValue));
     }
 
     /**
      * Mark onboarding complete without writing any profile/company fields.  Idempotent — calling this after onboarding is already complete returns the current state unchanged (the CRUD only stamps the timestamp when it is NULL).
      * Skip Onboarding Handler
      */
-    async skipOnboarding(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserResponse> {
+    async skipOnboarding(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CurrentUserResponse> {
         const response = await this.skipOnboardingRaw(initOverrides);
         return await response.value();
     }
@@ -467,18 +467,18 @@ export class UsersApi extends runtime.BaseAPI implements UsersApiInterface {
      * Update the user\'s name and default tenant, and the membership\'s profile.  When updating default_tenant_id, the user must belong to the specified tenant.
      * Update Me Handler
      */
-    async updateMeRaw(requestParameters: UpdateMeRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserResponse>> {
+    async updateMeRaw(requestParameters: UpdateMeRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<CurrentUserResponse>> {
         const requestOptions = await this.updateMeRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => UserResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => CurrentUserResponseFromJSON(jsonValue));
     }
 
     /**
      * Update the user\'s name and default tenant, and the membership\'s profile.  When updating default_tenant_id, the user must belong to the specified tenant.
      * Update Me Handler
      */
-    async updateMe(requestParameters: UpdateMeRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserResponse> {
+    async updateMe(requestParameters: UpdateMeRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CurrentUserResponse> {
         const response = await this.updateMeRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -523,17 +523,17 @@ export class UsersApi extends runtime.BaseAPI implements UsersApiInterface {
     /**
      * Update Onboarding State Handler
      */
-    async updateOnboardingStateRaw(requestParameters: UpdateOnboardingStateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserResponse>> {
+    async updateOnboardingStateRaw(requestParameters: UpdateOnboardingStateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<CurrentUserResponse>> {
         const requestOptions = await this.updateOnboardingStateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => UserResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => CurrentUserResponseFromJSON(jsonValue));
     }
 
     /**
      * Update Onboarding State Handler
      */
-    async updateOnboardingState(requestParameters: UpdateOnboardingStateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserResponse> {
+    async updateOnboardingState(requestParameters: UpdateOnboardingStateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CurrentUserResponse> {
         const response = await this.updateOnboardingStateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -597,18 +597,18 @@ export class UsersApi extends runtime.BaseAPI implements UsersApiInterface {
      * Set the profile photo for the current tenant. PNG, JPEG, WebP or GIF, at most 2 MB and 4096 px per side; the format is read from the bytes, not the content type.
      * Upload My Avatar Handler
      */
-    async uploadMyAvatarRaw(requestParameters: UploadMyAvatarRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserResponse>> {
+    async uploadMyAvatarRaw(requestParameters: UploadMyAvatarRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<CurrentUserResponse>> {
         const requestOptions = await this.uploadMyAvatarRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => UserResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => CurrentUserResponseFromJSON(jsonValue));
     }
 
     /**
      * Set the profile photo for the current tenant. PNG, JPEG, WebP or GIF, at most 2 MB and 4096 px per side; the format is read from the bytes, not the content type.
      * Upload My Avatar Handler
      */
-    async uploadMyAvatar(requestParameters: UploadMyAvatarRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserResponse> {
+    async uploadMyAvatar(requestParameters: UploadMyAvatarRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CurrentUserResponse> {
         const response = await this.uploadMyAvatarRaw(requestParameters, initOverrides);
         return await response.value();
     }

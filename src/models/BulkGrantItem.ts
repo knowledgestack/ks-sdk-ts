@@ -13,20 +13,32 @@
  */
 
 import { mapValues } from '../runtime';
-import type { PermissionCapability } from './PermissionCapability';
-import {
-    PermissionCapabilityFromJSON,
-    PermissionCapabilityFromJSONTyped,
-    PermissionCapabilityToJSON,
-    PermissionCapabilityToJSONTyped,
-} from './PermissionCapability';
-
 /**
- * One requested grant: a capability on an object (PDO id) for a user.
+ * One requested grant: permission flags on an object (PDO id) for a user.
  * @export
  * @interface BulkGrantItem
  */
 export interface BulkGrantItem {
+    /**
+     * Grant read access to the target subtree.
+     */
+    canRead?: boolean;
+    /**
+     * Grant write access; requires can_read=true.
+     */
+    canWrite?: boolean;
+    /**
+     * Grant delete access; requires can_read=true and can_write=true.
+     */
+    canDelete?: boolean;
+    /**
+     * Grant approval access; requires can_read=true, independently of write and delete.
+     */
+    canApprove?: boolean;
+    /**
+     * Manage subtree permissions; requires all four content flags.
+     */
+    canGrantPermissions?: boolean;
     /**
      * 
      */
@@ -35,17 +47,7 @@ export interface BulkGrantItem {
      * 
      */
     objectId: string;
-    /**
-     * 
-     */
-    capability: PermissionCapability;
-    /**
-     * 
-     */
-    canApprove?: boolean;
 }
-
-
 export const BulkGrantItemPropertyValidationAttributesMap: {
     [property: string]: {
         dataType?: string,
@@ -72,7 +74,6 @@ export const BulkGrantItemPropertyValidationAttributesMap: {
 export function instanceOfBulkGrantItem(value: object): value is BulkGrantItem {
     if ((!('userId' in (value as Record<string, any>)) && !('user_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['userId'] === undefined && (value as Record<string, any>)['user_id'] === undefined)) return false;
     if ((!('objectId' in (value as Record<string, any>)) && !('object_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['objectId'] === undefined && (value as Record<string, any>)['object_id'] === undefined)) return false;
-    if (!('capability' in value) || value['capability'] === undefined) return false;
     return true;
 }
 
@@ -86,10 +87,13 @@ export function BulkGrantItemFromJSONTyped(json: any, ignoreDiscriminator: boole
     }
     return {
         
+        'canRead': json['can_read'] == null ? undefined : json['can_read'],
+        'canWrite': json['can_write'] == null ? undefined : json['can_write'],
+        'canDelete': json['can_delete'] == null ? undefined : json['can_delete'],
+        'canApprove': json['can_approve'] == null ? undefined : json['can_approve'],
+        'canGrantPermissions': json['can_grant_permissions'] == null ? undefined : json['can_grant_permissions'],
         'userId': json['user_id'],
         'objectId': json['object_id'],
-        'capability': PermissionCapabilityFromJSON(json['capability']),
-        'canApprove': json['can_approve'] == null ? undefined : json['can_approve'],
     };
 }
 
@@ -104,10 +108,13 @@ export function BulkGrantItemToJSONTyped(value?: BulkGrantItem | null, ignoreDis
 
     return {
         
+        'can_read': value['canRead'],
+        'can_write': value['canWrite'],
+        'can_delete': value['canDelete'],
+        'can_approve': value['canApprove'],
+        'can_grant_permissions': value['canGrantPermissions'],
         'user_id': value['userId'],
         'object_id': value['objectId'],
-        'capability': PermissionCapabilityToJSON(value['capability']),
-        'can_approve': value['canApprove'],
     };
 }
 

@@ -14,7 +14,11 @@
 
 import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
 /**
- * What a customer supplies for a YiDing sync: the summary plus the secret.
+ * What a customer supplies for a YiDing sync.
+ * 
+ * The stored summary, plus the two things a caller supplies that are not part
+ * of it: the secret, and the recurrence — which is a ``data_source`` column
+ * now rather than a key in this config.
  * @export
  * @interface YidingConfig
  */
@@ -32,10 +36,6 @@ export interface YidingConfig {
      */
     startDate: Date;
     /**
-     * Crawl recurrence, in the tenant's timezone
-     */
-    cron: string;
-    /**
      * Root of the YiDing admin panel the crawler signs in to
      */
     baseUrl?: string;
@@ -43,6 +43,10 @@ export interface YidingConfig {
      * Write-only: the settings panel never reads it back
      */
     password: string;
+    /**
+     * Crawl recurrence, in the tenant's timezone
+     */
+    cron: string;
 }
 export const YidingConfigPropertyValidationAttributesMap: {
     [property: string]: {
@@ -71,16 +75,16 @@ export const YidingConfigPropertyValidationAttributesMap: {
         required: true,
         minLength: 1,
     },
-    cron: {
-        dataType: "string",
-        required: true,
-        minLength: 1,
-    },
     baseUrl: {
         dataType: "string",
         maxLength: 2048,
     },
     password: {
+        dataType: "string",
+        required: true,
+        minLength: 1,
+    },
+    cron: {
         dataType: "string",
         required: true,
         minLength: 1,
@@ -95,8 +99,8 @@ export function instanceOfYidingConfig(value: object): value is YidingConfig {
     if (!('username' in value) || value['username'] === undefined) return false;
     if ((!('businessId' in (value as Record<string, any>)) && !('business_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['businessId'] === undefined && (value as Record<string, any>)['business_id'] === undefined)) return false;
     if ((!('startDate' in (value as Record<string, any>)) && !('start_date' in (value as Record<string, any>))) || ((value as Record<string, any>)['startDate'] === undefined && (value as Record<string, any>)['start_date'] === undefined)) return false;
-    if (!('cron' in value) || value['cron'] === undefined) return false;
     if (!('password' in value) || value['password'] === undefined) return false;
+    if (!('cron' in value) || value['cron'] === undefined) return false;
     return true;
 }
 
@@ -113,9 +117,9 @@ export function YidingConfigFromJSONTyped(json: any, ignoreDiscriminator: boolea
         'username': json['username'],
         'businessId': json['business_id'],
         'startDate': (json['start_date'] == null ? json['start_date'] : parseDate(json['start_date'])),
-        'cron': json['cron'],
         'baseUrl': json['base_url'] == null ? undefined : json['base_url'],
         'password': json['password'],
+        'cron': json['cron'],
     };
 }
 
@@ -133,9 +137,9 @@ export function YidingConfigToJSONTyped(value?: YidingConfig | null, ignoreDiscr
         'username': value['username'],
         'business_id': value['businessId'],
         'start_date': value['startDate'] == null ? value['startDate'] : serializeDate(value['startDate']),
-        'cron': value['cron'],
         'base_url': value['baseUrl'],
         'password': value['password'],
+        'cron': value['cron'],
     };
 }
 

@@ -32,10 +32,6 @@ export interface SourceConfigSummary {
      */
     startDate: Date;
     /**
-     * Crawl recurrence, in the tenant's timezone
-     */
-    cron: string;
-    /**
      * Root of the YiDing admin panel the crawler signs in to
      */
     baseUrl?: string;
@@ -67,11 +63,6 @@ export const SourceConfigSummaryPropertyValidationAttributesMap: {
         required: true,
         minLength: 1,
     },
-    cron: {
-        dataType: "string",
-        required: true,
-        minLength: 1,
-    },
     baseUrl: {
         dataType: "string",
         maxLength: 2048,
@@ -86,7 +77,6 @@ export function instanceOfSourceConfigSummary(value: object): value is SourceCon
     if (!('username' in value) || value['username'] === undefined) return false;
     if ((!('businessId' in (value as Record<string, any>)) && !('business_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['businessId'] === undefined && (value as Record<string, any>)['business_id'] === undefined)) return false;
     if ((!('startDate' in (value as Record<string, any>)) && !('start_date' in (value as Record<string, any>))) || ((value as Record<string, any>)['startDate'] === undefined && (value as Record<string, any>)['start_date'] === undefined)) return false;
-    if (!('cron' in value) || value['cron'] === undefined) return false;
     return true;
 }
 
@@ -103,7 +93,6 @@ export function SourceConfigSummaryFromJSONTyped(json: any, ignoreDiscriminator:
         'username': json['username'],
         'businessId': json['business_id'],
         'startDate': (json['start_date'] == null ? json['start_date'] : parseDate(json['start_date'])),
-        'cron': json['cron'],
         'baseUrl': json['base_url'] == null ? undefined : json['base_url'],
     };
 }
@@ -122,7 +111,6 @@ export function SourceConfigSummaryToJSONTyped(value?: SourceConfigSummary | nul
         'username': value['username'],
         'business_id': value['businessId'],
         'start_date': value['startDate'] == null ? value['startDate'] : serializeDate(value['startDate']),
-        'cron': value['cron'],
         'base_url': value['baseUrl'],
     };
 }

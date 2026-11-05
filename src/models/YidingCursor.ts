@@ -27,6 +27,10 @@ export interface YidingCursor {
      * When the customer list was last refreshed
      */
     lastSyncedUserTs?: Date | null;
+    /**
+     * What the last crawl had to report, in the source's own words. Not only failures — a run that connected and worked but could not store everything it saw reports success with this set.
+     */
+    lastSyncError?: string | null;
 }
 export const YidingCursorPropertyValidationAttributesMap: {
     [property: string]: {
@@ -67,6 +71,7 @@ export function YidingCursorFromJSONTyped(json: any, ignoreDiscriminator: boolea
         
         'lastSyncedOrderTs': json['last_synced_order_ts'] === undefined ? undefined : json['last_synced_order_ts'] === null ? null : (parseDateTime(json['last_synced_order_ts'])),
         'lastSyncedUserTs': json['last_synced_user_ts'] === undefined ? undefined : json['last_synced_user_ts'] === null ? null : (parseDateTime(json['last_synced_user_ts'])),
+        'lastSyncError': json['last_sync_error'] === undefined ? undefined : json['last_sync_error'] === null ? null : json['last_sync_error'],
     };
 }
 
@@ -83,6 +88,7 @@ export function YidingCursorToJSONTyped(value?: YidingCursor | null, ignoreDiscr
         
         'last_synced_order_ts': value['lastSyncedOrderTs'] == null ? value['lastSyncedOrderTs'] : serializeDateTime(value['lastSyncedOrderTs']),
         'last_synced_user_ts': value['lastSyncedUserTs'] == null ? value['lastSyncedUserTs'] : serializeDateTime(value['lastSyncedUserTs']),
+        'last_sync_error': value['lastSyncError'],
     };
 }
 

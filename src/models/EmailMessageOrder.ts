@@ -14,21 +14,20 @@
 
 
 /**
- * Path access capability, a strict ladder: read < write < delete.
+ * 
  * @export
  */
-export const PermissionCapability = {
-    ReadOnly: 'READ_ONLY',
-    ReadWrite: 'READ_WRITE',
-    ReadWriteDelete: 'READ_WRITE_DELETE',
+export const EmailMessageOrder = {
+    SentAt: 'SENT_AT',
+    Title: 'TITLE',
 } as const;
-export type PermissionCapability = typeof PermissionCapability[keyof typeof PermissionCapability];
+export type EmailMessageOrder = typeof EmailMessageOrder[keyof typeof EmailMessageOrder];
 
 
-export function instanceOfPermissionCapability(value: any): boolean {
-    for (const key in PermissionCapability) {
-        if (Object.prototype.hasOwnProperty.call(PermissionCapability, key)) {
-            if (PermissionCapability[key as keyof typeof PermissionCapability] === value) {
+export function instanceOfEmailMessageOrder(value: any): boolean {
+    for (const key in EmailMessageOrder) {
+        if (Object.prototype.hasOwnProperty.call(EmailMessageOrder, key)) {
+            if (EmailMessageOrder[key as keyof typeof EmailMessageOrder] === value) {
                 return true;
             }
         }
@@ -36,19 +35,19 @@ export function instanceOfPermissionCapability(value: any): boolean {
     return false;
 }
 
-export function PermissionCapabilityFromJSON(json: any): PermissionCapability {
-    return PermissionCapabilityFromJSONTyped(json, false);
+export function EmailMessageOrderFromJSON(json: any): EmailMessageOrder {
+    return EmailMessageOrderFromJSONTyped(json, false);
 }
 
-export function PermissionCapabilityFromJSONTyped(json: any, ignoreDiscriminator: boolean): PermissionCapability {
-    return json as PermissionCapability;
+export function EmailMessageOrderFromJSONTyped(json: any, ignoreDiscriminator: boolean): EmailMessageOrder {
+    return json as EmailMessageOrder;
 }
 
-export function PermissionCapabilityToJSON(value?: PermissionCapability | null): any {
+export function EmailMessageOrderToJSON(value?: EmailMessageOrder | null): any {
     return value as any;
 }
 
-export function PermissionCapabilityToJSONTyped(value: any, ignoreDiscriminator: boolean): PermissionCapability {
-    return value as PermissionCapability;
+export function EmailMessageOrderToJSONTyped(value: any, ignoreDiscriminator: boolean): EmailMessageOrder {
+    return value as EmailMessageOrder;
 }
 

@@ -32,6 +32,8 @@ export const PartType = {
     DataSourceTable: 'DATA_SOURCE_TABLE',
     ApiConnection: 'API_CONNECTION',
     Skill: 'SKILL',
+    EmailThread: 'EMAIL_THREAD',
+    EmailMessage: 'EMAIL_MESSAGE',
 } as const;
 export type PartType = typeof PartType[keyof typeof PartType];
 

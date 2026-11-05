@@ -13,14 +13,6 @@
  */
 
 import { mapValues } from '../runtime';
-import type { PermissionCapability } from './PermissionCapability';
-import {
-    PermissionCapabilityFromJSON,
-    PermissionCapabilityFromJSONTyped,
-    PermissionCapabilityToJSON,
-    PermissionCapabilityToJSONTyped,
-} from './PermissionCapability';
-
 /**
  * A grant that was created, keyed on its (user, object) pair plus new id.
  * @export
@@ -42,14 +34,24 @@ export interface BulkGrantSuccess {
     /**
      * 
      */
-    capability: PermissionCapability;
+    canRead: boolean;
+    /**
+     * 
+     */
+    canWrite: boolean;
+    /**
+     * 
+     */
+    canDelete: boolean;
     /**
      * 
      */
     canApprove: boolean;
+    /**
+     * 
+     */
+    canGrantPermissions: boolean;
 }
-
-
 export const BulkGrantSuccessPropertyValidationAttributesMap: {
     [property: string]: {
         dataType?: string,
@@ -77,8 +79,11 @@ export function instanceOfBulkGrantSuccess(value: object): value is BulkGrantSuc
     if ((!('userId' in (value as Record<string, any>)) && !('user_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['userId'] === undefined && (value as Record<string, any>)['user_id'] === undefined)) return false;
     if ((!('objectId' in (value as Record<string, any>)) && !('object_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['objectId'] === undefined && (value as Record<string, any>)['object_id'] === undefined)) return false;
     if ((!('permissionId' in (value as Record<string, any>)) && !('permission_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['permissionId'] === undefined && (value as Record<string, any>)['permission_id'] === undefined)) return false;
-    if (!('capability' in value) || value['capability'] === undefined) return false;
+    if ((!('canRead' in (value as Record<string, any>)) && !('can_read' in (value as Record<string, any>))) || ((value as Record<string, any>)['canRead'] === undefined && (value as Record<string, any>)['can_read'] === undefined)) return false;
+    if ((!('canWrite' in (value as Record<string, any>)) && !('can_write' in (value as Record<string, any>))) || ((value as Record<string, any>)['canWrite'] === undefined && (value as Record<string, any>)['can_write'] === undefined)) return false;
+    if ((!('canDelete' in (value as Record<string, any>)) && !('can_delete' in (value as Record<string, any>))) || ((value as Record<string, any>)['canDelete'] === undefined && (value as Record<string, any>)['can_delete'] === undefined)) return false;
     if ((!('canApprove' in (value as Record<string, any>)) && !('can_approve' in (value as Record<string, any>))) || ((value as Record<string, any>)['canApprove'] === undefined && (value as Record<string, any>)['can_approve'] === undefined)) return false;
+    if ((!('canGrantPermissions' in (value as Record<string, any>)) && !('can_grant_permissions' in (value as Record<string, any>))) || ((value as Record<string, any>)['canGrantPermissions'] === undefined && (value as Record<string, any>)['can_grant_permissions'] === undefined)) return false;
     return true;
 }
 
@@ -95,8 +100,11 @@ export function BulkGrantSuccessFromJSONTyped(json: any, ignoreDiscriminator: bo
         'userId': json['user_id'],
         'objectId': json['object_id'],
         'permissionId': json['permission_id'],
-        'capability': PermissionCapabilityFromJSON(json['capability']),
+        'canRead': json['can_read'],
+        'canWrite': json['can_write'],
+        'canDelete': json['can_delete'],
         'canApprove': json['can_approve'],
+        'canGrantPermissions': json['can_grant_permissions'],
     };
 }
 
@@ -114,8 +122,11 @@ export function BulkGrantSuccessToJSONTyped(value?: BulkGrantSuccess | null, ign
         'user_id': value['userId'],
         'object_id': value['objectId'],
         'permission_id': value['permissionId'],
-        'capability': PermissionCapabilityToJSON(value['capability']),
+        'can_read': value['canRead'],
+        'can_write': value['canWrite'],
+        'can_delete': value['canDelete'],
         'can_approve': value['canApprove'],
+        'can_grant_permissions': value['canGrantPermissions'],
     };
 }
 

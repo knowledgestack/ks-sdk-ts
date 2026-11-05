@@ -13,14 +13,6 @@
  */
 
 import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
-import type { PermissionCapability } from './PermissionCapability';
-import {
-    PermissionCapabilityFromJSON,
-    PermissionCapabilityFromJSONTyped,
-    PermissionCapabilityToJSON,
-    PermissionCapabilityToJSONTyped,
-} from './PermissionCapability';
-
 /**
  * 
  * @export
@@ -50,11 +42,23 @@ export interface GroupPermissionResponse {
     /**
      * 
      */
-    capability: PermissionCapability;
+    canRead: boolean;
+    /**
+     * 
+     */
+    canWrite: boolean;
+    /**
+     * 
+     */
+    canDelete: boolean;
     /**
      * 
      */
     canApprove: boolean;
+    /**
+     * 
+     */
+    canGrantPermissions: boolean;
     /**
      * 
      */
@@ -64,8 +68,6 @@ export interface GroupPermissionResponse {
      */
     updatedAt: Date;
 }
-
-
 export const GroupPermissionResponsePropertyValidationAttributesMap: {
     [property: string]: {
         dataType?: string,
@@ -95,8 +97,11 @@ export function instanceOfGroupPermissionResponse(value: object): value is Group
     if ((!('groupId' in (value as Record<string, any>)) && !('group_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['groupId'] === undefined && (value as Record<string, any>)['group_id'] === undefined)) return false;
     if ((!('pathPartId' in (value as Record<string, any>)) && !('path_part_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['pathPartId'] === undefined && (value as Record<string, any>)['path_part_id'] === undefined)) return false;
     if ((!('materializedPath' in (value as Record<string, any>)) && !('materialized_path' in (value as Record<string, any>))) || ((value as Record<string, any>)['materializedPath'] === undefined && (value as Record<string, any>)['materialized_path'] === undefined)) return false;
-    if (!('capability' in value) || value['capability'] === undefined) return false;
+    if ((!('canRead' in (value as Record<string, any>)) && !('can_read' in (value as Record<string, any>))) || ((value as Record<string, any>)['canRead'] === undefined && (value as Record<string, any>)['can_read'] === undefined)) return false;
+    if ((!('canWrite' in (value as Record<string, any>)) && !('can_write' in (value as Record<string, any>))) || ((value as Record<string, any>)['canWrite'] === undefined && (value as Record<string, any>)['can_write'] === undefined)) return false;
+    if ((!('canDelete' in (value as Record<string, any>)) && !('can_delete' in (value as Record<string, any>))) || ((value as Record<string, any>)['canDelete'] === undefined && (value as Record<string, any>)['can_delete'] === undefined)) return false;
     if ((!('canApprove' in (value as Record<string, any>)) && !('can_approve' in (value as Record<string, any>))) || ((value as Record<string, any>)['canApprove'] === undefined && (value as Record<string, any>)['can_approve'] === undefined)) return false;
+    if ((!('canGrantPermissions' in (value as Record<string, any>)) && !('can_grant_permissions' in (value as Record<string, any>))) || ((value as Record<string, any>)['canGrantPermissions'] === undefined && (value as Record<string, any>)['can_grant_permissions'] === undefined)) return false;
     if ((!('createdAt' in (value as Record<string, any>)) && !('created_at' in (value as Record<string, any>))) || ((value as Record<string, any>)['createdAt'] === undefined && (value as Record<string, any>)['created_at'] === undefined)) return false;
     if ((!('updatedAt' in (value as Record<string, any>)) && !('updated_at' in (value as Record<string, any>))) || ((value as Record<string, any>)['updatedAt'] === undefined && (value as Record<string, any>)['updated_at'] === undefined)) return false;
     return true;
@@ -117,8 +122,11 @@ export function GroupPermissionResponseFromJSONTyped(json: any, ignoreDiscrimina
         'groupId': json['group_id'],
         'pathPartId': json['path_part_id'],
         'materializedPath': json['materialized_path'],
-        'capability': PermissionCapabilityFromJSON(json['capability']),
+        'canRead': json['can_read'],
+        'canWrite': json['can_write'],
+        'canDelete': json['can_delete'],
         'canApprove': json['can_approve'],
+        'canGrantPermissions': json['can_grant_permissions'],
         'createdAt': (json['created_at'] == null ? json['created_at'] : parseDateTime(json['created_at'])),
         'updatedAt': (json['updated_at'] == null ? json['updated_at'] : parseDateTime(json['updated_at'])),
     };
@@ -140,8 +148,11 @@ export function GroupPermissionResponseToJSONTyped(value?: GroupPermissionRespon
         'group_id': value['groupId'],
         'path_part_id': value['pathPartId'],
         'materialized_path': value['materializedPath'],
-        'capability': PermissionCapabilityToJSON(value['capability']),
+        'can_read': value['canRead'],
+        'can_write': value['canWrite'],
+        'can_delete': value['canDelete'],
         'can_approve': value['canApprove'],
+        'can_grant_permissions': value['canGrantPermissions'],
         'created_at': value['createdAt'] == null ? value['createdAt'] : serializeDateTime(value['createdAt']),
         'updated_at': value['updatedAt'] == null ? value['updatedAt'] : serializeDateTime(value['updatedAt']),
     };

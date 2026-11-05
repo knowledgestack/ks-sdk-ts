@@ -13,14 +13,6 @@
  */
 
 import { mapValues } from '../runtime';
-import type { PermissionCapability } from './PermissionCapability';
-import {
-    PermissionCapabilityFromJSON,
-    PermissionCapabilityFromJSONTyped,
-    PermissionCapabilityToJSON,
-    PermissionCapabilityToJSONTyped,
-} from './PermissionCapability';
-
 /**
  * 
  * @export
@@ -28,20 +20,30 @@ import {
  */
 export interface CreateGroupPermissionRequest {
     /**
+     * Grant read access to the target subtree.
+     */
+    canRead?: boolean;
+    /**
+     * Grant write access; requires can_read=true.
+     */
+    canWrite?: boolean;
+    /**
+     * Grant delete access; requires can_read=true and can_write=true.
+     */
+    canDelete?: boolean;
+    /**
+     * Grant approval access; requires can_read=true, independently of write and delete.
+     */
+    canApprove?: boolean;
+    /**
+     * Manage subtree permissions; requires all four content flags.
+     */
+    canGrantPermissions?: boolean;
+    /**
      * 
      */
     pathPartId: string;
-    /**
-     * 
-     */
-    capability: PermissionCapability;
-    /**
-     * 
-     */
-    canApprove?: boolean;
 }
-
-
 export const CreateGroupPermissionRequestPropertyValidationAttributesMap: {
     [property: string]: {
         dataType?: string,
@@ -67,7 +69,6 @@ export const CreateGroupPermissionRequestPropertyValidationAttributesMap: {
  */
 export function instanceOfCreateGroupPermissionRequest(value: object): value is CreateGroupPermissionRequest {
     if ((!('pathPartId' in (value as Record<string, any>)) && !('path_part_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['pathPartId'] === undefined && (value as Record<string, any>)['path_part_id'] === undefined)) return false;
-    if (!('capability' in value) || value['capability'] === undefined) return false;
     return true;
 }
 
@@ -81,9 +82,12 @@ export function CreateGroupPermissionRequestFromJSONTyped(json: any, ignoreDiscr
     }
     return {
         
-        'pathPartId': json['path_part_id'],
-        'capability': PermissionCapabilityFromJSON(json['capability']),
+        'canRead': json['can_read'] == null ? undefined : json['can_read'],
+        'canWrite': json['can_write'] == null ? undefined : json['can_write'],
+        'canDelete': json['can_delete'] == null ? undefined : json['can_delete'],
         'canApprove': json['can_approve'] == null ? undefined : json['can_approve'],
+        'canGrantPermissions': json['can_grant_permissions'] == null ? undefined : json['can_grant_permissions'],
+        'pathPartId': json['path_part_id'],
     };
 }
 
@@ -98,9 +102,12 @@ export function CreateGroupPermissionRequestToJSONTyped(value?: CreateGroupPermi
 
     return {
         
-        'path_part_id': value['pathPartId'],
-        'capability': PermissionCapabilityToJSON(value['capability']),
+        'can_read': value['canRead'],
+        'can_write': value['canWrite'],
+        'can_delete': value['canDelete'],
         'can_approve': value['canApprove'],
+        'can_grant_permissions': value['canGrantPermissions'],
+        'path_part_id': value['pathPartId'],
     };
 }
 

@@ -41,17 +41,31 @@ import {
     DataSourceEngineToJSON,
     DataSourceEngineToJSONTyped,
 } from './DataSourceEngine';
+import type { EmailSyncConfig } from './EmailSyncConfig';
+import {
+    EmailSyncConfigFromJSON,
+    EmailSyncConfigFromJSONTyped,
+    EmailSyncConfigToJSON,
+    EmailSyncConfigToJSONTyped,
+} from './EmailSyncConfig';
 
 /**
  * Create a connector under a folder the caller can write to.
+ * 
+ * ``name`` is the one thing a mailbox does not take: it is named after the
+ * address it syncs, because a second name for it would only ever disagree
+ * with the mailbox. Where it goes is still the caller's, as it is for every
+ * other connector — the folder a connector hangs in is what decides who can
+ * read what hangs under it, so a personal mailbox and an organization's
+ * belong in different places.
  * @export
  * @interface CreateDataSourceRequest
  */
 export interface CreateDataSourceRequest {
     /**
-     * 
+     * What to call this connector. Required. On a mailbox it is a label of the caller's choosing — the address itself is read back from the consent and reported separately.
      */
-    name: string;
+    name?: string | null;
     /**
      * 
      */
@@ -72,6 +86,14 @@ export interface CreateDataSourceRequest {
      * 
      */
     sourceConfig?: YidingConfig | null;
+    /**
+     * On EMAIL, **required**: the registration this mailbox will consent against, chosen from ``GET /v1/mail-credentials``. Only OWNER/ADMIN can put one there, which is the point — creating a connector needs folder write, and that is not enough to be handed a client secret. Set at creation and never changed: the stored grant is a refresh token issued to one client, so repointing it would leave a mailbox that can never refresh
+     */
+    mailCredentialId?: string | null;
+    /**
+     * Optional on EMAIL, refused otherwise. Only carries the recurrence, which has a default.
+     */
+    emailConfig?: EmailSyncConfig | null;
 }
 
 
@@ -94,8 +116,8 @@ export const CreateDataSourceRequestPropertyValidationAttributesMap: {
 } = {
     name: {
         dataType: "string",
-        required: true,
         maxLength: 255,
+        minLength: 1,
     },
 }
 
@@ -104,7 +126,6 @@ export const CreateDataSourceRequestPropertyValidationAttributesMap: {
  * Check if a given object implements the CreateDataSourceRequest interface.
  */
 export function instanceOfCreateDataSourceRequest(value: object): value is CreateDataSourceRequest {
-    if (!('name' in value) || value['name'] === undefined) return false;
     if ((!('parentPathPartId' in (value as Record<string, any>)) && !('parent_path_part_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['parentPathPartId'] === undefined && (value as Record<string, any>)['parent_path_part_id'] === undefined)) return false;
     return true;
 }
@@ -119,12 +140,14 @@ export function CreateDataSourceRequestFromJSONTyped(json: any, ignoreDiscrimina
     }
     return {
         
-        'name': json['name'],
+        'name': json['name'] === undefined ? undefined : json['name'] === null ? null : json['name'],
         'parentPathPartId': json['parent_path_part_id'],
         'sourceType': json['source_type'] == null ? undefined : SourceTypeFromJSON(json['source_type']),
         'engine': json['engine'] == null ? undefined : DataSourceEngineFromJSON(json['engine']),
         'connectionConfig': json['connection_config'] === undefined ? undefined : json['connection_config'] === null ? null : ConnectionConfigFromJSON(json['connection_config']),
         'sourceConfig': json['source_config'] === undefined ? undefined : json['source_config'] === null ? null : YidingConfigFromJSON(json['source_config']),
+        'mailCredentialId': json['mail_credential_id'] === undefined ? undefined : json['mail_credential_id'] === null ? null : json['mail_credential_id'],
+        'emailConfig': json['email_config'] === undefined ? undefined : json['email_config'] === null ? null : EmailSyncConfigFromJSON(json['email_config']),
     };
 }
 
@@ -145,6 +168,8 @@ export function CreateDataSourceRequestToJSONTyped(value?: CreateDataSourceReque
         'engine': DataSourceEngineToJSON(value['engine']),
         'connection_config': ConnectionConfigToJSON(value['connectionConfig']),
         'source_config': YidingConfigToJSON(value['sourceConfig']),
+        'mail_credential_id': value['mailCredentialId'],
+        'email_config': EmailSyncConfigToJSON(value['emailConfig']),
     };
 }
 

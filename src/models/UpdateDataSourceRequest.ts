@@ -20,6 +20,13 @@ import {
     YidingConfigChangeToJSON,
     YidingConfigChangeToJSONTyped,
 } from './YidingConfigChange';
+import type { EmailConfigChange } from './EmailConfigChange';
+import {
+    EmailConfigChangeFromJSON,
+    EmailConfigChangeFromJSONTyped,
+    EmailConfigChangeToJSON,
+    EmailConfigChangeToJSONTyped,
+} from './EmailConfigChange';
 import type { YidingCursor } from './YidingCursor';
 import {
     YidingCursorFromJSON,
@@ -54,7 +61,7 @@ export interface UpdateDataSourceRequest {
      */
     name?: string | null;
     /**
-     * New parent FOLDER path_part to move the connector under.
+     * New parent FOLDER path_part to move the connector under. A mailbox may be moved too — that is how one goes from a personal folder to a shared one; only its name is fixed.
      */
     parentPathPartId?: string | null;
     /**
@@ -69,6 +76,10 @@ export interface UpdateDataSourceRequest {
      * The crawl cursor, replaced whole. Written by the sync itself (the worker acts as the connector's owner) after each batch, so it records what has already been read. Moving it forward by hand makes the next run skip those days for good — the increment only re-scans what the cursor points at.
      */
     syncState?: YidingCursor | null;
+    /**
+     * An EMAIL connector's crawl recurrence, merged into the stored config. Changing ``cron`` re-arms the schedule. Which mailbox and which folders are fixed at creation. Rejected on any other connector kind, which has no mailbox to sync.
+     */
+    emailConfig?: EmailConfigChange | null;
 }
 export const UpdateDataSourceRequestPropertyValidationAttributesMap: {
     [property: string]: {
@@ -117,6 +128,7 @@ export function UpdateDataSourceRequestFromJSONTyped(json: any, ignoreDiscrimina
         'connectionConfig': json['connection_config'] === undefined ? undefined : json['connection_config'] === null ? null : ConnectionConfigFromJSON(json['connection_config']),
         'sourceConfig': json['source_config'] === undefined ? undefined : json['source_config'] === null ? null : YidingConfigChangeFromJSON(json['source_config']),
         'syncState': json['sync_state'] === undefined ? undefined : json['sync_state'] === null ? null : YidingCursorFromJSON(json['sync_state']),
+        'emailConfig': json['email_config'] === undefined ? undefined : json['email_config'] === null ? null : EmailConfigChangeFromJSON(json['email_config']),
     };
 }
 
@@ -136,6 +148,7 @@ export function UpdateDataSourceRequestToJSONTyped(value?: UpdateDataSourceReque
         'connection_config': ConnectionConfigToJSON(value['connectionConfig']),
         'source_config': YidingConfigChangeToJSON(value['sourceConfig']),
         'sync_state': YidingCursorToJSON(value['syncState']),
+        'email_config': EmailConfigChangeToJSON(value['emailConfig']),
     };
 }
 

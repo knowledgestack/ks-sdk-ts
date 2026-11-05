@@ -54,11 +54,6 @@ import {
     PaginatedResponsePermissionResponseToJSON,
 } from '../models/PaginatedResponsePermissionResponse';
 import {
-    type PermissionCapability,
-    PermissionCapabilityFromJSON,
-    PermissionCapabilityToJSON,
-} from '../models/PermissionCapability';
-import {
     type PermissionResponse,
     PermissionResponseFromJSON,
     PermissionResponseToJSON,
@@ -129,9 +124,25 @@ export interface ListUserPermissionsRequest {
      */
     sortDir?: SortDirection;
     /**
-     * Filter to a single capability level
+     * Filter grants by can_read
      */
-    capability?: PermissionCapability;
+    canRead?: boolean | null;
+    /**
+     * Filter grants by can_write
+     */
+    canWrite?: boolean | null;
+    /**
+     * Filter grants by can_delete
+     */
+    canDelete?: boolean | null;
+    /**
+     * Filter grants by can_approve
+     */
+    canApprove?: boolean | null;
+    /**
+     * Filter grants by can_grant_permissions
+     */
+    canGrantPermissions?: boolean | null;
     /**
      * Number of items per page
      */
@@ -173,7 +184,7 @@ export interface UserPermissionsApiInterface {
     bulkGrantUserPermissionsRequestOpts(requestParameters: BulkGrantUserPermissionsRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * Grant many (user, object, capability) permissions (admin/owner only).  Each grant is applied in its own transaction, reporting a per-item outcome keyed on the (user_id, object_id) pair: a missing/trashed object or a user not in the tenant is ``not_found``, hitting the per-user cap is ``permission_limit``, and an already-covered grant is ``subsumed``.
+     * Grant many (user, object, flags) permissions (admin/owner or scoped permission manager).  Each grant is applied in its own transaction, reporting a per-item outcome keyed on the (user_id, object_id) pair: a missing/trashed object or a user not in the tenant is ``not_found``, hitting the per-user cap is ``permission_limit``, and an already-covered grant is ``subsumed``.
      * @summary Bulk Grant User Permissions Handler
      * @param {BulkGrantRequest} bulkGrantRequest 
      * @param {*} [options] Override http request option.
@@ -183,7 +194,7 @@ export interface UserPermissionsApiInterface {
     bulkGrantUserPermissionsRaw(requestParameters: BulkGrantUserPermissionsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<BulkGrantResponse>>;
 
     /**
-     * Grant many (user, object, capability) permissions (admin/owner only).  Each grant is applied in its own transaction, reporting a per-item outcome keyed on the (user_id, object_id) pair: a missing/trashed object or a user not in the tenant is ``not_found``, hitting the per-user cap is ``permission_limit``, and an already-covered grant is ``subsumed``.
+     * Grant many (user, object, flags) permissions (admin/owner or scoped permission manager).  Each grant is applied in its own transaction, reporting a per-item outcome keyed on the (user_id, object_id) pair: a missing/trashed object or a user not in the tenant is ``not_found``, hitting the per-user cap is ``permission_limit``, and an already-covered grant is ``subsumed``.
      * Bulk Grant User Permissions Handler
      */
     bulkGrantUserPermissions(requestParameters: BulkGrantUserPermissionsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<BulkGrantResponse>;
@@ -197,7 +208,7 @@ export interface UserPermissionsApiInterface {
     bulkRevokeUserPermissionsRequestOpts(requestParameters: BulkRevokeUserPermissionsRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * Revoke many permissions by their ids (admin/owner only), per item.  A permission id not found in the tenant lands in ``failed`` as ``not_found``.
+     * Revoke many permissions by their ids (admin/owner or scoped permission manager), per item.  A permission id not found in the tenant lands in ``failed`` as ``not_found``.
      * @summary Bulk Revoke User Permissions Handler
      * @param {BulkRevokeRequest} bulkRevokeRequest 
      * @param {*} [options] Override http request option.
@@ -207,7 +218,7 @@ export interface UserPermissionsApiInterface {
     bulkRevokeUserPermissionsRaw(requestParameters: BulkRevokeUserPermissionsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<BulkOperationResponse>>;
 
     /**
-     * Revoke many permissions by their ids (admin/owner only), per item.  A permission id not found in the tenant lands in ``failed`` as ``not_found``.
+     * Revoke many permissions by their ids (admin/owner or scoped permission manager), per item.  A permission id not found in the tenant lands in ``failed`` as ``not_found``.
      * Bulk Revoke User Permissions Handler
      */
     bulkRevokeUserPermissions(requestParameters: BulkRevokeUserPermissionsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<BulkOperationResponse>;
@@ -221,7 +232,7 @@ export interface UserPermissionsApiInterface {
     createUserPermissionRequestOpts(requestParameters: CreateUserPermissionRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * Create a path permission for a user in a tenant (admin/owner only).
+     * Create a path permission for a user in a tenant (admin/owner or scoped permission manager).
      * @summary Create User Permission Handler
      * @param {CreatePermissionRequest} createPermissionRequest 
      * @param {*} [options] Override http request option.
@@ -231,7 +242,7 @@ export interface UserPermissionsApiInterface {
     createUserPermissionRaw(requestParameters: CreateUserPermissionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PermissionResponse>>;
 
     /**
-     * Create a path permission for a user in a tenant (admin/owner only).
+     * Create a path permission for a user in a tenant (admin/owner or scoped permission manager).
      * Create User Permission Handler
      */
     createUserPermission(requestParameters: CreateUserPermissionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PermissionResponse>;
@@ -246,7 +257,7 @@ export interface UserPermissionsApiInterface {
     deleteUserPermissionRequestOpts(requestParameters: DeleteUserPermissionRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * Delete a path permission (admin/owner only).
+     * Delete a path permission (admin/owner or scoped permission manager).
      * @summary Delete User Permission Handler
      * @param {string} permissionId 
      * @param {string} tenantId Tenant ID the permission belongs to
@@ -257,7 +268,7 @@ export interface UserPermissionsApiInterface {
     deleteUserPermissionRaw(requestParameters: DeleteUserPermissionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>>;
 
     /**
-     * Delete a path permission (admin/owner only).
+     * Delete a path permission (admin/owner or scoped permission manager).
      * Delete User Permission Handler
      */
     deleteUserPermission(requestParameters: DeleteUserPermissionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void>;
@@ -268,7 +279,11 @@ export interface UserPermissionsApiInterface {
      * @param {string} userId User ID to list permissions for
      * @param {UserPermissionOrder} [sortBy] Field to sort permissions by (default: CREATED_AT)
      * @param {SortDirection} [sortDir] Sort direction; overrides the field\&#39;s natural default
-     * @param {PermissionCapability} [capability] Filter to a single capability level
+     * @param {boolean} [canRead] Filter grants by can_read
+     * @param {boolean} [canWrite] Filter grants by can_write
+     * @param {boolean} [canDelete] Filter grants by can_delete
+     * @param {boolean} [canApprove] Filter grants by can_approve
+     * @param {boolean} [canGrantPermissions] Filter grants by can_grant_permissions
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
      * @throws {RequiredError}
@@ -277,13 +292,17 @@ export interface UserPermissionsApiInterface {
     listUserPermissionsRequestOpts(requestParameters: ListUserPermissionsRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * List path permissions for a user in a tenant (admin/owner only).
+     * List path permissions for a user in a tenant (admin/owner or scoped permission manager).
      * @summary List User Permissions Handler
      * @param {string} tenantId Tenant ID to list permissions for
      * @param {string} userId User ID to list permissions for
      * @param {UserPermissionOrder} [sortBy] Field to sort permissions by (default: CREATED_AT)
      * @param {SortDirection} [sortDir] Sort direction; overrides the field\&#39;s natural default
-     * @param {PermissionCapability} [capability] Filter to a single capability level
+     * @param {boolean} [canRead] Filter grants by can_read
+     * @param {boolean} [canWrite] Filter grants by can_write
+     * @param {boolean} [canDelete] Filter grants by can_delete
+     * @param {boolean} [canApprove] Filter grants by can_approve
+     * @param {boolean} [canGrantPermissions] Filter grants by can_grant_permissions
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
      * @param {*} [options] Override http request option.
@@ -293,7 +312,7 @@ export interface UserPermissionsApiInterface {
     listUserPermissionsRaw(requestParameters: ListUserPermissionsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedResponsePermissionResponse>>;
 
     /**
-     * List path permissions for a user in a tenant (admin/owner only).
+     * List path permissions for a user in a tenant (admin/owner or scoped permission manager).
      * List User Permissions Handler
      */
     listUserPermissions(requestParameters: ListUserPermissionsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedResponsePermissionResponse>;
@@ -309,7 +328,7 @@ export interface UserPermissionsApiInterface {
     updateUserPermissionRequestOpts(requestParameters: UpdateUserPermissionRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * Update a path permission (admin/owner only).
+     * Update a path permission (admin/owner or scoped permission manager).
      * @summary Update User Permission Handler
      * @param {string} permissionId 
      * @param {string} tenantId Tenant ID the permission belongs to
@@ -321,7 +340,7 @@ export interface UserPermissionsApiInterface {
     updateUserPermissionRaw(requestParameters: UpdateUserPermissionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PermissionResponse>>;
 
     /**
-     * Update a path permission (admin/owner only).
+     * Update a path permission (admin/owner or scoped permission manager).
      * Update User Permission Handler
      */
     updateUserPermission(requestParameters: UpdateUserPermissionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PermissionResponse>;
@@ -371,7 +390,7 @@ export class UserPermissionsApi extends runtime.BaseAPI implements UserPermissio
     }
 
     /**
-     * Grant many (user, object, capability) permissions (admin/owner only).  Each grant is applied in its own transaction, reporting a per-item outcome keyed on the (user_id, object_id) pair: a missing/trashed object or a user not in the tenant is ``not_found``, hitting the per-user cap is ``permission_limit``, and an already-covered grant is ``subsumed``.
+     * Grant many (user, object, flags) permissions (admin/owner or scoped permission manager).  Each grant is applied in its own transaction, reporting a per-item outcome keyed on the (user_id, object_id) pair: a missing/trashed object or a user not in the tenant is ``not_found``, hitting the per-user cap is ``permission_limit``, and an already-covered grant is ``subsumed``.
      * Bulk Grant User Permissions Handler
      */
     async bulkGrantUserPermissionsRaw(requestParameters: BulkGrantUserPermissionsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<BulkGrantResponse>> {
@@ -382,7 +401,7 @@ export class UserPermissionsApi extends runtime.BaseAPI implements UserPermissio
     }
 
     /**
-     * Grant many (user, object, capability) permissions (admin/owner only).  Each grant is applied in its own transaction, reporting a per-item outcome keyed on the (user_id, object_id) pair: a missing/trashed object or a user not in the tenant is ``not_found``, hitting the per-user cap is ``permission_limit``, and an already-covered grant is ``subsumed``.
+     * Grant many (user, object, flags) permissions (admin/owner or scoped permission manager).  Each grant is applied in its own transaction, reporting a per-item outcome keyed on the (user_id, object_id) pair: a missing/trashed object or a user not in the tenant is ``not_found``, hitting the per-user cap is ``permission_limit``, and an already-covered grant is ``subsumed``.
      * Bulk Grant User Permissions Handler
      */
     async bulkGrantUserPermissions(requestParameters: BulkGrantUserPermissionsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<BulkGrantResponse> {
@@ -428,7 +447,7 @@ export class UserPermissionsApi extends runtime.BaseAPI implements UserPermissio
     }
 
     /**
-     * Revoke many permissions by their ids (admin/owner only), per item.  A permission id not found in the tenant lands in ``failed`` as ``not_found``.
+     * Revoke many permissions by their ids (admin/owner or scoped permission manager), per item.  A permission id not found in the tenant lands in ``failed`` as ``not_found``.
      * Bulk Revoke User Permissions Handler
      */
     async bulkRevokeUserPermissionsRaw(requestParameters: BulkRevokeUserPermissionsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<BulkOperationResponse>> {
@@ -439,7 +458,7 @@ export class UserPermissionsApi extends runtime.BaseAPI implements UserPermissio
     }
 
     /**
-     * Revoke many permissions by their ids (admin/owner only), per item.  A permission id not found in the tenant lands in ``failed`` as ``not_found``.
+     * Revoke many permissions by their ids (admin/owner or scoped permission manager), per item.  A permission id not found in the tenant lands in ``failed`` as ``not_found``.
      * Bulk Revoke User Permissions Handler
      */
     async bulkRevokeUserPermissions(requestParameters: BulkRevokeUserPermissionsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<BulkOperationResponse> {
@@ -485,7 +504,7 @@ export class UserPermissionsApi extends runtime.BaseAPI implements UserPermissio
     }
 
     /**
-     * Create a path permission for a user in a tenant (admin/owner only).
+     * Create a path permission for a user in a tenant (admin/owner or scoped permission manager).
      * Create User Permission Handler
      */
     async createUserPermissionRaw(requestParameters: CreateUserPermissionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PermissionResponse>> {
@@ -496,7 +515,7 @@ export class UserPermissionsApi extends runtime.BaseAPI implements UserPermissio
     }
 
     /**
-     * Create a path permission for a user in a tenant (admin/owner only).
+     * Create a path permission for a user in a tenant (admin/owner or scoped permission manager).
      * Create User Permission Handler
      */
     async createUserPermission(requestParameters: CreateUserPermissionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PermissionResponse> {
@@ -551,7 +570,7 @@ export class UserPermissionsApi extends runtime.BaseAPI implements UserPermissio
     }
 
     /**
-     * Delete a path permission (admin/owner only).
+     * Delete a path permission (admin/owner or scoped permission manager).
      * Delete User Permission Handler
      */
     async deleteUserPermissionRaw(requestParameters: DeleteUserPermissionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
@@ -562,7 +581,7 @@ export class UserPermissionsApi extends runtime.BaseAPI implements UserPermissio
     }
 
     /**
-     * Delete a path permission (admin/owner only).
+     * Delete a path permission (admin/owner or scoped permission manager).
      * Delete User Permission Handler
      */
     async deleteUserPermission(requestParameters: DeleteUserPermissionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
@@ -605,8 +624,24 @@ export class UserPermissionsApi extends runtime.BaseAPI implements UserPermissio
             queryParameters['sort_dir'] = requestParameters['sortDir'];
         }
 
-        if (requestParameters['capability'] != null) {
-            queryParameters['capability'] = requestParameters['capability'];
+        if (requestParameters['canRead'] != null) {
+            queryParameters['can_read'] = requestParameters['canRead'];
+        }
+
+        if (requestParameters['canWrite'] != null) {
+            queryParameters['can_write'] = requestParameters['canWrite'];
+        }
+
+        if (requestParameters['canDelete'] != null) {
+            queryParameters['can_delete'] = requestParameters['canDelete'];
+        }
+
+        if (requestParameters['canApprove'] != null) {
+            queryParameters['can_approve'] = requestParameters['canApprove'];
+        }
+
+        if (requestParameters['canGrantPermissions'] != null) {
+            queryParameters['can_grant_permissions'] = requestParameters['canGrantPermissions'];
         }
 
         if (requestParameters['limit'] != null) {
@@ -639,7 +674,7 @@ export class UserPermissionsApi extends runtime.BaseAPI implements UserPermissio
     }
 
     /**
-     * List path permissions for a user in a tenant (admin/owner only).
+     * List path permissions for a user in a tenant (admin/owner or scoped permission manager).
      * List User Permissions Handler
      */
     async listUserPermissionsRaw(requestParameters: ListUserPermissionsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedResponsePermissionResponse>> {
@@ -650,7 +685,7 @@ export class UserPermissionsApi extends runtime.BaseAPI implements UserPermissio
     }
 
     /**
-     * List path permissions for a user in a tenant (admin/owner only).
+     * List path permissions for a user in a tenant (admin/owner or scoped permission manager).
      * List User Permissions Handler
      */
     async listUserPermissions(requestParameters: ListUserPermissionsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedResponsePermissionResponse> {
@@ -715,7 +750,7 @@ export class UserPermissionsApi extends runtime.BaseAPI implements UserPermissio
     }
 
     /**
-     * Update a path permission (admin/owner only).
+     * Update a path permission (admin/owner or scoped permission manager).
      * Update User Permission Handler
      */
     async updateUserPermissionRaw(requestParameters: UpdateUserPermissionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PermissionResponse>> {
@@ -726,7 +761,7 @@ export class UserPermissionsApi extends runtime.BaseAPI implements UserPermissio
     }
 
     /**
-     * Update a path permission (admin/owner only).
+     * Update a path permission (admin/owner or scoped permission manager).
      * Update User Permission Handler
      */
     async updateUserPermission(requestParameters: UpdateUserPermissionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PermissionResponse> {

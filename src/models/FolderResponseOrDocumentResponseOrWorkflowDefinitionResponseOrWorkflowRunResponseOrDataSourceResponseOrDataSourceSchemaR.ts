@@ -48,6 +48,20 @@ import {
     DocumentResponseFromJSONTyped,
     DocumentResponseToJSON,
 } from './DocumentResponse';
+import type { EmailMessageResponse } from './EmailMessageResponse';
+import {
+    instanceOfEmailMessageResponse,
+    EmailMessageResponseFromJSON,
+    EmailMessageResponseFromJSONTyped,
+    EmailMessageResponseToJSON,
+} from './EmailMessageResponse';
+import type { EmailThreadResponse } from './EmailThreadResponse';
+import {
+    instanceOfEmailThreadResponse,
+    EmailThreadResponseFromJSON,
+    EmailThreadResponseFromJSONTyped,
+    EmailThreadResponseToJSON,
+} from './EmailThreadResponse';
 import type { FolderResponse } from './FolderResponse';
 import {
     instanceOfFolderResponse,
@@ -82,7 +96,7 @@ import {
  * 
  * @export
  */
-export type FolderResponseOrDocumentResponseOrWorkflowDefinitionResponseOrWorkflowRunResponseOrDataSourceResponseOrDataSourceSchemaR = { partType: 'API_CONNECTION' } & ApiConnectionResponse | { partType: 'DATA_SOURCE' } & DataSourceResponse | { partType: 'DATA_SOURCE_SCHEMA' } & DataSourceSchemaResponse | { partType: 'DATA_SOURCE_TABLE' } & DataSourceTableResponse | { partType: 'DOCUMENT' } & DocumentResponse | { partType: 'FOLDER' } & FolderResponse | { partType: 'SKILL' } & SkillResponse | { partType: 'WORKFLOW_DEFINITION' } & WorkflowDefinitionResponse | { partType: 'WORKFLOW_RUN' } & WorkflowRunResponse;
+export type FolderResponseOrDocumentResponseOrWorkflowDefinitionResponseOrWorkflowRunResponseOrDataSourceResponseOrDataSourceSchemaR = { partType: 'API_CONNECTION' } & ApiConnectionResponse | { partType: 'DATA_SOURCE' } & DataSourceResponse | { partType: 'DATA_SOURCE_SCHEMA' } & DataSourceSchemaResponse | { partType: 'DATA_SOURCE_TABLE' } & DataSourceTableResponse | { partType: 'DOCUMENT' } & DocumentResponse | { partType: 'EMAIL_MESSAGE' } & EmailMessageResponse | { partType: 'EMAIL_THREAD' } & EmailThreadResponse | { partType: 'FOLDER' } & FolderResponse | { partType: 'SKILL' } & SkillResponse | { partType: 'WORKFLOW_DEFINITION' } & WorkflowDefinitionResponse | { partType: 'WORKFLOW_RUN' } & WorkflowRunResponse;
 
 export function FolderResponseOrDocumentResponseOrWorkflowDefinitionResponseOrWorkflowRunResponseOrDataSourceResponseOrDataSourceSchemaRFromJSON(json: any): FolderResponseOrDocumentResponseOrWorkflowDefinitionResponseOrWorkflowRunResponseOrDataSourceResponseOrDataSourceSchemaR {
     return FolderResponseOrDocumentResponseOrWorkflowDefinitionResponseOrWorkflowRunResponseOrDataSourceResponseOrDataSourceSchemaRFromJSONTyped(json, false);
@@ -103,6 +117,10 @@ export function FolderResponseOrDocumentResponseOrWorkflowDefinitionResponseOrWo
             return Object.assign({}, DataSourceTableResponseFromJSONTyped(json, true), { partType: 'DATA_SOURCE_TABLE' } as const);
         case 'DOCUMENT':
             return Object.assign({}, DocumentResponseFromJSONTyped(json, true), { partType: 'DOCUMENT' } as const);
+        case 'EMAIL_MESSAGE':
+            return Object.assign({}, EmailMessageResponseFromJSONTyped(json, true), { partType: 'EMAIL_MESSAGE' } as const);
+        case 'EMAIL_THREAD':
+            return Object.assign({}, EmailThreadResponseFromJSONTyped(json, true), { partType: 'EMAIL_THREAD' } as const);
         case 'FOLDER':
             return Object.assign({}, FolderResponseFromJSONTyped(json, true), { partType: 'FOLDER' } as const);
         case 'SKILL':
@@ -135,6 +153,10 @@ export function FolderResponseOrDocumentResponseOrWorkflowDefinitionResponseOrWo
             return Object.assign({}, DataSourceTableResponseToJSON(value), { 'part_type': 'DATA_SOURCE_TABLE' } as const);
         case 'DOCUMENT':
             return Object.assign({}, DocumentResponseToJSON(value), { 'part_type': 'DOCUMENT' } as const);
+        case 'EMAIL_MESSAGE':
+            return Object.assign({}, EmailMessageResponseToJSON(value), { 'part_type': 'EMAIL_MESSAGE' } as const);
+        case 'EMAIL_THREAD':
+            return Object.assign({}, EmailThreadResponseToJSON(value), { 'part_type': 'EMAIL_THREAD' } as const);
         case 'FOLDER':
             return Object.assign({}, FolderResponseToJSON(value), { 'part_type': 'FOLDER' } as const);
         case 'SKILL':

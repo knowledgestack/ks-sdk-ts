@@ -20,15 +20,16 @@ import { mapValues } from '../runtime';
  * write/delete can still be refused by transient state on the same response:
  * a run's ``execution_state`` (e.g. not IN_PROGRESS to delete), a
  * ``system_managed`` item, or a document that is ``approval_state``-sealed or
- * checked out by another user (see authorization.md §5.6). Ladder:
- * ``can_delete`` ⟹ ``can_write`` ⟹ ``can_read``; ``can_approve`` is orthogonal
- * and always false for agents.
+ * checked out by another user. Stored path grants require delete → write → read;
+ * approval requires read independently of write/delete. Workflow-run permissions
+ * also use ownership rules.
+ * ``can_approve`` is always false for agents.
  * @export
  * @interface ItemPermissions
  */
 export interface ItemPermissions {
     /**
-     * False only on a navigation-ancestor row (visible to traverse, not open).
+     * Authorized to read content; navigation visibility alone does not grant read.
      */
     canRead: boolean;
     /**
@@ -43,6 +44,10 @@ export interface ItemPermissions {
      * Authorized to approve/unapprove. Always false for agents (assumed).
      */
     canApprove: boolean;
+    /**
+     * Authorized to manage user and group grants on this subtree.
+     */
+    canGrantPermissions: boolean;
 }
 export const ItemPermissionsPropertyValidationAttributesMap: {
     [property: string]: {
@@ -72,6 +77,7 @@ export function instanceOfItemPermissions(value: object): value is ItemPermissio
     if ((!('canWrite' in (value as Record<string, any>)) && !('can_write' in (value as Record<string, any>))) || ((value as Record<string, any>)['canWrite'] === undefined && (value as Record<string, any>)['can_write'] === undefined)) return false;
     if ((!('canDelete' in (value as Record<string, any>)) && !('can_delete' in (value as Record<string, any>))) || ((value as Record<string, any>)['canDelete'] === undefined && (value as Record<string, any>)['can_delete'] === undefined)) return false;
     if ((!('canApprove' in (value as Record<string, any>)) && !('can_approve' in (value as Record<string, any>))) || ((value as Record<string, any>)['canApprove'] === undefined && (value as Record<string, any>)['can_approve'] === undefined)) return false;
+    if ((!('canGrantPermissions' in (value as Record<string, any>)) && !('can_grant_permissions' in (value as Record<string, any>))) || ((value as Record<string, any>)['canGrantPermissions'] === undefined && (value as Record<string, any>)['can_grant_permissions'] === undefined)) return false;
     return true;
 }
 
@@ -89,6 +95,7 @@ export function ItemPermissionsFromJSONTyped(json: any, ignoreDiscriminator: boo
         'canWrite': json['can_write'],
         'canDelete': json['can_delete'],
         'canApprove': json['can_approve'],
+        'canGrantPermissions': json['can_grant_permissions'],
     };
 }
 
@@ -107,6 +114,7 @@ export function ItemPermissionsToJSONTyped(value?: ItemPermissions | null, ignor
         'can_write': value['canWrite'],
         'can_delete': value['canDelete'],
         'can_approve': value['canApprove'],
+        'can_grant_permissions': value['canGrantPermissions'],
     };
 }
 

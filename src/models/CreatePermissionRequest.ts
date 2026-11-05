@@ -13,20 +13,32 @@
  */
 
 import { mapValues } from '../runtime';
-import type { PermissionCapability } from './PermissionCapability';
-import {
-    PermissionCapabilityFromJSON,
-    PermissionCapabilityFromJSONTyped,
-    PermissionCapabilityToJSON,
-    PermissionCapabilityToJSONTyped,
-} from './PermissionCapability';
-
 /**
  * 
  * @export
  * @interface CreatePermissionRequest
  */
 export interface CreatePermissionRequest {
+    /**
+     * Grant read access to the target subtree.
+     */
+    canRead?: boolean;
+    /**
+     * Grant write access; requires can_read=true.
+     */
+    canWrite?: boolean;
+    /**
+     * Grant delete access; requires can_read=true and can_write=true.
+     */
+    canDelete?: boolean;
+    /**
+     * Grant approval access; requires can_read=true, independently of write and delete.
+     */
+    canApprove?: boolean;
+    /**
+     * Manage subtree permissions; requires all four content flags.
+     */
+    canGrantPermissions?: boolean;
     /**
      * 
      */
@@ -39,17 +51,7 @@ export interface CreatePermissionRequest {
      * 
      */
     pathPartId: string;
-    /**
-     * 
-     */
-    capability: PermissionCapability;
-    /**
-     * 
-     */
-    canApprove?: boolean;
 }
-
-
 export const CreatePermissionRequestPropertyValidationAttributesMap: {
     [property: string]: {
         dataType?: string,
@@ -77,7 +79,6 @@ export function instanceOfCreatePermissionRequest(value: object): value is Creat
     if ((!('tenantId' in (value as Record<string, any>)) && !('tenant_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['tenantId'] === undefined && (value as Record<string, any>)['tenant_id'] === undefined)) return false;
     if ((!('userId' in (value as Record<string, any>)) && !('user_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['userId'] === undefined && (value as Record<string, any>)['user_id'] === undefined)) return false;
     if ((!('pathPartId' in (value as Record<string, any>)) && !('path_part_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['pathPartId'] === undefined && (value as Record<string, any>)['path_part_id'] === undefined)) return false;
-    if (!('capability' in value) || value['capability'] === undefined) return false;
     return true;
 }
 
@@ -91,11 +92,14 @@ export function CreatePermissionRequestFromJSONTyped(json: any, ignoreDiscrimina
     }
     return {
         
+        'canRead': json['can_read'] == null ? undefined : json['can_read'],
+        'canWrite': json['can_write'] == null ? undefined : json['can_write'],
+        'canDelete': json['can_delete'] == null ? undefined : json['can_delete'],
+        'canApprove': json['can_approve'] == null ? undefined : json['can_approve'],
+        'canGrantPermissions': json['can_grant_permissions'] == null ? undefined : json['can_grant_permissions'],
         'tenantId': json['tenant_id'],
         'userId': json['user_id'],
         'pathPartId': json['path_part_id'],
-        'capability': PermissionCapabilityFromJSON(json['capability']),
-        'canApprove': json['can_approve'] == null ? undefined : json['can_approve'],
     };
 }
 
@@ -110,11 +114,14 @@ export function CreatePermissionRequestToJSONTyped(value?: CreatePermissionReque
 
     return {
         
+        'can_read': value['canRead'],
+        'can_write': value['canWrite'],
+        'can_delete': value['canDelete'],
+        'can_approve': value['canApprove'],
+        'can_grant_permissions': value['canGrantPermissions'],
         'tenant_id': value['tenantId'],
         'user_id': value['userId'],
         'path_part_id': value['pathPartId'],
-        'capability': PermissionCapabilityToJSON(value['capability']),
-        'can_approve': value['canApprove'],
     };
 }
 

@@ -79,11 +79,6 @@ import {
     PaginatedResponseMembershipResponseToJSON,
 } from '../models/PaginatedResponseMembershipResponse';
 import {
-    type PermissionCapability,
-    PermissionCapabilityFromJSON,
-    PermissionCapabilityToJSON,
-} from '../models/PermissionCapability';
-import {
     type SortDirection,
     SortDirectionFromJSON,
     SortDirectionToJSON,
@@ -199,9 +194,25 @@ export interface ListGroupPermissionsRequest {
      */
     sortDir?: SortDirection;
     /**
-     * Filter to permissions with this capability
+     * Filter grants by can_read
      */
-    capability?: PermissionCapability;
+    canRead?: boolean | null;
+    /**
+     * Filter grants by can_write
+     */
+    canWrite?: boolean | null;
+    /**
+     * Filter grants by can_delete
+     */
+    canDelete?: boolean | null;
+    /**
+     * Filter grants by can_approve
+     */
+    canApprove?: boolean | null;
+    /**
+     * Filter grants by can_grant_permissions
+     */
+    canGrantPermissions?: boolean | null;
     /**
      * Number of items per page
      */
@@ -335,7 +346,7 @@ export interface TenantGroupsApiInterface {
     createGroupPermissionRequestOpts(requestParameters: CreateGroupPermissionOperationRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * Create a path permission for a group (admin/owner only).
+     * Create a path permission for a group (admin/owner or scoped permission manager).
      * @summary Create Group Permission Handler
      * @param {string} groupId 
      * @param {CreateGroupPermissionRequest} createGroupPermissionRequest 
@@ -346,7 +357,7 @@ export interface TenantGroupsApiInterface {
     createGroupPermissionRaw(requestParameters: CreateGroupPermissionOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GroupPermissionResponse>>;
 
     /**
-     * Create a path permission for a group (admin/owner only).
+     * Create a path permission for a group (admin/owner or scoped permission manager).
      * Create Group Permission Handler
      */
     createGroupPermission(requestParameters: CreateGroupPermissionOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<GroupPermissionResponse>;
@@ -385,7 +396,7 @@ export interface TenantGroupsApiInterface {
     deleteGroupPermissionRequestOpts(requestParameters: DeleteGroupPermissionRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * Delete a path permission from a group (admin/owner only).
+     * Delete a path permission from a group (admin/owner or scoped permission manager).
      * @summary Delete Group Permission Handler
      * @param {string} groupId 
      * @param {string} permissionId 
@@ -396,7 +407,7 @@ export interface TenantGroupsApiInterface {
     deleteGroupPermissionRaw(requestParameters: DeleteGroupPermissionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>>;
 
     /**
-     * Delete a path permission from a group (admin/owner only).
+     * Delete a path permission from a group (admin/owner or scoped permission manager).
      * Delete Group Permission Handler
      */
     deleteGroupPermission(requestParameters: DeleteGroupPermissionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void>;
@@ -434,7 +445,7 @@ export interface TenantGroupsApiInterface {
     getTenantGroupRequestOpts(requestParameters: GetTenantGroupRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * Get a tenant group by ID (group member or admin/owner).
+     * Get a tenant group (member, admin/owner, or permission manager).
      * @summary Get Tenant Group Handler
      * @param {string} groupId 
      * @param {*} [options] Override http request option.
@@ -444,7 +455,7 @@ export interface TenantGroupsApiInterface {
     getTenantGroupRaw(requestParameters: GetTenantGroupRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GroupResponse>>;
 
     /**
-     * Get a tenant group by ID (group member or admin/owner).
+     * Get a tenant group (member, admin/owner, or permission manager).
      * Get Tenant Group Handler
      */
     getTenantGroup(requestParameters: GetTenantGroupRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<GroupResponse>;
@@ -463,7 +474,7 @@ export interface TenantGroupsApiInterface {
     listGroupMembersRequestOpts(requestParameters: ListGroupMembersRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * List members of a group (group members or admin/owner).
+     * List group members (member, admin/owner, or permission manager).
      * @summary List Group Members Handler
      * @param {string} groupId 
      * @param {GroupMemberOrder} [sortBy] Field to sort members by (default: ADDED_AT)
@@ -478,7 +489,7 @@ export interface TenantGroupsApiInterface {
     listGroupMembersRaw(requestParameters: ListGroupMembersRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedResponseMembershipResponse>>;
 
     /**
-     * List members of a group (group members or admin/owner).
+     * List group members (member, admin/owner, or permission manager).
      * List Group Members Handler
      */
     listGroupMembers(requestParameters: ListGroupMembersRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedResponseMembershipResponse>;
@@ -488,7 +499,11 @@ export interface TenantGroupsApiInterface {
      * @param {string} groupId 
      * @param {GroupPermissionOrder} [sortBy] Field to sort permissions by (default: CREATED_AT)
      * @param {SortDirection} [sortDir] Sort direction; overrides the field\&#39;s natural default
-     * @param {PermissionCapability} [capability] Filter to permissions with this capability
+     * @param {boolean} [canRead] Filter grants by can_read
+     * @param {boolean} [canWrite] Filter grants by can_write
+     * @param {boolean} [canDelete] Filter grants by can_delete
+     * @param {boolean} [canApprove] Filter grants by can_approve
+     * @param {boolean} [canGrantPermissions] Filter grants by can_grant_permissions
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
      * @throws {RequiredError}
@@ -497,12 +512,16 @@ export interface TenantGroupsApiInterface {
     listGroupPermissionsRequestOpts(requestParameters: ListGroupPermissionsRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * List path permissions for a group (group member or admin/owner).
+     * List group grants; non-member managers see only their managed subtrees.
      * @summary List Group Permissions Handler
      * @param {string} groupId 
      * @param {GroupPermissionOrder} [sortBy] Field to sort permissions by (default: CREATED_AT)
      * @param {SortDirection} [sortDir] Sort direction; overrides the field\&#39;s natural default
-     * @param {PermissionCapability} [capability] Filter to permissions with this capability
+     * @param {boolean} [canRead] Filter grants by can_read
+     * @param {boolean} [canWrite] Filter grants by can_write
+     * @param {boolean} [canDelete] Filter grants by can_delete
+     * @param {boolean} [canApprove] Filter grants by can_approve
+     * @param {boolean} [canGrantPermissions] Filter grants by can_grant_permissions
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
      * @param {*} [options] Override http request option.
@@ -512,7 +531,7 @@ export interface TenantGroupsApiInterface {
     listGroupPermissionsRaw(requestParameters: ListGroupPermissionsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedResponseGroupPermissionResponse>>;
 
     /**
-     * List path permissions for a group (group member or admin/owner).
+     * List group grants; non-member managers see only their managed subtrees.
      * List Group Permissions Handler
      */
     listGroupPermissions(requestParameters: ListGroupPermissionsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedResponseGroupPermissionResponse>;
@@ -557,7 +576,7 @@ export interface TenantGroupsApiInterface {
     listTenantGroupsRequestOpts(requestParameters: ListTenantGroupsRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * List tenant groups.  Admin/owner see all groups; other members see only groups they belong to.
+     * List tenant groups.  Admin/owner and permission managers see all groups; other members see their own.
      * @summary List Tenant Groups Handler
      * @param {TenantGroupOrder} [sortBy] Field to sort groups by (default: NAME)
      * @param {SortDirection} [sortDir] Sort direction; overrides the field\&#39;s natural default
@@ -576,7 +595,7 @@ export interface TenantGroupsApiInterface {
     listTenantGroupsRaw(requestParameters: ListTenantGroupsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedResponseGroupResponse>>;
 
     /**
-     * List tenant groups.  Admin/owner see all groups; other members see only groups they belong to.
+     * List tenant groups.  Admin/owner and permission managers see all groups; other members see their own.
      * List Tenant Groups Handler
      */
     listTenantGroups(requestParameters: ListTenantGroupsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedResponseGroupResponse>;
@@ -618,7 +637,7 @@ export interface TenantGroupsApiInterface {
     updateGroupPermissionRequestOpts(requestParameters: UpdateGroupPermissionOperationRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * Update a path permission for a group (admin/owner only).
+     * Update a path permission for a group (admin/owner or scoped permission manager).
      * @summary Update Group Permission Handler
      * @param {string} groupId 
      * @param {string} permissionId 
@@ -630,7 +649,7 @@ export interface TenantGroupsApiInterface {
     updateGroupPermissionRaw(requestParameters: UpdateGroupPermissionOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GroupPermissionResponse>>;
 
     /**
-     * Update a path permission for a group (admin/owner only).
+     * Update a path permission for a group (admin/owner or scoped permission manager).
      * Update Group Permission Handler
      */
     updateGroupPermission(requestParameters: UpdateGroupPermissionOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<GroupPermissionResponse>;
@@ -779,7 +798,7 @@ export class TenantGroupsApi extends runtime.BaseAPI implements TenantGroupsApiI
     }
 
     /**
-     * Create a path permission for a group (admin/owner only).
+     * Create a path permission for a group (admin/owner or scoped permission manager).
      * Create Group Permission Handler
      */
     async createGroupPermissionRaw(requestParameters: CreateGroupPermissionOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GroupPermissionResponse>> {
@@ -790,7 +809,7 @@ export class TenantGroupsApi extends runtime.BaseAPI implements TenantGroupsApiI
     }
 
     /**
-     * Create a path permission for a group (admin/owner only).
+     * Create a path permission for a group (admin/owner or scoped permission manager).
      * Create Group Permission Handler
      */
     async createGroupPermission(requestParameters: CreateGroupPermissionOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<GroupPermissionResponse> {
@@ -899,7 +918,7 @@ export class TenantGroupsApi extends runtime.BaseAPI implements TenantGroupsApiI
     }
 
     /**
-     * Delete a path permission from a group (admin/owner only).
+     * Delete a path permission from a group (admin/owner or scoped permission manager).
      * Delete Group Permission Handler
      */
     async deleteGroupPermissionRaw(requestParameters: DeleteGroupPermissionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
@@ -910,7 +929,7 @@ export class TenantGroupsApi extends runtime.BaseAPI implements TenantGroupsApiI
     }
 
     /**
-     * Delete a path permission from a group (admin/owner only).
+     * Delete a path permission from a group (admin/owner or scoped permission manager).
      * Delete Group Permission Handler
      */
     async deleteGroupPermission(requestParameters: DeleteGroupPermissionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
@@ -1007,7 +1026,7 @@ export class TenantGroupsApi extends runtime.BaseAPI implements TenantGroupsApiI
     }
 
     /**
-     * Get a tenant group by ID (group member or admin/owner).
+     * Get a tenant group (member, admin/owner, or permission manager).
      * Get Tenant Group Handler
      */
     async getTenantGroupRaw(requestParameters: GetTenantGroupRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GroupResponse>> {
@@ -1018,7 +1037,7 @@ export class TenantGroupsApi extends runtime.BaseAPI implements TenantGroupsApiI
     }
 
     /**
-     * Get a tenant group by ID (group member or admin/owner).
+     * Get a tenant group (member, admin/owner, or permission manager).
      * Get Tenant Group Handler
      */
     async getTenantGroup(requestParameters: GetTenantGroupRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<GroupResponse> {
@@ -1082,7 +1101,7 @@ export class TenantGroupsApi extends runtime.BaseAPI implements TenantGroupsApiI
     }
 
     /**
-     * List members of a group (group members or admin/owner).
+     * List group members (member, admin/owner, or permission manager).
      * List Group Members Handler
      */
     async listGroupMembersRaw(requestParameters: ListGroupMembersRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedResponseMembershipResponse>> {
@@ -1093,7 +1112,7 @@ export class TenantGroupsApi extends runtime.BaseAPI implements TenantGroupsApiI
     }
 
     /**
-     * List members of a group (group members or admin/owner).
+     * List group members (member, admin/owner, or permission manager).
      * List Group Members Handler
      */
     async listGroupMembers(requestParameters: ListGroupMembersRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedResponseMembershipResponse> {
@@ -1122,8 +1141,24 @@ export class TenantGroupsApi extends runtime.BaseAPI implements TenantGroupsApiI
             queryParameters['sort_dir'] = requestParameters['sortDir'];
         }
 
-        if (requestParameters['capability'] != null) {
-            queryParameters['capability'] = requestParameters['capability'];
+        if (requestParameters['canRead'] != null) {
+            queryParameters['can_read'] = requestParameters['canRead'];
+        }
+
+        if (requestParameters['canWrite'] != null) {
+            queryParameters['can_write'] = requestParameters['canWrite'];
+        }
+
+        if (requestParameters['canDelete'] != null) {
+            queryParameters['can_delete'] = requestParameters['canDelete'];
+        }
+
+        if (requestParameters['canApprove'] != null) {
+            queryParameters['can_approve'] = requestParameters['canApprove'];
+        }
+
+        if (requestParameters['canGrantPermissions'] != null) {
+            queryParameters['can_grant_permissions'] = requestParameters['canGrantPermissions'];
         }
 
         if (requestParameters['limit'] != null) {
@@ -1157,7 +1192,7 @@ export class TenantGroupsApi extends runtime.BaseAPI implements TenantGroupsApiI
     }
 
     /**
-     * List path permissions for a group (group member or admin/owner).
+     * List group grants; non-member managers see only their managed subtrees.
      * List Group Permissions Handler
      */
     async listGroupPermissionsRaw(requestParameters: ListGroupPermissionsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedResponseGroupPermissionResponse>> {
@@ -1168,7 +1203,7 @@ export class TenantGroupsApi extends runtime.BaseAPI implements TenantGroupsApiI
     }
 
     /**
-     * List path permissions for a group (group member or admin/owner).
+     * List group grants; non-member managers see only their managed subtrees.
      * List Group Permissions Handler
      */
     async listGroupPermissions(requestParameters: ListGroupPermissionsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedResponseGroupPermissionResponse> {
@@ -1291,7 +1326,7 @@ export class TenantGroupsApi extends runtime.BaseAPI implements TenantGroupsApiI
     }
 
     /**
-     * List tenant groups.  Admin/owner see all groups; other members see only groups they belong to.
+     * List tenant groups.  Admin/owner and permission managers see all groups; other members see their own.
      * List Tenant Groups Handler
      */
     async listTenantGroupsRaw(requestParameters: ListTenantGroupsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedResponseGroupResponse>> {
@@ -1302,7 +1337,7 @@ export class TenantGroupsApi extends runtime.BaseAPI implements TenantGroupsApiI
     }
 
     /**
-     * List tenant groups.  Admin/owner see all groups; other members see only groups they belong to.
+     * List tenant groups.  Admin/owner and permission managers see all groups; other members see their own.
      * List Tenant Groups Handler
      */
     async listTenantGroups(requestParameters: ListTenantGroupsRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedResponseGroupResponse> {
@@ -1426,7 +1461,7 @@ export class TenantGroupsApi extends runtime.BaseAPI implements TenantGroupsApiI
     }
 
     /**
-     * Update a path permission for a group (admin/owner only).
+     * Update a path permission for a group (admin/owner or scoped permission manager).
      * Update Group Permission Handler
      */
     async updateGroupPermissionRaw(requestParameters: UpdateGroupPermissionOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GroupPermissionResponse>> {
@@ -1437,7 +1472,7 @@ export class TenantGroupsApi extends runtime.BaseAPI implements TenantGroupsApiI
     }
 
     /**
-     * Update a path permission for a group (admin/owner only).
+     * Update a path permission for a group (admin/owner or scoped permission manager).
      * Update Group Permission Handler
      */
     async updateGroupPermission(requestParameters: UpdateGroupPermissionOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<GroupPermissionResponse> {

@@ -13,14 +13,6 @@
  */
 
 import { mapValues } from '../runtime';
-import type { PermissionCapability } from './PermissionCapability';
-import {
-    PermissionCapabilityFromJSON,
-    PermissionCapabilityFromJSONTyped,
-    PermissionCapabilityToJSON,
-    PermissionCapabilityToJSONTyped,
-} from './PermissionCapability';
-
 /**
  * 
  * @export
@@ -28,20 +20,30 @@ import {
  */
 export interface UpdatePermissionRequest {
     /**
+     * Set read access; omitted or null leaves the stored flag unchanged.
+     */
+    canRead?: boolean | null;
+    /**
+     * Set write access; requires read in the resulting grant. Omitted or null leaves the stored flag unchanged.
+     */
+    canWrite?: boolean | null;
+    /**
+     * Set delete access; requires read and write in the resulting grant. Omitted or null leaves the stored flag unchanged.
+     */
+    canDelete?: boolean | null;
+    /**
+     * Set approval access; requires read in the resulting grant. Omitted or null leaves the stored flag unchanged.
+     */
+    canApprove?: boolean | null;
+    /**
+     * Set subtree permission management; requires all four flags. Omitted or null retains the stored value.
+     */
+    canGrantPermissions?: boolean | null;
+    /**
      * 
      */
     pathPartId?: string | null;
-    /**
-     * 
-     */
-    capability?: PermissionCapability;
-    /**
-     * 
-     */
-    canApprove?: boolean | null;
 }
-
-
 export const UpdatePermissionRequestPropertyValidationAttributesMap: {
     [property: string]: {
         dataType?: string,
@@ -79,9 +81,12 @@ export function UpdatePermissionRequestFromJSONTyped(json: any, ignoreDiscrimina
     }
     return {
         
-        'pathPartId': json['path_part_id'] === undefined ? undefined : json['path_part_id'] === null ? null : json['path_part_id'],
-        'capability': json['capability'] == null ? undefined : PermissionCapabilityFromJSON(json['capability']),
+        'canRead': json['can_read'] === undefined ? undefined : json['can_read'] === null ? null : json['can_read'],
+        'canWrite': json['can_write'] === undefined ? undefined : json['can_write'] === null ? null : json['can_write'],
+        'canDelete': json['can_delete'] === undefined ? undefined : json['can_delete'] === null ? null : json['can_delete'],
         'canApprove': json['can_approve'] === undefined ? undefined : json['can_approve'] === null ? null : json['can_approve'],
+        'canGrantPermissions': json['can_grant_permissions'] === undefined ? undefined : json['can_grant_permissions'] === null ? null : json['can_grant_permissions'],
+        'pathPartId': json['path_part_id'] === undefined ? undefined : json['path_part_id'] === null ? null : json['path_part_id'],
     };
 }
 
@@ -96,9 +101,12 @@ export function UpdatePermissionRequestToJSONTyped(value?: UpdatePermissionReque
 
     return {
         
-        'path_part_id': value['pathPartId'],
-        'capability': PermissionCapabilityToJSON(value['capability']),
+        'can_read': value['canRead'],
+        'can_write': value['canWrite'],
+        'can_delete': value['canDelete'],
         'can_approve': value['canApprove'],
+        'can_grant_permissions': value['canGrantPermissions'],
+        'path_part_id': value['pathPartId'],
     };
 }
 

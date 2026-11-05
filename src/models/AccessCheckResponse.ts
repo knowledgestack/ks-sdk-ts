@@ -20,7 +20,7 @@ import { mapValues } from '../runtime';
  */
 export interface AccessCheckResponse {
     /**
-     * Whether the user has the capability
+     * Whether the user has the requested action
      */
     allowed: boolean;
     /**

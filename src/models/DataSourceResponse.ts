@@ -13,6 +13,20 @@
  */
 
 import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
+import type { MailCredentialOption } from './MailCredentialOption';
+import {
+    MailCredentialOptionFromJSON,
+    MailCredentialOptionFromJSONTyped,
+    MailCredentialOptionToJSON,
+    MailCredentialOptionToJSONTyped,
+} from './MailCredentialOption';
+import type { ConnectorSyncStatus } from './ConnectorSyncStatus';
+import {
+    ConnectorSyncStatusFromJSON,
+    ConnectorSyncStatusFromJSONTyped,
+    ConnectorSyncStatusToJSON,
+    ConnectorSyncStatusToJSONTyped,
+} from './ConnectorSyncStatus';
 import type { ConnectionSummary } from './ConnectionSummary';
 import {
     ConnectionSummaryFromJSON,
@@ -27,6 +41,13 @@ import {
     ItemPermissionsToJSON,
     ItemPermissionsToJSONTyped,
 } from './ItemPermissions';
+import type { EmailConfigSummary } from './EmailConfigSummary';
+import {
+    EmailConfigSummaryFromJSON,
+    EmailConfigSummaryFromJSONTyped,
+    EmailConfigSummaryToJSON,
+    EmailConfigSummaryToJSONTyped,
+} from './EmailConfigSummary';
 import type { SourceType } from './SourceType';
 import {
     SourceTypeFromJSON,
@@ -62,6 +83,13 @@ import {
     DataSourceEngineToJSON,
     DataSourceEngineToJSONTyped,
 } from './DataSourceEngine';
+import type { EmailSyncProgress } from './EmailSyncProgress';
+import {
+    EmailSyncProgressFromJSON,
+    EmailSyncProgressFromJSONTyped,
+    EmailSyncProgressToJSON,
+    EmailSyncProgressToJSONTyped,
+} from './EmailSyncProgress';
 
 /**
  * Connector response; a discriminated-union variant for folder listings.
@@ -106,7 +134,7 @@ export interface DataSourceResponse {
     /**
      * 
      */
-    engine: DataSourceEngine;
+    engine?: DataSourceEngine;
     /**
      * 
      */
@@ -116,9 +144,37 @@ export interface DataSourceResponse {
      */
     connectionSummary?: ConnectionSummary | null;
     /**
-     * A YIDINGSYNC connector's crawler config without the password: which shop, from when, and the crawl recurrence. Null on DIRECT.
+     * A YIDINGSYNC connector's crawler config without the password: which shop, from when, and the crawl recurrence. Null on DIRECT and on EMAIL, which reports through email_config.
      */
     sourceConfig?: SourceConfigSummary | null;
+    /**
+     * An EMAIL connector's folder list and cron; null otherwise
+     */
+    emailConfig?: EmailConfigSummary | null;
+    /**
+     * The mailbox an EMAIL connector syncs; null otherwise, and null on a mailbox connector until its first consent lands, because the address is read out of the id token rather than typed. From then on it is fixed: a later sign-in as another account is refused rather than stored, so this is the mailbox whose mail is in the tree. The connector's own ``name`` is a separate label of the caller's choosing; show both.
+     */
+    mailboxAddress?: string | null;
+    /**
+     * The app registration this mailbox authenticates with; null on a connector that is not a mailbox. Name and provider only: the ids are the admin's business and the secret is nobody's
+     */
+    mailCredential?: MailCredentialOption | null;
+    /**
+     * When an EMAIL connector last reported in; null otherwise. Read with sync_status, which says whether it is healthy rather than whether it is still moving.
+     */
+    emailProgress?: EmailSyncProgress | null;
+    /**
+     * 
+     */
+    syncStatus: ConnectorSyncStatus;
+    /**
+     * How often this connector is crawled, as a cron expression in the tenant's timezone. Absent on a source nothing crawls.
+     */
+    syncCron?: string | null;
+    /**
+     * Why the last crawl ended badly
+     */
+    lastSyncError?: string | null;
     /**
      * 
      */
@@ -180,8 +236,8 @@ export function instanceOfDataSourceResponse(value: object): value is DataSource
     if ((!('materializedPath' in (value as Record<string, any>)) && !('materialized_path' in (value as Record<string, any>))) || ((value as Record<string, any>)['materializedPath'] === undefined && (value as Record<string, any>)['materialized_path'] === undefined)) return false;
     if ((!('tenantId' in (value as Record<string, any>)) && !('tenant_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['tenantId'] === undefined && (value as Record<string, any>)['tenant_id'] === undefined)) return false;
     if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('engine' in value) || value['engine'] === undefined) return false;
     if ((!('sourceType' in (value as Record<string, any>)) && !('source_type' in (value as Record<string, any>))) || ((value as Record<string, any>)['sourceType'] === undefined && (value as Record<string, any>)['source_type'] === undefined)) return false;
+    if ((!('syncStatus' in (value as Record<string, any>)) && !('sync_status' in (value as Record<string, any>))) || ((value as Record<string, any>)['syncStatus'] === undefined && (value as Record<string, any>)['sync_status'] === undefined)) return false;
     if ((!('approvalState' in (value as Record<string, any>)) && !('approval_state' in (value as Record<string, any>))) || ((value as Record<string, any>)['approvalState'] === undefined && (value as Record<string, any>)['approval_state'] === undefined)) return false;
     if (!('permissions' in value) || value['permissions'] === undefined) return false;
     if ((!('createdAt' in (value as Record<string, any>)) && !('created_at' in (value as Record<string, any>))) || ((value as Record<string, any>)['createdAt'] === undefined && (value as Record<string, any>)['created_at'] === undefined)) return false;
@@ -206,10 +262,17 @@ export function DataSourceResponseFromJSONTyped(json: any, ignoreDiscriminator: 
         'materializedPath': json['materialized_path'],
         'tenantId': json['tenant_id'],
         'name': json['name'],
-        'engine': DataSourceEngineFromJSON(json['engine']),
+        'engine': json['engine'] == null ? undefined : DataSourceEngineFromJSON(json['engine']),
         'sourceType': SourceTypeFromJSON(json['source_type']),
         'connectionSummary': json['connection_summary'] === undefined ? undefined : json['connection_summary'] === null ? null : ConnectionSummaryFromJSON(json['connection_summary']),
         'sourceConfig': json['source_config'] === undefined ? undefined : json['source_config'] === null ? null : SourceConfigSummaryFromJSON(json['source_config']),
+        'emailConfig': json['email_config'] === undefined ? undefined : json['email_config'] === null ? null : EmailConfigSummaryFromJSON(json['email_config']),
+        'mailboxAddress': json['mailbox_address'] === undefined ? undefined : json['mailbox_address'] === null ? null : json['mailbox_address'],
+        'mailCredential': json['mail_credential'] === undefined ? undefined : json['mail_credential'] === null ? null : MailCredentialOptionFromJSON(json['mail_credential']),
+        'emailProgress': json['email_progress'] === undefined ? undefined : json['email_progress'] === null ? null : EmailSyncProgressFromJSON(json['email_progress']),
+        'syncStatus': ConnectorSyncStatusFromJSON(json['sync_status']),
+        'syncCron': json['sync_cron'] === undefined ? undefined : json['sync_cron'] === null ? null : json['sync_cron'],
+        'lastSyncError': json['last_sync_error'] === undefined ? undefined : json['last_sync_error'] === null ? null : json['last_sync_error'],
         'approvalState': PathPartApprovalStateFromJSON(json['approval_state']),
         'owner': json['owner'] === undefined ? undefined : json['owner'] === null ? null : UserInfoFromJSON(json['owner']),
         'permissions': ItemPermissionsFromJSON(json['permissions']),
@@ -240,6 +303,13 @@ export function DataSourceResponseToJSONTyped(value?: DataSourceResponse | null,
         'source_type': SourceTypeToJSON(value['sourceType']),
         'connection_summary': ConnectionSummaryToJSON(value['connectionSummary']),
         'source_config': SourceConfigSummaryToJSON(value['sourceConfig']),
+        'email_config': EmailConfigSummaryToJSON(value['emailConfig']),
+        'mailbox_address': value['mailboxAddress'],
+        'mail_credential': MailCredentialOptionToJSON(value['mailCredential']),
+        'email_progress': EmailSyncProgressToJSON(value['emailProgress']),
+        'sync_status': ConnectorSyncStatusToJSON(value['syncStatus']),
+        'sync_cron': value['syncCron'],
+        'last_sync_error': value['lastSyncError'],
         'approval_state': PathPartApprovalStateToJSON(value['approvalState']),
         'owner': UserInfoToJSON(value['owner']),
         'permissions': ItemPermissionsToJSON(value['permissions']),

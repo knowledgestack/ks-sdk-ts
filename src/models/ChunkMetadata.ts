@@ -50,11 +50,11 @@ export interface ChunkMetadata {
      */
     s3Urls?: Array<string>;
     /**
-     * LLM-generated summary of the chunk content. Used for TABLE and HTML chunks to enrich embedding text, and for JSON/YAML chunks (with summarize_for_embedding) as the sole dense embedding text.
+     * A shorter stand-in for the chunk's content, used to enrich or replace its embedding text. Usually LLM-generated: TABLE and HTML chunks use it to enrich, and JSON/YAML chunks (with summarize_for_embedding) as the sole dense embedding text. It may also arrive from the source rather than a model — a synced mail puts the reply without its quoted history here, which the provider separates out already, so no summarization is needed or wanted.
      */
     summary?: string | null;
     /**
-     * When True, this chunk's dense embedding is built from its LLM-generated summary (see summary) instead of its raw content. Set for parsed JSON/YAML single chunks so noisy structured text does not dominate the vector; the raw content is still kept for display and sparse (keyword) retrieval. Enrichment generates the summary when this is set and summary is empty.
+     * When True, this chunk's dense embedding is built from its summary (see summary) instead of its raw content. Set for parsed JSON/YAML single chunks so noisy structured text does not dominate the vector, and for a synced mail so a thread's quoted history does not give every message in it the same vector; the raw content is still kept for display and sparse (keyword) retrieval. Enrichment generates the summary when this is set and summary is empty, so a caller that supplies its own is not charged for a model call.
      */
     summarizeForEmbedding?: boolean;
     /**

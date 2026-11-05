@@ -19,7 +19,11 @@
  */
 export const GroupPermissionOrder = {
     CreatedAt: 'CREATED_AT',
-    Capability: 'CAPABILITY',
+    CanRead: 'CAN_READ',
+    CanWrite: 'CAN_WRITE',
+    CanDelete: 'CAN_DELETE',
+    CanApprove: 'CAN_APPROVE',
+    CanGrantPermissions: 'CAN_GRANT_PERMISSIONS',
 } as const;
 export type GroupPermissionOrder = typeof GroupPermissionOrder[keyof typeof GroupPermissionOrder];
 

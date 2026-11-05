@@ -74,10 +74,10 @@ import {
     PathPartTagsResponseToJSON,
 } from '../models/PathPartTagsResponse';
 import {
-    type PermissionCapability,
-    PermissionCapabilityFromJSON,
-    PermissionCapabilityToJSON,
-} from '../models/PermissionCapability';
+    type PermissionAction,
+    PermissionActionFromJSON,
+    PermissionActionToJSON,
+} from '../models/PermissionAction';
 import {
     type ReorderPathPartRequest,
     ReorderPathPartRequestFromJSON,
@@ -136,9 +136,9 @@ export interface CheckPathPartAccessRequest {
      */
     userId: string;
     /**
-     * Capability to check (READ_ONLY or READ_WRITE)
+     * Independent action to check: read, write, delete, approve, or grant_permissions
      */
-    capability?: PermissionCapability;
+    action?: PermissionAction;
 }
 
 export interface GetPathPartRequest {
@@ -347,18 +347,18 @@ export interface PathPartsApiInterface {
      * Creates request options for checkPathPartAccess without sending the request
      * @param {string} pathPartId 
      * @param {string} userId The user whose access is being explained
-     * @param {PermissionCapability} [capability] Capability to check (READ_ONLY or READ_WRITE)
+     * @param {PermissionAction} [action] Independent action to check: read, write, delete, approve, or grant_permissions
      * @throws {RequiredError}
      * @memberof PathPartsApiInterface
      */
     checkPathPartAccessRequestOpts(requestParameters: CheckPathPartAccessRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * Explain whether ``user_id`` has ``capability`` on a path part.  ADMIN/OWNER-only introspection: resolves the target user\'s effective permissions and reports the decision plus the reason (the matching grant path, or a role bypass). OWNER/ADMIN targets bypass path checks by role, so they are always allowed.  404 if the path part does not exist or the target user is not a member of this tenant.
+     * Explain whether ``user_id`` has ``action`` on a path part.  ADMIN/OWNER or scoped-manager introspection: resolves the target user\'s effective permissions and reports the decision plus the reason (the matching grant path, or a role bypass). OWNER/ADMIN targets bypass path checks by role, so they are always allowed.  404 if the path part does not exist or the target user is not a member of this tenant.
      * @summary Check Path Part Access Handler
      * @param {string} pathPartId 
      * @param {string} userId The user whose access is being explained
-     * @param {PermissionCapability} [capability] Capability to check (READ_ONLY or READ_WRITE)
+     * @param {PermissionAction} [action] Independent action to check: read, write, delete, approve, or grant_permissions
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof PathPartsApiInterface
@@ -366,7 +366,7 @@ export interface PathPartsApiInterface {
     checkPathPartAccessRaw(requestParameters: CheckPathPartAccessRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AccessCheckResponse>>;
 
     /**
-     * Explain whether ``user_id`` has ``capability`` on a path part.  ADMIN/OWNER-only introspection: resolves the target user\'s effective permissions and reports the decision plus the reason (the matching grant path, or a role bypass). OWNER/ADMIN targets bypass path checks by role, so they are always allowed.  404 if the path part does not exist or the target user is not a member of this tenant.
+     * Explain whether ``user_id`` has ``action`` on a path part.  ADMIN/OWNER or scoped-manager introspection: resolves the target user\'s effective permissions and reports the decision plus the reason (the matching grant path, or a role bypass). OWNER/ADMIN targets bypass path checks by role, so they are always allowed.  404 if the path part does not exist or the target user is not a member of this tenant.
      * Check Path Part Access Handler
      */
     checkPathPartAccess(requestParameters: CheckPathPartAccessRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<AccessCheckResponse>;
@@ -788,8 +788,8 @@ export class PathPartsApi extends runtime.BaseAPI implements PathPartsApiInterfa
             queryParameters['user_id'] = requestParameters['userId'];
         }
 
-        if (requestParameters['capability'] != null) {
-            queryParameters['capability'] = requestParameters['capability'];
+        if (requestParameters['action'] != null) {
+            queryParameters['action'] = requestParameters['action'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -815,7 +815,7 @@ export class PathPartsApi extends runtime.BaseAPI implements PathPartsApiInterfa
     }
 
     /**
-     * Explain whether ``user_id`` has ``capability`` on a path part.  ADMIN/OWNER-only introspection: resolves the target user\'s effective permissions and reports the decision plus the reason (the matching grant path, or a role bypass). OWNER/ADMIN targets bypass path checks by role, so they are always allowed.  404 if the path part does not exist or the target user is not a member of this tenant.
+     * Explain whether ``user_id`` has ``action`` on a path part.  ADMIN/OWNER or scoped-manager introspection: resolves the target user\'s effective permissions and reports the decision plus the reason (the matching grant path, or a role bypass). OWNER/ADMIN targets bypass path checks by role, so they are always allowed.  404 if the path part does not exist or the target user is not a member of this tenant.
      * Check Path Part Access Handler
      */
     async checkPathPartAccessRaw(requestParameters: CheckPathPartAccessRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AccessCheckResponse>> {
@@ -826,7 +826,7 @@ export class PathPartsApi extends runtime.BaseAPI implements PathPartsApiInterfa
     }
 
     /**
-     * Explain whether ``user_id`` has ``capability`` on a path part.  ADMIN/OWNER-only introspection: resolves the target user\'s effective permissions and reports the decision plus the reason (the matching grant path, or a role bypass). OWNER/ADMIN targets bypass path checks by role, so they are always allowed.  404 if the path part does not exist or the target user is not a member of this tenant.
+     * Explain whether ``user_id`` has ``action`` on a path part.  ADMIN/OWNER or scoped-manager introspection: resolves the target user\'s effective permissions and reports the decision plus the reason (the matching grant path, or a role bypass). OWNER/ADMIN targets bypass path checks by role, so they are always allowed.  404 if the path part does not exist or the target user is not a member of this tenant.
      * Check Path Part Access Handler
      */
     async checkPathPartAccess(requestParameters: CheckPathPartAccessRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<AccessCheckResponse> {

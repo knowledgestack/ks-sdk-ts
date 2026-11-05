@@ -430,7 +430,7 @@ export interface TenantsApiInterface {
     listTenantUsersRequestOpts(requestParameters: ListTenantUsersRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * List members of a tenant with pagination.  Requires OWNER or ADMIN membership in the tenant.
+     * List members of a tenant with pagination.  Requires OWNER, ADMIN, or a path management grant in the tenant.
      * @summary List Tenant Users
      * @param {string} tenantId 
      * @param {TenantUserOrder} [sortBy] Field to sort members by (default: active-first)
@@ -447,7 +447,7 @@ export interface TenantsApiInterface {
     listTenantUsersRaw(requestParameters: ListTenantUsersRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedResponseTenantUserResponse>>;
 
     /**
-     * List members of a tenant with pagination.  Requires OWNER or ADMIN membership in the tenant.
+     * List members of a tenant with pagination.  Requires OWNER, ADMIN, or a path management grant in the tenant.
      * List Tenant Users
      */
     listTenantUsers(requestParameters: ListTenantUsersRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedResponseTenantUserResponse>;
@@ -1042,7 +1042,7 @@ export class TenantsApi extends runtime.BaseAPI implements TenantsApiInterface {
     }
 
     /**
-     * List members of a tenant with pagination.  Requires OWNER or ADMIN membership in the tenant.
+     * List members of a tenant with pagination.  Requires OWNER, ADMIN, or a path management grant in the tenant.
      * List Tenant Users
      */
     async listTenantUsersRaw(requestParameters: ListTenantUsersRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedResponseTenantUserResponse>> {
@@ -1053,7 +1053,7 @@ export class TenantsApi extends runtime.BaseAPI implements TenantsApiInterface {
     }
 
     /**
-     * List members of a tenant with pagination.  Requires OWNER or ADMIN membership in the tenant.
+     * List members of a tenant with pagination.  Requires OWNER, ADMIN, or a path management grant in the tenant.
      * List Tenant Users
      */
     async listTenantUsers(requestParameters: ListTenantUsersRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedResponseTenantUserResponse> {

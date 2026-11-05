@@ -14,12 +14,13 @@
 
 
 /**
- * Extra connector config for data sync model direct connect or automatic login/copy method.
+ * How a connector gets at its data: read on demand, or crawled on a schedule.
  * @export
  */
 export const SourceType = {
     Direct: 'DIRECT',
     Yidingsync: 'YIDINGSYNC',
+    Email: 'EMAIL',
 } as const;
 export type SourceType = typeof SourceType[keyof typeof SourceType];
 

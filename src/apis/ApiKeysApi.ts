@@ -185,6 +185,14 @@ export class ApiKeysApi extends runtime.BaseAPI implements ApiKeysApiInterface {
 
         headerParameters['Content-Type'] = 'application/json';
 
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/api-keys`;
 
@@ -232,6 +240,14 @@ export class ApiKeysApi extends runtime.BaseAPI implements ApiKeysApiInterface {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/api-keys/{api_key_id}`;
         urlPath = urlPath.replace('{api_key_id}', encodeURIComponent(String(requestParameters['apiKeyId'])));
@@ -278,6 +294,14 @@ export class ApiKeysApi extends runtime.BaseAPI implements ApiKeysApiInterface {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/api-keys/{api_key_id}`;
         urlPath = urlPath.replace('{api_key_id}', encodeURIComponent(String(requestParameters['apiKeyId'])));
@@ -318,6 +342,14 @@ export class ApiKeysApi extends runtime.BaseAPI implements ApiKeysApiInterface {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/api-keys`;
 

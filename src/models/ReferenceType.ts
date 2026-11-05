@@ -32,6 +32,8 @@ export const ReferenceType = {
     DataSourceTable: 'DATA_SOURCE_TABLE',
     ApiConnection: 'API_CONNECTION',
     Skill: 'SKILL',
+    EmailThread: 'EMAIL_THREAD',
+    EmailMessage: 'EMAIL_MESSAGE',
     Image: 'image',
     Memory: 'memory',
     Tag: 'tag',
