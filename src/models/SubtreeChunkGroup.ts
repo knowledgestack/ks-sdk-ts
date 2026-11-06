@@ -14,10 +14,9 @@
 
 import { mapValues } from '../runtime';
 /**
- * A group of chunks sharing identical path_part_ids and tag_ids.
+ * Hierarchy payload shared by chunk, table and skill points in a subtree.
  * 
- * Used by PathPartCRUDService.resolve_subtree_chunks to batch downstream
- * Qdrant set_payload calls.
+ * The legacy name and chunk_ids field are retained for existing clients.
  * @export
  * @interface SubtreeChunkGroup
  */
@@ -26,6 +25,10 @@ export interface SubtreeChunkGroup {
      * 
      */
     chunkIds: Array<string>;
+    /**
+     * Qdrant point IDs: the PDO UUIDs of chunks, tables and skills. Use chunk_ids when absent in a legacy response.
+     */
+    pointIds?: Array<string>;
     /**
      * 
      */
@@ -76,6 +79,7 @@ export function SubtreeChunkGroupFromJSONTyped(json: any, ignoreDiscriminator: b
     return {
         
         'chunkIds': json['chunk_ids'],
+        'pointIds': json['point_ids'] == null ? undefined : json['point_ids'],
         'pathPartIds': json['path_part_ids'],
         'tagIds': json['tag_ids'],
     };
@@ -93,6 +97,7 @@ export function SubtreeChunkGroupToJSONTyped(value?: SubtreeChunkGroup | null, i
     return {
         
         'chunk_ids': value['chunkIds'],
+        'point_ids': value['pointIds'],
         'path_part_ids': value['pathPartIds'],
         'tag_ids': value['tagIds'],
     };

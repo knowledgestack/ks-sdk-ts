@@ -211,7 +211,7 @@ export interface EmailThreadsApiInterface {
     listEmailThreadsRequestOpts(requestParameters: ListEmailThreadsRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * List a folder\'s conversations, newest first by default.  Each row carries what a collapsed conversation shows — participants, the message count, a paperclip and the latest mail\'s opening line — computed for the whole page by one aggregate. A caller reading those per conversation instead is a request per row, which is what makes a fifty-row page slow.
+     * List a folder\'s conversations, newest first by default.  Each row carries what a collapsed conversation shows — participants, the message count, a paperclip and the latest mail\'s opening line — computed for the whole page by one aggregate. A caller reading those per conversation instead is a request per row, which is what makes a fifty-row page slow.  Nonempty subject or source-folder filters limit every role to readable /shared and personal paths. Empty string filters are inactive. Unfiltered browsing retains ordinary read access.
      * @summary List Email Threads Handler
      * @param {string} parentPathPartId Folder whose conversations are listed
      * @param {EmailThreadOrder} [sortBy] 
@@ -227,7 +227,7 @@ export interface EmailThreadsApiInterface {
     listEmailThreadsRaw(requestParameters: ListEmailThreadsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedResponseEmailThreadResponse>>;
 
     /**
-     * List a folder\'s conversations, newest first by default.  Each row carries what a collapsed conversation shows — participants, the message count, a paperclip and the latest mail\'s opening line — computed for the whole page by one aggregate. A caller reading those per conversation instead is a request per row, which is what makes a fifty-row page slow.
+     * List a folder\'s conversations, newest first by default.  Each row carries what a collapsed conversation shows — participants, the message count, a paperclip and the latest mail\'s opening line — computed for the whole page by one aggregate. A caller reading those per conversation instead is a request per row, which is what makes a fifty-row page slow.  Nonempty subject or source-folder filters limit every role to readable /shared and personal paths. Empty string filters are inactive. Unfiltered browsing retains ordinary read access.
      * List Email Threads Handler
      */
     listEmailThreads(requestParameters: ListEmailThreadsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedResponseEmailThreadResponse>;
@@ -494,7 +494,7 @@ export class EmailThreadsApi extends runtime.BaseAPI implements EmailThreadsApiI
     }
 
     /**
-     * List a folder\'s conversations, newest first by default.  Each row carries what a collapsed conversation shows — participants, the message count, a paperclip and the latest mail\'s opening line — computed for the whole page by one aggregate. A caller reading those per conversation instead is a request per row, which is what makes a fifty-row page slow.
+     * List a folder\'s conversations, newest first by default.  Each row carries what a collapsed conversation shows — participants, the message count, a paperclip and the latest mail\'s opening line — computed for the whole page by one aggregate. A caller reading those per conversation instead is a request per row, which is what makes a fifty-row page slow.  Nonempty subject or source-folder filters limit every role to readable /shared and personal paths. Empty string filters are inactive. Unfiltered browsing retains ordinary read access.
      * List Email Threads Handler
      */
     async listEmailThreadsRaw(requestParameters: ListEmailThreadsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedResponseEmailThreadResponse>> {
@@ -505,7 +505,7 @@ export class EmailThreadsApi extends runtime.BaseAPI implements EmailThreadsApiI
     }
 
     /**
-     * List a folder\'s conversations, newest first by default.  Each row carries what a collapsed conversation shows — participants, the message count, a paperclip and the latest mail\'s opening line — computed for the whole page by one aggregate. A caller reading those per conversation instead is a request per row, which is what makes a fifty-row page slow.
+     * List a folder\'s conversations, newest first by default.  Each row carries what a collapsed conversation shows — participants, the message count, a paperclip and the latest mail\'s opening line — computed for the whole page by one aggregate. A caller reading those per conversation instead is a request per row, which is what makes a fifty-row page slow.  Nonempty subject or source-folder filters limit every role to readable /shared and personal paths. Empty string filters are inactive. Unfiltered browsing retains ordinary read access.
      * List Email Threads Handler
      */
     async listEmailThreads(requestParameters: ListEmailThreadsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedResponseEmailThreadResponse> {

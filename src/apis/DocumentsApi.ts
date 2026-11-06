@@ -705,7 +705,7 @@ export interface DocumentsApiInterface {
     listDocumentsRequestOpts(requestParameters: ListDocumentsRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * List documents in a folder.  Returns only direct child documents (depth=1) of the specified parent folder. If parent_path_part_id is not provided, lists top-level documents.
+     * List documents in a folder.  Returns only direct child documents (depth=1) of the specified parent folder. If parent_path_part_id is not provided, lists top-level documents.  Owner, timestamp, type or duration filters restrict discovery to readable /shared and personal paths for every role. Unfiltered browsing retains ordinary read access.
      * @summary List Documents Handler
      * @param {string} [parentPathPartId] Parent PathPart ID (defaults to root)
      * @param {PathOrder} [sortOrder] Sort order for results (default: LOGICAL)
@@ -728,7 +728,7 @@ export interface DocumentsApiInterface {
     listDocumentsRaw(requestParameters: ListDocumentsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedResponseDocumentResponse>>;
 
     /**
-     * List documents in a folder.  Returns only direct child documents (depth=1) of the specified parent folder. If parent_path_part_id is not provided, lists top-level documents.
+     * List documents in a folder.  Returns only direct child documents (depth=1) of the specified parent folder. If parent_path_part_id is not provided, lists top-level documents.  Owner, timestamp, type or duration filters restrict discovery to readable /shared and personal paths for every role. Unfiltered browsing retains ordinary read access.
      * List Documents Handler
      */
     listDocuments(requestParameters: ListDocumentsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedResponseDocumentResponse>;
@@ -1657,7 +1657,7 @@ export class DocumentsApi extends runtime.BaseAPI implements DocumentsApiInterfa
     }
 
     /**
-     * List documents in a folder.  Returns only direct child documents (depth=1) of the specified parent folder. If parent_path_part_id is not provided, lists top-level documents.
+     * List documents in a folder.  Returns only direct child documents (depth=1) of the specified parent folder. If parent_path_part_id is not provided, lists top-level documents.  Owner, timestamp, type or duration filters restrict discovery to readable /shared and personal paths for every role. Unfiltered browsing retains ordinary read access.
      * List Documents Handler
      */
     async listDocumentsRaw(requestParameters: ListDocumentsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedResponseDocumentResponse>> {
@@ -1668,7 +1668,7 @@ export class DocumentsApi extends runtime.BaseAPI implements DocumentsApiInterfa
     }
 
     /**
-     * List documents in a folder.  Returns only direct child documents (depth=1) of the specified parent folder. If parent_path_part_id is not provided, lists top-level documents.
+     * List documents in a folder.  Returns only direct child documents (depth=1) of the specified parent folder. If parent_path_part_id is not provided, lists top-level documents.  Owner, timestamp, type or duration filters restrict discovery to readable /shared and personal paths for every role. Unfiltered browsing retains ordinary read access.
      * List Documents Handler
      */
     async listDocuments(requestParameters: ListDocumentsRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedResponseDocumentResponse> {

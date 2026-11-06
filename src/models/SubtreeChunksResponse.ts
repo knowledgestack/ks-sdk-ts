@@ -22,7 +22,7 @@ import {
 } from './SubtreeChunkGroup';
 
 /**
- * Response for subtree resolution.
+ * Chunk and table point groups; legacy endpoint/model names are retained.
  * @export
  * @interface SubtreeChunksResponse
  */

@@ -558,7 +558,7 @@ export interface SkillsApiInterface {
     searchSkillsRequestOpts(requestParameters: SearchSkillsOperationRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * Find skills by the meaning of their routing card (agent discovery).  Dense semantic search over each skill\'s ``name + description`` card, scoped to the tenant. Fail-closed: hits are re-loaded tenant-scoped from Postgres (the authority — a mis-scoped Qdrant hit can\'t leak another tenant\'s skill) and any the caller cannot read are dropped.
+     * Find skills by the meaning of their routing card (agent discovery).  Dense semantic search over readable ``/agents/skills`` subtrees, with read permissions applied before ranking. Hits are re-loaded tenant-scoped from Postgres (the authority — a mis-scoped Qdrant hit can\'t leak another tenant\'s skill) and any the caller cannot read are dropped.
      * @summary Search Skills Handler
      * @param {SearchSkillsRequest} searchSkillsRequest 
      * @param {*} [options] Override http request option.
@@ -568,7 +568,7 @@ export interface SkillsApiInterface {
     searchSkillsRaw(requestParameters: SearchSkillsOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SearchSkillsResponse>>;
 
     /**
-     * Find skills by the meaning of their routing card (agent discovery).  Dense semantic search over each skill\'s ``name + description`` card, scoped to the tenant. Fail-closed: hits are re-loaded tenant-scoped from Postgres (the authority — a mis-scoped Qdrant hit can\'t leak another tenant\'s skill) and any the caller cannot read are dropped.
+     * Find skills by the meaning of their routing card (agent discovery).  Dense semantic search over readable ``/agents/skills`` subtrees, with read permissions applied before ranking. Hits are re-loaded tenant-scoped from Postgres (the authority — a mis-scoped Qdrant hit can\'t leak another tenant\'s skill) and any the caller cannot read are dropped.
      * Search Skills Handler
      */
     searchSkills(requestParameters: SearchSkillsOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SearchSkillsResponse>;
@@ -1419,7 +1419,7 @@ export class SkillsApi extends runtime.BaseAPI implements SkillsApiInterface {
     }
 
     /**
-     * Find skills by the meaning of their routing card (agent discovery).  Dense semantic search over each skill\'s ``name + description`` card, scoped to the tenant. Fail-closed: hits are re-loaded tenant-scoped from Postgres (the authority — a mis-scoped Qdrant hit can\'t leak another tenant\'s skill) and any the caller cannot read are dropped.
+     * Find skills by the meaning of their routing card (agent discovery).  Dense semantic search over readable ``/agents/skills`` subtrees, with read permissions applied before ranking. Hits are re-loaded tenant-scoped from Postgres (the authority — a mis-scoped Qdrant hit can\'t leak another tenant\'s skill) and any the caller cannot read are dropped.
      * Search Skills Handler
      */
     async searchSkillsRaw(requestParameters: SearchSkillsOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SearchSkillsResponse>> {
@@ -1430,7 +1430,7 @@ export class SkillsApi extends runtime.BaseAPI implements SkillsApiInterface {
     }
 
     /**
-     * Find skills by the meaning of their routing card (agent discovery).  Dense semantic search over each skill\'s ``name + description`` card, scoped to the tenant. Fail-closed: hits are re-loaded tenant-scoped from Postgres (the authority — a mis-scoped Qdrant hit can\'t leak another tenant\'s skill) and any the caller cannot read are dropped.
+     * Find skills by the meaning of their routing card (agent discovery).  Dense semantic search over readable ``/agents/skills`` subtrees, with read permissions applied before ranking. Hits are re-loaded tenant-scoped from Postgres (the authority — a mis-scoped Qdrant hit can\'t leak another tenant\'s skill) and any the caller cannot read are dropped.
      * Search Skills Handler
      */
     async searchSkills(requestParameters: SearchSkillsOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SearchSkillsResponse> {

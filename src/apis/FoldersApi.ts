@@ -453,7 +453,7 @@ export interface FoldersApiInterface {
     listFolderContentsRequestOpts(requestParameters: ListFolderContentsRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * List all contents (folders and documents) under a folder.  Returns a discriminated union of FolderResponse and DocumentResponse items, distinguished by the `part_type` field (\"FOLDER\" or \"DOCUMENT\").  When with_tags=true, each item includes a tags field with the full tag objects.  ``approval_state`` / ``include_tag_ids`` / ``exclude_tag_ids`` filter the result at the path_part layer: approval state on the item, tags matched by self-or-ancestor inheritance (include = OR, exclude wins).  ``sort_dir``, ``owner_id``, ``name_like``, the created_at/updated_at range filters, and the STATUS/OWNER/TAGS sorts apply to the direct-children listing only (``max_depth=1``); combining them with a deeper traversal is a 400.  This is the preferred way to list folder contents when you need document metadata. For generic path traversal of folders only, use GET /path-parts.
+     * List all contents (folders and documents) under a folder.  Returns a discriminated union of FolderResponse and DocumentResponse items, distinguished by the `part_type` field (\"FOLDER\" or \"DOCUMENT\").  When with_tags=true, each item includes a tags field with the full tag objects.  ``approval_state`` / ``include_tag_ids`` / ``exclude_tag_ids`` filter the result at the path_part layer: approval state on the item, tags matched by self-or-ancestor inheritance (include = OR, exclude wins).  ``sort_dir``, ``owner_id``, ``name_like``, the created_at/updated_at range filters, and the STATUS/OWNER/TAGS sorts apply to the direct-children listing only (``max_depth=1``); combining them with a deeper traversal is a 400.  Name, owner, timestamp, tag or approval filters restrict discovery to readable /shared and personal paths for every role, including counts and pagination. Unfiltered browsing retains ordinary read access.  This is the preferred way to list folder contents when you need document metadata. For generic path traversal of folders only, use GET /path-parts.
      * @summary List Folder Contents Handler
      * @param {string} folderId 
      * @param {number} [maxDepth] Maximum depth to traverse (1&#x3D;direct children, default: 1)
@@ -478,7 +478,7 @@ export interface FoldersApiInterface {
     listFolderContentsRaw(requestParameters: ListFolderContentsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseWorkflowDefinitionResponseWorkflowRunResponseDat>>;
 
     /**
-     * List all contents (folders and documents) under a folder.  Returns a discriminated union of FolderResponse and DocumentResponse items, distinguished by the `part_type` field (\"FOLDER\" or \"DOCUMENT\").  When with_tags=true, each item includes a tags field with the full tag objects.  ``approval_state`` / ``include_tag_ids`` / ``exclude_tag_ids`` filter the result at the path_part layer: approval state on the item, tags matched by self-or-ancestor inheritance (include = OR, exclude wins).  ``sort_dir``, ``owner_id``, ``name_like``, the created_at/updated_at range filters, and the STATUS/OWNER/TAGS sorts apply to the direct-children listing only (``max_depth=1``); combining them with a deeper traversal is a 400.  This is the preferred way to list folder contents when you need document metadata. For generic path traversal of folders only, use GET /path-parts.
+     * List all contents (folders and documents) under a folder.  Returns a discriminated union of FolderResponse and DocumentResponse items, distinguished by the `part_type` field (\"FOLDER\" or \"DOCUMENT\").  When with_tags=true, each item includes a tags field with the full tag objects.  ``approval_state`` / ``include_tag_ids`` / ``exclude_tag_ids`` filter the result at the path_part layer: approval state on the item, tags matched by self-or-ancestor inheritance (include = OR, exclude wins).  ``sort_dir``, ``owner_id``, ``name_like``, the created_at/updated_at range filters, and the STATUS/OWNER/TAGS sorts apply to the direct-children listing only (``max_depth=1``); combining them with a deeper traversal is a 400.  Name, owner, timestamp, tag or approval filters restrict discovery to readable /shared and personal paths for every role, including counts and pagination. Unfiltered browsing retains ordinary read access.  This is the preferred way to list folder contents when you need document metadata. For generic path traversal of folders only, use GET /path-parts.
      * List Folder Contents Handler
      */
     listFolderContents(requestParameters: ListFolderContentsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseWorkflowDefinitionResponseWorkflowRunResponseDat>;
@@ -502,7 +502,7 @@ export interface FoldersApiInterface {
     listFoldersRequestOpts(requestParameters: ListFoldersRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * List child folders of a parent folder.  Returns only direct child folders (depth=1) of the specified parent. If parent_path_part_id is not provided, lists top-level folders.  At root level, the /users folder is hidden and replaced with the current user\'s personal folder (/users/{user_id}) displayed as \"Private\".
+     * List child folders of a parent folder.  Returns only direct child folders (depth=1) of the specified parent. If parent_path_part_id is not provided, lists top-level folders.  At root level, the /users folder is hidden and replaced with the current user\'s personal folder (/users/{user_id}) displayed as \"Private\".  Owner or timestamp filters restrict discovery to readable /shared and personal paths for every role. Unfiltered browsing retains ordinary read access.
      * @summary List Folders Handler
      * @param {string} [parentPathPartId] Parent PathPart ID (defaults to root)
      * @param {PathOrder} [sortOrder] Sort order for results (default: LOGICAL)
@@ -522,7 +522,7 @@ export interface FoldersApiInterface {
     listFoldersRaw(requestParameters: ListFoldersRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedResponseFolderResponse>>;
 
     /**
-     * List child folders of a parent folder.  Returns only direct child folders (depth=1) of the specified parent. If parent_path_part_id is not provided, lists top-level folders.  At root level, the /users folder is hidden and replaced with the current user\'s personal folder (/users/{user_id}) displayed as \"Private\".
+     * List child folders of a parent folder.  Returns only direct child folders (depth=1) of the specified parent. If parent_path_part_id is not provided, lists top-level folders.  At root level, the /users folder is hidden and replaced with the current user\'s personal folder (/users/{user_id}) displayed as \"Private\".  Owner or timestamp filters restrict discovery to readable /shared and personal paths for every role. Unfiltered browsing retains ordinary read access.
      * List Folders Handler
      */
     listFolders(requestParameters: ListFoldersRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedResponseFolderResponse>;
@@ -550,7 +550,7 @@ export interface FoldersApiInterface {
     searchItemsRequestOpts(requestParameters: SearchItemsRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * Search for folders, documents, connectors, workflows and skills.  Every word of the query must appear in the item\'s name or in a folder on the way to it; items named after the query rank above items that merely sit in a folder named after it. Matching is case-insensitive and served by trigram indexes, with a typo-tolerant fallback on names when nothing matches strictly. Results are filtered by the current user\'s path permissions.  Owner, document type, timestamp and tag filters narrow both the page and ``counts_by_type``; ``part_type`` narrows the page only, so the chips keep every type\'s count.
+     * Search for folders, documents, connectors and workflows.  Every word of the query must appear in the item\'s name or in a folder on the way to it; items named after the query rank above items that merely sit in a folder named after it. Matching is case-insensitive and served by trigram indexes, with a typo-tolerant fallback on names when nothing matches strictly. Results are filtered by the current user\'s path permissions and limited to /shared and the caller\'s personal folder for every role. An explicit parent scope only narrows those discovery roots.  Owner, document type, timestamp and tag filters narrow both the page and ``counts_by_type``; ``part_type`` narrows the page only, so the chips keep every type\'s count.
      * @summary Search Items Handler
      * @param {string} nameLike Case-insensitive partial name search
      * @param {Array<SearchablePartType>} [partType] Filter by item type; repeat the parameter to select several (default: all searchable types)
@@ -574,7 +574,7 @@ export interface FoldersApiInterface {
     searchItemsRaw(requestParameters: SearchItemsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SearchItemsResponse>>;
 
     /**
-     * Search for folders, documents, connectors, workflows and skills.  Every word of the query must appear in the item\'s name or in a folder on the way to it; items named after the query rank above items that merely sit in a folder named after it. Matching is case-insensitive and served by trigram indexes, with a typo-tolerant fallback on names when nothing matches strictly. Results are filtered by the current user\'s path permissions.  Owner, document type, timestamp and tag filters narrow both the page and ``counts_by_type``; ``part_type`` narrows the page only, so the chips keep every type\'s count.
+     * Search for folders, documents, connectors and workflows.  Every word of the query must appear in the item\'s name or in a folder on the way to it; items named after the query rank above items that merely sit in a folder named after it. Matching is case-insensitive and served by trigram indexes, with a typo-tolerant fallback on names when nothing matches strictly. Results are filtered by the current user\'s path permissions and limited to /shared and the caller\'s personal folder for every role. An explicit parent scope only narrows those discovery roots.  Owner, document type, timestamp and tag filters narrow both the page and ``counts_by_type``; ``part_type`` narrows the page only, so the chips keep every type\'s count.
      * Search Items Handler
      */
     searchItems(requestParameters: SearchItemsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SearchItemsResponse>;
@@ -942,7 +942,7 @@ export class FoldersApi extends runtime.BaseAPI implements FoldersApiInterface {
     }
 
     /**
-     * List all contents (folders and documents) under a folder.  Returns a discriminated union of FolderResponse and DocumentResponse items, distinguished by the `part_type` field (\"FOLDER\" or \"DOCUMENT\").  When with_tags=true, each item includes a tags field with the full tag objects.  ``approval_state`` / ``include_tag_ids`` / ``exclude_tag_ids`` filter the result at the path_part layer: approval state on the item, tags matched by self-or-ancestor inheritance (include = OR, exclude wins).  ``sort_dir``, ``owner_id``, ``name_like``, the created_at/updated_at range filters, and the STATUS/OWNER/TAGS sorts apply to the direct-children listing only (``max_depth=1``); combining them with a deeper traversal is a 400.  This is the preferred way to list folder contents when you need document metadata. For generic path traversal of folders only, use GET /path-parts.
+     * List all contents (folders and documents) under a folder.  Returns a discriminated union of FolderResponse and DocumentResponse items, distinguished by the `part_type` field (\"FOLDER\" or \"DOCUMENT\").  When with_tags=true, each item includes a tags field with the full tag objects.  ``approval_state`` / ``include_tag_ids`` / ``exclude_tag_ids`` filter the result at the path_part layer: approval state on the item, tags matched by self-or-ancestor inheritance (include = OR, exclude wins).  ``sort_dir``, ``owner_id``, ``name_like``, the created_at/updated_at range filters, and the STATUS/OWNER/TAGS sorts apply to the direct-children listing only (``max_depth=1``); combining them with a deeper traversal is a 400.  Name, owner, timestamp, tag or approval filters restrict discovery to readable /shared and personal paths for every role, including counts and pagination. Unfiltered browsing retains ordinary read access.  This is the preferred way to list folder contents when you need document metadata. For generic path traversal of folders only, use GET /path-parts.
      * List Folder Contents Handler
      */
     async listFolderContentsRaw(requestParameters: ListFolderContentsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseWorkflowDefinitionResponseWorkflowRunResponseDat>> {
@@ -953,7 +953,7 @@ export class FoldersApi extends runtime.BaseAPI implements FoldersApiInterface {
     }
 
     /**
-     * List all contents (folders and documents) under a folder.  Returns a discriminated union of FolderResponse and DocumentResponse items, distinguished by the `part_type` field (\"FOLDER\" or \"DOCUMENT\").  When with_tags=true, each item includes a tags field with the full tag objects.  ``approval_state`` / ``include_tag_ids`` / ``exclude_tag_ids`` filter the result at the path_part layer: approval state on the item, tags matched by self-or-ancestor inheritance (include = OR, exclude wins).  ``sort_dir``, ``owner_id``, ``name_like``, the created_at/updated_at range filters, and the STATUS/OWNER/TAGS sorts apply to the direct-children listing only (``max_depth=1``); combining them with a deeper traversal is a 400.  This is the preferred way to list folder contents when you need document metadata. For generic path traversal of folders only, use GET /path-parts.
+     * List all contents (folders and documents) under a folder.  Returns a discriminated union of FolderResponse and DocumentResponse items, distinguished by the `part_type` field (\"FOLDER\" or \"DOCUMENT\").  When with_tags=true, each item includes a tags field with the full tag objects.  ``approval_state`` / ``include_tag_ids`` / ``exclude_tag_ids`` filter the result at the path_part layer: approval state on the item, tags matched by self-or-ancestor inheritance (include = OR, exclude wins).  ``sort_dir``, ``owner_id``, ``name_like``, the created_at/updated_at range filters, and the STATUS/OWNER/TAGS sorts apply to the direct-children listing only (``max_depth=1``); combining them with a deeper traversal is a 400.  Name, owner, timestamp, tag or approval filters restrict discovery to readable /shared and personal paths for every role, including counts and pagination. Unfiltered browsing retains ordinary read access.  This is the preferred way to list folder contents when you need document metadata. For generic path traversal of folders only, use GET /path-parts.
      * List Folder Contents Handler
      */
     async listFolderContents(requestParameters: ListFolderContentsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseWorkflowDefinitionResponseWorkflowRunResponseDat> {
@@ -1033,7 +1033,7 @@ export class FoldersApi extends runtime.BaseAPI implements FoldersApiInterface {
     }
 
     /**
-     * List child folders of a parent folder.  Returns only direct child folders (depth=1) of the specified parent. If parent_path_part_id is not provided, lists top-level folders.  At root level, the /users folder is hidden and replaced with the current user\'s personal folder (/users/{user_id}) displayed as \"Private\".
+     * List child folders of a parent folder.  Returns only direct child folders (depth=1) of the specified parent. If parent_path_part_id is not provided, lists top-level folders.  At root level, the /users folder is hidden and replaced with the current user\'s personal folder (/users/{user_id}) displayed as \"Private\".  Owner or timestamp filters restrict discovery to readable /shared and personal paths for every role. Unfiltered browsing retains ordinary read access.
      * List Folders Handler
      */
     async listFoldersRaw(requestParameters: ListFoldersRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedResponseFolderResponse>> {
@@ -1044,7 +1044,7 @@ export class FoldersApi extends runtime.BaseAPI implements FoldersApiInterface {
     }
 
     /**
-     * List child folders of a parent folder.  Returns only direct child folders (depth=1) of the specified parent. If parent_path_part_id is not provided, lists top-level folders.  At root level, the /users folder is hidden and replaced with the current user\'s personal folder (/users/{user_id}) displayed as \"Private\".
+     * List child folders of a parent folder.  Returns only direct child folders (depth=1) of the specified parent. If parent_path_part_id is not provided, lists top-level folders.  At root level, the /users folder is hidden and replaced with the current user\'s personal folder (/users/{user_id}) displayed as \"Private\".  Owner or timestamp filters restrict discovery to readable /shared and personal paths for every role. Unfiltered browsing retains ordinary read access.
      * List Folders Handler
      */
     async listFolders(requestParameters: ListFoldersRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedResponseFolderResponse> {
@@ -1147,7 +1147,7 @@ export class FoldersApi extends runtime.BaseAPI implements FoldersApiInterface {
     }
 
     /**
-     * Search for folders, documents, connectors, workflows and skills.  Every word of the query must appear in the item\'s name or in a folder on the way to it; items named after the query rank above items that merely sit in a folder named after it. Matching is case-insensitive and served by trigram indexes, with a typo-tolerant fallback on names when nothing matches strictly. Results are filtered by the current user\'s path permissions.  Owner, document type, timestamp and tag filters narrow both the page and ``counts_by_type``; ``part_type`` narrows the page only, so the chips keep every type\'s count.
+     * Search for folders, documents, connectors and workflows.  Every word of the query must appear in the item\'s name or in a folder on the way to it; items named after the query rank above items that merely sit in a folder named after it. Matching is case-insensitive and served by trigram indexes, with a typo-tolerant fallback on names when nothing matches strictly. Results are filtered by the current user\'s path permissions and limited to /shared and the caller\'s personal folder for every role. An explicit parent scope only narrows those discovery roots.  Owner, document type, timestamp and tag filters narrow both the page and ``counts_by_type``; ``part_type`` narrows the page only, so the chips keep every type\'s count.
      * Search Items Handler
      */
     async searchItemsRaw(requestParameters: SearchItemsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SearchItemsResponse>> {
@@ -1158,7 +1158,7 @@ export class FoldersApi extends runtime.BaseAPI implements FoldersApiInterface {
     }
 
     /**
-     * Search for folders, documents, connectors, workflows and skills.  Every word of the query must appear in the item\'s name or in a folder on the way to it; items named after the query rank above items that merely sit in a folder named after it. Matching is case-insensitive and served by trigram indexes, with a typo-tolerant fallback on names when nothing matches strictly. Results are filtered by the current user\'s path permissions.  Owner, document type, timestamp and tag filters narrow both the page and ``counts_by_type``; ``part_type`` narrows the page only, so the chips keep every type\'s count.
+     * Search for folders, documents, connectors and workflows.  Every word of the query must appear in the item\'s name or in a folder on the way to it; items named after the query rank above items that merely sit in a folder named after it. Matching is case-insensitive and served by trigram indexes, with a typo-tolerant fallback on names when nothing matches strictly. Results are filtered by the current user\'s path permissions and limited to /shared and the caller\'s personal folder for every role. An explicit parent scope only narrows those discovery roots.  Owner, document type, timestamp and tag filters narrow both the page and ``counts_by_type``; ``part_type`` narrows the page only, so the chips keep every type\'s count.
      * Search Items Handler
      */
     async searchItems(requestParameters: SearchItemsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SearchItemsResponse> {

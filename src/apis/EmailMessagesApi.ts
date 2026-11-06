@@ -288,7 +288,7 @@ export interface EmailMessagesApiInterface {
     listEmailMessagesRequestOpts(requestParameters: ListEmailMessagesRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * List mail under one node, or anywhere under one subtree, oldest first.  The metadata filters are matched exactly, in SQL. A chunk\'s text never holds the sender or the send time, so no amount of vector search reaches them; bodies and attachments stay with ``POST /v1/chunks/search``, where ``hybrid_profile=sparse`` matches exact tokens and ``dense`` matches meaning. Scope that search to one mailbox or one folder by passing its path part id as ``parent_path_ids``.
+     * List mail under one node, or anywhere under one subtree, oldest first.  The metadata filters are matched exactly, in SQL. A chunk\'s text never holds the sender or the send time, so no amount of vector search reaches them; bodies and attachments stay with ``POST /v1/chunks/search``, where ``hybrid_profile=sparse`` matches exact tokens and ``dense`` matches meaning. Scope that search to one mailbox or one folder by passing its path part id as ``parent_path_ids``.  Nonempty subject or metadata filters limit every role to readable /shared and personal paths. Empty string filters are inactive. Unfiltered browsing and direct ID reads retain ordinary read access.
      * @summary List Email Messages Handler
      * @param {string} [parentPathPartId] Conversation or folder whose direct messages are listed. Exactly one of this and &#x60;&#x60;ancestor_path_part_id&#x60;&#x60;.
      * @param {string} [ancestorPathPartId] List every message anywhere under this node instead — a mailbox connector, to search one mailbox. Mail sits under a conversation under a folder, so a direct-parent listing cannot reach it.
@@ -308,7 +308,7 @@ export interface EmailMessagesApiInterface {
     listEmailMessagesRaw(requestParameters: ListEmailMessagesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedResponseEmailMessageResponse>>;
 
     /**
-     * List mail under one node, or anywhere under one subtree, oldest first.  The metadata filters are matched exactly, in SQL. A chunk\'s text never holds the sender or the send time, so no amount of vector search reaches them; bodies and attachments stay with ``POST /v1/chunks/search``, where ``hybrid_profile=sparse`` matches exact tokens and ``dense`` matches meaning. Scope that search to one mailbox or one folder by passing its path part id as ``parent_path_ids``.
+     * List mail under one node, or anywhere under one subtree, oldest first.  The metadata filters are matched exactly, in SQL. A chunk\'s text never holds the sender or the send time, so no amount of vector search reaches them; bodies and attachments stay with ``POST /v1/chunks/search``, where ``hybrid_profile=sparse`` matches exact tokens and ``dense`` matches meaning. Scope that search to one mailbox or one folder by passing its path part id as ``parent_path_ids``.  Nonempty subject or metadata filters limit every role to readable /shared and personal paths. Empty string filters are inactive. Unfiltered browsing and direct ID reads retain ordinary read access.
      * List Email Messages Handler
      */
     listEmailMessages(requestParameters: ListEmailMessagesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedResponseEmailMessageResponse>;
@@ -666,7 +666,7 @@ export class EmailMessagesApi extends runtime.BaseAPI implements EmailMessagesAp
     }
 
     /**
-     * List mail under one node, or anywhere under one subtree, oldest first.  The metadata filters are matched exactly, in SQL. A chunk\'s text never holds the sender or the send time, so no amount of vector search reaches them; bodies and attachments stay with ``POST /v1/chunks/search``, where ``hybrid_profile=sparse`` matches exact tokens and ``dense`` matches meaning. Scope that search to one mailbox or one folder by passing its path part id as ``parent_path_ids``.
+     * List mail under one node, or anywhere under one subtree, oldest first.  The metadata filters are matched exactly, in SQL. A chunk\'s text never holds the sender or the send time, so no amount of vector search reaches them; bodies and attachments stay with ``POST /v1/chunks/search``, where ``hybrid_profile=sparse`` matches exact tokens and ``dense`` matches meaning. Scope that search to one mailbox or one folder by passing its path part id as ``parent_path_ids``.  Nonempty subject or metadata filters limit every role to readable /shared and personal paths. Empty string filters are inactive. Unfiltered browsing and direct ID reads retain ordinary read access.
      * List Email Messages Handler
      */
     async listEmailMessagesRaw(requestParameters: ListEmailMessagesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedResponseEmailMessageResponse>> {
@@ -677,7 +677,7 @@ export class EmailMessagesApi extends runtime.BaseAPI implements EmailMessagesAp
     }
 
     /**
-     * List mail under one node, or anywhere under one subtree, oldest first.  The metadata filters are matched exactly, in SQL. A chunk\'s text never holds the sender or the send time, so no amount of vector search reaches them; bodies and attachments stay with ``POST /v1/chunks/search``, where ``hybrid_profile=sparse`` matches exact tokens and ``dense`` matches meaning. Scope that search to one mailbox or one folder by passing its path part id as ``parent_path_ids``.
+     * List mail under one node, or anywhere under one subtree, oldest first.  The metadata filters are matched exactly, in SQL. A chunk\'s text never holds the sender or the send time, so no amount of vector search reaches them; bodies and attachments stay with ``POST /v1/chunks/search``, where ``hybrid_profile=sparse`` matches exact tokens and ``dense`` matches meaning. Scope that search to one mailbox or one folder by passing its path part id as ``parent_path_ids``.  Nonempty subject or metadata filters limit every role to readable /shared and personal paths. Empty string filters are inactive. Unfiltered browsing and direct ID reads retain ordinary read access.
      * List Email Messages Handler
      */
     async listEmailMessages(requestParameters: ListEmailMessagesRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedResponseEmailMessageResponse> {

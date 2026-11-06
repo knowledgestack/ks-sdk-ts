@@ -62,7 +62,7 @@ export interface ChunkSearchRequest {
      */
     sparseWeight?: number | null;
     /**
-     * Path part IDs to search within (non-CHUNK types). Defaults to tenant's /shared.
+     * Path part IDs to search within (non-CHUNK types). Defaults to /shared and the caller's personal folder. Explicit paths narrow this scope and remain subject to read permissions for every role.
      */
     parentPathIds?: Array<string> | null;
     /**

@@ -390,7 +390,7 @@ export interface DataSourcesApiInterface {
     describeDataSourceTablesRequestOpts(requestParameters: DescribeDataSourceTablesRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * Summarize + embed each modeled table so the agent can find it by meaning.  Requires ``can_write`` on the connector. Writes one dense Qdrant point per table (``object_kind=table_description``) so the agent\'s table search surfaces the right table across the corpus, while users never see the summaries in ordinary chunk search. Content-hash gated: a table whose summary + exposed columns are unchanged makes no LLM/embedding call, so a repeat call is cheap.
+     * Summarize + embed each modeled table so the agent can find it by meaning.  Requires ``can_write`` on the connector. Writes one dense Qdrant point per table (``object_kind=table_description``) so the agent\'s table search surfaces the right table across the corpus, while users never see the summaries in ordinary chunk search. Content-hash gated: a table whose summary + exposed columns are unchanged makes no LLM/embedding call when its point exists. Unchanged content still refreshes the common hierarchy payload. Missing points are re-embedded from stored summaries without regenerating those summaries. Effectively excluded tables skip model/index work.
      * @summary Describe Data Source Tables Handler
      * @param {string} dataSourceId 
      * @param {*} [options] Override http request option.
@@ -400,7 +400,7 @@ export interface DataSourcesApiInterface {
     describeDataSourceTablesRaw(requestParameters: DescribeDataSourceTablesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<DataSourceDescribeResponse>>;
 
     /**
-     * Summarize + embed each modeled table so the agent can find it by meaning.  Requires ``can_write`` on the connector. Writes one dense Qdrant point per table (``object_kind=table_description``) so the agent\'s table search surfaces the right table across the corpus, while users never see the summaries in ordinary chunk search. Content-hash gated: a table whose summary + exposed columns are unchanged makes no LLM/embedding call, so a repeat call is cheap.
+     * Summarize + embed each modeled table so the agent can find it by meaning.  Requires ``can_write`` on the connector. Writes one dense Qdrant point per table (``object_kind=table_description``) so the agent\'s table search surfaces the right table across the corpus, while users never see the summaries in ordinary chunk search. Content-hash gated: a table whose summary + exposed columns are unchanged makes no LLM/embedding call when its point exists. Unchanged content still refreshes the common hierarchy payload. Missing points are re-embedded from stored summaries without regenerating those summaries. Effectively excluded tables skip model/index work.
      * Describe Data Source Tables Handler
      */
     describeDataSourceTables(requestParameters: DescribeDataSourceTablesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DataSourceDescribeResponse>;
@@ -566,7 +566,7 @@ export interface DataSourcesApiInterface {
     searchDataSourceTablesRequestOpts(requestParameters: SearchDataSourceTablesRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * Find modeled tables by the meaning of their summaries (agent discovery).  Dense semantic search over each table\'s summary, scoped to the tenant (optionally one connector). Only tables the caller can read are returned; users never see these summaries in ordinary chunk search.
+     * Find modeled tables by the meaning of their summaries (agent discovery).  Dense semantic search over each table\'s summary within /shared and the caller\'s personal folder, for every role (optionally one connector). Read permissions further narrow discovery before ranking and on hydration; users never see these summaries in ordinary chunk search.  The Qdrant query uses the configured retrieval timeout after query embedding. A timeout returns 503 without partial results.
      * @summary Search Data Source Tables Handler
      * @param {SearchTablesRequest} searchTablesRequest 
      * @param {*} [options] Override http request option.
@@ -576,7 +576,7 @@ export interface DataSourcesApiInterface {
     searchDataSourceTablesRaw(requestParameters: SearchDataSourceTablesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SearchTablesResponse>>;
 
     /**
-     * Find modeled tables by the meaning of their summaries (agent discovery).  Dense semantic search over each table\'s summary, scoped to the tenant (optionally one connector). Only tables the caller can read are returned; users never see these summaries in ordinary chunk search.
+     * Find modeled tables by the meaning of their summaries (agent discovery).  Dense semantic search over each table\'s summary within /shared and the caller\'s personal folder, for every role (optionally one connector). Read permissions further narrow discovery before ranking and on hydration; users never see these summaries in ordinary chunk search.  The Qdrant query uses the configured retrieval timeout after query embedding. A timeout returns 503 without partial results.
      * Search Data Source Tables Handler
      */
     searchDataSourceTables(requestParameters: SearchDataSourceTablesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SearchTablesResponse>;
@@ -985,7 +985,7 @@ export class DataSourcesApi extends runtime.BaseAPI implements DataSourcesApiInt
     }
 
     /**
-     * Summarize + embed each modeled table so the agent can find it by meaning.  Requires ``can_write`` on the connector. Writes one dense Qdrant point per table (``object_kind=table_description``) so the agent\'s table search surfaces the right table across the corpus, while users never see the summaries in ordinary chunk search. Content-hash gated: a table whose summary + exposed columns are unchanged makes no LLM/embedding call, so a repeat call is cheap.
+     * Summarize + embed each modeled table so the agent can find it by meaning.  Requires ``can_write`` on the connector. Writes one dense Qdrant point per table (``object_kind=table_description``) so the agent\'s table search surfaces the right table across the corpus, while users never see the summaries in ordinary chunk search. Content-hash gated: a table whose summary + exposed columns are unchanged makes no LLM/embedding call when its point exists. Unchanged content still refreshes the common hierarchy payload. Missing points are re-embedded from stored summaries without regenerating those summaries. Effectively excluded tables skip model/index work.
      * Describe Data Source Tables Handler
      */
     async describeDataSourceTablesRaw(requestParameters: DescribeDataSourceTablesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<DataSourceDescribeResponse>> {
@@ -996,7 +996,7 @@ export class DataSourcesApi extends runtime.BaseAPI implements DataSourcesApiInt
     }
 
     /**
-     * Summarize + embed each modeled table so the agent can find it by meaning.  Requires ``can_write`` on the connector. Writes one dense Qdrant point per table (``object_kind=table_description``) so the agent\'s table search surfaces the right table across the corpus, while users never see the summaries in ordinary chunk search. Content-hash gated: a table whose summary + exposed columns are unchanged makes no LLM/embedding call, so a repeat call is cheap.
+     * Summarize + embed each modeled table so the agent can find it by meaning.  Requires ``can_write`` on the connector. Writes one dense Qdrant point per table (``object_kind=table_description``) so the agent\'s table search surfaces the right table across the corpus, while users never see the summaries in ordinary chunk search. Content-hash gated: a table whose summary + exposed columns are unchanged makes no LLM/embedding call when its point exists. Unchanged content still refreshes the common hierarchy payload. Missing points are re-embedded from stored summaries without regenerating those summaries. Effectively excluded tables skip model/index work.
      * Describe Data Source Tables Handler
      */
     async describeDataSourceTables(requestParameters: DescribeDataSourceTablesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DataSourceDescribeResponse> {
@@ -1406,7 +1406,7 @@ export class DataSourcesApi extends runtime.BaseAPI implements DataSourcesApiInt
     }
 
     /**
-     * Find modeled tables by the meaning of their summaries (agent discovery).  Dense semantic search over each table\'s summary, scoped to the tenant (optionally one connector). Only tables the caller can read are returned; users never see these summaries in ordinary chunk search.
+     * Find modeled tables by the meaning of their summaries (agent discovery).  Dense semantic search over each table\'s summary within /shared and the caller\'s personal folder, for every role (optionally one connector). Read permissions further narrow discovery before ranking and on hydration; users never see these summaries in ordinary chunk search.  The Qdrant query uses the configured retrieval timeout after query embedding. A timeout returns 503 without partial results.
      * Search Data Source Tables Handler
      */
     async searchDataSourceTablesRaw(requestParameters: SearchDataSourceTablesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SearchTablesResponse>> {
@@ -1417,7 +1417,7 @@ export class DataSourcesApi extends runtime.BaseAPI implements DataSourcesApiInt
     }
 
     /**
-     * Find modeled tables by the meaning of their summaries (agent discovery).  Dense semantic search over each table\'s summary, scoped to the tenant (optionally one connector). Only tables the caller can read are returned; users never see these summaries in ordinary chunk search.
+     * Find modeled tables by the meaning of their summaries (agent discovery).  Dense semantic search over each table\'s summary within /shared and the caller\'s personal folder, for every role (optionally one connector). Read permissions further narrow discovery before ranking and on hydration; users never see these summaries in ordinary chunk search.  The Qdrant query uses the configured retrieval timeout after query embedding. A timeout returns 503 without partial results.
      * Search Data Source Tables Handler
      */
     async searchDataSourceTables(requestParameters: SearchDataSourceTablesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SearchTablesResponse> {

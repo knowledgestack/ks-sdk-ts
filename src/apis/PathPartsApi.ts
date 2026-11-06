@@ -160,6 +160,10 @@ export interface GetPathPartSubtreeChunksRequest {
      * 
      */
     pathPartId: string;
+    /**
+     * Include document chunks; false resolves table/skill cards only
+     */
+    includeChunks?: boolean;
 }
 
 export interface GetPathPartTagsRequest {
@@ -422,15 +426,17 @@ export interface PathPartsApiInterface {
     /**
      * Creates request options for getPathPartSubtreeChunks without sending the request
      * @param {string} pathPartId 
+     * @param {boolean} [includeChunks] Include document chunks; false resolves table/skill cards only
      * @throws {RequiredError}
      * @memberof PathPartsApiInterface
      */
     getPathPartSubtreeChunksRequestOpts(requestParameters: GetPathPartSubtreeChunksRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * Resolve all descendant chunks for a subtree root.  Returns chunks grouped by identical (path_part_ids, tag_ids) tuples.
+     * Resolve hierarchy metadata for chunk, table and skill points in this subtree.  Groups include the root itself when it has a point. Use point_ids for Qdrant updates; chunk_ids remains the chunk-only subset for existing clients. Restore repair sets include_chunks=false to avoid rewriting document chunks.
      * @summary Get Path Part Subtree Chunks Handler
      * @param {string} pathPartId 
+     * @param {boolean} [includeChunks] Include document chunks; false resolves table/skill cards only
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof PathPartsApiInterface
@@ -438,7 +444,7 @@ export interface PathPartsApiInterface {
     getPathPartSubtreeChunksRaw(requestParameters: GetPathPartSubtreeChunksRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SubtreeChunksResponse>>;
 
     /**
-     * Resolve all descendant chunks for a subtree root.  Returns chunks grouped by identical (path_part_ids, tag_ids) tuples.
+     * Resolve hierarchy metadata for chunk, table and skill points in this subtree.  Groups include the root itself when it has a point. Use point_ids for Qdrant updates; chunk_ids remains the chunk-only subset for existing clients. Restore repair sets include_chunks=false to avoid rewriting document chunks.
      * Get Path Part Subtree Chunks Handler
      */
     getPathPartSubtreeChunks(requestParameters: GetPathPartSubtreeChunksRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SubtreeChunksResponse>;
@@ -525,7 +531,7 @@ export interface PathPartsApiInterface {
     listPathPartsRequestOpts(requestParameters: ListPathPartsRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * List path parts under a parent with traversal.  This is a generic endpoint for traversing the path hierarchy. It returns the navigable, container-like nodes of the tree: FOLDER, WORKFLOW_DEFINITION, and WORKFLOW_RUN path parts.  - If parent_path_id is not provided, lists contents of the root folder. - max_depth controls how deep to traverse (1 = direct children only). - sort_order controls the ordering: LOGICAL (linked-list), NAME, UPDATED_AT, CREATED_AT.  For listing folder contents that includes documents with enriched metadata, use GET /folders/{folder_id}/contents instead.
+     * List path parts under a parent with traversal.  This is a generic endpoint for traversing the path hierarchy. It returns the navigable, container-like nodes of the tree: FOLDER, WORKFLOW_DEFINITION, and WORKFLOW_RUN path parts.  - If parent_path_id is not provided, lists contents of the root folder. - max_depth controls how deep to traverse (1 = direct children only). - sort_order controls the ordering: LOGICAL (linked-list), NAME, UPDATED_AT, CREATED_AT.  For listing folder contents that includes documents with enriched metadata, use GET /folders/{folder_id}/contents instead.  Timestamp filters restrict discovery to readable /shared and personal paths for every role. Unfiltered browsing retains ordinary read access.
      * @summary List Path Parts Handler
      * @param {string} [parentPathId] Parent PathPart ID (defaults to root)
      * @param {number} [maxDepth] Maximum depth to traverse (1 &#x3D; direct children, default: 1)
@@ -544,7 +550,7 @@ export interface PathPartsApiInterface {
     listPathPartsRaw(requestParameters: ListPathPartsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedResponsePathPartResponse>>;
 
     /**
-     * List path parts under a parent with traversal.  This is a generic endpoint for traversing the path hierarchy. It returns the navigable, container-like nodes of the tree: FOLDER, WORKFLOW_DEFINITION, and WORKFLOW_RUN path parts.  - If parent_path_id is not provided, lists contents of the root folder. - max_depth controls how deep to traverse (1 = direct children only). - sort_order controls the ordering: LOGICAL (linked-list), NAME, UPDATED_AT, CREATED_AT.  For listing folder contents that includes documents with enriched metadata, use GET /folders/{folder_id}/contents instead.
+     * List path parts under a parent with traversal.  This is a generic endpoint for traversing the path hierarchy. It returns the navigable, container-like nodes of the tree: FOLDER, WORKFLOW_DEFINITION, and WORKFLOW_RUN path parts.  - If parent_path_id is not provided, lists contents of the root folder. - max_depth controls how deep to traverse (1 = direct children only). - sort_order controls the ordering: LOGICAL (linked-list), NAME, UPDATED_AT, CREATED_AT.  For listing folder contents that includes documents with enriched metadata, use GET /folders/{folder_id}/contents instead.  Timestamp filters restrict discovery to readable /shared and personal paths for every role. Unfiltered browsing retains ordinary read access.
      * List Path Parts Handler
      */
     listPathParts(requestParameters: ListPathPartsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedResponsePathPartResponse>;
@@ -957,6 +963,10 @@ export class PathPartsApi extends runtime.BaseAPI implements PathPartsApiInterfa
 
         const queryParameters: any = {};
 
+        if (requestParameters['includeChunks'] != null) {
+            queryParameters['include_chunks'] = requestParameters['includeChunks'];
+        }
+
         const headerParameters: runtime.HTTPHeaders = {};
 
         if (this.configuration && this.configuration.accessToken) {
@@ -980,7 +990,7 @@ export class PathPartsApi extends runtime.BaseAPI implements PathPartsApiInterfa
     }
 
     /**
-     * Resolve all descendant chunks for a subtree root.  Returns chunks grouped by identical (path_part_ids, tag_ids) tuples.
+     * Resolve hierarchy metadata for chunk, table and skill points in this subtree.  Groups include the root itself when it has a point. Use point_ids for Qdrant updates; chunk_ids remains the chunk-only subset for existing clients. Restore repair sets include_chunks=false to avoid rewriting document chunks.
      * Get Path Part Subtree Chunks Handler
      */
     async getPathPartSubtreeChunksRaw(requestParameters: GetPathPartSubtreeChunksRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SubtreeChunksResponse>> {
@@ -991,7 +1001,7 @@ export class PathPartsApi extends runtime.BaseAPI implements PathPartsApiInterfa
     }
 
     /**
-     * Resolve all descendant chunks for a subtree root.  Returns chunks grouped by identical (path_part_ids, tag_ids) tuples.
+     * Resolve hierarchy metadata for chunk, table and skill points in this subtree.  Groups include the root itself when it has a point. Use point_ids for Qdrant updates; chunk_ids remains the chunk-only subset for existing clients. Restore repair sets include_chunks=false to avoid rewriting document chunks.
      * Get Path Part Subtree Chunks Handler
      */
     async getPathPartSubtreeChunks(requestParameters: GetPathPartSubtreeChunksRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SubtreeChunksResponse> {
@@ -1209,7 +1219,7 @@ export class PathPartsApi extends runtime.BaseAPI implements PathPartsApiInterfa
     }
 
     /**
-     * List path parts under a parent with traversal.  This is a generic endpoint for traversing the path hierarchy. It returns the navigable, container-like nodes of the tree: FOLDER, WORKFLOW_DEFINITION, and WORKFLOW_RUN path parts.  - If parent_path_id is not provided, lists contents of the root folder. - max_depth controls how deep to traverse (1 = direct children only). - sort_order controls the ordering: LOGICAL (linked-list), NAME, UPDATED_AT, CREATED_AT.  For listing folder contents that includes documents with enriched metadata, use GET /folders/{folder_id}/contents instead.
+     * List path parts under a parent with traversal.  This is a generic endpoint for traversing the path hierarchy. It returns the navigable, container-like nodes of the tree: FOLDER, WORKFLOW_DEFINITION, and WORKFLOW_RUN path parts.  - If parent_path_id is not provided, lists contents of the root folder. - max_depth controls how deep to traverse (1 = direct children only). - sort_order controls the ordering: LOGICAL (linked-list), NAME, UPDATED_AT, CREATED_AT.  For listing folder contents that includes documents with enriched metadata, use GET /folders/{folder_id}/contents instead.  Timestamp filters restrict discovery to readable /shared and personal paths for every role. Unfiltered browsing retains ordinary read access.
      * List Path Parts Handler
      */
     async listPathPartsRaw(requestParameters: ListPathPartsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedResponsePathPartResponse>> {
@@ -1220,7 +1230,7 @@ export class PathPartsApi extends runtime.BaseAPI implements PathPartsApiInterfa
     }
 
     /**
-     * List path parts under a parent with traversal.  This is a generic endpoint for traversing the path hierarchy. It returns the navigable, container-like nodes of the tree: FOLDER, WORKFLOW_DEFINITION, and WORKFLOW_RUN path parts.  - If parent_path_id is not provided, lists contents of the root folder. - max_depth controls how deep to traverse (1 = direct children only). - sort_order controls the ordering: LOGICAL (linked-list), NAME, UPDATED_AT, CREATED_AT.  For listing folder contents that includes documents with enriched metadata, use GET /folders/{folder_id}/contents instead.
+     * List path parts under a parent with traversal.  This is a generic endpoint for traversing the path hierarchy. It returns the navigable, container-like nodes of the tree: FOLDER, WORKFLOW_DEFINITION, and WORKFLOW_RUN path parts.  - If parent_path_id is not provided, lists contents of the root folder. - max_depth controls how deep to traverse (1 = direct children only). - sort_order controls the ordering: LOGICAL (linked-list), NAME, UPDATED_AT, CREATED_AT.  For listing folder contents that includes documents with enriched metadata, use GET /folders/{folder_id}/contents instead.  Timestamp filters restrict discovery to readable /shared and personal paths for every role. Unfiltered browsing retains ordinary read access.
      * List Path Parts Handler
      */
     async listPathParts(requestParameters: ListPathPartsRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedResponsePathPartResponse> {
