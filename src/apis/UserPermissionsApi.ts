@@ -120,10 +120,6 @@ export interface ListUserPermissionsRequest {
      */
     sortBy?: UserPermissionOrder;
     /**
-     * Sort direction; overrides the field's natural default
-     */
-    sortDir?: SortDirection;
-    /**
      * Filter grants by can_read
      */
     canRead?: boolean | null;
@@ -151,6 +147,10 @@ export interface ListUserPermissionsRequest {
      * Number of items to skip
      */
     offset?: number;
+    /**
+     * Sort direction (ASC or DESC); overrides the field's natural default. Every sort field supports both directions.
+     */
+    sortDir?: SortDirection;
 }
 
 export interface UpdateUserPermissionRequest {
@@ -278,7 +278,6 @@ export interface UserPermissionsApiInterface {
      * @param {string} tenantId Tenant ID to list permissions for
      * @param {string} userId User ID to list permissions for
      * @param {UserPermissionOrder} [sortBy] Field to sort permissions by (default: CREATED_AT)
-     * @param {SortDirection} [sortDir] Sort direction; overrides the field\&#39;s natural default
      * @param {boolean} [canRead] Filter grants by can_read
      * @param {boolean} [canWrite] Filter grants by can_write
      * @param {boolean} [canDelete] Filter grants by can_delete
@@ -286,6 +285,7 @@ export interface UserPermissionsApiInterface {
      * @param {boolean} [canGrantPermissions] Filter grants by can_grant_permissions
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
+     * @param {SortDirection} [sortDir] Sort direction (ASC or DESC); overrides the field\&#39;s natural default. Every sort field supports both directions.
      * @throws {RequiredError}
      * @memberof UserPermissionsApiInterface
      */
@@ -297,7 +297,6 @@ export interface UserPermissionsApiInterface {
      * @param {string} tenantId Tenant ID to list permissions for
      * @param {string} userId User ID to list permissions for
      * @param {UserPermissionOrder} [sortBy] Field to sort permissions by (default: CREATED_AT)
-     * @param {SortDirection} [sortDir] Sort direction; overrides the field\&#39;s natural default
      * @param {boolean} [canRead] Filter grants by can_read
      * @param {boolean} [canWrite] Filter grants by can_write
      * @param {boolean} [canDelete] Filter grants by can_delete
@@ -305,6 +304,7 @@ export interface UserPermissionsApiInterface {
      * @param {boolean} [canGrantPermissions] Filter grants by can_grant_permissions
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
+     * @param {SortDirection} [sortDir] Sort direction (ASC or DESC); overrides the field\&#39;s natural default. Every sort field supports both directions.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof UserPermissionsApiInterface
@@ -620,10 +620,6 @@ export class UserPermissionsApi extends runtime.BaseAPI implements UserPermissio
             queryParameters['sort_by'] = requestParameters['sortBy'];
         }
 
-        if (requestParameters['sortDir'] != null) {
-            queryParameters['sort_dir'] = requestParameters['sortDir'];
-        }
-
         if (requestParameters['canRead'] != null) {
             queryParameters['can_read'] = requestParameters['canRead'];
         }
@@ -650,6 +646,10 @@ export class UserPermissionsApi extends runtime.BaseAPI implements UserPermissio
 
         if (requestParameters['offset'] != null) {
             queryParameters['offset'] = requestParameters['offset'];
+        }
+
+        if (requestParameters['sortDir'] != null) {
+            queryParameters['sort_dir'] = requestParameters['sortDir'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};

@@ -198,10 +198,6 @@ export interface ListDocumentVersionsRequest {
      */
     sortBy?: DocumentVersionOrder;
     /**
-     * Sort direction; overrides the field's natural default
-     */
-    sortDir?: SortDirection;
-    /**
      * Filter to versions created by this user
      */
     uploaderUserId?: string | null;
@@ -229,6 +225,10 @@ export interface ListDocumentVersionsRequest {
      * Only items updated strictly before this timestamp
      */
     updatedBefore?: Date | null;
+    /**
+     * Sort direction (ASC or DESC); overrides the field's natural default. Every sort field supports both directions.
+     */
+    sortDir?: SortDirection;
 }
 
 export interface UpdateDocumentVersionMetadataRequest {
@@ -486,7 +486,6 @@ export interface DocumentVersionsApiInterface {
      * Creates request options for listDocumentVersions without sending the request
      * @param {string} documentId Document ID to list versions for
      * @param {DocumentVersionOrder} [sortBy] Field to sort versions by (default: VERSION)
-     * @param {SortDirection} [sortDir] Sort direction; overrides the field\&#39;s natural default
      * @param {string} [uploaderUserId] Filter to versions created by this user
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
@@ -494,6 +493,7 @@ export interface DocumentVersionsApiInterface {
      * @param {Date} [createdBefore] Only items created strictly before this timestamp
      * @param {Date} [updatedAfter] Only items updated at or after this timestamp (inclusive)
      * @param {Date} [updatedBefore] Only items updated strictly before this timestamp
+     * @param {SortDirection} [sortDir] Sort direction (ASC or DESC); overrides the field\&#39;s natural default. Every sort field supports both directions.
      * @throws {RequiredError}
      * @memberof DocumentVersionsApiInterface
      */
@@ -504,7 +504,6 @@ export interface DocumentVersionsApiInterface {
      * @summary List Document Versions Handler
      * @param {string} documentId Document ID to list versions for
      * @param {DocumentVersionOrder} [sortBy] Field to sort versions by (default: VERSION)
-     * @param {SortDirection} [sortDir] Sort direction; overrides the field\&#39;s natural default
      * @param {string} [uploaderUserId] Filter to versions created by this user
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
@@ -512,6 +511,7 @@ export interface DocumentVersionsApiInterface {
      * @param {Date} [createdBefore] Only items created strictly before this timestamp
      * @param {Date} [updatedAfter] Only items updated at or after this timestamp (inclusive)
      * @param {Date} [updatedBefore] Only items updated strictly before this timestamp
+     * @param {SortDirection} [sortDir] Sort direction (ASC or DESC); overrides the field\&#39;s natural default. Every sort field supports both directions.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DocumentVersionsApiInterface
@@ -1136,10 +1136,6 @@ export class DocumentVersionsApi extends runtime.BaseAPI implements DocumentVers
             queryParameters['sort_by'] = requestParameters['sortBy'];
         }
 
-        if (requestParameters['sortDir'] != null) {
-            queryParameters['sort_dir'] = requestParameters['sortDir'];
-        }
-
         if (requestParameters['uploaderUserId'] != null) {
             queryParameters['uploader_user_id'] = requestParameters['uploaderUserId'];
         }
@@ -1166,6 +1162,10 @@ export class DocumentVersionsApi extends runtime.BaseAPI implements DocumentVers
 
         if (requestParameters['updatedBefore'] != null) {
             queryParameters['updated_before'] = runtime.serializeDateTime(requestParameters['updatedBefore'] as any);
+        }
+
+        if (requestParameters['sortDir'] != null) {
+            queryParameters['sort_dir'] = requestParameters['sortDir'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};

@@ -155,10 +155,6 @@ export interface ListWorkflowDefinitionsRequest {
      */
     sortBy?: WorkflowDefinitionOrder;
     /**
-     * Sort direction; overrides the field's natural default
-     */
-    sortDir?: SortDirection;
-    /**
      * 
      */
     isTemplate?: boolean;
@@ -198,6 +194,10 @@ export interface ListWorkflowDefinitionsRequest {
      * Drop items that carry any of these tags on the item itself or any ancestor folder (repeatable). Takes precedence over include_tag_ids.
      */
     excludeTagIds?: Array<string> | null;
+    /**
+     * Sort direction (ASC or DESC); overrides the field's natural default. Every sort field supports both directions.
+     */
+    sortDir?: SortDirection;
 }
 
 export interface ListWorkflowRunsRequest {
@@ -209,10 +209,6 @@ export interface ListWorkflowRunsRequest {
      * Field to sort runs by (default: STARTED_AT)
      */
     sortBy?: WorkflowRunOrder;
-    /**
-     * Sort direction; overrides the field's natural default
-     */
-    sortDir?: SortDirection;
     /**
      * Number of items per page
      */
@@ -237,6 +233,10 @@ export interface ListWorkflowRunsRequest {
      * Only items updated strictly before this timestamp
      */
     updatedBefore?: Date | null;
+    /**
+     * Sort direction (ASC or DESC); overrides the field's natural default. Every sort field supports both directions.
+     */
+    sortDir?: SortDirection;
 }
 
 export interface UpdateWorkflowDefinitionOperationRequest {
@@ -394,7 +394,6 @@ export interface WorkflowDefinitionsApiInterface {
      * @param {boolean} [mine] Only definitions the caller created (owner).
      * @param {string} [search] Case-insensitive substring over name and description.
      * @param {WorkflowDefinitionOrder} [sortBy] Field to sort definitions by (default: CREATED_AT)
-     * @param {SortDirection} [sortDir] Sort direction; overrides the field\&#39;s natural default
      * @param {boolean} [isTemplate] 
      * @param {boolean} [needsApproval] Only definitions with a run awaiting approval.
      * @param {number} [limit] Number of items per page
@@ -405,6 +404,7 @@ export interface WorkflowDefinitionsApiInterface {
      * @param {Date} [updatedBefore] Only items updated strictly before this timestamp
      * @param {Array<string>} [includeTagIds] Keep only items that carry at least one of these tags on the item itself or any ancestor folder (repeatable, OR / tag inheritance).
      * @param {Array<string>} [excludeTagIds] Drop items that carry any of these tags on the item itself or any ancestor folder (repeatable). Takes precedence over include_tag_ids.
+     * @param {SortDirection} [sortDir] Sort direction (ASC or DESC); overrides the field\&#39;s natural default. Every sort field supports both directions.
      * @throws {RequiredError}
      * @memberof WorkflowDefinitionsApiInterface
      */
@@ -416,7 +416,6 @@ export interface WorkflowDefinitionsApiInterface {
      * @param {boolean} [mine] Only definitions the caller created (owner).
      * @param {string} [search] Case-insensitive substring over name and description.
      * @param {WorkflowDefinitionOrder} [sortBy] Field to sort definitions by (default: CREATED_AT)
-     * @param {SortDirection} [sortDir] Sort direction; overrides the field\&#39;s natural default
      * @param {boolean} [isTemplate] 
      * @param {boolean} [needsApproval] Only definitions with a run awaiting approval.
      * @param {number} [limit] Number of items per page
@@ -427,6 +426,7 @@ export interface WorkflowDefinitionsApiInterface {
      * @param {Date} [updatedBefore] Only items updated strictly before this timestamp
      * @param {Array<string>} [includeTagIds] Keep only items that carry at least one of these tags on the item itself or any ancestor folder (repeatable, OR / tag inheritance).
      * @param {Array<string>} [excludeTagIds] Drop items that carry any of these tags on the item itself or any ancestor folder (repeatable). Takes precedence over include_tag_ids.
+     * @param {SortDirection} [sortDir] Sort direction (ASC or DESC); overrides the field\&#39;s natural default. Every sort field supports both directions.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof WorkflowDefinitionsApiInterface
@@ -442,13 +442,13 @@ export interface WorkflowDefinitionsApiInterface {
      * Creates request options for listWorkflowRuns without sending the request
      * @param {string} definitionId 
      * @param {WorkflowRunOrder} [sortBy] Field to sort runs by (default: STARTED_AT)
-     * @param {SortDirection} [sortDir] Sort direction; overrides the field\&#39;s natural default
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
      * @param {Date} [createdAfter] Only items created at or after this timestamp (inclusive)
      * @param {Date} [createdBefore] Only items created strictly before this timestamp
      * @param {Date} [updatedAfter] Only items updated at or after this timestamp (inclusive)
      * @param {Date} [updatedBefore] Only items updated strictly before this timestamp
+     * @param {SortDirection} [sortDir] Sort direction (ASC or DESC); overrides the field\&#39;s natural default. Every sort field supports both directions.
      * @throws {RequiredError}
      * @memberof WorkflowDefinitionsApiInterface
      */
@@ -459,13 +459,13 @@ export interface WorkflowDefinitionsApiInterface {
      * @summary List Workflow Runs Handler
      * @param {string} definitionId 
      * @param {WorkflowRunOrder} [sortBy] Field to sort runs by (default: STARTED_AT)
-     * @param {SortDirection} [sortDir] Sort direction; overrides the field\&#39;s natural default
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
      * @param {Date} [createdAfter] Only items created at or after this timestamp (inclusive)
      * @param {Date} [createdBefore] Only items created strictly before this timestamp
      * @param {Date} [updatedAfter] Only items updated at or after this timestamp (inclusive)
      * @param {Date} [updatedBefore] Only items updated strictly before this timestamp
+     * @param {SortDirection} [sortDir] Sort direction (ASC or DESC); overrides the field\&#39;s natural default. Every sort field supports both directions.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof WorkflowDefinitionsApiInterface
@@ -853,10 +853,6 @@ export class WorkflowDefinitionsApi extends runtime.BaseAPI implements WorkflowD
             queryParameters['sort_by'] = requestParameters['sortBy'];
         }
 
-        if (requestParameters['sortDir'] != null) {
-            queryParameters['sort_dir'] = requestParameters['sortDir'];
-        }
-
         if (requestParameters['isTemplate'] != null) {
             queryParameters['is_template'] = requestParameters['isTemplate'];
         }
@@ -895,6 +891,10 @@ export class WorkflowDefinitionsApi extends runtime.BaseAPI implements WorkflowD
 
         if (requestParameters['excludeTagIds'] != null) {
             queryParameters['exclude_tag_ids'] = requestParameters['excludeTagIds'];
+        }
+
+        if (requestParameters['sortDir'] != null) {
+            queryParameters['sort_dir'] = requestParameters['sortDir'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -953,10 +953,6 @@ export class WorkflowDefinitionsApi extends runtime.BaseAPI implements WorkflowD
             queryParameters['sort_by'] = requestParameters['sortBy'];
         }
 
-        if (requestParameters['sortDir'] != null) {
-            queryParameters['sort_dir'] = requestParameters['sortDir'];
-        }
-
         if (requestParameters['limit'] != null) {
             queryParameters['limit'] = requestParameters['limit'];
         }
@@ -979,6 +975,10 @@ export class WorkflowDefinitionsApi extends runtime.BaseAPI implements WorkflowD
 
         if (requestParameters['updatedBefore'] != null) {
             queryParameters['updated_before'] = runtime.serializeDateTime(requestParameters['updatedBefore'] as any);
+        }
+
+        if (requestParameters['sortDir'] != null) {
+            queryParameters['sort_dir'] = requestParameters['sortDir'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};

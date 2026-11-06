@@ -117,10 +117,6 @@ export interface ListInvitesRequest {
      */
     sortBy?: InviteOrder;
     /**
-     * Sort direction; overrides the field's natural default
-     */
-    sortDir?: SortDirection;
-    /**
      * Number of items per page
      */
     limit?: number;
@@ -144,6 +140,10 @@ export interface ListInvitesRequest {
      * Only items updated strictly before this timestamp
      */
     updatedBefore?: Date | null;
+    /**
+     * Sort direction (ASC or DESC); overrides the field's natural default. Every sort field supports both directions.
+     */
+    sortDir?: SortDirection;
 }
 
 export interface PreviewInviteRequest {
@@ -250,13 +250,13 @@ export interface InvitesApiInterface {
      * @param {TenantUserRole} [role] Filter by invite role
      * @param {string} [invitedBy] Filter to invites sent by this user
      * @param {InviteOrder} [sortBy] Field to sort invites by (default: CREATED_AT)
-     * @param {SortDirection} [sortDir] Sort direction; overrides the field\&#39;s natural default
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
      * @param {Date} [createdAfter] Only items created at or after this timestamp (inclusive)
      * @param {Date} [createdBefore] Only items created strictly before this timestamp
      * @param {Date} [updatedAfter] Only items updated at or after this timestamp (inclusive)
      * @param {Date} [updatedBefore] Only items updated strictly before this timestamp
+     * @param {SortDirection} [sortDir] Sort direction (ASC or DESC); overrides the field\&#39;s natural default. Every sort field supports both directions.
      * @throws {RequiredError}
      * @memberof InvitesApiInterface
      */
@@ -270,13 +270,13 @@ export interface InvitesApiInterface {
      * @param {TenantUserRole} [role] Filter by invite role
      * @param {string} [invitedBy] Filter to invites sent by this user
      * @param {InviteOrder} [sortBy] Field to sort invites by (default: CREATED_AT)
-     * @param {SortDirection} [sortDir] Sort direction; overrides the field\&#39;s natural default
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
      * @param {Date} [createdAfter] Only items created at or after this timestamp (inclusive)
      * @param {Date} [createdBefore] Only items created strictly before this timestamp
      * @param {Date} [updatedAfter] Only items updated at or after this timestamp (inclusive)
      * @param {Date} [updatedBefore] Only items updated strictly before this timestamp
+     * @param {SortDirection} [sortDir] Sort direction (ASC or DESC); overrides the field\&#39;s natural default. Every sort field supports both directions.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof InvitesApiInterface
@@ -538,10 +538,6 @@ export class InvitesApi extends runtime.BaseAPI implements InvitesApiInterface {
             queryParameters['sort_by'] = requestParameters['sortBy'];
         }
 
-        if (requestParameters['sortDir'] != null) {
-            queryParameters['sort_dir'] = requestParameters['sortDir'];
-        }
-
         if (requestParameters['limit'] != null) {
             queryParameters['limit'] = requestParameters['limit'];
         }
@@ -564,6 +560,10 @@ export class InvitesApi extends runtime.BaseAPI implements InvitesApiInterface {
 
         if (requestParameters['updatedBefore'] != null) {
             queryParameters['updated_before'] = runtime.serializeDateTime(requestParameters['updatedBefore'] as any);
+        }
+
+        if (requestParameters['sortDir'] != null) {
+            queryParameters['sort_dir'] = requestParameters['sortDir'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};

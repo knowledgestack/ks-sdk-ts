@@ -88,10 +88,6 @@ export interface ListFeedbackRequest {
      */
     sortBy?: FeedbackOrder;
     /**
-     * Sort direction; overrides the field's natural default
-     */
-    sortDir?: SortDirection;
-    /**
      * Number of items per page
      */
     limit?: number;
@@ -115,6 +111,10 @@ export interface ListFeedbackRequest {
      * Only items updated strictly before this timestamp
      */
     updatedBefore?: Date | null;
+    /**
+     * Sort direction (ASC or DESC); overrides the field's natural default. Every sort field supports both directions.
+     */
+    sortDir?: SortDirection;
 }
 
 export interface SubmitFeedbackOperationRequest {
@@ -162,13 +162,13 @@ export interface FeedbackApiInterface {
      * @param {FeedbackRating} [rating] 
      * @param {boolean} [mine] Only the caller\&#39;s own feedback, whatever their role, so an owner or admin reading a thread sees their own vote on each message.
      * @param {FeedbackOrder} [sortBy] Field to sort feedback by (default: CREATED_AT)
-     * @param {SortDirection} [sortDir] Sort direction; overrides the field\&#39;s natural default
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
      * @param {Date} [createdAfter] Only items created at or after this timestamp (inclusive)
      * @param {Date} [createdBefore] Only items created strictly before this timestamp
      * @param {Date} [updatedAfter] Only items updated at or after this timestamp (inclusive)
      * @param {Date} [updatedBefore] Only items updated strictly before this timestamp
+     * @param {SortDirection} [sortDir] Sort direction (ASC or DESC); overrides the field\&#39;s natural default. Every sort field supports both directions.
      * @throws {RequiredError}
      * @memberof FeedbackApiInterface
      */
@@ -182,13 +182,13 @@ export interface FeedbackApiInterface {
      * @param {FeedbackRating} [rating] 
      * @param {boolean} [mine] Only the caller\&#39;s own feedback, whatever their role, so an owner or admin reading a thread sees their own vote on each message.
      * @param {FeedbackOrder} [sortBy] Field to sort feedback by (default: CREATED_AT)
-     * @param {SortDirection} [sortDir] Sort direction; overrides the field\&#39;s natural default
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
      * @param {Date} [createdAfter] Only items created at or after this timestamp (inclusive)
      * @param {Date} [createdBefore] Only items created strictly before this timestamp
      * @param {Date} [updatedAfter] Only items updated at or after this timestamp (inclusive)
      * @param {Date} [updatedBefore] Only items updated strictly before this timestamp
+     * @param {SortDirection} [sortDir] Sort direction (ASC or DESC); overrides the field\&#39;s natural default. Every sort field supports both directions.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof FeedbackApiInterface
@@ -312,10 +312,6 @@ export class FeedbackApi extends runtime.BaseAPI implements FeedbackApiInterface
             queryParameters['sort_by'] = requestParameters['sortBy'];
         }
 
-        if (requestParameters['sortDir'] != null) {
-            queryParameters['sort_dir'] = requestParameters['sortDir'];
-        }
-
         if (requestParameters['limit'] != null) {
             queryParameters['limit'] = requestParameters['limit'];
         }
@@ -338,6 +334,10 @@ export class FeedbackApi extends runtime.BaseAPI implements FeedbackApiInterface
 
         if (requestParameters['updatedBefore'] != null) {
             queryParameters['updated_before'] = runtime.serializeDateTime(requestParameters['updatedBefore'] as any);
+        }
+
+        if (requestParameters['sortDir'] != null) {
+            queryParameters['sort_dir'] = requestParameters['sortDir'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};

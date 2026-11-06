@@ -95,10 +95,6 @@ export interface ListThreadsRequest {
      */
     sortBy?: ThreadOrder;
     /**
-     * Sort direction; overrides the field's natural default
-     */
-    sortDir?: SortDirection;
-    /**
      * Case-insensitive substring filter on title
      */
     titleLike?: string | null;
@@ -126,6 +122,10 @@ export interface ListThreadsRequest {
      * Only items updated strictly before this timestamp
      */
     updatedBefore?: Date | null;
+    /**
+     * Sort direction (ASC or DESC); overrides the field's natural default. Every sort field supports both directions.
+     */
+    sortDir?: SortDirection;
 }
 
 export interface SendUserMessageRequest {
@@ -248,7 +248,6 @@ export interface ThreadsApiInterface {
      * Creates request options for listThreads without sending the request
      * @param {string} [parentPathPartId] Parent PathPart ID. Omit to list user\&#39;s conversation threads.
      * @param {ThreadOrder} [sortBy] Field to sort threads by (default: CREATED_AT)
-     * @param {SortDirection} [sortDir] Sort direction; overrides the field\&#39;s natural default
      * @param {string} [titleLike] Case-insensitive substring filter on title
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
@@ -256,6 +255,7 @@ export interface ThreadsApiInterface {
      * @param {Date} [createdBefore] Only items created strictly before this timestamp
      * @param {Date} [updatedAfter] Only items updated at or after this timestamp (inclusive)
      * @param {Date} [updatedBefore] Only items updated strictly before this timestamp
+     * @param {SortDirection} [sortDir] Sort direction (ASC or DESC); overrides the field\&#39;s natural default. Every sort field supports both directions.
      * @throws {RequiredError}
      * @memberof ThreadsApiInterface
      */
@@ -266,7 +266,6 @@ export interface ThreadsApiInterface {
      * @summary List Threads Handler
      * @param {string} [parentPathPartId] Parent PathPart ID. Omit to list user\&#39;s conversation threads.
      * @param {ThreadOrder} [sortBy] Field to sort threads by (default: CREATED_AT)
-     * @param {SortDirection} [sortDir] Sort direction; overrides the field\&#39;s natural default
      * @param {string} [titleLike] Case-insensitive substring filter on title
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
@@ -274,6 +273,7 @@ export interface ThreadsApiInterface {
      * @param {Date} [createdBefore] Only items created strictly before this timestamp
      * @param {Date} [updatedAfter] Only items updated at or after this timestamp (inclusive)
      * @param {Date} [updatedBefore] Only items updated strictly before this timestamp
+     * @param {SortDirection} [sortDir] Sort direction (ASC or DESC); overrides the field\&#39;s natural default. Every sort field supports both directions.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ThreadsApiInterface
@@ -553,10 +553,6 @@ export class ThreadsApi extends runtime.BaseAPI implements ThreadsApiInterface {
             queryParameters['sort_by'] = requestParameters['sortBy'];
         }
 
-        if (requestParameters['sortDir'] != null) {
-            queryParameters['sort_dir'] = requestParameters['sortDir'];
-        }
-
         if (requestParameters['titleLike'] != null) {
             queryParameters['title_like'] = requestParameters['titleLike'];
         }
@@ -583,6 +579,10 @@ export class ThreadsApi extends runtime.BaseAPI implements ThreadsApiInterface {
 
         if (requestParameters['updatedBefore'] != null) {
             queryParameters['updated_before'] = runtime.serializeDateTime(requestParameters['updatedBefore'] as any);
+        }
+
+        if (requestParameters['sortDir'] != null) {
+            queryParameters['sort_dir'] = requestParameters['sortDir'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};

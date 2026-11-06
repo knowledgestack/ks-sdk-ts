@@ -183,14 +183,6 @@ export interface ListPathPartEventsRequest {
      */
     kind?: string | null;
     /**
-     * Only events at or after this timestamp
-     */
-    since?: Date | null;
-    /**
-     * Only events strictly before this timestamp
-     */
-    until?: Date | null;
-    /**
      * Include events from descendant path_parts as well as the subject itself
      */
     recursive?: boolean;
@@ -206,6 +198,14 @@ export interface ListPathPartEventsRequest {
      * Number of items to skip
      */
     offset?: number;
+    /**
+     * Window start (inclusive). Omit for the endpoint's default range.
+     */
+    since?: Date | null;
+    /**
+     * Window end. Omit for no explicit upper bound; see the endpoint's boundary semantics.
+     */
+    until?: Date | null;
 }
 
 export interface ListPathPartsRequest {
@@ -221,10 +221,6 @@ export interface ListPathPartsRequest {
      * Sort order for results (default: LOGICAL)
      */
     sortOrder?: PathOrder;
-    /**
-     * Sort direction; overrides the column's natural default
-     */
-    sortDir?: SortDirection;
     /**
      * Number of items per page
      */
@@ -249,6 +245,10 @@ export interface ListPathPartsRequest {
      * Only items updated strictly before this timestamp
      */
     updatedBefore?: Date | null;
+    /**
+     * Sort direction (ASC or DESC); overrides the field's natural default. Every sort field supports both directions.
+     */
+    sortDir?: SortDirection;
 }
 
 export interface ReorderPathPartOperationRequest {
@@ -473,12 +473,12 @@ export interface PathPartsApiInterface {
      * Creates request options for listPathPartEvents without sending the request
      * @param {string} pathPartId 
      * @param {string} [kind] Filter to a single event kind
-     * @param {Date} [since] Only events at or after this timestamp
-     * @param {Date} [until] Only events strictly before this timestamp
      * @param {boolean} [recursive] Include events from descendant path_parts as well as the subject itself
      * @param {boolean} [includeChurn] Include intra-document churn hidden by default (raw chunk/section edits, version-metadata updates, and the v0 version-created row). Off by default so one upload / one logical edit shows as one event; ignored when an explicit kind is set.
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
+     * @param {Date} [since] Window start (inclusive). Omit for the endpoint\&#39;s default range.
+     * @param {Date} [until] Window end. Omit for no explicit upper bound; see the endpoint\&#39;s boundary semantics.
      * @throws {RequiredError}
      * @memberof PathPartsApiInterface
      */
@@ -489,12 +489,12 @@ export interface PathPartsApiInterface {
      * @summary List Path Part Events Handler
      * @param {string} pathPartId 
      * @param {string} [kind] Filter to a single event kind
-     * @param {Date} [since] Only events at or after this timestamp
-     * @param {Date} [until] Only events strictly before this timestamp
      * @param {boolean} [recursive] Include events from descendant path_parts as well as the subject itself
      * @param {boolean} [includeChurn] Include intra-document churn hidden by default (raw chunk/section edits, version-metadata updates, and the v0 version-created row). Off by default so one upload / one logical edit shows as one event; ignored when an explicit kind is set.
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
+     * @param {Date} [since] Window start (inclusive). Omit for the endpoint\&#39;s default range.
+     * @param {Date} [until] Window end. Omit for no explicit upper bound; see the endpoint\&#39;s boundary semantics.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof PathPartsApiInterface
@@ -512,13 +512,13 @@ export interface PathPartsApiInterface {
      * @param {string} [parentPathId] Parent PathPart ID (defaults to root)
      * @param {number} [maxDepth] Maximum depth to traverse (1 &#x3D; direct children, default: 1)
      * @param {PathOrder} [sortOrder] Sort order for results (default: LOGICAL)
-     * @param {SortDirection} [sortDir] Sort direction; overrides the column\&#39;s natural default
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
      * @param {Date} [createdAfter] Only items created at or after this timestamp (inclusive)
      * @param {Date} [createdBefore] Only items created strictly before this timestamp
      * @param {Date} [updatedAfter] Only items updated at or after this timestamp (inclusive)
      * @param {Date} [updatedBefore] Only items updated strictly before this timestamp
+     * @param {SortDirection} [sortDir] Sort direction (ASC or DESC); overrides the field\&#39;s natural default. Every sort field supports both directions.
      * @throws {RequiredError}
      * @memberof PathPartsApiInterface
      */
@@ -530,13 +530,13 @@ export interface PathPartsApiInterface {
      * @param {string} [parentPathId] Parent PathPart ID (defaults to root)
      * @param {number} [maxDepth] Maximum depth to traverse (1 &#x3D; direct children, default: 1)
      * @param {PathOrder} [sortOrder] Sort order for results (default: LOGICAL)
-     * @param {SortDirection} [sortDir] Sort direction; overrides the column\&#39;s natural default
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
      * @param {Date} [createdAfter] Only items created at or after this timestamp (inclusive)
      * @param {Date} [createdBefore] Only items created strictly before this timestamp
      * @param {Date} [updatedAfter] Only items updated at or after this timestamp (inclusive)
      * @param {Date} [updatedBefore] Only items updated strictly before this timestamp
+     * @param {SortDirection} [sortDir] Sort direction (ASC or DESC); overrides the field\&#39;s natural default. Every sort field supports both directions.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof PathPartsApiInterface
@@ -1075,14 +1075,6 @@ export class PathPartsApi extends runtime.BaseAPI implements PathPartsApiInterfa
             queryParameters['kind'] = requestParameters['kind'];
         }
 
-        if (requestParameters['since'] != null) {
-            queryParameters['since'] = runtime.serializeDateTime(requestParameters['since'] as any);
-        }
-
-        if (requestParameters['until'] != null) {
-            queryParameters['until'] = runtime.serializeDateTime(requestParameters['until'] as any);
-        }
-
         if (requestParameters['recursive'] != null) {
             queryParameters['recursive'] = requestParameters['recursive'];
         }
@@ -1097,6 +1089,14 @@ export class PathPartsApi extends runtime.BaseAPI implements PathPartsApiInterfa
 
         if (requestParameters['offset'] != null) {
             queryParameters['offset'] = requestParameters['offset'];
+        }
+
+        if (requestParameters['since'] != null) {
+            queryParameters['since'] = runtime.serializeDateTime(requestParameters['since'] as any);
+        }
+
+        if (requestParameters['until'] != null) {
+            queryParameters['until'] = runtime.serializeDateTime(requestParameters['until'] as any);
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -1159,10 +1159,6 @@ export class PathPartsApi extends runtime.BaseAPI implements PathPartsApiInterfa
             queryParameters['sort_order'] = requestParameters['sortOrder'];
         }
 
-        if (requestParameters['sortDir'] != null) {
-            queryParameters['sort_dir'] = requestParameters['sortDir'];
-        }
-
         if (requestParameters['limit'] != null) {
             queryParameters['limit'] = requestParameters['limit'];
         }
@@ -1185,6 +1181,10 @@ export class PathPartsApi extends runtime.BaseAPI implements PathPartsApiInterfa
 
         if (requestParameters['updatedBefore'] != null) {
             queryParameters['updated_before'] = runtime.serializeDateTime(requestParameters['updatedBefore'] as any);
+        }
+
+        if (requestParameters['sortDir'] != null) {
+            queryParameters['sort_dir'] = requestParameters['sortDir'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};

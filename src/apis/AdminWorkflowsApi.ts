@@ -64,11 +64,11 @@ export interface GetAdminWorkflowByHourRequest {
      */
     definitionId?: string | null;
     /**
-     * Window start (inclusive). Defaults to 7 days ago.
+     * Window start (inclusive). Omit for the endpoint's default range.
      */
     since?: Date | null;
     /**
-     * Window end (inclusive).
+     * Window end. Omit for no explicit upper bound; see the endpoint's boundary semantics.
      */
     until?: Date | null;
 }
@@ -79,22 +79,22 @@ export interface GetAdminWorkflowLeaderboardRequest {
      */
     limit?: number;
     /**
-     * Window start (inclusive). Defaults to 7 days ago.
+     * Window start (inclusive). Omit for the endpoint's default range.
      */
     since?: Date | null;
     /**
-     * Window end (inclusive).
+     * Window end. Omit for no explicit upper bound; see the endpoint's boundary semantics.
      */
     until?: Date | null;
 }
 
 export interface GetAdminWorkflowOutputStatsRequest {
     /**
-     * Window start (inclusive). Defaults to 7 days ago.
+     * Window start (inclusive). Omit for the endpoint's default range.
      */
     since?: Date | null;
     /**
-     * Window end (inclusive).
+     * Window end. Omit for no explicit upper bound; see the endpoint's boundary semantics.
      */
     until?: Date | null;
 }
@@ -105,11 +105,11 @@ export interface GetAdminWorkflowSummaryRequest {
      */
     definitionId?: string | null;
     /**
-     * Window start (inclusive). Defaults to 7 days ago.
+     * Window start (inclusive). Omit for the endpoint's default range.
      */
     since?: Date | null;
     /**
-     * Window end (inclusive).
+     * Window end. Omit for no explicit upper bound; see the endpoint's boundary semantics.
      */
     until?: Date | null;
 }
@@ -124,17 +124,17 @@ export interface GetAdminWorkflowTimeseriesRequest {
      */
     definitionId?: string | null;
     /**
-     * Window start (inclusive). Defaults to 7 days ago.
-     */
-    since?: Date | null;
-    /**
-     * Window end (inclusive).
-     */
-    until?: Date | null;
-    /**
      * Bucket size.
      */
     bucket?: TimeBucket;
+    /**
+     * Window start (inclusive). Omit for the endpoint's default range.
+     */
+    since?: Date | null;
+    /**
+     * Window end. Omit for no explicit upper bound; see the endpoint's boundary semantics.
+     */
+    until?: Date | null;
 }
 
 /**
@@ -148,8 +148,8 @@ export interface AdminWorkflowsApiInterface {
      * Creates request options for getAdminWorkflowByHour without sending the request
      * @param {string} [timezone] IANA tz override; defaults to tenant setting.
      * @param {string} [definitionId] Scope to one workflow.
-     * @param {Date} [since] Window start (inclusive). Defaults to 7 days ago.
-     * @param {Date} [until] Window end (inclusive).
+     * @param {Date} [since] Window start (inclusive). Omit for the endpoint\&#39;s default range.
+     * @param {Date} [until] Window end. Omit for no explicit upper bound; see the endpoint\&#39;s boundary semantics.
      * @throws {RequiredError}
      * @memberof AdminWorkflowsApiInterface
      */
@@ -160,8 +160,8 @@ export interface AdminWorkflowsApiInterface {
      * @summary Get Admin Workflow By Hour Handler
      * @param {string} [timezone] IANA tz override; defaults to tenant setting.
      * @param {string} [definitionId] Scope to one workflow.
-     * @param {Date} [since] Window start (inclusive). Defaults to 7 days ago.
-     * @param {Date} [until] Window end (inclusive).
+     * @param {Date} [since] Window start (inclusive). Omit for the endpoint\&#39;s default range.
+     * @param {Date} [until] Window end. Omit for no explicit upper bound; see the endpoint\&#39;s boundary semantics.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof AdminWorkflowsApiInterface
@@ -177,8 +177,8 @@ export interface AdminWorkflowsApiInterface {
     /**
      * Creates request options for getAdminWorkflowLeaderboard without sending the request
      * @param {number} [limit] Top-N per leaderboard.
-     * @param {Date} [since] Window start (inclusive). Defaults to 7 days ago.
-     * @param {Date} [until] Window end (inclusive).
+     * @param {Date} [since] Window start (inclusive). Omit for the endpoint\&#39;s default range.
+     * @param {Date} [until] Window end. Omit for no explicit upper bound; see the endpoint\&#39;s boundary semantics.
      * @throws {RequiredError}
      * @memberof AdminWorkflowsApiInterface
      */
@@ -188,8 +188,8 @@ export interface AdminWorkflowsApiInterface {
      * Top workflows and top run owners by run count.
      * @summary Get Admin Workflow Leaderboard Handler
      * @param {number} [limit] Top-N per leaderboard.
-     * @param {Date} [since] Window start (inclusive). Defaults to 7 days ago.
-     * @param {Date} [until] Window end (inclusive).
+     * @param {Date} [since] Window start (inclusive). Omit for the endpoint\&#39;s default range.
+     * @param {Date} [until] Window end. Omit for no explicit upper bound; see the endpoint\&#39;s boundary semantics.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof AdminWorkflowsApiInterface
@@ -204,8 +204,8 @@ export interface AdminWorkflowsApiInterface {
 
     /**
      * Creates request options for getAdminWorkflowOutputStats without sending the request
-     * @param {Date} [since] Window start (inclusive). Defaults to 7 days ago.
-     * @param {Date} [until] Window end (inclusive).
+     * @param {Date} [since] Window start (inclusive). Omit for the endpoint\&#39;s default range.
+     * @param {Date} [until] Window end. Omit for no explicit upper bound; see the endpoint\&#39;s boundary semantics.
      * @throws {RequiredError}
      * @memberof AdminWorkflowsApiInterface
      */
@@ -214,8 +214,8 @@ export interface AdminWorkflowsApiInterface {
     /**
      * Average output DOCUMENTs generated per workflow definition (completed runs).
      * @summary Get Admin Workflow Output Stats Handler
-     * @param {Date} [since] Window start (inclusive). Defaults to 7 days ago.
-     * @param {Date} [until] Window end (inclusive).
+     * @param {Date} [since] Window start (inclusive). Omit for the endpoint\&#39;s default range.
+     * @param {Date} [until] Window end. Omit for no explicit upper bound; see the endpoint\&#39;s boundary semantics.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof AdminWorkflowsApiInterface
@@ -231,8 +231,8 @@ export interface AdminWorkflowsApiInterface {
     /**
      * Creates request options for getAdminWorkflowSummary without sending the request
      * @param {string} [definitionId] Scope all numbers to one workflow.
-     * @param {Date} [since] Window start (inclusive). Defaults to 7 days ago.
-     * @param {Date} [until] Window end (inclusive).
+     * @param {Date} [since] Window start (inclusive). Omit for the endpoint\&#39;s default range.
+     * @param {Date} [until] Window end. Omit for no explicit upper bound; see the endpoint\&#39;s boundary semantics.
      * @throws {RequiredError}
      * @memberof AdminWorkflowsApiInterface
      */
@@ -242,8 +242,8 @@ export interface AdminWorkflowsApiInterface {
      * Tenant-wide run health: counts, failure rate, durations, approval backlog.
      * @summary Get Admin Workflow Summary Handler
      * @param {string} [definitionId] Scope all numbers to one workflow.
-     * @param {Date} [since] Window start (inclusive). Defaults to 7 days ago.
-     * @param {Date} [until] Window end (inclusive).
+     * @param {Date} [since] Window start (inclusive). Omit for the endpoint\&#39;s default range.
+     * @param {Date} [until] Window end. Omit for no explicit upper bound; see the endpoint\&#39;s boundary semantics.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof AdminWorkflowsApiInterface
@@ -260,9 +260,9 @@ export interface AdminWorkflowsApiInterface {
      * Creates request options for getAdminWorkflowTimeseries without sending the request
      * @param {string} [timezone] IANA tz override; defaults to tenant setting.
      * @param {string} [definitionId] Scope to one workflow.
-     * @param {Date} [since] Window start (inclusive). Defaults to 7 days ago.
-     * @param {Date} [until] Window end (inclusive).
      * @param {TimeBucket} [bucket] Bucket size.
+     * @param {Date} [since] Window start (inclusive). Omit for the endpoint\&#39;s default range.
+     * @param {Date} [until] Window end. Omit for no explicit upper bound; see the endpoint\&#39;s boundary semantics.
      * @throws {RequiredError}
      * @memberof AdminWorkflowsApiInterface
      */
@@ -273,9 +273,9 @@ export interface AdminWorkflowsApiInterface {
      * @summary Get Admin Workflow Timeseries Handler
      * @param {string} [timezone] IANA tz override; defaults to tenant setting.
      * @param {string} [definitionId] Scope to one workflow.
-     * @param {Date} [since] Window start (inclusive). Defaults to 7 days ago.
-     * @param {Date} [until] Window end (inclusive).
      * @param {TimeBucket} [bucket] Bucket size.
+     * @param {Date} [since] Window start (inclusive). Omit for the endpoint\&#39;s default range.
+     * @param {Date} [until] Window end. Omit for no explicit upper bound; see the endpoint\&#39;s boundary semantics.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof AdminWorkflowsApiInterface
@@ -545,16 +545,16 @@ export class AdminWorkflowsApi extends runtime.BaseAPI implements AdminWorkflows
             queryParameters['definition_id'] = requestParameters['definitionId'];
         }
 
+        if (requestParameters['bucket'] != null) {
+            queryParameters['bucket'] = requestParameters['bucket'];
+        }
+
         if (requestParameters['since'] != null) {
             queryParameters['since'] = runtime.serializeDateTime(requestParameters['since'] as any);
         }
 
         if (requestParameters['until'] != null) {
             queryParameters['until'] = runtime.serializeDateTime(requestParameters['until'] as any);
-        }
-
-        if (requestParameters['bucket'] != null) {
-            queryParameters['bucket'] = requestParameters['bucket'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};

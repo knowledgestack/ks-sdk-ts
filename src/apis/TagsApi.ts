@@ -81,10 +81,6 @@ export interface ListTagsRequest {
      */
     sortBy?: TagOrder;
     /**
-     * Sort direction; overrides the field's natural default
-     */
-    sortDir?: SortDirection;
-    /**
      * Case-insensitive substring filter on name
      */
     nameLike?: string | null;
@@ -112,6 +108,10 @@ export interface ListTagsRequest {
      * Only items updated strictly before this timestamp
      */
     updatedBefore?: Date | null;
+    /**
+     * Sort direction (ASC or DESC); overrides the field's natural default. Every sort field supports both directions.
+     */
+    sortDir?: SortDirection;
 }
 
 export interface UpdateTagOperationRequest {
@@ -207,7 +207,6 @@ export interface TagsApiInterface {
     /**
      * Creates request options for listTags without sending the request
      * @param {TagOrder} [sortBy] Field to sort tags by (default: NAME)
-     * @param {SortDirection} [sortDir] Sort direction; overrides the field\&#39;s natural default
      * @param {string} [nameLike] Case-insensitive substring filter on name
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
@@ -215,6 +214,7 @@ export interface TagsApiInterface {
      * @param {Date} [createdBefore] Only items created strictly before this timestamp
      * @param {Date} [updatedAfter] Only items updated at or after this timestamp (inclusive)
      * @param {Date} [updatedBefore] Only items updated strictly before this timestamp
+     * @param {SortDirection} [sortDir] Sort direction (ASC or DESC); overrides the field\&#39;s natural default. Every sort field supports both directions.
      * @throws {RequiredError}
      * @memberof TagsApiInterface
      */
@@ -224,7 +224,6 @@ export interface TagsApiInterface {
      * List all tags for the current tenant.
      * @summary List Tags Handler
      * @param {TagOrder} [sortBy] Field to sort tags by (default: NAME)
-     * @param {SortDirection} [sortDir] Sort direction; overrides the field\&#39;s natural default
      * @param {string} [nameLike] Case-insensitive substring filter on name
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
@@ -232,6 +231,7 @@ export interface TagsApiInterface {
      * @param {Date} [createdBefore] Only items created strictly before this timestamp
      * @param {Date} [updatedAfter] Only items updated at or after this timestamp (inclusive)
      * @param {Date} [updatedBefore] Only items updated strictly before this timestamp
+     * @param {SortDirection} [sortDir] Sort direction (ASC or DESC); overrides the field\&#39;s natural default. Every sort field supports both directions.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof TagsApiInterface
@@ -453,10 +453,6 @@ export class TagsApi extends runtime.BaseAPI implements TagsApiInterface {
             queryParameters['sort_by'] = requestParameters['sortBy'];
         }
 
-        if (requestParameters['sortDir'] != null) {
-            queryParameters['sort_dir'] = requestParameters['sortDir'];
-        }
-
         if (requestParameters['nameLike'] != null) {
             queryParameters['name_like'] = requestParameters['nameLike'];
         }
@@ -483,6 +479,10 @@ export class TagsApi extends runtime.BaseAPI implements TagsApiInterface {
 
         if (requestParameters['updatedBefore'] != null) {
             queryParameters['updated_before'] = runtime.serializeDateTime(requestParameters['updatedBefore'] as any);
+        }
+
+        if (requestParameters['sortDir'] != null) {
+            queryParameters['sort_dir'] = requestParameters['sortDir'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};

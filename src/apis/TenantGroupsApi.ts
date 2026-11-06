@@ -163,10 +163,6 @@ export interface ListGroupMembersRequest {
      */
     sortBy?: GroupMemberOrder;
     /**
-     * Sort direction; overrides the field's natural default
-     */
-    sortDir?: SortDirection;
-    /**
      * Case-insensitive substring filter on member name
      */
     usernameLike?: string | null;
@@ -178,6 +174,10 @@ export interface ListGroupMembersRequest {
      * Number of items to skip
      */
     offset?: number;
+    /**
+     * Sort direction (ASC or DESC); overrides the field's natural default. Every sort field supports both directions.
+     */
+    sortDir?: SortDirection;
 }
 
 export interface ListGroupPermissionsRequest {
@@ -189,10 +189,6 @@ export interface ListGroupPermissionsRequest {
      * Field to sort permissions by (default: CREATED_AT)
      */
     sortBy?: GroupPermissionOrder;
-    /**
-     * Sort direction; overrides the field's natural default
-     */
-    sortDir?: SortDirection;
     /**
      * Filter grants by can_read
      */
@@ -221,6 +217,10 @@ export interface ListGroupPermissionsRequest {
      * Number of items to skip
      */
     offset?: number;
+    /**
+     * Sort direction (ASC or DESC); overrides the field's natural default. Every sort field supports both directions.
+     */
+    sortDir?: SortDirection;
 }
 
 export interface ListTenantGroupsRequest {
@@ -228,10 +228,6 @@ export interface ListTenantGroupsRequest {
      * Field to sort groups by (default: NAME)
      */
     sortBy?: TenantGroupOrder;
-    /**
-     * Sort direction; overrides the field's natural default
-     */
-    sortDir?: SortDirection;
     /**
      * Case-insensitive substring filter on name
      */
@@ -264,6 +260,10 @@ export interface ListTenantGroupsRequest {
      * Only items updated strictly before this timestamp
      */
     updatedBefore?: Date | null;
+    /**
+     * Sort direction (ASC or DESC); overrides the field's natural default. Every sort field supports both directions.
+     */
+    sortDir?: SortDirection;
 }
 
 export interface RemoveGroupMemberRequest {
@@ -464,10 +464,10 @@ export interface TenantGroupsApiInterface {
      * Creates request options for listGroupMembers without sending the request
      * @param {string} groupId 
      * @param {GroupMemberOrder} [sortBy] Field to sort members by (default: ADDED_AT)
-     * @param {SortDirection} [sortDir] Sort direction; overrides the field\&#39;s natural default
      * @param {string} [usernameLike] Case-insensitive substring filter on member name
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
+     * @param {SortDirection} [sortDir] Sort direction (ASC or DESC); overrides the field\&#39;s natural default. Every sort field supports both directions.
      * @throws {RequiredError}
      * @memberof TenantGroupsApiInterface
      */
@@ -478,10 +478,10 @@ export interface TenantGroupsApiInterface {
      * @summary List Group Members Handler
      * @param {string} groupId 
      * @param {GroupMemberOrder} [sortBy] Field to sort members by (default: ADDED_AT)
-     * @param {SortDirection} [sortDir] Sort direction; overrides the field\&#39;s natural default
      * @param {string} [usernameLike] Case-insensitive substring filter on member name
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
+     * @param {SortDirection} [sortDir] Sort direction (ASC or DESC); overrides the field\&#39;s natural default. Every sort field supports both directions.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof TenantGroupsApiInterface
@@ -498,7 +498,6 @@ export interface TenantGroupsApiInterface {
      * Creates request options for listGroupPermissions without sending the request
      * @param {string} groupId 
      * @param {GroupPermissionOrder} [sortBy] Field to sort permissions by (default: CREATED_AT)
-     * @param {SortDirection} [sortDir] Sort direction; overrides the field\&#39;s natural default
      * @param {boolean} [canRead] Filter grants by can_read
      * @param {boolean} [canWrite] Filter grants by can_write
      * @param {boolean} [canDelete] Filter grants by can_delete
@@ -506,6 +505,7 @@ export interface TenantGroupsApiInterface {
      * @param {boolean} [canGrantPermissions] Filter grants by can_grant_permissions
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
+     * @param {SortDirection} [sortDir] Sort direction (ASC or DESC); overrides the field\&#39;s natural default. Every sort field supports both directions.
      * @throws {RequiredError}
      * @memberof TenantGroupsApiInterface
      */
@@ -516,7 +516,6 @@ export interface TenantGroupsApiInterface {
      * @summary List Group Permissions Handler
      * @param {string} groupId 
      * @param {GroupPermissionOrder} [sortBy] Field to sort permissions by (default: CREATED_AT)
-     * @param {SortDirection} [sortDir] Sort direction; overrides the field\&#39;s natural default
      * @param {boolean} [canRead] Filter grants by can_read
      * @param {boolean} [canWrite] Filter grants by can_write
      * @param {boolean} [canDelete] Filter grants by can_delete
@@ -524,6 +523,7 @@ export interface TenantGroupsApiInterface {
      * @param {boolean} [canGrantPermissions] Filter grants by can_grant_permissions
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
+     * @param {SortDirection} [sortDir] Sort direction (ASC or DESC); overrides the field\&#39;s natural default. Every sort field supports both directions.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof TenantGroupsApiInterface
@@ -561,7 +561,6 @@ export interface TenantGroupsApiInterface {
     /**
      * Creates request options for listTenantGroups without sending the request
      * @param {TenantGroupOrder} [sortBy] Field to sort groups by (default: NAME)
-     * @param {SortDirection} [sortDir] Sort direction; overrides the field\&#39;s natural default
      * @param {string} [nameLike] Case-insensitive substring filter on name
      * @param {Array<string>} [hasUserIds] Only groups containing ALL of these user ids
      * @param {number} [limit] Number of items per page
@@ -570,6 +569,7 @@ export interface TenantGroupsApiInterface {
      * @param {Date} [createdBefore] Only items created strictly before this timestamp
      * @param {Date} [updatedAfter] Only items updated at or after this timestamp (inclusive)
      * @param {Date} [updatedBefore] Only items updated strictly before this timestamp
+     * @param {SortDirection} [sortDir] Sort direction (ASC or DESC); overrides the field\&#39;s natural default. Every sort field supports both directions.
      * @throws {RequiredError}
      * @memberof TenantGroupsApiInterface
      */
@@ -579,7 +579,6 @@ export interface TenantGroupsApiInterface {
      * List tenant groups.  Admin/owner and permission managers see all groups; other members see their own.
      * @summary List Tenant Groups Handler
      * @param {TenantGroupOrder} [sortBy] Field to sort groups by (default: NAME)
-     * @param {SortDirection} [sortDir] Sort direction; overrides the field\&#39;s natural default
      * @param {string} [nameLike] Case-insensitive substring filter on name
      * @param {Array<string>} [hasUserIds] Only groups containing ALL of these user ids
      * @param {number} [limit] Number of items per page
@@ -588,6 +587,7 @@ export interface TenantGroupsApiInterface {
      * @param {Date} [createdBefore] Only items created strictly before this timestamp
      * @param {Date} [updatedAfter] Only items updated at or after this timestamp (inclusive)
      * @param {Date} [updatedBefore] Only items updated strictly before this timestamp
+     * @param {SortDirection} [sortDir] Sort direction (ASC or DESC); overrides the field\&#39;s natural default. Every sort field supports both directions.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof TenantGroupsApiInterface
@@ -1062,10 +1062,6 @@ export class TenantGroupsApi extends runtime.BaseAPI implements TenantGroupsApiI
             queryParameters['sort_by'] = requestParameters['sortBy'];
         }
 
-        if (requestParameters['sortDir'] != null) {
-            queryParameters['sort_dir'] = requestParameters['sortDir'];
-        }
-
         if (requestParameters['usernameLike'] != null) {
             queryParameters['username_like'] = requestParameters['usernameLike'];
         }
@@ -1076,6 +1072,10 @@ export class TenantGroupsApi extends runtime.BaseAPI implements TenantGroupsApiI
 
         if (requestParameters['offset'] != null) {
             queryParameters['offset'] = requestParameters['offset'];
+        }
+
+        if (requestParameters['sortDir'] != null) {
+            queryParameters['sort_dir'] = requestParameters['sortDir'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -1137,10 +1137,6 @@ export class TenantGroupsApi extends runtime.BaseAPI implements TenantGroupsApiI
             queryParameters['sort_by'] = requestParameters['sortBy'];
         }
 
-        if (requestParameters['sortDir'] != null) {
-            queryParameters['sort_dir'] = requestParameters['sortDir'];
-        }
-
         if (requestParameters['canRead'] != null) {
             queryParameters['can_read'] = requestParameters['canRead'];
         }
@@ -1167,6 +1163,10 @@ export class TenantGroupsApi extends runtime.BaseAPI implements TenantGroupsApiI
 
         if (requestParameters['offset'] != null) {
             queryParameters['offset'] = requestParameters['offset'];
+        }
+
+        if (requestParameters['sortDir'] != null) {
+            queryParameters['sort_dir'] = requestParameters['sortDir'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -1268,10 +1268,6 @@ export class TenantGroupsApi extends runtime.BaseAPI implements TenantGroupsApiI
             queryParameters['sort_by'] = requestParameters['sortBy'];
         }
 
-        if (requestParameters['sortDir'] != null) {
-            queryParameters['sort_dir'] = requestParameters['sortDir'];
-        }
-
         if (requestParameters['nameLike'] != null) {
             queryParameters['name_like'] = requestParameters['nameLike'];
         }
@@ -1302,6 +1298,10 @@ export class TenantGroupsApi extends runtime.BaseAPI implements TenantGroupsApiI
 
         if (requestParameters['updatedBefore'] != null) {
             queryParameters['updated_before'] = runtime.serializeDateTime(requestParameters['updatedBefore'] as any);
+        }
+
+        if (requestParameters['sortDir'] != null) {
+            queryParameters['sort_dir'] = requestParameters['sortDir'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};

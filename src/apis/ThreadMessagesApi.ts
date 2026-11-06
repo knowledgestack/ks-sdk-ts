@@ -89,10 +89,6 @@ export interface ListThreadMessagesRequest {
      */
     role?: MessageRole;
     /**
-     * ASC for oldest-first; default/DESC keeps newest-first
-     */
-    sortDir?: SortDirection;
-    /**
      * Include execution steps in response (default true)
      */
     withDetails?: boolean;
@@ -104,6 +100,10 @@ export interface ListThreadMessagesRequest {
      * Number of items to skip
      */
     offset?: number;
+    /**
+     * Sort direction (ASC or DESC); overrides the field's natural default. Every sort field supports both directions.
+     */
+    sortDir?: SortDirection;
 }
 
 /**
@@ -172,10 +172,10 @@ export interface ThreadMessagesApiInterface {
      * @param {string} threadId 
      * @param {Date} [before] Cursor for keyset pagination: only return messages with created_at &lt; this value
      * @param {MessageRole} [role] Filter messages by role (USER, ASSISTANT, SYSTEM)
-     * @param {SortDirection} [sortDir] ASC for oldest-first; default/DESC keeps newest-first
      * @param {boolean} [withDetails] Include execution steps in response (default true)
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
+     * @param {SortDirection} [sortDir] Sort direction (ASC or DESC); overrides the field\&#39;s natural default. Every sort field supports both directions.
      * @throws {RequiredError}
      * @memberof ThreadMessagesApiInterface
      */
@@ -187,10 +187,10 @@ export interface ThreadMessagesApiInterface {
      * @param {string} threadId 
      * @param {Date} [before] Cursor for keyset pagination: only return messages with created_at &lt; this value
      * @param {MessageRole} [role] Filter messages by role (USER, ASSISTANT, SYSTEM)
-     * @param {SortDirection} [sortDir] ASC for oldest-first; default/DESC keeps newest-first
      * @param {boolean} [withDetails] Include execution steps in response (default true)
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
+     * @param {SortDirection} [sortDir] Sort direction (ASC or DESC); overrides the field\&#39;s natural default. Every sort field supports both directions.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ThreadMessagesApiInterface
@@ -363,10 +363,6 @@ export class ThreadMessagesApi extends runtime.BaseAPI implements ThreadMessages
             queryParameters['role'] = requestParameters['role'];
         }
 
-        if (requestParameters['sortDir'] != null) {
-            queryParameters['sort_dir'] = requestParameters['sortDir'];
-        }
-
         if (requestParameters['withDetails'] != null) {
             queryParameters['with_details'] = requestParameters['withDetails'];
         }
@@ -377,6 +373,10 @@ export class ThreadMessagesApi extends runtime.BaseAPI implements ThreadMessages
 
         if (requestParameters['offset'] != null) {
             queryParameters['offset'] = requestParameters['offset'];
+        }
+
+        if (requestParameters['sortDir'] != null) {
+            queryParameters['sort_dir'] = requestParameters['sortDir'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};

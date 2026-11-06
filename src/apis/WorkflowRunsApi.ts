@@ -116,17 +116,17 @@ export interface GetWorkflowRunRequest {
 
 export interface GetWorkflowRunsSummaryRequest {
     /**
-     * Window start (inclusive). Defaults to 7 days ago.
-     */
-    since?: Date | null;
-    /**
-     * Window end (inclusive). Defaults to open-ended.
-     */
-    until?: Date | null;
-    /**
      * Scope all numbers to one workflow (requires read).
      */
     definitionId?: string | null;
+    /**
+     * Window start (inclusive). Omit for the endpoint's default range.
+     */
+    since?: Date | null;
+    /**
+     * Window end. Omit for no explicit upper bound; see the endpoint's boundary semantics.
+     */
+    until?: Date | null;
 }
 
 export interface ListWorkflowRunsForTenantRequest {
@@ -154,10 +154,6 @@ export interface ListWorkflowRunsForTenantRequest {
      * Field to sort runs by (default: STARTED_AT)
      */
     sortBy?: WorkflowRunOrder;
-    /**
-     * Sort direction; overrides the field's natural default
-     */
-    sortDir?: SortDirection;
     /**
      * Number of items per page
      */
@@ -194,6 +190,10 @@ export interface ListWorkflowRunsForTenantRequest {
      * Drop items that carry any of these tags on the item itself or any ancestor folder (repeatable). Takes precedence over include_tag_ids.
      */
     excludeTagIds?: Array<string> | null;
+    /**
+     * Sort direction (ASC or DESC); overrides the field's natural default. Every sort field supports both directions.
+     */
+    sortDir?: SortDirection;
 }
 
 export interface ResumeWorkflowRunRequest {
@@ -342,9 +342,9 @@ export interface WorkflowRunsApiInterface {
 
     /**
      * Creates request options for getWorkflowRunsSummary without sending the request
-     * @param {Date} [since] Window start (inclusive). Defaults to 7 days ago.
-     * @param {Date} [until] Window end (inclusive). Defaults to open-ended.
      * @param {string} [definitionId] Scope all numbers to one workflow (requires read).
+     * @param {Date} [since] Window start (inclusive). Omit for the endpoint\&#39;s default range.
+     * @param {Date} [until] Window end. Omit for no explicit upper bound; see the endpoint\&#39;s boundary semantics.
      * @throws {RequiredError}
      * @memberof WorkflowRunsApiInterface
      */
@@ -353,9 +353,9 @@ export interface WorkflowRunsApiInterface {
     /**
      * Aggregate workflow-runs health, read-gated and permission-scoped.  Numbers cover only runs under workflows the caller can read (OWNER/ADMIN ⇒ tenant-wide). Windowed metrics default to the last 7 days; the approval backlog and active-definition count are point-in-time.
      * @summary Get Workflow Runs Summary Handler
-     * @param {Date} [since] Window start (inclusive). Defaults to 7 days ago.
-     * @param {Date} [until] Window end (inclusive). Defaults to open-ended.
      * @param {string} [definitionId] Scope all numbers to one workflow (requires read).
+     * @param {Date} [since] Window start (inclusive). Omit for the endpoint\&#39;s default range.
+     * @param {Date} [until] Window end. Omit for no explicit upper bound; see the endpoint\&#39;s boundary semantics.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof WorkflowRunsApiInterface
@@ -376,7 +376,6 @@ export interface WorkflowRunsApiInterface {
      * @param {string} [definitionId] Only runs under this workflow definition.
      * @param {string} [ownerId] Only runs created by this user.
      * @param {WorkflowRunOrder} [sortBy] Field to sort runs by (default: STARTED_AT)
-     * @param {SortDirection} [sortDir] Sort direction; overrides the field\&#39;s natural default
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
      * @param {Date} [createdAfter] Only items created at or after this timestamp (inclusive)
@@ -386,6 +385,7 @@ export interface WorkflowRunsApiInterface {
      * @param {Array<PathPartApprovalState>} [approvalState] Keep only items in these approval states (repeatable): not_required, pending, approved.
      * @param {Array<string>} [includeTagIds] Keep only items that carry at least one of these tags on the item itself or any ancestor folder (repeatable, OR / tag inheritance).
      * @param {Array<string>} [excludeTagIds] Drop items that carry any of these tags on the item itself or any ancestor folder (repeatable). Takes precedence over include_tag_ids.
+     * @param {SortDirection} [sortDir] Sort direction (ASC or DESC); overrides the field\&#39;s natural default. Every sort field supports both directions.
      * @throws {RequiredError}
      * @memberof WorkflowRunsApiInterface
      */
@@ -400,7 +400,6 @@ export interface WorkflowRunsApiInterface {
      * @param {string} [definitionId] Only runs under this workflow definition.
      * @param {string} [ownerId] Only runs created by this user.
      * @param {WorkflowRunOrder} [sortBy] Field to sort runs by (default: STARTED_AT)
-     * @param {SortDirection} [sortDir] Sort direction; overrides the field\&#39;s natural default
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
      * @param {Date} [createdAfter] Only items created at or after this timestamp (inclusive)
@@ -410,6 +409,7 @@ export interface WorkflowRunsApiInterface {
      * @param {Array<PathPartApprovalState>} [approvalState] Keep only items in these approval states (repeatable): not_required, pending, approved.
      * @param {Array<string>} [includeTagIds] Keep only items that carry at least one of these tags on the item itself or any ancestor folder (repeatable, OR / tag inheritance).
      * @param {Array<string>} [excludeTagIds] Drop items that carry any of these tags on the item itself or any ancestor folder (repeatable). Takes precedence over include_tag_ids.
+     * @param {SortDirection} [sortDir] Sort direction (ASC or DESC); overrides the field\&#39;s natural default. Every sort field supports both directions.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof WorkflowRunsApiInterface
@@ -781,16 +781,16 @@ export class WorkflowRunsApi extends runtime.BaseAPI implements WorkflowRunsApiI
     async getWorkflowRunsSummaryRequestOpts(requestParameters: GetWorkflowRunsSummaryRequest): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
+        if (requestParameters['definitionId'] != null) {
+            queryParameters['definition_id'] = requestParameters['definitionId'];
+        }
+
         if (requestParameters['since'] != null) {
             queryParameters['since'] = runtime.serializeDateTime(requestParameters['since'] as any);
         }
 
         if (requestParameters['until'] != null) {
             queryParameters['until'] = runtime.serializeDateTime(requestParameters['until'] as any);
-        }
-
-        if (requestParameters['definitionId'] != null) {
-            queryParameters['definition_id'] = requestParameters['definitionId'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -864,10 +864,6 @@ export class WorkflowRunsApi extends runtime.BaseAPI implements WorkflowRunsApiI
             queryParameters['sort_by'] = requestParameters['sortBy'];
         }
 
-        if (requestParameters['sortDir'] != null) {
-            queryParameters['sort_dir'] = requestParameters['sortDir'];
-        }
-
         if (requestParameters['limit'] != null) {
             queryParameters['limit'] = requestParameters['limit'];
         }
@@ -902,6 +898,10 @@ export class WorkflowRunsApi extends runtime.BaseAPI implements WorkflowRunsApiI
 
         if (requestParameters['excludeTagIds'] != null) {
             queryParameters['exclude_tag_ids'] = requestParameters['excludeTagIds'];
+        }
+
+        if (requestParameters['sortDir'] != null) {
+            queryParameters['sort_dir'] = requestParameters['sortDir'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};

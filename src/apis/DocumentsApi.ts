@@ -294,10 +294,6 @@ export interface ListDocumentsRequest {
      */
     sortOrder?: PathOrder;
     /**
-     * Sort direction; overrides the column's natural default
-     */
-    sortDir?: SortDirection;
-    /**
      * Filter to documents owned by this user
      */
     ownerId?: string | null;
@@ -341,6 +337,10 @@ export interface ListDocumentsRequest {
      * Only items updated strictly before this timestamp
      */
     updatedBefore?: Date | null;
+    /**
+     * Sort direction (ASC or DESC); overrides the field's natural default. Every sort field supports both directions.
+     */
+    sortDir?: SortDirection;
 }
 
 export interface UpdateDocumentOperationRequest {
@@ -687,7 +687,6 @@ export interface DocumentsApiInterface {
      * Creates request options for listDocuments without sending the request
      * @param {string} [parentPathPartId] Parent PathPart ID (defaults to root)
      * @param {PathOrder} [sortOrder] Sort order for results (default: LOGICAL)
-     * @param {SortDirection} [sortDir] Sort direction; overrides the column\&#39;s natural default
      * @param {string} [ownerId] Filter to documents owned by this user
      * @param {DocumentType} [documentType] Filter to documents of this type
      * @param {number} [durationMinMs] Only media whose active version is at least this long (milliseconds). Non-media documents have no duration and are excluded.
@@ -699,6 +698,7 @@ export interface DocumentsApiInterface {
      * @param {Date} [createdBefore] Only items created strictly before this timestamp
      * @param {Date} [updatedAfter] Only items updated at or after this timestamp (inclusive)
      * @param {Date} [updatedBefore] Only items updated strictly before this timestamp
+     * @param {SortDirection} [sortDir] Sort direction (ASC or DESC); overrides the field\&#39;s natural default. Every sort field supports both directions.
      * @throws {RequiredError}
      * @memberof DocumentsApiInterface
      */
@@ -709,7 +709,6 @@ export interface DocumentsApiInterface {
      * @summary List Documents Handler
      * @param {string} [parentPathPartId] Parent PathPart ID (defaults to root)
      * @param {PathOrder} [sortOrder] Sort order for results (default: LOGICAL)
-     * @param {SortDirection} [sortDir] Sort direction; overrides the column\&#39;s natural default
      * @param {string} [ownerId] Filter to documents owned by this user
      * @param {DocumentType} [documentType] Filter to documents of this type
      * @param {number} [durationMinMs] Only media whose active version is at least this long (milliseconds). Non-media documents have no duration and are excluded.
@@ -721,6 +720,7 @@ export interface DocumentsApiInterface {
      * @param {Date} [createdBefore] Only items created strictly before this timestamp
      * @param {Date} [updatedAfter] Only items updated at or after this timestamp (inclusive)
      * @param {Date} [updatedBefore] Only items updated strictly before this timestamp
+     * @param {SortDirection} [sortDir] Sort direction (ASC or DESC); overrides the field\&#39;s natural default. Every sort field supports both directions.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DocumentsApiInterface
@@ -1587,10 +1587,6 @@ export class DocumentsApi extends runtime.BaseAPI implements DocumentsApiInterfa
             queryParameters['sort_order'] = requestParameters['sortOrder'];
         }
 
-        if (requestParameters['sortDir'] != null) {
-            queryParameters['sort_dir'] = requestParameters['sortDir'];
-        }
-
         if (requestParameters['ownerId'] != null) {
             queryParameters['owner_id'] = requestParameters['ownerId'];
         }
@@ -1633,6 +1629,10 @@ export class DocumentsApi extends runtime.BaseAPI implements DocumentsApiInterfa
 
         if (requestParameters['updatedBefore'] != null) {
             queryParameters['updated_before'] = runtime.serializeDateTime(requestParameters['updatedBefore'] as any);
+        }
+
+        if (requestParameters['sortDir'] != null) {
+            queryParameters['sort_dir'] = requestParameters['sortDir'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};

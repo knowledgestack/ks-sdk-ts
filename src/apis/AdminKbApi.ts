@@ -54,17 +54,17 @@ export interface GetAdminKbTimeseriesRequest {
      */
     timezone?: string | null;
     /**
-     * Window start (inclusive). Defaults to 7 days ago.
-     */
-    since?: Date | null;
-    /**
-     * Window end (inclusive).
-     */
-    until?: Date | null;
-    /**
      * Bucket size.
      */
     bucket?: TimeBucket;
+    /**
+     * Window start (inclusive). Omit for the endpoint's default range.
+     */
+    since?: Date | null;
+    /**
+     * Window end. Omit for no explicit upper bound; see the endpoint's boundary semantics.
+     */
+    until?: Date | null;
 }
 
 /**
@@ -100,9 +100,9 @@ export interface AdminKbApiInterface {
      * Creates request options for getAdminKbTimeseries without sending the request
      * @param {KbMetric} metric Which KB metric to bucket.
      * @param {string} [timezone] IANA tz override; defaults to tenant setting.
-     * @param {Date} [since] Window start (inclusive). Defaults to 7 days ago.
-     * @param {Date} [until] Window end (inclusive).
      * @param {TimeBucket} [bucket] Bucket size.
+     * @param {Date} [since] Window start (inclusive). Omit for the endpoint\&#39;s default range.
+     * @param {Date} [until] Window end. Omit for no explicit upper bound; see the endpoint\&#39;s boundary semantics.
      * @throws {RequiredError}
      * @memberof AdminKbApiInterface
      */
@@ -113,9 +113,9 @@ export interface AdminKbApiInterface {
      * @summary Get Admin Kb Timeseries Handler
      * @param {KbMetric} metric Which KB metric to bucket.
      * @param {string} [timezone] IANA tz override; defaults to tenant setting.
-     * @param {Date} [since] Window start (inclusive). Defaults to 7 days ago.
-     * @param {Date} [until] Window end (inclusive).
      * @param {TimeBucket} [bucket] Bucket size.
+     * @param {Date} [since] Window start (inclusive). Omit for the endpoint\&#39;s default range.
+     * @param {Date} [until] Window end. Omit for no explicit upper bound; see the endpoint\&#39;s boundary semantics.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof AdminKbApiInterface
@@ -203,16 +203,16 @@ export class AdminKbApi extends runtime.BaseAPI implements AdminKbApiInterface {
             queryParameters['timezone'] = requestParameters['timezone'];
         }
 
+        if (requestParameters['bucket'] != null) {
+            queryParameters['bucket'] = requestParameters['bucket'];
+        }
+
         if (requestParameters['since'] != null) {
             queryParameters['since'] = runtime.serializeDateTime(requestParameters['since'] as any);
         }
 
         if (requestParameters['until'] != null) {
             queryParameters['until'] = runtime.serializeDateTime(requestParameters['until'] as any);
-        }
-
-        if (requestParameters['bucket'] != null) {
-            queryParameters['bucket'] = requestParameters['bucket'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};

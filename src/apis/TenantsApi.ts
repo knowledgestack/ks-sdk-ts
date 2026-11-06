@@ -154,10 +154,6 @@ export interface ListTenantUsersRequest {
      */
     sortBy?: TenantUserOrder;
     /**
-     * Sort direction; overrides the field's natural default
-     */
-    sortDir?: SortDirection;
-    /**
      * Filter to members with this role
      */
     role?: TenantUserRole;
@@ -177,6 +173,10 @@ export interface ListTenantUsersRequest {
      * Number of items to skip
      */
     offset?: number;
+    /**
+     * Sort direction (ASC or DESC); overrides the field's natural default. Every sort field supports both directions.
+     */
+    sortDir?: SortDirection;
 }
 
 export interface ListTenantsRequest {
@@ -418,12 +418,12 @@ export interface TenantsApiInterface {
      * Creates request options for listTenantUsers without sending the request
      * @param {string} tenantId 
      * @param {TenantUserOrder} [sortBy] Field to sort members by (default: active-first)
-     * @param {SortDirection} [sortDir] Sort direction; overrides the field\&#39;s natural default
      * @param {TenantUserRole} [role] Filter to members with this role
      * @param {string} [usernameLike] Case-insensitive substring filter on first/last name
      * @param {boolean} [activeOnly] Exclude deactivated members
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
+     * @param {SortDirection} [sortDir] Sort direction (ASC or DESC); overrides the field\&#39;s natural default. Every sort field supports both directions.
      * @throws {RequiredError}
      * @memberof TenantsApiInterface
      */
@@ -434,12 +434,12 @@ export interface TenantsApiInterface {
      * @summary List Tenant Users
      * @param {string} tenantId 
      * @param {TenantUserOrder} [sortBy] Field to sort members by (default: active-first)
-     * @param {SortDirection} [sortDir] Sort direction; overrides the field\&#39;s natural default
      * @param {TenantUserRole} [role] Filter to members with this role
      * @param {string} [usernameLike] Case-insensitive substring filter on first/last name
      * @param {boolean} [activeOnly] Exclude deactivated members
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
+     * @param {SortDirection} [sortDir] Sort direction (ASC or DESC); overrides the field\&#39;s natural default. Every sort field supports both directions.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof TenantsApiInterface
@@ -995,10 +995,6 @@ export class TenantsApi extends runtime.BaseAPI implements TenantsApiInterface {
             queryParameters['sort_by'] = requestParameters['sortBy'];
         }
 
-        if (requestParameters['sortDir'] != null) {
-            queryParameters['sort_dir'] = requestParameters['sortDir'];
-        }
-
         if (requestParameters['role'] != null) {
             queryParameters['role'] = requestParameters['role'];
         }
@@ -1017,6 +1013,10 @@ export class TenantsApi extends runtime.BaseAPI implements TenantsApiInterface {
 
         if (requestParameters['offset'] != null) {
             queryParameters['offset'] = requestParameters['offset'];
+        }
+
+        if (requestParameters['sortDir'] != null) {
+            queryParameters['sort_dir'] = requestParameters['sortDir'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};

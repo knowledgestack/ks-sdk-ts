@@ -86,10 +86,6 @@ export interface ListTrashRequest {
      */
     sortOrder?: PathOrder;
     /**
-     * Sort direction; overrides the column's natural default
-     */
-    sortDir?: SortDirection;
-    /**
      * Filter to items deleted by this user
      */
     deletedBy?: string | null;
@@ -125,6 +121,10 @@ export interface ListTrashRequest {
      * Only items updated strictly before this timestamp
      */
     updatedBefore?: Date | null;
+    /**
+     * Sort direction (ASC or DESC); overrides the field's natural default. Every sort field supports both directions.
+     */
+    sortDir?: SortDirection;
 }
 
 export interface PermanentlyDeleteTrashItemRequest {
@@ -223,7 +223,6 @@ export interface TrashApiInterface {
     /**
      * Creates request options for listTrash without sending the request
      * @param {PathOrder} [sortOrder] Sort order (default: LOGICAL &#x3D; deletion recency)
-     * @param {SortDirection} [sortDir] Sort direction; overrides the column\&#39;s natural default
      * @param {string} [deletedBy] Filter to items deleted by this user
      * @param {Array<PartType>} [partType] Filter to these path-part types (folders, documents, ...)
      * @param {string} [ownerId] Filter to items owned (created) by this user
@@ -233,6 +232,7 @@ export interface TrashApiInterface {
      * @param {Date} [createdBefore] Only items created strictly before this timestamp
      * @param {Date} [updatedAfter] Only items updated at or after this timestamp (inclusive)
      * @param {Date} [updatedBefore] Only items updated strictly before this timestamp
+     * @param {SortDirection} [sortDir] Sort direction (ASC or DESC); overrides the field\&#39;s natural default. Every sort field supports both directions.
      * @throws {RequiredError}
      * @memberof TrashApiInterface
      */
@@ -242,7 +242,6 @@ export interface TrashApiInterface {
      * List top-level trash items visible to the caller.
      * @summary List Trash Handler
      * @param {PathOrder} [sortOrder] Sort order (default: LOGICAL &#x3D; deletion recency)
-     * @param {SortDirection} [sortDir] Sort direction; overrides the column\&#39;s natural default
      * @param {string} [deletedBy] Filter to items deleted by this user
      * @param {Array<PartType>} [partType] Filter to these path-part types (folders, documents, ...)
      * @param {string} [ownerId] Filter to items owned (created) by this user
@@ -252,6 +251,7 @@ export interface TrashApiInterface {
      * @param {Date} [createdBefore] Only items created strictly before this timestamp
      * @param {Date} [updatedAfter] Only items updated at or after this timestamp (inclusive)
      * @param {Date} [updatedBefore] Only items updated strictly before this timestamp
+     * @param {SortDirection} [sortDir] Sort direction (ASC or DESC); overrides the field\&#39;s natural default. Every sort field supports both directions.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof TrashApiInterface
@@ -498,10 +498,6 @@ export class TrashApi extends runtime.BaseAPI implements TrashApiInterface {
             queryParameters['sort_order'] = requestParameters['sortOrder'];
         }
 
-        if (requestParameters['sortDir'] != null) {
-            queryParameters['sort_dir'] = requestParameters['sortDir'];
-        }
-
         if (requestParameters['deletedBy'] != null) {
             queryParameters['deleted_by'] = requestParameters['deletedBy'];
         }
@@ -536,6 +532,10 @@ export class TrashApi extends runtime.BaseAPI implements TrashApiInterface {
 
         if (requestParameters['updatedBefore'] != null) {
             queryParameters['updated_before'] = runtime.serializeDateTime(requestParameters['updatedBefore'] as any);
+        }
+
+        if (requestParameters['sortDir'] != null) {
+            queryParameters['sort_dir'] = requestParameters['sortDir'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};

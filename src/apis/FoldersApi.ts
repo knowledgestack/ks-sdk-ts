@@ -149,10 +149,6 @@ export interface ListFolderContentsRequest {
      */
     sortOrder?: ContentsSortOrder;
     /**
-     * Sort direction; overrides the column's natural default
-     */
-    sortDir?: SortDirection;
-    /**
      * Filter to items owned by this user
      */
     ownerId?: string | null;
@@ -200,6 +196,10 @@ export interface ListFolderContentsRequest {
      * Only items updated strictly before this timestamp
      */
     updatedBefore?: Date | null;
+    /**
+     * Sort direction (ASC or DESC); overrides the field's natural default. Every sort field supports both directions.
+     */
+    sortDir?: SortDirection;
 }
 
 export interface ListFoldersRequest {
@@ -211,10 +211,6 @@ export interface ListFoldersRequest {
      * Sort order for results (default: LOGICAL)
      */
     sortOrder?: PathOrder;
-    /**
-     * Sort direction; overrides the column's natural default
-     */
-    sortDir?: SortDirection;
     /**
      * Filter to folders owned by this user
      */
@@ -247,6 +243,10 @@ export interface ListFoldersRequest {
      * Only items updated strictly before this timestamp
      */
     updatedBefore?: Date | null;
+    /**
+     * Sort direction (ASC or DESC); overrides the field's natural default. Every sort field supports both directions.
+     */
+    sortDir?: SortDirection;
 }
 
 export interface SearchItemsRequest {
@@ -434,7 +434,6 @@ export interface FoldersApiInterface {
      * @param {string} folderId 
      * @param {number} [maxDepth] Maximum depth to traverse (1&#x3D;direct children, default: 1)
      * @param {ContentsSortOrder} [sortOrder] Sort order for results (default: LOGICAL)
-     * @param {SortDirection} [sortDir] Sort direction; overrides the column\&#39;s natural default
      * @param {string} [ownerId] Filter to items owned by this user
      * @param {string} [nameLike] Case-insensitive substring filter on the item name
      * @param {boolean} [withTags] Include tag IDs for each item (default: false)
@@ -447,6 +446,7 @@ export interface FoldersApiInterface {
      * @param {Date} [createdBefore] Only items created strictly before this timestamp
      * @param {Date} [updatedAfter] Only items updated at or after this timestamp (inclusive)
      * @param {Date} [updatedBefore] Only items updated strictly before this timestamp
+     * @param {SortDirection} [sortDir] Sort direction (ASC or DESC); overrides the field\&#39;s natural default. Every sort field supports both directions.
      * @throws {RequiredError}
      * @memberof FoldersApiInterface
      */
@@ -458,7 +458,6 @@ export interface FoldersApiInterface {
      * @param {string} folderId 
      * @param {number} [maxDepth] Maximum depth to traverse (1&#x3D;direct children, default: 1)
      * @param {ContentsSortOrder} [sortOrder] Sort order for results (default: LOGICAL)
-     * @param {SortDirection} [sortDir] Sort direction; overrides the column\&#39;s natural default
      * @param {string} [ownerId] Filter to items owned by this user
      * @param {string} [nameLike] Case-insensitive substring filter on the item name
      * @param {boolean} [withTags] Include tag IDs for each item (default: false)
@@ -471,6 +470,7 @@ export interface FoldersApiInterface {
      * @param {Date} [createdBefore] Only items created strictly before this timestamp
      * @param {Date} [updatedAfter] Only items updated at or after this timestamp (inclusive)
      * @param {Date} [updatedBefore] Only items updated strictly before this timestamp
+     * @param {SortDirection} [sortDir] Sort direction (ASC or DESC); overrides the field\&#39;s natural default. Every sort field supports both directions.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof FoldersApiInterface
@@ -487,7 +487,6 @@ export interface FoldersApiInterface {
      * Creates request options for listFolders without sending the request
      * @param {string} [parentPathPartId] Parent PathPart ID (defaults to root)
      * @param {PathOrder} [sortOrder] Sort order for results (default: LOGICAL)
-     * @param {SortDirection} [sortDir] Sort direction; overrides the column\&#39;s natural default
      * @param {string} [ownerId] Filter to folders owned by this user
      * @param {boolean} [withTags] Include tags in the response (default: false)
      * @param {number} [limit] Number of items per page
@@ -496,6 +495,7 @@ export interface FoldersApiInterface {
      * @param {Date} [createdBefore] Only items created strictly before this timestamp
      * @param {Date} [updatedAfter] Only items updated at or after this timestamp (inclusive)
      * @param {Date} [updatedBefore] Only items updated strictly before this timestamp
+     * @param {SortDirection} [sortDir] Sort direction (ASC or DESC); overrides the field\&#39;s natural default. Every sort field supports both directions.
      * @throws {RequiredError}
      * @memberof FoldersApiInterface
      */
@@ -506,7 +506,6 @@ export interface FoldersApiInterface {
      * @summary List Folders Handler
      * @param {string} [parentPathPartId] Parent PathPart ID (defaults to root)
      * @param {PathOrder} [sortOrder] Sort order for results (default: LOGICAL)
-     * @param {SortDirection} [sortDir] Sort direction; overrides the column\&#39;s natural default
      * @param {string} [ownerId] Filter to folders owned by this user
      * @param {boolean} [withTags] Include tags in the response (default: false)
      * @param {number} [limit] Number of items per page
@@ -515,6 +514,7 @@ export interface FoldersApiInterface {
      * @param {Date} [createdBefore] Only items created strictly before this timestamp
      * @param {Date} [updatedAfter] Only items updated at or after this timestamp (inclusive)
      * @param {Date} [updatedBefore] Only items updated strictly before this timestamp
+     * @param {SortDirection} [sortDir] Sort direction (ASC or DESC); overrides the field\&#39;s natural default. Every sort field supports both directions.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof FoldersApiInterface
@@ -867,10 +867,6 @@ export class FoldersApi extends runtime.BaseAPI implements FoldersApiInterface {
             queryParameters['sort_order'] = requestParameters['sortOrder'];
         }
 
-        if (requestParameters['sortDir'] != null) {
-            queryParameters['sort_dir'] = requestParameters['sortDir'];
-        }
-
         if (requestParameters['ownerId'] != null) {
             queryParameters['owner_id'] = requestParameters['ownerId'];
         }
@@ -917,6 +913,10 @@ export class FoldersApi extends runtime.BaseAPI implements FoldersApiInterface {
 
         if (requestParameters['updatedBefore'] != null) {
             queryParameters['updated_before'] = runtime.serializeDateTime(requestParameters['updatedBefore'] as any);
+        }
+
+        if (requestParameters['sortDir'] != null) {
+            queryParameters['sort_dir'] = requestParameters['sortDir'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -975,10 +975,6 @@ export class FoldersApi extends runtime.BaseAPI implements FoldersApiInterface {
             queryParameters['sort_order'] = requestParameters['sortOrder'];
         }
 
-        if (requestParameters['sortDir'] != null) {
-            queryParameters['sort_dir'] = requestParameters['sortDir'];
-        }
-
         if (requestParameters['ownerId'] != null) {
             queryParameters['owner_id'] = requestParameters['ownerId'];
         }
@@ -1009,6 +1005,10 @@ export class FoldersApi extends runtime.BaseAPI implements FoldersApiInterface {
 
         if (requestParameters['updatedBefore'] != null) {
             queryParameters['updated_before'] = runtime.serializeDateTime(requestParameters['updatedBefore'] as any);
+        }
+
+        if (requestParameters['sortDir'] != null) {
+            queryParameters['sort_dir'] = requestParameters['sortDir'];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};

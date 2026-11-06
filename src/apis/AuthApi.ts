@@ -150,14 +150,6 @@ export interface FanweiDirectorySyncRequest {
      * 
      */
     tenantId: string;
-    /**
-     * 
-     */
-    authorization?: string | null;
-    /**
-     * 
-     */
-    ksUat?: string | null;
 }
 
 export interface FanweiDirectorySync0Request {
@@ -165,14 +157,6 @@ export interface FanweiDirectorySync0Request {
      * 
      */
     tenantId: string;
-    /**
-     * 
-     */
-    authorization?: string | null;
-    /**
-     * 
-     */
-    ksUat?: string | null;
 }
 
 export interface InitiateSsoRequest {
@@ -372,19 +356,15 @@ export interface AuthApiInterface {
     /**
      * Creates request options for fanweiDirectorySync without sending the request
      * @param {string} tenantId 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof AuthApiInterface
      */
     fanweiDirectorySyncRequestOpts(requestParameters: FanweiDirectorySyncRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * Trigger directory synchronization for a FanWei E9 tenant.  Accepts either: - A logged-in OWNER/ADMIN user (via UAT cookie) - An admin API key (via Authorization: Bearer header)
+     * Trigger directory sync as an authenticated OWNER/ADMIN of this tenant.
      * @summary Directory Sync Handler
      * @param {string} tenantId 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof AuthApiInterface
@@ -392,7 +372,7 @@ export interface AuthApiInterface {
     fanweiDirectorySyncRaw(requestParameters: FanweiDirectorySyncRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<DirectorySyncResponse>>;
 
     /**
-     * Trigger directory synchronization for a FanWei E9 tenant.  Accepts either: - A logged-in OWNER/ADMIN user (via UAT cookie) - An admin API key (via Authorization: Bearer header)
+     * Trigger directory sync as an authenticated OWNER/ADMIN of this tenant.
      * Directory Sync Handler
      */
     fanweiDirectorySync(requestParameters: FanweiDirectorySyncRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DirectorySyncResponse>;
@@ -400,19 +380,15 @@ export interface AuthApiInterface {
     /**
      * Creates request options for fanweiDirectorySync_1 without sending the request
      * @param {string} tenantId 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @throws {RequiredError}
      * @memberof AuthApiInterface
      */
     fanweiDirectorySync_1RequestOpts(requestParameters: FanweiDirectorySync0Request): Promise<runtime.RequestOpts>;
 
     /**
-     * Trigger directory synchronization for a FanWei E9 tenant.  Accepts either: - A logged-in OWNER/ADMIN user (via UAT cookie) - An admin API key (via Authorization: Bearer header)
+     * Trigger directory sync as an authenticated OWNER/ADMIN of this tenant.
      * @summary Directory Sync Handler
      * @param {string} tenantId 
-     * @param {string} [authorization] 
-     * @param {string} [ksUat] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof AuthApiInterface
@@ -420,7 +396,7 @@ export interface AuthApiInterface {
     fanweiDirectorySync_1Raw(requestParameters: FanweiDirectorySync0Request, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<DirectorySyncResponse>>;
 
     /**
-     * Trigger directory synchronization for a FanWei E9 tenant.  Accepts either: - A logged-in OWNER/ADMIN user (via UAT cookie) - An admin API key (via Authorization: Bearer header)
+     * Trigger directory sync as an authenticated OWNER/ADMIN of this tenant.
      * Directory Sync Handler
      */
     fanweiDirectorySync_1(requestParameters: FanweiDirectorySync0Request, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DirectorySyncResponse>;
@@ -925,10 +901,14 @@ export class AuthApi extends runtime.BaseAPI implements AuthApiInterface {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/auth/sso/{tenant_id}/directory_sync`;
         urlPath = urlPath.replace('{tenant_id}', encodeURIComponent(String(requestParameters['tenantId'])));
@@ -942,7 +922,7 @@ export class AuthApi extends runtime.BaseAPI implements AuthApiInterface {
     }
 
     /**
-     * Trigger directory synchronization for a FanWei E9 tenant.  Accepts either: - A logged-in OWNER/ADMIN user (via UAT cookie) - An admin API key (via Authorization: Bearer header)
+     * Trigger directory sync as an authenticated OWNER/ADMIN of this tenant.
      * Directory Sync Handler
      */
     async fanweiDirectorySyncRaw(requestParameters: FanweiDirectorySyncRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<DirectorySyncResponse>> {
@@ -953,7 +933,7 @@ export class AuthApi extends runtime.BaseAPI implements AuthApiInterface {
     }
 
     /**
-     * Trigger directory synchronization for a FanWei E9 tenant.  Accepts either: - A logged-in OWNER/ADMIN user (via UAT cookie) - An admin API key (via Authorization: Bearer header)
+     * Trigger directory sync as an authenticated OWNER/ADMIN of this tenant.
      * Directory Sync Handler
      */
     async fanweiDirectorySync(requestParameters: FanweiDirectorySyncRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DirectorySyncResponse> {
@@ -976,10 +956,14 @@ export class AuthApi extends runtime.BaseAPI implements AuthApiInterface {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters['authorization'] != null) {
-            headerParameters['authorization'] = String(requestParameters['authorization']);
-        }
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
 
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/v1/auth/sso/{tenant_id}/directory_sync`;
         urlPath = urlPath.replace('{tenant_id}', encodeURIComponent(String(requestParameters['tenantId'])));
@@ -993,7 +977,7 @@ export class AuthApi extends runtime.BaseAPI implements AuthApiInterface {
     }
 
     /**
-     * Trigger directory synchronization for a FanWei E9 tenant.  Accepts either: - A logged-in OWNER/ADMIN user (via UAT cookie) - An admin API key (via Authorization: Bearer header)
+     * Trigger directory sync as an authenticated OWNER/ADMIN of this tenant.
      * Directory Sync Handler
      */
     async fanweiDirectorySync_1Raw(requestParameters: FanweiDirectorySync0Request, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<DirectorySyncResponse>> {
@@ -1004,7 +988,7 @@ export class AuthApi extends runtime.BaseAPI implements AuthApiInterface {
     }
 
     /**
-     * Trigger directory synchronization for a FanWei E9 tenant.  Accepts either: - A logged-in OWNER/ADMIN user (via UAT cookie) - An admin API key (via Authorization: Bearer header)
+     * Trigger directory sync as an authenticated OWNER/ADMIN of this tenant.
      * Directory Sync Handler
      */
     async fanweiDirectorySync_1(requestParameters: FanweiDirectorySync0Request, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DirectorySyncResponse> {

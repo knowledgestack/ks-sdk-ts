@@ -44,14 +44,6 @@ export interface ExportAuditEventsRequest {
      */
     kind?: string | null;
     /**
-     * Only events at or after this timestamp (from). Omit to export the entire audit log. Must not be in the future or after `until`.
-     */
-    since?: Date | null;
-    /**
-     * Only events strictly before this timestamp (to). Omit for no upper bound. Must not be in the future.
-     */
-    until?: Date | null;
-    /**
      * Scope to one document/folder/run subject
      */
     subjectPathPartId?: string | null;
@@ -59,6 +51,14 @@ export interface ExportAuditEventsRequest {
      * Include the subject's descendants (needs subject)
      */
     recursive?: boolean;
+    /**
+     * Window start (inclusive). Omit for the endpoint's default range.
+     */
+    since?: Date | null;
+    /**
+     * Window end. Omit for no explicit upper bound; see the endpoint's boundary semantics.
+     */
+    until?: Date | null;
 }
 
 export interface ListAuditEventsRequest {
@@ -71,14 +71,6 @@ export interface ListAuditEventsRequest {
      */
     kind?: string | null;
     /**
-     * Only events at or after this timestamp (from). Omit for no lower bound. Must not be in the future or after `until`.
-     */
-    since?: Date | null;
-    /**
-     * Only events strictly before this timestamp (to). Omit for no upper bound. Must not be in the future.
-     */
-    until?: Date | null;
-    /**
      * Scope to one document/folder/run subject
      */
     subjectPathPartId?: string | null;
@@ -87,10 +79,6 @@ export interface ListAuditEventsRequest {
      */
     recursive?: boolean;
     /**
-     * Sort by timestamp (default: DESC, newest first)
-     */
-    sortDir?: SortDirection;
-    /**
      * Number of items per page
      */
     limit?: number;
@@ -98,6 +86,18 @@ export interface ListAuditEventsRequest {
      * Number of items to skip
      */
     offset?: number;
+    /**
+     * Sort direction (ASC or DESC); overrides the field's natural default. Every sort field supports both directions.
+     */
+    sortDir?: SortDirection;
+    /**
+     * Window start (inclusive). Omit for the endpoint's default range.
+     */
+    since?: Date | null;
+    /**
+     * Window end. Omit for no explicit upper bound; see the endpoint's boundary semantics.
+     */
+    until?: Date | null;
 }
 
 /**
@@ -111,10 +111,10 @@ export interface AuditEventsApiInterface {
      * Creates request options for exportAuditEvents without sending the request
      * @param {string} [actorUserId] Filter to one actor
      * @param {string} [kind] Filter to one event kind
-     * @param {Date} [since] Only events at or after this timestamp (from). Omit to export the entire audit log. Must not be in the future or after &#x60;until&#x60;.
-     * @param {Date} [until] Only events strictly before this timestamp (to). Omit for no upper bound. Must not be in the future.
      * @param {string} [subjectPathPartId] Scope to one document/folder/run subject
      * @param {boolean} [recursive] Include the subject\&#39;s descendants (needs subject)
+     * @param {Date} [since] Window start (inclusive). Omit for the endpoint\&#39;s default range.
+     * @param {Date} [until] Window end. Omit for no explicit upper bound; see the endpoint\&#39;s boundary semantics.
      * @throws {RequiredError}
      * @memberof AuditEventsApiInterface
      */
@@ -125,10 +125,10 @@ export interface AuditEventsApiInterface {
      * @summary Export Audit Events Handler
      * @param {string} [actorUserId] Filter to one actor
      * @param {string} [kind] Filter to one event kind
-     * @param {Date} [since] Only events at or after this timestamp (from). Omit to export the entire audit log. Must not be in the future or after &#x60;until&#x60;.
-     * @param {Date} [until] Only events strictly before this timestamp (to). Omit for no upper bound. Must not be in the future.
      * @param {string} [subjectPathPartId] Scope to one document/folder/run subject
      * @param {boolean} [recursive] Include the subject\&#39;s descendants (needs subject)
+     * @param {Date} [since] Window start (inclusive). Omit for the endpoint\&#39;s default range.
+     * @param {Date} [until] Window end. Omit for no explicit upper bound; see the endpoint\&#39;s boundary semantics.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof AuditEventsApiInterface
@@ -145,13 +145,13 @@ export interface AuditEventsApiInterface {
      * Creates request options for listAuditEvents without sending the request
      * @param {string} [actorUserId] Filter to one actor
      * @param {string} [kind] Filter to one event kind
-     * @param {Date} [since] Only events at or after this timestamp (from). Omit for no lower bound. Must not be in the future or after &#x60;until&#x60;.
-     * @param {Date} [until] Only events strictly before this timestamp (to). Omit for no upper bound. Must not be in the future.
      * @param {string} [subjectPathPartId] Scope to one document/folder/run subject
      * @param {boolean} [recursive] Include the subject\&#39;s descendants (needs subject)
-     * @param {SortDirection} [sortDir] Sort by timestamp (default: DESC, newest first)
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
+     * @param {SortDirection} [sortDir] Sort direction (ASC or DESC); overrides the field\&#39;s natural default. Every sort field supports both directions.
+     * @param {Date} [since] Window start (inclusive). Omit for the endpoint\&#39;s default range.
+     * @param {Date} [until] Window end. Omit for no explicit upper bound; see the endpoint\&#39;s boundary semantics.
      * @throws {RequiredError}
      * @memberof AuditEventsApiInterface
      */
@@ -162,13 +162,13 @@ export interface AuditEventsApiInterface {
      * @summary List Audit Events Handler
      * @param {string} [actorUserId] Filter to one actor
      * @param {string} [kind] Filter to one event kind
-     * @param {Date} [since] Only events at or after this timestamp (from). Omit for no lower bound. Must not be in the future or after &#x60;until&#x60;.
-     * @param {Date} [until] Only events strictly before this timestamp (to). Omit for no upper bound. Must not be in the future.
      * @param {string} [subjectPathPartId] Scope to one document/folder/run subject
      * @param {boolean} [recursive] Include the subject\&#39;s descendants (needs subject)
-     * @param {SortDirection} [sortDir] Sort by timestamp (default: DESC, newest first)
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
+     * @param {SortDirection} [sortDir] Sort direction (ASC or DESC); overrides the field\&#39;s natural default. Every sort field supports both directions.
+     * @param {Date} [since] Window start (inclusive). Omit for the endpoint\&#39;s default range.
+     * @param {Date} [until] Window end. Omit for no explicit upper bound; see the endpoint\&#39;s boundary semantics.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof AuditEventsApiInterface
@@ -202,20 +202,20 @@ export class AuditEventsApi extends runtime.BaseAPI implements AuditEventsApiInt
             queryParameters['kind'] = requestParameters['kind'];
         }
 
-        if (requestParameters['since'] != null) {
-            queryParameters['since'] = runtime.serializeDateTime(requestParameters['since'] as any);
-        }
-
-        if (requestParameters['until'] != null) {
-            queryParameters['until'] = runtime.serializeDateTime(requestParameters['until'] as any);
-        }
-
         if (requestParameters['subjectPathPartId'] != null) {
             queryParameters['subject_path_part_id'] = requestParameters['subjectPathPartId'];
         }
 
         if (requestParameters['recursive'] != null) {
             queryParameters['recursive'] = requestParameters['recursive'];
+        }
+
+        if (requestParameters['since'] != null) {
+            queryParameters['since'] = runtime.serializeDateTime(requestParameters['since'] as any);
+        }
+
+        if (requestParameters['until'] != null) {
+            queryParameters['until'] = runtime.serializeDateTime(requestParameters['until'] as any);
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -273,14 +273,6 @@ export class AuditEventsApi extends runtime.BaseAPI implements AuditEventsApiInt
             queryParameters['kind'] = requestParameters['kind'];
         }
 
-        if (requestParameters['since'] != null) {
-            queryParameters['since'] = runtime.serializeDateTime(requestParameters['since'] as any);
-        }
-
-        if (requestParameters['until'] != null) {
-            queryParameters['until'] = runtime.serializeDateTime(requestParameters['until'] as any);
-        }
-
         if (requestParameters['subjectPathPartId'] != null) {
             queryParameters['subject_path_part_id'] = requestParameters['subjectPathPartId'];
         }
@@ -289,16 +281,24 @@ export class AuditEventsApi extends runtime.BaseAPI implements AuditEventsApiInt
             queryParameters['recursive'] = requestParameters['recursive'];
         }
 
-        if (requestParameters['sortDir'] != null) {
-            queryParameters['sort_dir'] = requestParameters['sortDir'];
-        }
-
         if (requestParameters['limit'] != null) {
             queryParameters['limit'] = requestParameters['limit'];
         }
 
         if (requestParameters['offset'] != null) {
             queryParameters['offset'] = requestParameters['offset'];
+        }
+
+        if (requestParameters['sortDir'] != null) {
+            queryParameters['sort_dir'] = requestParameters['sortDir'];
+        }
+
+        if (requestParameters['since'] != null) {
+            queryParameters['since'] = runtime.serializeDateTime(requestParameters['since'] as any);
+        }
+
+        if (requestParameters['until'] != null) {
+            queryParameters['until'] = runtime.serializeDateTime(requestParameters['until'] as any);
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
