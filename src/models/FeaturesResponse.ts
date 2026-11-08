@@ -58,6 +58,10 @@ export interface FeaturesResponse {
      */
     smsLoginEnabled: boolean;
     /**
+     * Streaming dictation duration limit in seconds from first audio; -1 when streaming dictation is not configured.
+     */
+    streamingDictationMaxSeconds: number;
+    /**
      * 
      */
     defaultFrontendLanguage: SupportedLanguage;
@@ -100,6 +104,7 @@ export function instanceOfFeaturesResponse(value: object): value is FeaturesResp
     if ((!('microsoftLoginEnabled' in (value as Record<string, any>)) && !('microsoft_login_enabled' in (value as Record<string, any>))) || ((value as Record<string, any>)['microsoftLoginEnabled'] === undefined && (value as Record<string, any>)['microsoft_login_enabled'] === undefined)) return false;
     if ((!('githubLoginEnabled' in (value as Record<string, any>)) && !('github_login_enabled' in (value as Record<string, any>))) || ((value as Record<string, any>)['githubLoginEnabled'] === undefined && (value as Record<string, any>)['github_login_enabled'] === undefined)) return false;
     if ((!('smsLoginEnabled' in (value as Record<string, any>)) && !('sms_login_enabled' in (value as Record<string, any>))) || ((value as Record<string, any>)['smsLoginEnabled'] === undefined && (value as Record<string, any>)['sms_login_enabled'] === undefined)) return false;
+    if ((!('streamingDictationMaxSeconds' in (value as Record<string, any>)) && !('streaming_dictation_max_seconds' in (value as Record<string, any>))) || ((value as Record<string, any>)['streamingDictationMaxSeconds'] === undefined && (value as Record<string, any>)['streaming_dictation_max_seconds'] === undefined)) return false;
     if ((!('defaultFrontendLanguage' in (value as Record<string, any>)) && !('default_frontend_language' in (value as Record<string, any>))) || ((value as Record<string, any>)['defaultFrontendLanguage'] === undefined && (value as Record<string, any>)['default_frontend_language'] === undefined)) return false;
     if (!('upload' in value) || value['upload'] === undefined) return false;
     if ((!('dataSourceEngines' in (value as Record<string, any>)) && !('data_source_engines' in (value as Record<string, any>))) || ((value as Record<string, any>)['dataSourceEngines'] === undefined && (value as Record<string, any>)['data_source_engines'] === undefined)) return false;
@@ -120,6 +125,7 @@ export function FeaturesResponseFromJSONTyped(json: any, ignoreDiscriminator: bo
         'microsoftLoginEnabled': json['microsoft_login_enabled'],
         'githubLoginEnabled': json['github_login_enabled'],
         'smsLoginEnabled': json['sms_login_enabled'],
+        'streamingDictationMaxSeconds': json['streaming_dictation_max_seconds'],
         'defaultFrontendLanguage': SupportedLanguageFromJSON(json['default_frontend_language']),
         'upload': UploadConstraintsFromJSON(json['upload']),
         'dataSourceEngines': ((json['data_source_engines'] as Array<any>).map(DataSourceEngineFromJSON)),
@@ -141,6 +147,7 @@ export function FeaturesResponseToJSONTyped(value?: FeaturesResponse | null, ign
         'microsoft_login_enabled': value['microsoftLoginEnabled'],
         'github_login_enabled': value['githubLoginEnabled'],
         'sms_login_enabled': value['smsLoginEnabled'],
+        'streaming_dictation_max_seconds': value['streamingDictationMaxSeconds'],
         'default_frontend_language': SupportedLanguageToJSON(value['defaultFrontendLanguage']),
         'upload': UploadConstraintsToJSON(value['upload']),
         'data_source_engines': ((value['dataSourceEngines'] as Array<any>).map(DataSourceEngineToJSON)),
