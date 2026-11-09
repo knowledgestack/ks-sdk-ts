@@ -29,8 +29,7 @@ docs/AuditEventsApi.md
 docs/AuthApi.md
 docs/BillingApi.md
 docs/BillingInterval.md
-docs/BillingPaymentResponse.md
-docs/BillingSystem.md
+docs/BillingRedirectResponse.md
 docs/BlockChangeType.md
 docs/BlockKind.md
 docs/BrandingLogoType.md
@@ -61,9 +60,6 @@ docs/CellChangeType.md
 docs/CellDiff.md
 docs/ChangeClass.md
 docs/ChangePhoneNumberRequest.md
-docs/ChangeSubscriptionRequest.md
-docs/CheckoutAction.md
-docs/CheckoutResponse.md
 docs/CheckpointDetails.md
 docs/ChunkBulkResponse.md
 docs/ChunkContentItem.md
@@ -191,6 +187,11 @@ docs/EmailUnfinishedRequest.md
 docs/EmailVerificationRequest.md
 docs/EnrichedCitation.md
 docs/EnrichedThreadMessageContent.md
+docs/EntitlementError.md
+docs/EntitlementKey.md
+docs/EntitlementKind.md
+docs/EntitlementQuotaStatus.md
+docs/EntitlementUsage.md
 docs/ErrorResponse.md
 docs/EventResponse.md
 docs/ExcludedCommonFile.md
@@ -266,7 +267,6 @@ docs/MemoryKind.md
 docs/MemoryScope.md
 docs/MessageRole.md
 docs/MessageUsage.md
-docs/MeteredQuotaStatus.md
 docs/ModelTableRequest.md
 docs/ModelTableResult.md
 docs/NetworkClass.md
@@ -276,7 +276,6 @@ docs/OnboardingStateUpdate.md
 docs/OnboardingStep.md
 docs/PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseWorkflowDefinitionResponseWorkflowRunResponseDat.md
 docs/PaginatedResponseAnnotatedUnionSectionContentItemChunkContentItemDiscriminator.md
-docs/PaginatedResponseBillingPaymentResponse.md
 docs/PaginatedResponseDocumentResponse.md
 docs/PaginatedResponseDocumentVersionResponse.md
 docs/PaginatedResponseEmailMessageResponse.md
@@ -292,6 +291,7 @@ docs/PaginatedResponseMemoryEntryResponse.md
 docs/PaginatedResponsePathPartResponse.md
 docs/PaginatedResponsePendingMemoryChunkResponse.md
 docs/PaginatedResponsePermissionResponse.md
+docs/PaginatedResponsePlanResponse.md
 docs/PaginatedResponseRepoVersionResponse.md
 docs/PaginatedResponseSkillResponse.md
 docs/PaginatedResponseTagResponse.md
@@ -325,10 +325,13 @@ docs/PhoneVerificationRequest.md
 docs/PipelineState.md
 docs/PipelineStatus.md
 docs/PixelRegion.md
+docs/PlanCheckoutRequest.md
+docs/PlanEntitlementResponse.md
+docs/PlanRef.md
+docs/PlanResponse.md
 docs/Polygon.md
 docs/PolygonReference.md
 docs/ProposeMemoryChunkRequest.md
-docs/PublicApi.md
 docs/ReasoningPart.md
 docs/RecordRepoSaveSkipRequest.md
 docs/ReferenceType.md
@@ -341,6 +344,7 @@ docs/RepoTreeEntry.md
 docs/RepoTreeResponse.md
 docs/RepoVersionResponse.md
 docs/RequestPhoneChangeRequest.md
+docs/ResetPeriod.md
 docs/ResolvedRef.md
 docs/ResolvedReferenceInput.md
 docs/ResolvedReferenceOutput.md
@@ -395,8 +399,6 @@ docs/StructuredChange.md
 docs/StructuredChangeType.md
 docs/StructuredDiff.md
 docs/SubmitFeedbackRequest.md
-docs/SubscriptionPlanResponse.md
-docs/SubscriptionsApi.md
 docs/SubtreeChunkGroup.md
 docs/SubtreeChunksResponse.md
 docs/SupportedIdP.md
@@ -411,11 +413,11 @@ docs/TemporalWorkflowStatusResponse.md
 docs/TenantBrandingResponse.md
 docs/TenantGroupOrder.md
 docs/TenantGroupsApi.md
-docs/TenantQuotaStateResponse.md
+docs/TenantPlanResponse.md
+docs/TenantQuotaResponse.md
 docs/TenantResponse.md
 docs/TenantSettingsResponse.md
 docs/TenantSettingsUpdate.md
-docs/TenantSubscriptionResponse.md
 docs/TenantUserEditRequest.md
 docs/TenantUserJoinMethod.md
 docs/TenantUserOrder.md
@@ -439,6 +441,7 @@ docs/TimeseriesPoint.md
 docs/ToolDisplayType.md
 docs/ToolPart.md
 docs/ToolStatus.md
+docs/TopupCheckoutRequest.md
 docs/TraceKind.md
 docs/TranscriptionResponse.md
 docs/TranscriptionsApi.md
@@ -474,7 +477,6 @@ docs/UploadConstraints.md
 docs/UploadFormat.md
 docs/UploadPartResponse.md
 docs/UploadStatusResponse.md
-docs/UsageMetric.md
 docs/UserInfo.md
 docs/UserMessageRequest.md
 docs/UserMessageResponse.md
@@ -549,10 +551,8 @@ src/apis/MailCredentialsApi.ts
 src/apis/MemoryApi.ts
 src/apis/PathPartApprovalsApi.ts
 src/apis/PathPartsApi.ts
-src/apis/PublicApi.ts
 src/apis/SectionsApi.ts
 src/apis/SkillsApi.ts
-src/apis/SubscriptionsApi.ts
 src/apis/SystemJobsApi.ts
 src/apis/TagsApi.ts
 src/apis/TenantGroupsApi.ts
@@ -588,8 +588,7 @@ src/models/Args.ts
 src/models/AskRequest.ts
 src/models/AskResponse.ts
 src/models/BillingInterval.ts
-src/models/BillingPaymentResponse.ts
-src/models/BillingSystem.ts
+src/models/BillingRedirectResponse.ts
 src/models/BlockChangeType.ts
 src/models/BlockKind.ts
 src/models/BrandingLogoType.ts
@@ -617,9 +616,6 @@ src/models/CellChangeType.ts
 src/models/CellDiff.ts
 src/models/ChangeClass.ts
 src/models/ChangePhoneNumberRequest.ts
-src/models/ChangeSubscriptionRequest.ts
-src/models/CheckoutAction.ts
-src/models/CheckoutResponse.ts
 src/models/CheckpointDetails.ts
 src/models/ChunkBulkResponse.ts
 src/models/ChunkContentItem.ts
@@ -736,6 +732,11 @@ src/models/EmailUnfinishedRequest.ts
 src/models/EmailVerificationRequest.ts
 src/models/EnrichedCitation.ts
 src/models/EnrichedThreadMessageContent.ts
+src/models/EntitlementError.ts
+src/models/EntitlementKey.ts
+src/models/EntitlementKind.ts
+src/models/EntitlementQuotaStatus.ts
+src/models/EntitlementUsage.ts
 src/models/ErrorResponse.ts
 src/models/EventResponse.ts
 src/models/ExcludedCommonFile.ts
@@ -805,7 +806,6 @@ src/models/MemoryKind.ts
 src/models/MemoryScope.ts
 src/models/MessageRole.ts
 src/models/MessageUsage.ts
-src/models/MeteredQuotaStatus.ts
 src/models/ModelTableRequest.ts
 src/models/ModelTableResult.ts
 src/models/NetworkClass.ts
@@ -815,7 +815,6 @@ src/models/OnboardingStateUpdate.ts
 src/models/OnboardingStep.ts
 src/models/PaginatedResponseAnnotatedUnionFolderResponseDocumentResponseWorkflowDefinitionResponseWorkflowRunResponseDat.ts
 src/models/PaginatedResponseAnnotatedUnionSectionContentItemChunkContentItemDiscriminator.ts
-src/models/PaginatedResponseBillingPaymentResponse.ts
 src/models/PaginatedResponseDocumentResponse.ts
 src/models/PaginatedResponseDocumentVersionResponse.ts
 src/models/PaginatedResponseEmailMessageResponse.ts
@@ -831,6 +830,7 @@ src/models/PaginatedResponseMemoryEntryResponse.ts
 src/models/PaginatedResponsePathPartResponse.ts
 src/models/PaginatedResponsePendingMemoryChunkResponse.ts
 src/models/PaginatedResponsePermissionResponse.ts
+src/models/PaginatedResponsePlanResponse.ts
 src/models/PaginatedResponseRepoVersionResponse.ts
 src/models/PaginatedResponseSkillResponse.ts
 src/models/PaginatedResponseTagResponse.ts
@@ -862,6 +862,10 @@ src/models/PhoneVerificationRequest.ts
 src/models/PipelineState.ts
 src/models/PipelineStatus.ts
 src/models/PixelRegion.ts
+src/models/PlanCheckoutRequest.ts
+src/models/PlanEntitlementResponse.ts
+src/models/PlanRef.ts
+src/models/PlanResponse.ts
 src/models/Polygon.ts
 src/models/PolygonReference.ts
 src/models/ProposeMemoryChunkRequest.ts
@@ -877,6 +881,7 @@ src/models/RepoTreeEntry.ts
 src/models/RepoTreeResponse.ts
 src/models/RepoVersionResponse.ts
 src/models/RequestPhoneChangeRequest.ts
+src/models/ResetPeriod.ts
 src/models/ResolvedRef.ts
 src/models/ResolvedReferenceInput.ts
 src/models/ResolvedReferenceOutput.ts
@@ -929,7 +934,6 @@ src/models/StructuredChange.ts
 src/models/StructuredChangeType.ts
 src/models/StructuredDiff.ts
 src/models/SubmitFeedbackRequest.ts
-src/models/SubscriptionPlanResponse.ts
 src/models/SubtreeChunkGroup.ts
 src/models/SubtreeChunksResponse.ts
 src/models/SupportedIdP.ts
@@ -941,11 +945,11 @@ src/models/TagResponse.ts
 src/models/TemporalWorkflowStatusResponse.ts
 src/models/TenantBrandingResponse.ts
 src/models/TenantGroupOrder.ts
-src/models/TenantQuotaStateResponse.ts
+src/models/TenantPlanResponse.ts
+src/models/TenantQuotaResponse.ts
 src/models/TenantResponse.ts
 src/models/TenantSettingsResponse.ts
 src/models/TenantSettingsUpdate.ts
-src/models/TenantSubscriptionResponse.ts
 src/models/TenantUserEditRequest.ts
 src/models/TenantUserJoinMethod.ts
 src/models/TenantUserOrder.ts
@@ -966,6 +970,7 @@ src/models/TimeseriesPoint.ts
 src/models/ToolDisplayType.ts
 src/models/ToolPart.ts
 src/models/ToolStatus.ts
+src/models/TopupCheckoutRequest.ts
 src/models/TraceKind.ts
 src/models/TranscriptionResponse.ts
 src/models/TransferOwnerRequest.ts
@@ -999,7 +1004,6 @@ src/models/UploadConstraints.ts
 src/models/UploadFormat.ts
 src/models/UploadPartResponse.ts
 src/models/UploadStatusResponse.ts
-src/models/UsageMetric.ts
 src/models/UserInfo.ts
 src/models/UserMessageRequest.ts
 src/models/UserMessageResponse.ts

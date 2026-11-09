@@ -2,7 +2,7 @@
 /* eslint-disable */
 /**
  * Knowledge Stack API
- * Knowledge Stack backend API for authentication and knowledge management.  ## Integrating (RPA / machine clients)  **Base URL.** Knowledge Stack is self-hosted — point at your own deployment host (see `servers`). The `localhost` entry is for local development only.  **Authentication.** Send `Authorization: Bearer <api-key>` on every request. Mint an API key once via `POST /v1/api-keys` from a signed-in browser session; the raw `sk-user-...` secret is returned **only** at creation, so store it then. A key inherits its owning user\'s live tenant role and path permissions — create RPA keys from a least-privilege user, and set `expires_at` for rotation. The `ks_uat` cookie scheme is browser-only and cannot be used by headless clients.  **Async work is polled, not pushed.** There are no outbound webhooks. - `POST /v1/documents/ingest` returns `201` immediately with a `workflow_id`;   poll `GET /v1/system-jobs/document_versions/{workflow_id}` until `status` is   terminal (anything other than `pending`/`processing`). The `Location` response   header points at this poll resource. - `POST /v1/workflow-runs/{run_id}/start` returns `202`; poll   `GET /v1/workflow-runs/{run_id}` until `execution_state` is `COMPLETED` or   `FAILED`. The `Location` header points at the run resource. - `POST /v1/agent/ask` is **synchronous** — it blocks until the agent finishes   and returns the answer inline. Use a generous HTTP timeout.  **Pagination.** List endpoints accept `limit`/`offset` and return `{items, total, limit, offset}`.  **Errors.** Every non-2xx body is `{detail, code, request_id}`. `code` is a stable value from a closed set (see the `ErrorResponse` schema\'s `code` enum) — branch on it rather than parsing `detail`. Quota rejections return `429` with a `Retry-After` header; transient lock contention returns a retryable `503`. Quote `request_id` (also the `x-request-id` response header) to support.  **Idempotency.** `POST /v1/workflow-runs` accepts an `idempotency_key` to dedupe retried run creation. `agent/ask` charges one message *before* running and does not refund a client-cancelled call. 
+ * Knowledge Stack backend API for authentication and knowledge management.  ## Integrating (RPA / machine clients)  **Base URL.** Knowledge Stack is self-hosted — point at your own deployment host (see `servers`). The `localhost` entry is for local development only.  **Authentication.** Send `Authorization: Bearer <api-key>` on every request. Mint an API key once via `POST /v1/api-keys` from a signed-in browser session; the raw `sk-user-...` secret is returned **only** at creation, so store it then. A key inherits its owning user\'s live tenant role and path permissions — create RPA keys from a least-privilege user, and set `expires_at` for rotation. The `ks_uat` cookie scheme is browser-only and cannot be used by headless clients.  **Async work is polled, not pushed.** There are no outbound webhooks. - `POST /v1/documents/ingest` returns `201` immediately with a `workflow_id`;   poll `GET /v1/system-jobs/document_versions/{workflow_id}` until `status` is   terminal (anything other than `pending`/`processing`). The `Location` response   header points at this poll resource. - `POST /v1/workflow-runs/{run_id}/start` returns `202`; poll   `GET /v1/workflow-runs/{run_id}` until `execution_state` is `COMPLETED` or   `FAILED`. The `Location` header points at the run resource. - `POST /v1/agent/ask` is **synchronous** — it blocks until the agent finishes   and returns the answer inline. Use a generous HTTP timeout.  **Pagination.** List endpoints accept `limit`/`offset` and return `{items, total, limit, offset}`.  **Errors.** Every non-2xx body is `{detail, code, request_id}`. `code` is a stable value from a closed set (see the `ErrorResponse` schema\'s `code` enum) — branch on it rather than parsing `detail`. Quota rejections return `429` `quota_exceeded` with a `Retry-After` header; a feature the tenant\'s plan does not include returns `403` `feature_not_available`. Both carry `entitlement`: the key that refused, the plan in force, and either the usage against its cap or the public plans that include it. Transient lock contention returns a retryable `503`. Quote `request_id` (also the `x-request-id` response header) to support.  **Idempotency.** `POST /v1/workflow-runs` accepts an `idempotency_key` to dedupe retried run creation. `agent/ask` charges one message *before* running and does not release a client-cancelled call. 
  *
  * The version of the OpenAPI document: 0.1.0
  * 
@@ -44,10 +44,15 @@ import {
     SortDirectionToJSON,
 } from '../models/SortDirection';
 import {
-    type TenantQuotaStateResponse,
-    TenantQuotaStateResponseFromJSON,
-    TenantQuotaStateResponseToJSON,
-} from '../models/TenantQuotaStateResponse';
+    type TenantPlanResponse,
+    TenantPlanResponseFromJSON,
+    TenantPlanResponseToJSON,
+} from '../models/TenantPlanResponse';
+import {
+    type TenantQuotaResponse,
+    TenantQuotaResponseFromJSON,
+    TenantQuotaResponseToJSON,
+} from '../models/TenantQuotaResponse';
 import {
     type TenantResponse,
     TenantResponseFromJSON,
@@ -131,6 +136,13 @@ export interface DeleteTenantUserRequest {
 }
 
 export interface GetTenantRequest {
+    /**
+     * 
+     */
+    tenantId: string;
+}
+
+export interface GetTenantPlanRequest {
     /**
      * 
      */
@@ -299,7 +311,7 @@ export interface TenantsApiInterface {
     deleteTenantRequestOpts(requestParameters: DeleteTenantRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * Delete a tenant.  Requires OWNER role in the tenant. Refused (409) while a provider-billed subscription is live — deleting the tenant would not stop Stripe/Ping++ from charging for it; the OWNER must downgrade to free (or let the prepay period expire) first. Deletes the tenant\'s LiteLLM team/keys and S3 bucket after the DB transaction commits.
+     * Delete a tenant.  Requires OWNER role in the tenant. Refused (409) while a provider subscription is live; the OWNER cancels it in the billing portal first. Deletes the tenant\'s LiteLLM team/keys and S3 bucket after the delete commits.
      * @summary Delete Tenant
      * @param {string} tenantId 
      * @param {*} [options] Override http request option.
@@ -309,7 +321,7 @@ export interface TenantsApiInterface {
     deleteTenantRaw(requestParameters: DeleteTenantRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>>;
 
     /**
-     * Delete a tenant.  Requires OWNER role in the tenant. Refused (409) while a provider-billed subscription is live — deleting the tenant would not stop Stripe/Ping++ from charging for it; the OWNER must downgrade to free (or let the prepay period expire) first. Deletes the tenant\'s LiteLLM team/keys and S3 bucket after the DB transaction commits.
+     * Delete a tenant.  Requires OWNER role in the tenant. Refused (409) while a provider subscription is live; the OWNER cancels it in the billing portal first. Deletes the tenant\'s LiteLLM team/keys and S3 bucket after the delete commits.
      * Delete Tenant
      */
     deleteTenant(requestParameters: DeleteTenantRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void>;
@@ -391,6 +403,30 @@ export interface TenantsApiInterface {
     getTenant(requestParameters: GetTenantRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TenantResponse>;
 
     /**
+     * Creates request options for getTenantPlan without sending the request
+     * @param {string} tenantId 
+     * @throws {RequiredError}
+     * @memberof TenantsApiInterface
+     */
+    getTenantPlanRequestOpts(requestParameters: GetTenantPlanRequest): Promise<runtime.RequestOpts>;
+
+    /**
+     * The tenant\'s plan in force, public or private, with what it grants.  Any active member can read. ``billed`` says whether a billing subscription sets the plan (change it in the billing portal) rather than an operator\'s contract or free. Once an unpaid renewal\'s grace has run out this is the free plan with one seat, as the meter charges. ``GET /v1/plans`` lists the public plans the tenant can buy.
+     * @summary Get Tenant Plan Handler
+     * @param {string} tenantId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof TenantsApiInterface
+     */
+    getTenantPlanRaw(requestParameters: GetTenantPlanRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TenantPlanResponse>>;
+
+    /**
+     * The tenant\'s plan in force, public or private, with what it grants.  Any active member can read. ``billed`` says whether a billing subscription sets the plan (change it in the billing portal) rather than an operator\'s contract or free. Once an unpaid renewal\'s grace has run out this is the free plan with one seat, as the meter charges. ``GET /v1/plans`` lists the public plans the tenant can buy.
+     * Get Tenant Plan Handler
+     */
+    getTenantPlan(requestParameters: GetTenantPlanRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TenantPlanResponse>;
+
+    /**
      * Creates request options for getTenantQuotaState without sending the request
      * @param {string} tenantId 
      * @throws {RequiredError}
@@ -399,20 +435,20 @@ export interface TenantsApiInterface {
     getTenantQuotaStateRequestOpts(requestParameters: GetTenantQuotaStateRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * Read the tenant\'s current quota state across all metered caps + seats.  Any active member of the tenant can read. Read-only — does not mutate quota state.
+     * Read the tenant\'s metered entitlements and seats under the plan in force.  Any active member of the tenant can read. Entries are keyed by entitlement key (audio and video in seconds). A read writes nothing: an allowance not yet granted this window is reported at the size the first charge grants.
      * @summary Get Tenant Quota State Handler
      * @param {string} tenantId 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof TenantsApiInterface
      */
-    getTenantQuotaStateRaw(requestParameters: GetTenantQuotaStateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TenantQuotaStateResponse>>;
+    getTenantQuotaStateRaw(requestParameters: GetTenantQuotaStateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TenantQuotaResponse>>;
 
     /**
-     * Read the tenant\'s current quota state across all metered caps + seats.  Any active member of the tenant can read. Read-only — does not mutate quota state.
+     * Read the tenant\'s metered entitlements and seats under the plan in force.  Any active member of the tenant can read. Entries are keyed by entitlement key (audio and video in seconds). A read writes nothing: an allowance not yet granted this window is reported at the size the first charge grants.
      * Get Tenant Quota State Handler
      */
-    getTenantQuotaState(requestParameters: GetTenantQuotaStateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TenantQuotaStateResponse>;
+    getTenantQuotaState(requestParameters: GetTenantQuotaStateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TenantQuotaResponse>;
 
     /**
      * Creates request options for listTenantUsers without sending the request
@@ -729,7 +765,7 @@ export class TenantsApi extends runtime.BaseAPI implements TenantsApiInterface {
     }
 
     /**
-     * Delete a tenant.  Requires OWNER role in the tenant. Refused (409) while a provider-billed subscription is live — deleting the tenant would not stop Stripe/Ping++ from charging for it; the OWNER must downgrade to free (or let the prepay period expire) first. Deletes the tenant\'s LiteLLM team/keys and S3 bucket after the DB transaction commits.
+     * Delete a tenant.  Requires OWNER role in the tenant. Refused (409) while a provider subscription is live; the OWNER cancels it in the billing portal first. Deletes the tenant\'s LiteLLM team/keys and S3 bucket after the delete commits.
      * Delete Tenant
      */
     async deleteTenantRaw(requestParameters: DeleteTenantRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
@@ -740,7 +776,7 @@ export class TenantsApi extends runtime.BaseAPI implements TenantsApiInterface {
     }
 
     /**
-     * Delete a tenant.  Requires OWNER role in the tenant. Refused (409) while a provider-billed subscription is live — deleting the tenant would not stop Stripe/Ping++ from charging for it; the OWNER must downgrade to free (or let the prepay period expire) first. Deletes the tenant\'s LiteLLM team/keys and S3 bucket after the DB transaction commits.
+     * Delete a tenant.  Requires OWNER role in the tenant. Refused (409) while a provider subscription is live; the OWNER cancels it in the billing portal first. Deletes the tenant\'s LiteLLM team/keys and S3 bucket after the delete commits.
      * Delete Tenant
      */
     async deleteTenant(requestParameters: DeleteTenantRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
@@ -924,6 +960,61 @@ export class TenantsApi extends runtime.BaseAPI implements TenantsApiInterface {
     }
 
     /**
+     * Creates request options for getTenantPlan without sending the request
+     */
+    async getTenantPlanRequestOpts(requestParameters: GetTenantPlanRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['tenantId'] == null) {
+            throw new runtime.RequiredError(
+                'tenantId',
+                'Required parameter "tenantId" was null or undefined when calling getTenantPlan().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/v1/tenants/{tenant_id}/plan`;
+        urlPath = urlPath.replace('{tenant_id}', encodeURIComponent(String(requestParameters['tenantId'])));
+
+        return {
+            path: urlPath,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * The tenant\'s plan in force, public or private, with what it grants.  Any active member can read. ``billed`` says whether a billing subscription sets the plan (change it in the billing portal) rather than an operator\'s contract or free. Once an unpaid renewal\'s grace has run out this is the free plan with one seat, as the meter charges. ``GET /v1/plans`` lists the public plans the tenant can buy.
+     * Get Tenant Plan Handler
+     */
+    async getTenantPlanRaw(requestParameters: GetTenantPlanRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TenantPlanResponse>> {
+        const requestOptions = await this.getTenantPlanRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => TenantPlanResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * The tenant\'s plan in force, public or private, with what it grants.  Any active member can read. ``billed`` says whether a billing subscription sets the plan (change it in the billing portal) rather than an operator\'s contract or free. Once an unpaid renewal\'s grace has run out this is the free plan with one seat, as the meter charges. ``GET /v1/plans`` lists the public plans the tenant can buy.
+     * Get Tenant Plan Handler
+     */
+    async getTenantPlan(requestParameters: GetTenantPlanRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TenantPlanResponse> {
+        const response = await this.getTenantPlanRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
      * Creates request options for getTenantQuotaState without sending the request
      */
     async getTenantQuotaStateRequestOpts(requestParameters: GetTenantQuotaStateRequest): Promise<runtime.RequestOpts> {
@@ -959,21 +1050,21 @@ export class TenantsApi extends runtime.BaseAPI implements TenantsApiInterface {
     }
 
     /**
-     * Read the tenant\'s current quota state across all metered caps + seats.  Any active member of the tenant can read. Read-only — does not mutate quota state.
+     * Read the tenant\'s metered entitlements and seats under the plan in force.  Any active member of the tenant can read. Entries are keyed by entitlement key (audio and video in seconds). A read writes nothing: an allowance not yet granted this window is reported at the size the first charge grants.
      * Get Tenant Quota State Handler
      */
-    async getTenantQuotaStateRaw(requestParameters: GetTenantQuotaStateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TenantQuotaStateResponse>> {
+    async getTenantQuotaStateRaw(requestParameters: GetTenantQuotaStateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TenantQuotaResponse>> {
         const requestOptions = await this.getTenantQuotaStateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => TenantQuotaStateResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => TenantQuotaResponseFromJSON(jsonValue));
     }
 
     /**
-     * Read the tenant\'s current quota state across all metered caps + seats.  Any active member of the tenant can read. Read-only — does not mutate quota state.
+     * Read the tenant\'s metered entitlements and seats under the plan in force.  Any active member of the tenant can read. Entries are keyed by entitlement key (audio and video in seconds). A read writes nothing: an allowance not yet granted this window is reported at the size the first charge grants.
      * Get Tenant Quota State Handler
      */
-    async getTenantQuotaState(requestParameters: GetTenantQuotaStateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TenantQuotaStateResponse> {
+    async getTenantQuotaState(requestParameters: GetTenantQuotaStateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TenantQuotaResponse> {
         const response = await this.getTenantQuotaStateRaw(requestParameters, initOverrides);
         return await response.value();
     }

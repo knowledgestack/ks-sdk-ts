@@ -2,7 +2,7 @@
 /* eslint-disable */
 /**
  * Knowledge Stack API
- * Knowledge Stack backend API for authentication and knowledge management.  ## Integrating (RPA / machine clients)  **Base URL.** Knowledge Stack is self-hosted — point at your own deployment host (see `servers`). The `localhost` entry is for local development only.  **Authentication.** Send `Authorization: Bearer <api-key>` on every request. Mint an API key once via `POST /v1/api-keys` from a signed-in browser session; the raw `sk-user-...` secret is returned **only** at creation, so store it then. A key inherits its owning user\'s live tenant role and path permissions — create RPA keys from a least-privilege user, and set `expires_at` for rotation. The `ks_uat` cookie scheme is browser-only and cannot be used by headless clients.  **Async work is polled, not pushed.** There are no outbound webhooks. - `POST /v1/documents/ingest` returns `201` immediately with a `workflow_id`;   poll `GET /v1/system-jobs/document_versions/{workflow_id}` until `status` is   terminal (anything other than `pending`/`processing`). The `Location` response   header points at this poll resource. - `POST /v1/workflow-runs/{run_id}/start` returns `202`; poll   `GET /v1/workflow-runs/{run_id}` until `execution_state` is `COMPLETED` or   `FAILED`. The `Location` header points at the run resource. - `POST /v1/agent/ask` is **synchronous** — it blocks until the agent finishes   and returns the answer inline. Use a generous HTTP timeout.  **Pagination.** List endpoints accept `limit`/`offset` and return `{items, total, limit, offset}`.  **Errors.** Every non-2xx body is `{detail, code, request_id}`. `code` is a stable value from a closed set (see the `ErrorResponse` schema\'s `code` enum) — branch on it rather than parsing `detail`. Quota rejections return `429` with a `Retry-After` header; transient lock contention returns a retryable `503`. Quote `request_id` (also the `x-request-id` response header) to support.  **Idempotency.** `POST /v1/workflow-runs` accepts an `idempotency_key` to dedupe retried run creation. `agent/ask` charges one message *before* running and does not refund a client-cancelled call. 
+ * Knowledge Stack backend API for authentication and knowledge management.  ## Integrating (RPA / machine clients)  **Base URL.** Knowledge Stack is self-hosted — point at your own deployment host (see `servers`). The `localhost` entry is for local development only.  **Authentication.** Send `Authorization: Bearer <api-key>` on every request. Mint an API key once via `POST /v1/api-keys` from a signed-in browser session; the raw `sk-user-...` secret is returned **only** at creation, so store it then. A key inherits its owning user\'s live tenant role and path permissions — create RPA keys from a least-privilege user, and set `expires_at` for rotation. The `ks_uat` cookie scheme is browser-only and cannot be used by headless clients.  **Async work is polled, not pushed.** There are no outbound webhooks. - `POST /v1/documents/ingest` returns `201` immediately with a `workflow_id`;   poll `GET /v1/system-jobs/document_versions/{workflow_id}` until `status` is   terminal (anything other than `pending`/`processing`). The `Location` response   header points at this poll resource. - `POST /v1/workflow-runs/{run_id}/start` returns `202`; poll   `GET /v1/workflow-runs/{run_id}` until `execution_state` is `COMPLETED` or   `FAILED`. The `Location` header points at the run resource. - `POST /v1/agent/ask` is **synchronous** — it blocks until the agent finishes   and returns the answer inline. Use a generous HTTP timeout.  **Pagination.** List endpoints accept `limit`/`offset` and return `{items, total, limit, offset}`.  **Errors.** Every non-2xx body is `{detail, code, request_id}`. `code` is a stable value from a closed set (see the `ErrorResponse` schema\'s `code` enum) — branch on it rather than parsing `detail`. Quota rejections return `429` `quota_exceeded` with a `Retry-After` header; a feature the tenant\'s plan does not include returns `403` `feature_not_available`. Both carry `entitlement`: the key that refused, the plan in force, and either the usage against its cap or the public plans that include it. Transient lock contention returns a retryable `503`. Quote `request_id` (also the `x-request-id` response header) to support.  **Idempotency.** `POST /v1/workflow-runs` accepts an `idempotency_key` to dedupe retried run creation. `agent/ask` charges one message *before* running and does not release a client-cancelled call. 
  *
  * The version of the OpenAPI document: 0.1.0
  * 
@@ -74,7 +74,7 @@ export interface AgentApiInterface {
     agentAskRequestOpts(requestParameters: AgentAskRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * Run a one-shot text agent request to completion and return the payload.  The request blocks until the underlying Temporal workflow finishes. Clients should set a generous HTTP timeout to accommodate tool-heavy runs.  Quota: consumes one MESSAGE before ``start_workflow``. Refund semantics distinguish cause:  * **Cancellation** (client disconnect → ``asyncio.CancelledError``,   OR explicit ``DELETE /v1/system-jobs/{id}`` while we await   ``handle.result()`` → Temporal-wrapped ``CancelledError``)   → **NO REFUND.** The user walked away or actively cancelled;   that\'s their volition. We still best-effort cancel the   workflow so the agent stops burning LLM tokens, but the   consume stays charged. Detection uses   ``temporalio.exceptions.is_cancelled_exception`` which spans   both forms. * Any other exception (pre-enqueue ``start_workflow`` raise,   Temporal failure, workflow-internal error) → **REFUND.** Server   / our-problem failures don\'t bill the user.
+     * Run a one-shot text agent request to completion and return its text.  Blocks until the run finishes; set a generous HTTP timeout. Charges one ``meter.agent.message``: a server-side failure is released, a cancellation (client disconnect or ``DELETE /v1/system-jobs/{id}``) stays charged.
      * @summary Agent Ask Handler
      * @param {AskRequest} askRequest 
      * @param {*} [options] Override http request option.
@@ -84,7 +84,7 @@ export interface AgentApiInterface {
     agentAskRaw(requestParameters: AgentAskRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AskResponse>>;
 
     /**
-     * Run a one-shot text agent request to completion and return the payload.  The request blocks until the underlying Temporal workflow finishes. Clients should set a generous HTTP timeout to accommodate tool-heavy runs.  Quota: consumes one MESSAGE before ``start_workflow``. Refund semantics distinguish cause:  * **Cancellation** (client disconnect → ``asyncio.CancelledError``,   OR explicit ``DELETE /v1/system-jobs/{id}`` while we await   ``handle.result()`` → Temporal-wrapped ``CancelledError``)   → **NO REFUND.** The user walked away or actively cancelled;   that\'s their volition. We still best-effort cancel the   workflow so the agent stops burning LLM tokens, but the   consume stays charged. Detection uses   ``temporalio.exceptions.is_cancelled_exception`` which spans   both forms. * Any other exception (pre-enqueue ``start_workflow`` raise,   Temporal failure, workflow-internal error) → **REFUND.** Server   / our-problem failures don\'t bill the user.
+     * Run a one-shot text agent request to completion and return its text.  Blocks until the run finishes; set a generous HTTP timeout. Charges one ``meter.agent.message``: a server-side failure is released, a cancellation (client disconnect or ``DELETE /v1/system-jobs/{id}``) stays charged.
      * Agent Ask Handler
      */
     agentAsk(requestParameters: AgentAskRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<AskResponse>;
@@ -98,7 +98,7 @@ export interface AgentApiInterface {
     agentExtractRequestOpts(requestParameters: AgentExtractRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * Run a one-shot structured extraction request and return the payload.  Validates the schema input on the route side (DOCUMENT → active version → valid JSON object) BEFORE consuming quota or starting the workflow. Bad schema → 400 with no quota debit. The workflow activity trusts the input and does not re-validate.  Quota: consumes one MESSAGE before ``start_workflow``. Refunds on any failure between consume and ``handle.result()`` returning — pre-enqueue ``start_workflow`` raises and post-enqueue workflow failures both refund.
+     * Run a one-shot structured extraction and return the extracted object.  The schema (a stored DOCUMENT or ``output_schema``) is validated first: bad input is a 400 that charges nothing. Otherwise charges one ``meter.agent.message``, released on a server-side failure; a cancellation stays charged.
      * @summary Agent Extract Handler
      * @param {ExtractRequest} extractRequest 
      * @param {*} [options] Override http request option.
@@ -108,7 +108,7 @@ export interface AgentApiInterface {
     agentExtractRaw(requestParameters: AgentExtractRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ExtractResponse>>;
 
     /**
-     * Run a one-shot structured extraction request and return the payload.  Validates the schema input on the route side (DOCUMENT → active version → valid JSON object) BEFORE consuming quota or starting the workflow. Bad schema → 400 with no quota debit. The workflow activity trusts the input and does not re-validate.  Quota: consumes one MESSAGE before ``start_workflow``. Refunds on any failure between consume and ``handle.result()`` returning — pre-enqueue ``start_workflow`` raises and post-enqueue workflow failures both refund.
+     * Run a one-shot structured extraction and return the extracted object.  The schema (a stored DOCUMENT or ``output_schema``) is validated first: bad input is a 400 that charges nothing. Otherwise charges one ``meter.agent.message``, released on a server-side failure; a cancellation stays charged.
      * Agent Extract Handler
      */
     agentExtract(requestParameters: AgentExtractRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ExtractResponse>;
@@ -158,7 +158,7 @@ export class AgentApi extends runtime.BaseAPI implements AgentApiInterface {
     }
 
     /**
-     * Run a one-shot text agent request to completion and return the payload.  The request blocks until the underlying Temporal workflow finishes. Clients should set a generous HTTP timeout to accommodate tool-heavy runs.  Quota: consumes one MESSAGE before ``start_workflow``. Refund semantics distinguish cause:  * **Cancellation** (client disconnect → ``asyncio.CancelledError``,   OR explicit ``DELETE /v1/system-jobs/{id}`` while we await   ``handle.result()`` → Temporal-wrapped ``CancelledError``)   → **NO REFUND.** The user walked away or actively cancelled;   that\'s their volition. We still best-effort cancel the   workflow so the agent stops burning LLM tokens, but the   consume stays charged. Detection uses   ``temporalio.exceptions.is_cancelled_exception`` which spans   both forms. * Any other exception (pre-enqueue ``start_workflow`` raise,   Temporal failure, workflow-internal error) → **REFUND.** Server   / our-problem failures don\'t bill the user.
+     * Run a one-shot text agent request to completion and return its text.  Blocks until the run finishes; set a generous HTTP timeout. Charges one ``meter.agent.message``: a server-side failure is released, a cancellation (client disconnect or ``DELETE /v1/system-jobs/{id}``) stays charged.
      * Agent Ask Handler
      */
     async agentAskRaw(requestParameters: AgentAskRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AskResponse>> {
@@ -169,7 +169,7 @@ export class AgentApi extends runtime.BaseAPI implements AgentApiInterface {
     }
 
     /**
-     * Run a one-shot text agent request to completion and return the payload.  The request blocks until the underlying Temporal workflow finishes. Clients should set a generous HTTP timeout to accommodate tool-heavy runs.  Quota: consumes one MESSAGE before ``start_workflow``. Refund semantics distinguish cause:  * **Cancellation** (client disconnect → ``asyncio.CancelledError``,   OR explicit ``DELETE /v1/system-jobs/{id}`` while we await   ``handle.result()`` → Temporal-wrapped ``CancelledError``)   → **NO REFUND.** The user walked away or actively cancelled;   that\'s their volition. We still best-effort cancel the   workflow so the agent stops burning LLM tokens, but the   consume stays charged. Detection uses   ``temporalio.exceptions.is_cancelled_exception`` which spans   both forms. * Any other exception (pre-enqueue ``start_workflow`` raise,   Temporal failure, workflow-internal error) → **REFUND.** Server   / our-problem failures don\'t bill the user.
+     * Run a one-shot text agent request to completion and return its text.  Blocks until the run finishes; set a generous HTTP timeout. Charges one ``meter.agent.message``: a server-side failure is released, a cancellation (client disconnect or ``DELETE /v1/system-jobs/{id}``) stays charged.
      * Agent Ask Handler
      */
     async agentAsk(requestParameters: AgentAskRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<AskResponse> {
@@ -215,7 +215,7 @@ export class AgentApi extends runtime.BaseAPI implements AgentApiInterface {
     }
 
     /**
-     * Run a one-shot structured extraction request and return the payload.  Validates the schema input on the route side (DOCUMENT → active version → valid JSON object) BEFORE consuming quota or starting the workflow. Bad schema → 400 with no quota debit. The workflow activity trusts the input and does not re-validate.  Quota: consumes one MESSAGE before ``start_workflow``. Refunds on any failure between consume and ``handle.result()`` returning — pre-enqueue ``start_workflow`` raises and post-enqueue workflow failures both refund.
+     * Run a one-shot structured extraction and return the extracted object.  The schema (a stored DOCUMENT or ``output_schema``) is validated first: bad input is a 400 that charges nothing. Otherwise charges one ``meter.agent.message``, released on a server-side failure; a cancellation stays charged.
      * Agent Extract Handler
      */
     async agentExtractRaw(requestParameters: AgentExtractRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ExtractResponse>> {
@@ -226,7 +226,7 @@ export class AgentApi extends runtime.BaseAPI implements AgentApiInterface {
     }
 
     /**
-     * Run a one-shot structured extraction request and return the payload.  Validates the schema input on the route side (DOCUMENT → active version → valid JSON object) BEFORE consuming quota or starting the workflow. Bad schema → 400 with no quota debit. The workflow activity trusts the input and does not re-validate.  Quota: consumes one MESSAGE before ``start_workflow``. Refunds on any failure between consume and ``handle.result()`` returning — pre-enqueue ``start_workflow`` raises and post-enqueue workflow failures both refund.
+     * Run a one-shot structured extraction and return the extracted object.  The schema (a stored DOCUMENT or ``output_schema``) is validated first: bad input is a 400 that charges nothing. Otherwise charges one ``meter.agent.message``, released on a server-side failure; a cancellation stays charged.
      * Agent Extract Handler
      */
     async agentExtract(requestParameters: AgentExtractRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ExtractResponse> {

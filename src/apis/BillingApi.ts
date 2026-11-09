@@ -2,7 +2,7 @@
 /* eslint-disable */
 /**
  * Knowledge Stack API
- * Knowledge Stack backend API for authentication and knowledge management.  ## Integrating (RPA / machine clients)  **Base URL.** Knowledge Stack is self-hosted — point at your own deployment host (see `servers`). The `localhost` entry is for local development only.  **Authentication.** Send `Authorization: Bearer <api-key>` on every request. Mint an API key once via `POST /v1/api-keys` from a signed-in browser session; the raw `sk-user-...` secret is returned **only** at creation, so store it then. A key inherits its owning user\'s live tenant role and path permissions — create RPA keys from a least-privilege user, and set `expires_at` for rotation. The `ks_uat` cookie scheme is browser-only and cannot be used by headless clients.  **Async work is polled, not pushed.** There are no outbound webhooks. - `POST /v1/documents/ingest` returns `201` immediately with a `workflow_id`;   poll `GET /v1/system-jobs/document_versions/{workflow_id}` until `status` is   terminal (anything other than `pending`/`processing`). The `Location` response   header points at this poll resource. - `POST /v1/workflow-runs/{run_id}/start` returns `202`; poll   `GET /v1/workflow-runs/{run_id}` until `execution_state` is `COMPLETED` or   `FAILED`. The `Location` header points at the run resource. - `POST /v1/agent/ask` is **synchronous** — it blocks until the agent finishes   and returns the answer inline. Use a generous HTTP timeout.  **Pagination.** List endpoints accept `limit`/`offset` and return `{items, total, limit, offset}`.  **Errors.** Every non-2xx body is `{detail, code, request_id}`. `code` is a stable value from a closed set (see the `ErrorResponse` schema\'s `code` enum) — branch on it rather than parsing `detail`. Quota rejections return `429` with a `Retry-After` header; transient lock contention returns a retryable `503`. Quote `request_id` (also the `x-request-id` response header) to support.  **Idempotency.** `POST /v1/workflow-runs` accepts an `idempotency_key` to dedupe retried run creation. `agent/ask` charges one message *before* running and does not refund a client-cancelled call. 
+ * Knowledge Stack backend API for authentication and knowledge management.  ## Integrating (RPA / machine clients)  **Base URL.** Knowledge Stack is self-hosted — point at your own deployment host (see `servers`). The `localhost` entry is for local development only.  **Authentication.** Send `Authorization: Bearer <api-key>` on every request. Mint an API key once via `POST /v1/api-keys` from a signed-in browser session; the raw `sk-user-...` secret is returned **only** at creation, so store it then. A key inherits its owning user\'s live tenant role and path permissions — create RPA keys from a least-privilege user, and set `expires_at` for rotation. The `ks_uat` cookie scheme is browser-only and cannot be used by headless clients.  **Async work is polled, not pushed.** There are no outbound webhooks. - `POST /v1/documents/ingest` returns `201` immediately with a `workflow_id`;   poll `GET /v1/system-jobs/document_versions/{workflow_id}` until `status` is   terminal (anything other than `pending`/`processing`). The `Location` response   header points at this poll resource. - `POST /v1/workflow-runs/{run_id}/start` returns `202`; poll   `GET /v1/workflow-runs/{run_id}` until `execution_state` is `COMPLETED` or   `FAILED`. The `Location` header points at the run resource. - `POST /v1/agent/ask` is **synchronous** — it blocks until the agent finishes   and returns the answer inline. Use a generous HTTP timeout.  **Pagination.** List endpoints accept `limit`/`offset` and return `{items, total, limit, offset}`.  **Errors.** Every non-2xx body is `{detail, code, request_id}`. `code` is a stable value from a closed set (see the `ErrorResponse` schema\'s `code` enum) — branch on it rather than parsing `detail`. Quota rejections return `429` `quota_exceeded` with a `Retry-After` header; a feature the tenant\'s plan does not include returns `403` `feature_not_available`. Both carry `entitlement`: the key that refused, the plan in force, and either the usage against its cap or the public plans that include it. Transient lock contention returns a retryable `503`. Quote `request_id` (also the `x-request-id` response header) to support.  **Idempotency.** `POST /v1/workflow-runs` accepts an `idempotency_key` to dedupe retried run creation. `agent/ask` charges one message *before* running and does not release a client-cancelled call. 
  *
  * The version of the OpenAPI document: 0.1.0
  * 
@@ -14,6 +14,11 @@
 
 import * as runtime from '../runtime';
 import {
+    type BillingRedirectResponse,
+    BillingRedirectResponseFromJSON,
+    BillingRedirectResponseToJSON,
+} from '../models/BillingRedirectResponse';
+import {
     type ErrorResponse,
     ErrorResponseFromJSON,
     ErrorResponseToJSON,
@@ -24,16 +29,51 @@ import {
     HTTPValidationErrorToJSON,
 } from '../models/HTTPValidationError';
 import {
-    type PaginatedResponseBillingPaymentResponse,
-    PaginatedResponseBillingPaymentResponseFromJSON,
-    PaginatedResponseBillingPaymentResponseToJSON,
-} from '../models/PaginatedResponseBillingPaymentResponse';
+    type PaginatedResponsePlanResponse,
+    PaginatedResponsePlanResponseFromJSON,
+    PaginatedResponsePlanResponseToJSON,
+} from '../models/PaginatedResponsePlanResponse';
+import {
+    type PlanCheckoutRequest,
+    PlanCheckoutRequestFromJSON,
+    PlanCheckoutRequestToJSON,
+} from '../models/PlanCheckoutRequest';
+import {
+    type TopupCheckoutRequest,
+    TopupCheckoutRequestFromJSON,
+    TopupCheckoutRequestToJSON,
+} from '../models/TopupCheckoutRequest';
 
-export interface ListBillingPaymentsRequest {
+export interface CreateBillingPortalRequest {
     /**
      * 
      */
     tenantId: string;
+}
+
+export interface CreatePlanCheckoutRequest {
+    /**
+     * 
+     */
+    tenantId: string;
+    /**
+     * 
+     */
+    planCheckoutRequest: PlanCheckoutRequest;
+}
+
+export interface CreateTopupCheckoutRequest {
+    /**
+     * 
+     */
+    tenantId: string;
+    /**
+     * 
+     */
+    topupCheckoutRequest: TopupCheckoutRequest;
+}
+
+export interface ListPlansRequest {
     /**
      * Number of items per page
      */
@@ -52,32 +92,106 @@ export interface ListBillingPaymentsRequest {
  */
 export interface BillingApiInterface {
     /**
-     * Creates request options for listBillingPayments without sending the request
+     * Creates request options for createBillingPortal without sending the request
      * @param {string} tenantId 
+     * @throws {RequiredError}
+     * @memberof BillingApiInterface
+     */
+    createBillingPortalRequestOpts(requestParameters: CreateBillingPortalRequest): Promise<runtime.RequestOpts>;
+
+    /**
+     * The provider\'s billing portal (OWNER): change plan or seats, cancel, invoices.
+     * @summary Create Billing Portal Handler
+     * @param {string} tenantId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof BillingApiInterface
+     */
+    createBillingPortalRaw(requestParameters: CreateBillingPortalRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<BillingRedirectResponse>>;
+
+    /**
+     * The provider\'s billing portal (OWNER): change plan or seats, cancel, invoices.
+     * Create Billing Portal Handler
+     */
+    createBillingPortal(requestParameters: CreateBillingPortalRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<BillingRedirectResponse>;
+
+    /**
+     * Creates request options for createPlanCheckout without sending the request
+     * @param {string} tenantId 
+     * @param {PlanCheckoutRequest} planCheckoutRequest 
+     * @throws {RequiredError}
+     * @memberof BillingApiInterface
+     */
+    createPlanCheckoutRequestOpts(requestParameters: CreatePlanCheckoutRequest): Promise<runtime.RequestOpts>;
+
+    /**
+     * Hosted checkout for a public plan (OWNER). A subscriber uses the portal.
+     * @summary Create Plan Checkout Handler
+     * @param {string} tenantId 
+     * @param {PlanCheckoutRequest} planCheckoutRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof BillingApiInterface
+     */
+    createPlanCheckoutRaw(requestParameters: CreatePlanCheckoutRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<BillingRedirectResponse>>;
+
+    /**
+     * Hosted checkout for a public plan (OWNER). A subscriber uses the portal.
+     * Create Plan Checkout Handler
+     */
+    createPlanCheckout(requestParameters: CreatePlanCheckoutRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<BillingRedirectResponse>;
+
+    /**
+     * Creates request options for createTopupCheckout without sending the request
+     * @param {string} tenantId 
+     * @param {TopupCheckoutRequest} topupCheckoutRequest 
+     * @throws {RequiredError}
+     * @memberof BillingApiInterface
+     */
+    createTopupCheckoutRequestOpts(requestParameters: CreateTopupCheckoutRequest): Promise<runtime.RequestOpts>;
+
+    /**
+     * Hosted checkout for one top-up (OWNER); credited when the provider confirms payment.
+     * @summary Create Topup Checkout Handler
+     * @param {string} tenantId 
+     * @param {TopupCheckoutRequest} topupCheckoutRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof BillingApiInterface
+     */
+    createTopupCheckoutRaw(requestParameters: CreateTopupCheckoutRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<BillingRedirectResponse>>;
+
+    /**
+     * Hosted checkout for one top-up (OWNER); credited when the provider confirms payment.
+     * Create Topup Checkout Handler
+     */
+    createTopupCheckout(requestParameters: CreateTopupCheckoutRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<BillingRedirectResponse>;
+
+    /**
+     * Creates request options for listPlans without sending the request
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
      * @throws {RequiredError}
      * @memberof BillingApiInterface
      */
-    listBillingPaymentsRequestOpts(requestParameters: ListBillingPaymentsRequest): Promise<runtime.RequestOpts>;
+    listPlansRequestOpts(requestParameters: ListPlansRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * Newest-first payment history for the tenant (OWNER/ADMIN only).  Backs the billing page\'s receipts list. ``invoice_url`` links the Stripe-hosted invoice when the payment ran through Stripe; CN (Ping++) payments render an in-app receipt from the row itself.
-     * @summary List Billing Payments Handler
-     * @param {string} tenantId 
+     * The public plans on sale, by name, each with what it grants.  A plan\'s ``id`` is what plan checkout takes; prices are the provider\'s.
+     * @summary List Plans Handler
      * @param {number} [limit] Number of items per page
      * @param {number} [offset] Number of items to skip
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof BillingApiInterface
      */
-    listBillingPaymentsRaw(requestParameters: ListBillingPaymentsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedResponseBillingPaymentResponse>>;
+    listPlansRaw(requestParameters: ListPlansRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedResponsePlanResponse>>;
 
     /**
-     * Newest-first payment history for the tenant (OWNER/ADMIN only).  Backs the billing page\'s receipts list. ``invoice_url`` links the Stripe-hosted invoice when the payment ran through Stripe; CN (Ping++) payments render an in-app receipt from the row itself.
-     * List Billing Payments Handler
+     * The public plans on sale, by name, each with what it grants.  A plan\'s ``id`` is what plan checkout takes; prices are the provider\'s.
+     * List Plans Handler
      */
-    listBillingPayments(requestParameters: ListBillingPaymentsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedResponseBillingPaymentResponse>;
+    listPlans(requestParameters: ListPlansRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedResponsePlanResponse>;
 
 }
 
@@ -87,16 +201,194 @@ export interface BillingApiInterface {
 export class BillingApi extends runtime.BaseAPI implements BillingApiInterface {
 
     /**
-     * Creates request options for listBillingPayments without sending the request
+     * Creates request options for createBillingPortal without sending the request
      */
-    async listBillingPaymentsRequestOpts(requestParameters: ListBillingPaymentsRequest): Promise<runtime.RequestOpts> {
+    async createBillingPortalRequestOpts(requestParameters: CreateBillingPortalRequest): Promise<runtime.RequestOpts> {
         if (requestParameters['tenantId'] == null) {
             throw new runtime.RequiredError(
                 'tenantId',
-                'Required parameter "tenantId" was null or undefined when calling listBillingPayments().'
+                'Required parameter "tenantId" was null or undefined when calling createBillingPortal().'
             );
         }
 
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/v1/tenants/{tenant_id}/billing/portal`;
+        urlPath = urlPath.replace('{tenant_id}', encodeURIComponent(String(requestParameters['tenantId'])));
+
+        return {
+            path: urlPath,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * The provider\'s billing portal (OWNER): change plan or seats, cancel, invoices.
+     * Create Billing Portal Handler
+     */
+    async createBillingPortalRaw(requestParameters: CreateBillingPortalRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<BillingRedirectResponse>> {
+        const requestOptions = await this.createBillingPortalRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => BillingRedirectResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * The provider\'s billing portal (OWNER): change plan or seats, cancel, invoices.
+     * Create Billing Portal Handler
+     */
+    async createBillingPortal(requestParameters: CreateBillingPortalRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<BillingRedirectResponse> {
+        const response = await this.createBillingPortalRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for createPlanCheckout without sending the request
+     */
+    async createPlanCheckoutRequestOpts(requestParameters: CreatePlanCheckoutRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['tenantId'] == null) {
+            throw new runtime.RequiredError(
+                'tenantId',
+                'Required parameter "tenantId" was null or undefined when calling createPlanCheckout().'
+            );
+        }
+
+        if (requestParameters['planCheckoutRequest'] == null) {
+            throw new runtime.RequiredError(
+                'planCheckoutRequest',
+                'Required parameter "planCheckoutRequest" was null or undefined when calling createPlanCheckout().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/v1/tenants/{tenant_id}/billing/checkout`;
+        urlPath = urlPath.replace('{tenant_id}', encodeURIComponent(String(requestParameters['tenantId'])));
+
+        return {
+            path: urlPath,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: PlanCheckoutRequestToJSON(requestParameters['planCheckoutRequest']),
+        };
+    }
+
+    /**
+     * Hosted checkout for a public plan (OWNER). A subscriber uses the portal.
+     * Create Plan Checkout Handler
+     */
+    async createPlanCheckoutRaw(requestParameters: CreatePlanCheckoutRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<BillingRedirectResponse>> {
+        const requestOptions = await this.createPlanCheckoutRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => BillingRedirectResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * Hosted checkout for a public plan (OWNER). A subscriber uses the portal.
+     * Create Plan Checkout Handler
+     */
+    async createPlanCheckout(requestParameters: CreatePlanCheckoutRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<BillingRedirectResponse> {
+        const response = await this.createPlanCheckoutRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for createTopupCheckout without sending the request
+     */
+    async createTopupCheckoutRequestOpts(requestParameters: CreateTopupCheckoutRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['tenantId'] == null) {
+            throw new runtime.RequiredError(
+                'tenantId',
+                'Required parameter "tenantId" was null or undefined when calling createTopupCheckout().'
+            );
+        }
+
+        if (requestParameters['topupCheckoutRequest'] == null) {
+            throw new runtime.RequiredError(
+                'topupCheckoutRequest',
+                'Required parameter "topupCheckoutRequest" was null or undefined when calling createTopupCheckout().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/v1/tenants/{tenant_id}/billing/topups`;
+        urlPath = urlPath.replace('{tenant_id}', encodeURIComponent(String(requestParameters['tenantId'])));
+
+        return {
+            path: urlPath,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: TopupCheckoutRequestToJSON(requestParameters['topupCheckoutRequest']),
+        };
+    }
+
+    /**
+     * Hosted checkout for one top-up (OWNER); credited when the provider confirms payment.
+     * Create Topup Checkout Handler
+     */
+    async createTopupCheckoutRaw(requestParameters: CreateTopupCheckoutRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<BillingRedirectResponse>> {
+        const requestOptions = await this.createTopupCheckoutRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => BillingRedirectResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * Hosted checkout for one top-up (OWNER); credited when the provider confirms payment.
+     * Create Topup Checkout Handler
+     */
+    async createTopupCheckout(requestParameters: CreateTopupCheckoutRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<BillingRedirectResponse> {
+        const response = await this.createTopupCheckoutRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for listPlans without sending the request
+     */
+    async listPlansRequestOpts(requestParameters: ListPlansRequest): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
         if (requestParameters['limit'] != null) {
@@ -118,8 +410,7 @@ export class BillingApi extends runtime.BaseAPI implements BillingApiInterface {
             }
         }
 
-        let urlPath = `/v1/tenants/{tenant_id}/billing/payments`;
-        urlPath = urlPath.replace('{tenant_id}', encodeURIComponent(String(requestParameters['tenantId'])));
+        let urlPath = `/v1/plans`;
 
         return {
             path: urlPath,
@@ -130,22 +421,22 @@ export class BillingApi extends runtime.BaseAPI implements BillingApiInterface {
     }
 
     /**
-     * Newest-first payment history for the tenant (OWNER/ADMIN only).  Backs the billing page\'s receipts list. ``invoice_url`` links the Stripe-hosted invoice when the payment ran through Stripe; CN (Ping++) payments render an in-app receipt from the row itself.
-     * List Billing Payments Handler
+     * The public plans on sale, by name, each with what it grants.  A plan\'s ``id`` is what plan checkout takes; prices are the provider\'s.
+     * List Plans Handler
      */
-    async listBillingPaymentsRaw(requestParameters: ListBillingPaymentsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedResponseBillingPaymentResponse>> {
-        const requestOptions = await this.listBillingPaymentsRequestOpts(requestParameters);
+    async listPlansRaw(requestParameters: ListPlansRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedResponsePlanResponse>> {
+        const requestOptions = await this.listPlansRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedResponseBillingPaymentResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedResponsePlanResponseFromJSON(jsonValue));
     }
 
     /**
-     * Newest-first payment history for the tenant (OWNER/ADMIN only).  Backs the billing page\'s receipts list. ``invoice_url`` links the Stripe-hosted invoice when the payment ran through Stripe; CN (Ping++) payments render an in-app receipt from the row itself.
-     * List Billing Payments Handler
+     * The public plans on sale, by name, each with what it grants.  A plan\'s ``id`` is what plan checkout takes; prices are the provider\'s.
+     * List Plans Handler
      */
-    async listBillingPayments(requestParameters: ListBillingPaymentsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedResponseBillingPaymentResponse> {
-        const response = await this.listBillingPaymentsRaw(requestParameters, initOverrides);
+    async listPlans(requestParameters: ListPlansRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedResponsePlanResponse> {
+        const response = await this.listPlansRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
