@@ -59,6 +59,7 @@ export const ErrorResponseCodeEnum = {
     NotFound: 'not_found',
     Conflict: 'conflict',
     TenantDeactivated: 'tenant_deactivated',
+    OnlyWorkspace: 'only_workspace',
     ConsentRefused: 'consent_refused',
     NoCode: 'no_code',
     WrongAccount: 'wrong_account',

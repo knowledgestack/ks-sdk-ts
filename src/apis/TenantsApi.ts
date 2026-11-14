@@ -311,7 +311,7 @@ export interface TenantsApiInterface {
     deleteTenantRequestOpts(requestParameters: DeleteTenantRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * Delete a tenant.  Requires OWNER role in the tenant. Refused (409) while a provider subscription is live; the OWNER cancels it in the billing portal first. Deletes the tenant\'s LiteLLM team/keys and S3 bucket after the delete commits.
+     * Delete a tenant.  Requires OWNER role in the tenant. Refused (409) while a provider subscription is live; the OWNER cancels it in the billing portal first. After the delete commits, stops the tenant\'s running workflows, removes its schedules, purges its search points and deletes its LiteLLM team/keys and S3 bucket.
      * @summary Delete Tenant
      * @param {string} tenantId 
      * @param {*} [options] Override http request option.
@@ -321,7 +321,7 @@ export interface TenantsApiInterface {
     deleteTenantRaw(requestParameters: DeleteTenantRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>>;
 
     /**
-     * Delete a tenant.  Requires OWNER role in the tenant. Refused (409) while a provider subscription is live; the OWNER cancels it in the billing portal first. Deletes the tenant\'s LiteLLM team/keys and S3 bucket after the delete commits.
+     * Delete a tenant.  Requires OWNER role in the tenant. Refused (409) while a provider subscription is live; the OWNER cancels it in the billing portal first. After the delete commits, stops the tenant\'s running workflows, removes its schedules, purges its search points and deletes its LiteLLM team/keys and S3 bucket.
      * Delete Tenant
      */
     deleteTenant(requestParameters: DeleteTenantRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void>;
@@ -765,7 +765,7 @@ export class TenantsApi extends runtime.BaseAPI implements TenantsApiInterface {
     }
 
     /**
-     * Delete a tenant.  Requires OWNER role in the tenant. Refused (409) while a provider subscription is live; the OWNER cancels it in the billing portal first. Deletes the tenant\'s LiteLLM team/keys and S3 bucket after the delete commits.
+     * Delete a tenant.  Requires OWNER role in the tenant. Refused (409) while a provider subscription is live; the OWNER cancels it in the billing portal first. After the delete commits, stops the tenant\'s running workflows, removes its schedules, purges its search points and deletes its LiteLLM team/keys and S3 bucket.
      * Delete Tenant
      */
     async deleteTenantRaw(requestParameters: DeleteTenantRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
@@ -776,7 +776,7 @@ export class TenantsApi extends runtime.BaseAPI implements TenantsApiInterface {
     }
 
     /**
-     * Delete a tenant.  Requires OWNER role in the tenant. Refused (409) while a provider subscription is live; the OWNER cancels it in the billing portal first. Deletes the tenant\'s LiteLLM team/keys and S3 bucket after the delete commits.
+     * Delete a tenant.  Requires OWNER role in the tenant. Refused (409) while a provider subscription is live; the OWNER cancels it in the billing portal first. After the delete commits, stops the tenant\'s running workflows, removes its schedules, purges its search points and deletes its LiteLLM team/keys and S3 bucket.
      * Delete Tenant
      */
     async deleteTenant(requestParameters: DeleteTenantRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
