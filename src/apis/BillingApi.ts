@@ -2,7 +2,7 @@
 /* eslint-disable */
 /**
  * Knowledge Stack API
- * Knowledge Stack backend API for authentication and knowledge management.  ## Integrating (RPA / machine clients)  **Base URL.** Knowledge Stack is self-hosted — point at your own deployment host (see `servers`). The `localhost` entry is for local development only.  **Authentication.** Send `Authorization: Bearer <api-key>` on every request. Mint an API key once via `POST /v1/api-keys` from a signed-in browser session; the raw `sk-user-...` secret is returned **only** at creation, so store it then. A key inherits its owning user\'s live tenant role and path permissions — create RPA keys from a least-privilege user, and set `expires_at` for rotation. The `ks_uat` cookie scheme is browser-only and cannot be used by headless clients.  **Async work is polled, not pushed.** There are no outbound webhooks. - `POST /v1/documents/ingest` returns `201` immediately with a `workflow_id`;   poll `GET /v1/system-jobs/document_versions/{workflow_id}` until `status` is   terminal (anything other than `pending`/`processing`). The `Location` response   header points at this poll resource. - `POST /v1/workflow-runs/{run_id}/start` returns `202`; poll   `GET /v1/workflow-runs/{run_id}` until `execution_state` is `COMPLETED` or   `FAILED`. The `Location` header points at the run resource. - `POST /v1/agent/ask` is **synchronous** — it blocks until the agent finishes   and returns the answer inline. Use a generous HTTP timeout.  **Pagination.** List endpoints accept `limit`/`offset` and return `{items, total, limit, offset}`.  **Errors.** Every non-2xx body is `{detail, code, request_id}`. `code` is a stable value from a closed set (see the `ErrorResponse` schema\'s `code` enum) — branch on it rather than parsing `detail`. Quota rejections return `429` `quota_exceeded` with a `Retry-After` header; a feature the tenant\'s plan does not include returns `403` `feature_not_available`. Both carry `entitlement`: the key that refused, the plan in force, and either the usage against its cap or the public plans that include it. Transient lock contention returns a retryable `503`. Quote `request_id` (also the `x-request-id` response header) to support.  **Idempotency.** `POST /v1/workflow-runs` accepts an `idempotency_key` to dedupe retried run creation. `agent/ask` charges one message *before* running and does not release a client-cancelled call. 
+ * Knowledge Stack backend API for authentication and knowledge management.  ## Integrating (RPA / machine clients)  **Base URL.** Knowledge Stack is self-hosted — point at your own deployment host (see `servers`). The `localhost` entry is for local development only.  **Authentication.** Send `Authorization: Bearer <api-key>` on every request. Mint an API key once via `POST /v1/api-keys` from a signed-in browser session; the raw `sk-user-...` secret is returned **only** at creation, so store it then. A key inherits its owning user\'s live tenant role and path permissions — create RPA keys from a least-privilege user, and set `expires_at` for rotation. The `ks_uat` cookie scheme is browser-only and cannot be used by headless clients.  **Async work is polled, not pushed.** There are no outbound webhooks. - `POST /v1/documents/ingest` returns `201` immediately with a `workflow_id`;   poll `GET /v1/system-jobs/document_versions/{workflow_id}` until `status` is   terminal (anything other than `pending`/`processing`). The `Location` response   header points at this poll resource. - `POST /v1/workflow-runs/{run_id}/start` returns `202`; poll   `GET /v1/workflow-runs/{run_id}` until `execution_state` is `COMPLETED` or   `FAILED`. The `Location` header points at the run resource. - `POST /v1/agent/ask` is **synchronous** — it blocks until the agent finishes   and returns the answer inline. Use a generous HTTP timeout.  **Pagination.** List endpoints accept `limit`/`offset` and return `{items, total, limit, offset}`.  **Errors.** Every non-2xx body is `{detail, code, request_id}`. `code` is a stable value from a closed set (see the `ErrorResponse` schema\'s `code` enum) — branch on it rather than parsing `detail`. Quota rejections return `429` `quota_exceeded`, with a `Retry-After` header unless the limit never resets; a feature the tenant\'s plan does not include returns `403` `feature_not_available`. Both carry `entitlement`: the key that refused, the plan in force, and either the usage against its cap or the public plans that include it. Transient lock contention returns a retryable `503`. Quote `request_id` (also the `x-request-id` response header) to support.  **Idempotency.** `POST /v1/workflow-runs` accepts an `idempotency_key` to dedupe retried run creation. `agent/ask` charges one message *before* running and does not release a client-cancelled call. 
  *
  * The version of the OpenAPI document: 0.1.0
  * 
@@ -34,6 +34,11 @@ import {
     PaginatedResponsePlanResponseToJSON,
 } from '../models/PaginatedResponsePlanResponse';
 import {
+    type PlanChangeRequest,
+    PlanChangeRequestFromJSON,
+    PlanChangeRequestToJSON,
+} from '../models/PlanChangeRequest';
+import {
     type PlanCheckoutRequest,
     PlanCheckoutRequestFromJSON,
     PlanCheckoutRequestToJSON,
@@ -49,6 +54,17 @@ export interface CreateBillingPortalRequest {
      * 
      */
     tenantId: string;
+}
+
+export interface CreatePlanChangeRequest {
+    /**
+     * 
+     */
+    tenantId: string;
+    /**
+     * 
+     */
+    planChangeRequest: PlanChangeRequest;
 }
 
 export interface CreatePlanCheckoutRequest {
@@ -100,7 +116,7 @@ export interface BillingApiInterface {
     createBillingPortalRequestOpts(requestParameters: CreateBillingPortalRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * The provider\'s billing portal (OWNER): change plan or seats, cancel, invoices.
+     * The provider\'s billing portal (OWNER): payment method, invoices, cancellation.
      * @summary Create Billing Portal Handler
      * @param {string} tenantId 
      * @param {*} [options] Override http request option.
@@ -110,10 +126,36 @@ export interface BillingApiInterface {
     createBillingPortalRaw(requestParameters: CreateBillingPortalRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<BillingRedirectResponse>>;
 
     /**
-     * The provider\'s billing portal (OWNER): change plan or seats, cancel, invoices.
+     * The provider\'s billing portal (OWNER): payment method, invoices, cancellation.
      * Create Billing Portal Handler
      */
     createBillingPortal(requestParameters: CreateBillingPortalRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<BillingRedirectResponse>;
+
+    /**
+     * Creates request options for createPlanChange without sending the request
+     * @param {string} tenantId 
+     * @param {PlanChangeRequest} planChangeRequest 
+     * @throws {RequiredError}
+     * @memberof BillingApiInterface
+     */
+    createPlanChangeRequestOpts(requestParameters: CreatePlanChangeRequest): Promise<runtime.RequestOpts>;
+
+    /**
+     * The provider\'s page to confirm a new plan or seat count for a subscriber (OWNER).  A decrease takes effect at the period end. Refused with 409 when the workspace has more active members than ``num_seats`` (remove or deactivate members first), no subscription (subscribe through checkout), one that already has this plan and seat count, or one with a change already scheduled (the refusal names it); 400 above the plan\'s seat limit; 404 for a plan that cannot be bought; 500 for a plan the provider has no price for.
+     * @summary Create Plan Change Handler
+     * @param {string} tenantId 
+     * @param {PlanChangeRequest} planChangeRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof BillingApiInterface
+     */
+    createPlanChangeRaw(requestParameters: CreatePlanChangeRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<BillingRedirectResponse>>;
+
+    /**
+     * The provider\'s page to confirm a new plan or seat count for a subscriber (OWNER).  A decrease takes effect at the period end. Refused with 409 when the workspace has more active members than ``num_seats`` (remove or deactivate members first), no subscription (subscribe through checkout), one that already has this plan and seat count, or one with a change already scheduled (the refusal names it); 400 above the plan\'s seat limit; 404 for a plan that cannot be bought; 500 for a plan the provider has no price for.
+     * Create Plan Change Handler
+     */
+    createPlanChange(requestParameters: CreatePlanChangeRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<BillingRedirectResponse>;
 
     /**
      * Creates request options for createPlanCheckout without sending the request
@@ -125,7 +167,7 @@ export interface BillingApiInterface {
     createPlanCheckoutRequestOpts(requestParameters: CreatePlanCheckoutRequest): Promise<runtime.RequestOpts>;
 
     /**
-     * Hosted checkout for a public plan (OWNER). A subscriber uses the portal.
+     * Hosted checkout for a public plan (OWNER); a subscriber changes plan instead.  Refused (409) for fewer seats than the workspace\'s active members.
      * @summary Create Plan Checkout Handler
      * @param {string} tenantId 
      * @param {PlanCheckoutRequest} planCheckoutRequest 
@@ -136,7 +178,7 @@ export interface BillingApiInterface {
     createPlanCheckoutRaw(requestParameters: CreatePlanCheckoutRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<BillingRedirectResponse>>;
 
     /**
-     * Hosted checkout for a public plan (OWNER). A subscriber uses the portal.
+     * Hosted checkout for a public plan (OWNER); a subscriber changes plan instead.  Refused (409) for fewer seats than the workspace\'s active members.
      * Create Plan Checkout Handler
      */
     createPlanCheckout(requestParameters: CreatePlanCheckoutRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<BillingRedirectResponse>;
@@ -236,7 +278,7 @@ export class BillingApi extends runtime.BaseAPI implements BillingApiInterface {
     }
 
     /**
-     * The provider\'s billing portal (OWNER): change plan or seats, cancel, invoices.
+     * The provider\'s billing portal (OWNER): payment method, invoices, cancellation.
      * Create Billing Portal Handler
      */
     async createBillingPortalRaw(requestParameters: CreateBillingPortalRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<BillingRedirectResponse>> {
@@ -247,11 +289,76 @@ export class BillingApi extends runtime.BaseAPI implements BillingApiInterface {
     }
 
     /**
-     * The provider\'s billing portal (OWNER): change plan or seats, cancel, invoices.
+     * The provider\'s billing portal (OWNER): payment method, invoices, cancellation.
      * Create Billing Portal Handler
      */
     async createBillingPortal(requestParameters: CreateBillingPortalRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<BillingRedirectResponse> {
         const response = await this.createBillingPortalRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for createPlanChange without sending the request
+     */
+    async createPlanChangeRequestOpts(requestParameters: CreatePlanChangeRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['tenantId'] == null) {
+            throw new runtime.RequiredError(
+                'tenantId',
+                'Required parameter "tenantId" was null or undefined when calling createPlanChange().'
+            );
+        }
+
+        if (requestParameters['planChangeRequest'] == null) {
+            throw new runtime.RequiredError(
+                'planChangeRequest',
+                'Required parameter "planChangeRequest" was null or undefined when calling createPlanChange().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/v1/tenants/{tenant_id}/billing/plan-change`;
+        urlPath = urlPath.replace('{tenant_id}', encodeURIComponent(String(requestParameters['tenantId'])));
+
+        return {
+            path: urlPath,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: PlanChangeRequestToJSON(requestParameters['planChangeRequest']),
+        };
+    }
+
+    /**
+     * The provider\'s page to confirm a new plan or seat count for a subscriber (OWNER).  A decrease takes effect at the period end. Refused with 409 when the workspace has more active members than ``num_seats`` (remove or deactivate members first), no subscription (subscribe through checkout), one that already has this plan and seat count, or one with a change already scheduled (the refusal names it); 400 above the plan\'s seat limit; 404 for a plan that cannot be bought; 500 for a plan the provider has no price for.
+     * Create Plan Change Handler
+     */
+    async createPlanChangeRaw(requestParameters: CreatePlanChangeRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<BillingRedirectResponse>> {
+        const requestOptions = await this.createPlanChangeRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => BillingRedirectResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * The provider\'s page to confirm a new plan or seat count for a subscriber (OWNER).  A decrease takes effect at the period end. Refused with 409 when the workspace has more active members than ``num_seats`` (remove or deactivate members first), no subscription (subscribe through checkout), one that already has this plan and seat count, or one with a change already scheduled (the refusal names it); 400 above the plan\'s seat limit; 404 for a plan that cannot be bought; 500 for a plan the provider has no price for.
+     * Create Plan Change Handler
+     */
+    async createPlanChange(requestParameters: CreatePlanChangeRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<BillingRedirectResponse> {
+        const response = await this.createPlanChangeRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -301,7 +408,7 @@ export class BillingApi extends runtime.BaseAPI implements BillingApiInterface {
     }
 
     /**
-     * Hosted checkout for a public plan (OWNER). A subscriber uses the portal.
+     * Hosted checkout for a public plan (OWNER); a subscriber changes plan instead.  Refused (409) for fewer seats than the workspace\'s active members.
      * Create Plan Checkout Handler
      */
     async createPlanCheckoutRaw(requestParameters: CreatePlanCheckoutRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<BillingRedirectResponse>> {
@@ -312,7 +419,7 @@ export class BillingApi extends runtime.BaseAPI implements BillingApiInterface {
     }
 
     /**
-     * Hosted checkout for a public plan (OWNER). A subscriber uses the portal.
+     * Hosted checkout for a public plan (OWNER); a subscriber changes plan instead.  Refused (409) for fewer seats than the workspace\'s active members.
      * Create Plan Checkout Handler
      */
     async createPlanCheckout(requestParameters: CreatePlanCheckoutRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<BillingRedirectResponse> {

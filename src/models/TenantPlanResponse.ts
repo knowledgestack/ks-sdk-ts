@@ -2,7 +2,7 @@
 /* eslint-disable */
 /**
  * Knowledge Stack API
- * Knowledge Stack backend API for authentication and knowledge management.  ## Integrating (RPA / machine clients)  **Base URL.** Knowledge Stack is self-hosted — point at your own deployment host (see `servers`). The `localhost` entry is for local development only.  **Authentication.** Send `Authorization: Bearer <api-key>` on every request. Mint an API key once via `POST /v1/api-keys` from a signed-in browser session; the raw `sk-user-...` secret is returned **only** at creation, so store it then. A key inherits its owning user\'s live tenant role and path permissions — create RPA keys from a least-privilege user, and set `expires_at` for rotation. The `ks_uat` cookie scheme is browser-only and cannot be used by headless clients.  **Async work is polled, not pushed.** There are no outbound webhooks. - `POST /v1/documents/ingest` returns `201` immediately with a `workflow_id`;   poll `GET /v1/system-jobs/document_versions/{workflow_id}` until `status` is   terminal (anything other than `pending`/`processing`). The `Location` response   header points at this poll resource. - `POST /v1/workflow-runs/{run_id}/start` returns `202`; poll   `GET /v1/workflow-runs/{run_id}` until `execution_state` is `COMPLETED` or   `FAILED`. The `Location` header points at the run resource. - `POST /v1/agent/ask` is **synchronous** — it blocks until the agent finishes   and returns the answer inline. Use a generous HTTP timeout.  **Pagination.** List endpoints accept `limit`/`offset` and return `{items, total, limit, offset}`.  **Errors.** Every non-2xx body is `{detail, code, request_id}`. `code` is a stable value from a closed set (see the `ErrorResponse` schema\'s `code` enum) — branch on it rather than parsing `detail`. Quota rejections return `429` `quota_exceeded` with a `Retry-After` header; a feature the tenant\'s plan does not include returns `403` `feature_not_available`. Both carry `entitlement`: the key that refused, the plan in force, and either the usage against its cap or the public plans that include it. Transient lock contention returns a retryable `503`. Quote `request_id` (also the `x-request-id` response header) to support.  **Idempotency.** `POST /v1/workflow-runs` accepts an `idempotency_key` to dedupe retried run creation. `agent/ask` charges one message *before* running and does not release a client-cancelled call. 
+ * Knowledge Stack backend API for authentication and knowledge management.  ## Integrating (RPA / machine clients)  **Base URL.** Knowledge Stack is self-hosted — point at your own deployment host (see `servers`). The `localhost` entry is for local development only.  **Authentication.** Send `Authorization: Bearer <api-key>` on every request. Mint an API key once via `POST /v1/api-keys` from a signed-in browser session; the raw `sk-user-...` secret is returned **only** at creation, so store it then. A key inherits its owning user\'s live tenant role and path permissions — create RPA keys from a least-privilege user, and set `expires_at` for rotation. The `ks_uat` cookie scheme is browser-only and cannot be used by headless clients.  **Async work is polled, not pushed.** There are no outbound webhooks. - `POST /v1/documents/ingest` returns `201` immediately with a `workflow_id`;   poll `GET /v1/system-jobs/document_versions/{workflow_id}` until `status` is   terminal (anything other than `pending`/`processing`). The `Location` response   header points at this poll resource. - `POST /v1/workflow-runs/{run_id}/start` returns `202`; poll   `GET /v1/workflow-runs/{run_id}` until `execution_state` is `COMPLETED` or   `FAILED`. The `Location` header points at the run resource. - `POST /v1/agent/ask` is **synchronous** — it blocks until the agent finishes   and returns the answer inline. Use a generous HTTP timeout.  **Pagination.** List endpoints accept `limit`/`offset` and return `{items, total, limit, offset}`.  **Errors.** Every non-2xx body is `{detail, code, request_id}`. `code` is a stable value from a closed set (see the `ErrorResponse` schema\'s `code` enum) — branch on it rather than parsing `detail`. Quota rejections return `429` `quota_exceeded`, with a `Retry-After` header unless the limit never resets; a feature the tenant\'s plan does not include returns `403` `feature_not_available`. Both carry `entitlement`: the key that refused, the plan in force, and either the usage against its cap or the public plans that include it. Transient lock contention returns a retryable `503`. Quote `request_id` (also the `x-request-id` response header) to support.  **Idempotency.** `POST /v1/workflow-runs` accepts an `idempotency_key` to dedupe retried run creation. `agent/ask` charges one message *before* running and does not release a client-cancelled call. 
  *
  * The version of the OpenAPI document: 0.1.0
  * 
@@ -20,6 +20,13 @@ import {
     PlanEntitlementResponseToJSON,
     PlanEntitlementResponseToJSONTyped,
 } from './PlanEntitlementResponse';
+import type { EntitlementDefinitionResponse } from './EntitlementDefinitionResponse';
+import {
+    EntitlementDefinitionResponseFromJSON,
+    EntitlementDefinitionResponseFromJSONTyped,
+    EntitlementDefinitionResponseToJSON,
+    EntitlementDefinitionResponseToJSONTyped,
+} from './EntitlementDefinitionResponse';
 
 /**
  * The plan in force for a tenant, what it grants, and who sets it.
@@ -40,7 +47,11 @@ export interface TenantPlanResponse {
      */
     entitlements: Array<PlanEntitlementResponse>;
     /**
-     * Seats sold under the plan in force, one once a lapsed plan's grace ran out: the multiplier of seat-scaled allowances. The member cap is the plan's seat limit.
+     * The features (toggles) the plan does not grant, by key, so a user can see what to ask an operator for.
+     */
+    featuresNotIncluded: Array<EntitlementDefinitionResponse>;
+    /**
+     * Seats held under the plan in force, one once a lapsed plan's grace ran out: the most active members, and the multiplier of seat-scaled allowances. Bounded by the plan's seat limit when bought; at most 10000.
      */
     numSeats: number;
     /**
@@ -83,6 +94,7 @@ export function instanceOfTenantPlanResponse(value: object): value is TenantPlan
     if ((!('planId' in (value as Record<string, any>)) && !('plan_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['planId'] === undefined && (value as Record<string, any>)['plan_id'] === undefined)) return false;
     if ((!('planName' in (value as Record<string, any>)) && !('plan_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['planName'] === undefined && (value as Record<string, any>)['plan_name'] === undefined)) return false;
     if (!('entitlements' in value) || value['entitlements'] === undefined) return false;
+    if ((!('featuresNotIncluded' in (value as Record<string, any>)) && !('features_not_included' in (value as Record<string, any>))) || ((value as Record<string, any>)['featuresNotIncluded'] === undefined && (value as Record<string, any>)['features_not_included'] === undefined)) return false;
     if ((!('numSeats' in (value as Record<string, any>)) && !('num_seats' in (value as Record<string, any>))) || ((value as Record<string, any>)['numSeats'] === undefined && (value as Record<string, any>)['num_seats'] === undefined)) return false;
     if ((!('validFrom' in (value as Record<string, any>)) && !('valid_from' in (value as Record<string, any>))) || ((value as Record<string, any>)['validFrom'] === undefined && (value as Record<string, any>)['valid_from'] === undefined)) return false;
     if ((!('validUntil' in (value as Record<string, any>)) && !('valid_until' in (value as Record<string, any>))) || ((value as Record<string, any>)['validUntil'] === undefined && (value as Record<string, any>)['valid_until'] === undefined)) return false;
@@ -103,6 +115,7 @@ export function TenantPlanResponseFromJSONTyped(json: any, ignoreDiscriminator: 
         'planId': json['plan_id'],
         'planName': json['plan_name'],
         'entitlements': ((json['entitlements'] as Array<any>).map(PlanEntitlementResponseFromJSON)),
+        'featuresNotIncluded': ((json['features_not_included'] as Array<any>).map(EntitlementDefinitionResponseFromJSON)),
         'numSeats': json['num_seats'],
         'validFrom': (json['valid_from'] == null ? json['valid_from'] : parseDateTime(json['valid_from'])),
         'validUntil': (json['valid_until'] == null ? json['valid_until'] : parseDateTime(json['valid_until'])),
@@ -124,6 +137,7 @@ export function TenantPlanResponseToJSONTyped(value?: TenantPlanResponse | null,
         'plan_id': value['planId'],
         'plan_name': value['planName'],
         'entitlements': ((value['entitlements'] as Array<any>).map(PlanEntitlementResponseToJSON)),
+        'features_not_included': ((value['featuresNotIncluded'] as Array<any>).map(EntitlementDefinitionResponseToJSON)),
         'num_seats': value['numSeats'],
         'valid_from': value['validFrom'] == null ? value['validFrom'] : serializeDateTime(value['validFrom']),
         'valid_until': value['validUntil'] == null ? value['validUntil'] : serializeDateTime(value['validUntil']),

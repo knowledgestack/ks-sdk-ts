@@ -2,7 +2,7 @@
 /* eslint-disable */
 /**
  * Knowledge Stack API
- * Knowledge Stack backend API for authentication and knowledge management.  ## Integrating (RPA / machine clients)  **Base URL.** Knowledge Stack is self-hosted — point at your own deployment host (see `servers`). The `localhost` entry is for local development only.  **Authentication.** Send `Authorization: Bearer <api-key>` on every request. Mint an API key once via `POST /v1/api-keys` from a signed-in browser session; the raw `sk-user-...` secret is returned **only** at creation, so store it then. A key inherits its owning user\'s live tenant role and path permissions — create RPA keys from a least-privilege user, and set `expires_at` for rotation. The `ks_uat` cookie scheme is browser-only and cannot be used by headless clients.  **Async work is polled, not pushed.** There are no outbound webhooks. - `POST /v1/documents/ingest` returns `201` immediately with a `workflow_id`;   poll `GET /v1/system-jobs/document_versions/{workflow_id}` until `status` is   terminal (anything other than `pending`/`processing`). The `Location` response   header points at this poll resource. - `POST /v1/workflow-runs/{run_id}/start` returns `202`; poll   `GET /v1/workflow-runs/{run_id}` until `execution_state` is `COMPLETED` or   `FAILED`. The `Location` header points at the run resource. - `POST /v1/agent/ask` is **synchronous** — it blocks until the agent finishes   and returns the answer inline. Use a generous HTTP timeout.  **Pagination.** List endpoints accept `limit`/`offset` and return `{items, total, limit, offset}`.  **Errors.** Every non-2xx body is `{detail, code, request_id}`. `code` is a stable value from a closed set (see the `ErrorResponse` schema\'s `code` enum) — branch on it rather than parsing `detail`. Quota rejections return `429` `quota_exceeded` with a `Retry-After` header; a feature the tenant\'s plan does not include returns `403` `feature_not_available`. Both carry `entitlement`: the key that refused, the plan in force, and either the usage against its cap or the public plans that include it. Transient lock contention returns a retryable `503`. Quote `request_id` (also the `x-request-id` response header) to support.  **Idempotency.** `POST /v1/workflow-runs` accepts an `idempotency_key` to dedupe retried run creation. `agent/ask` charges one message *before* running and does not release a client-cancelled call. 
+ * Knowledge Stack backend API for authentication and knowledge management.  ## Integrating (RPA / machine clients)  **Base URL.** Knowledge Stack is self-hosted — point at your own deployment host (see `servers`). The `localhost` entry is for local development only.  **Authentication.** Send `Authorization: Bearer <api-key>` on every request. Mint an API key once via `POST /v1/api-keys` from a signed-in browser session; the raw `sk-user-...` secret is returned **only** at creation, so store it then. A key inherits its owning user\'s live tenant role and path permissions — create RPA keys from a least-privilege user, and set `expires_at` for rotation. The `ks_uat` cookie scheme is browser-only and cannot be used by headless clients.  **Async work is polled, not pushed.** There are no outbound webhooks. - `POST /v1/documents/ingest` returns `201` immediately with a `workflow_id`;   poll `GET /v1/system-jobs/document_versions/{workflow_id}` until `status` is   terminal (anything other than `pending`/`processing`). The `Location` response   header points at this poll resource. - `POST /v1/workflow-runs/{run_id}/start` returns `202`; poll   `GET /v1/workflow-runs/{run_id}` until `execution_state` is `COMPLETED` or   `FAILED`. The `Location` header points at the run resource. - `POST /v1/agent/ask` is **synchronous** — it blocks until the agent finishes   and returns the answer inline. Use a generous HTTP timeout.  **Pagination.** List endpoints accept `limit`/`offset` and return `{items, total, limit, offset}`.  **Errors.** Every non-2xx body is `{detail, code, request_id}`. `code` is a stable value from a closed set (see the `ErrorResponse` schema\'s `code` enum) — branch on it rather than parsing `detail`. Quota rejections return `429` `quota_exceeded`, with a `Retry-After` header unless the limit never resets; a feature the tenant\'s plan does not include returns `403` `feature_not_available`. Both carry `entitlement`: the key that refused, the plan in force, and either the usage against its cap or the public plans that include it. Transient lock contention returns a retryable `503`. Quote `request_id` (also the `x-request-id` response header) to support.  **Idempotency.** `POST /v1/workflow-runs` accepts an `idempotency_key` to dedupe retried run creation. `agent/ask` charges one message *before* running and does not release a client-cancelled call. 
  *
  * The version of the OpenAPI document: 0.1.0
  * 
@@ -13,6 +13,13 @@
  */
 
 import { mapValues } from '../runtime';
+import type { RateLimit } from './RateLimit';
+import {
+    RateLimitFromJSON,
+    RateLimitFromJSONTyped,
+    RateLimitToJSON,
+    RateLimitToJSONTyped,
+} from './RateLimit';
 import type { EntitlementKey } from './EntitlementKey';
 import {
     EntitlementKeyFromJSON,
@@ -27,13 +34,6 @@ import {
     EntitlementKindToJSON,
     EntitlementKindToJSONTyped,
 } from './EntitlementKind';
-import type { ResetPeriod } from './ResetPeriod';
-import {
-    ResetPeriodFromJSON,
-    ResetPeriodFromJSONTyped,
-    ResetPeriodToJSON,
-    ResetPeriodToJSONTyped,
-} from './ResetPeriod';
 
 /**
  * One entitlement a plan grants; a toggle is on while its row exists.
@@ -58,13 +58,17 @@ export interface PlanEntitlementResponse {
      */
     limit: number;
     /**
-     * The cap is limit x the tenant's seats.
+     * The cap is limit x the seats sold, counting at most the plan's seat limit.
      */
     seatScaled: boolean;
     /**
-     * 
+     * How often the allowance is granted afresh, as an ISO 8601 duration (P1D, P7D, P1M, P1Y); null grants it once for as long as the plan holds.
      */
-    resetPeriod: ResetPeriod;
+    resetInterval: string | null;
+    /**
+     * How fast the allowance may be spent: shortest interval first, the tenant's limit before each user's.
+     */
+    rateLimits: Array<RateLimit>;
 }
 
 
@@ -103,7 +107,8 @@ export function instanceOfPlanEntitlementResponse(value: object): value is PlanE
     if (!('kind' in value) || value['kind'] === undefined) return false;
     if (!('limit' in value) || value['limit'] === undefined) return false;
     if ((!('seatScaled' in (value as Record<string, any>)) && !('seat_scaled' in (value as Record<string, any>))) || ((value as Record<string, any>)['seatScaled'] === undefined && (value as Record<string, any>)['seat_scaled'] === undefined)) return false;
-    if ((!('resetPeriod' in (value as Record<string, any>)) && !('reset_period' in (value as Record<string, any>))) || ((value as Record<string, any>)['resetPeriod'] === undefined && (value as Record<string, any>)['reset_period'] === undefined)) return false;
+    if ((!('resetInterval' in (value as Record<string, any>)) && !('reset_interval' in (value as Record<string, any>))) || ((value as Record<string, any>)['resetInterval'] === undefined && (value as Record<string, any>)['reset_interval'] === undefined)) return false;
+    if ((!('rateLimits' in (value as Record<string, any>)) && !('rate_limits' in (value as Record<string, any>))) || ((value as Record<string, any>)['rateLimits'] === undefined && (value as Record<string, any>)['rate_limits'] === undefined)) return false;
     return true;
 }
 
@@ -122,7 +127,8 @@ export function PlanEntitlementResponseFromJSONTyped(json: any, ignoreDiscrimina
         'kind': EntitlementKindFromJSON(json['kind']),
         'limit': json['limit'],
         'seatScaled': json['seat_scaled'],
-        'resetPeriod': ResetPeriodFromJSON(json['reset_period']),
+        'resetInterval': json['reset_interval'],
+        'rateLimits': ((json['rate_limits'] as Array<any>).map(RateLimitFromJSON)),
     };
 }
 
@@ -142,7 +148,8 @@ export function PlanEntitlementResponseToJSONTyped(value?: PlanEntitlementRespon
         'kind': EntitlementKindToJSON(value['kind']),
         'limit': value['limit'],
         'seat_scaled': value['seatScaled'],
-        'reset_period': ResetPeriodToJSON(value['resetPeriod']),
+        'reset_interval': value['resetInterval'],
+        'rate_limits': ((value['rateLimits'] as Array<any>).map(RateLimitToJSON)),
     };
 }
 

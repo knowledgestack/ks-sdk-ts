@@ -2,7 +2,7 @@
 /* eslint-disable */
 /**
  * Knowledge Stack API
- * Knowledge Stack backend API for authentication and knowledge management.  ## Integrating (RPA / machine clients)  **Base URL.** Knowledge Stack is self-hosted — point at your own deployment host (see `servers`). The `localhost` entry is for local development only.  **Authentication.** Send `Authorization: Bearer <api-key>` on every request. Mint an API key once via `POST /v1/api-keys` from a signed-in browser session; the raw `sk-user-...` secret is returned **only** at creation, so store it then. A key inherits its owning user\'s live tenant role and path permissions — create RPA keys from a least-privilege user, and set `expires_at` for rotation. The `ks_uat` cookie scheme is browser-only and cannot be used by headless clients.  **Async work is polled, not pushed.** There are no outbound webhooks. - `POST /v1/documents/ingest` returns `201` immediately with a `workflow_id`;   poll `GET /v1/system-jobs/document_versions/{workflow_id}` until `status` is   terminal (anything other than `pending`/`processing`). The `Location` response   header points at this poll resource. - `POST /v1/workflow-runs/{run_id}/start` returns `202`; poll   `GET /v1/workflow-runs/{run_id}` until `execution_state` is `COMPLETED` or   `FAILED`. The `Location` header points at the run resource. - `POST /v1/agent/ask` is **synchronous** — it blocks until the agent finishes   and returns the answer inline. Use a generous HTTP timeout.  **Pagination.** List endpoints accept `limit`/`offset` and return `{items, total, limit, offset}`.  **Errors.** Every non-2xx body is `{detail, code, request_id}`. `code` is a stable value from a closed set (see the `ErrorResponse` schema\'s `code` enum) — branch on it rather than parsing `detail`. Quota rejections return `429` `quota_exceeded` with a `Retry-After` header; a feature the tenant\'s plan does not include returns `403` `feature_not_available`. Both carry `entitlement`: the key that refused, the plan in force, and either the usage against its cap or the public plans that include it. Transient lock contention returns a retryable `503`. Quote `request_id` (also the `x-request-id` response header) to support.  **Idempotency.** `POST /v1/workflow-runs` accepts an `idempotency_key` to dedupe retried run creation. `agent/ask` charges one message *before* running and does not release a client-cancelled call. 
+ * Knowledge Stack backend API for authentication and knowledge management.  ## Integrating (RPA / machine clients)  **Base URL.** Knowledge Stack is self-hosted — point at your own deployment host (see `servers`). The `localhost` entry is for local development only.  **Authentication.** Send `Authorization: Bearer <api-key>` on every request. Mint an API key once via `POST /v1/api-keys` from a signed-in browser session; the raw `sk-user-...` secret is returned **only** at creation, so store it then. A key inherits its owning user\'s live tenant role and path permissions — create RPA keys from a least-privilege user, and set `expires_at` for rotation. The `ks_uat` cookie scheme is browser-only and cannot be used by headless clients.  **Async work is polled, not pushed.** There are no outbound webhooks. - `POST /v1/documents/ingest` returns `201` immediately with a `workflow_id`;   poll `GET /v1/system-jobs/document_versions/{workflow_id}` until `status` is   terminal (anything other than `pending`/`processing`). The `Location` response   header points at this poll resource. - `POST /v1/workflow-runs/{run_id}/start` returns `202`; poll   `GET /v1/workflow-runs/{run_id}` until `execution_state` is `COMPLETED` or   `FAILED`. The `Location` header points at the run resource. - `POST /v1/agent/ask` is **synchronous** — it blocks until the agent finishes   and returns the answer inline. Use a generous HTTP timeout.  **Pagination.** List endpoints accept `limit`/`offset` and return `{items, total, limit, offset}`.  **Errors.** Every non-2xx body is `{detail, code, request_id}`. `code` is a stable value from a closed set (see the `ErrorResponse` schema\'s `code` enum) — branch on it rather than parsing `detail`. Quota rejections return `429` `quota_exceeded`, with a `Retry-After` header unless the limit never resets; a feature the tenant\'s plan does not include returns `403` `feature_not_available`. Both carry `entitlement`: the key that refused, the plan in force, and either the usage against its cap or the public plans that include it. Transient lock contention returns a retryable `503`. Quote `request_id` (also the `x-request-id` response header) to support.  **Idempotency.** `POST /v1/workflow-runs` accepts an `idempotency_key` to dedupe retried run creation. `agent/ask` charges one message *before* running and does not release a client-cancelled call. 
  *
  * The version of the OpenAPI document: 0.1.0
  * 
@@ -13,6 +13,20 @@
  */
 
 import { mapValues } from '../runtime';
+import type { SeatsError } from './SeatsError';
+import {
+    SeatsErrorFromJSON,
+    SeatsErrorFromJSONTyped,
+    SeatsErrorToJSON,
+    SeatsErrorToJSONTyped,
+} from './SeatsError';
+import type { ScheduledChange } from './ScheduledChange';
+import {
+    ScheduledChangeFromJSON,
+    ScheduledChangeFromJSONTyped,
+    ScheduledChangeToJSON,
+    ScheduledChangeToJSONTyped,
+} from './ScheduledChange';
 import type { EntitlementError } from './EntitlementError';
 import {
     EntitlementErrorFromJSON,
@@ -32,7 +46,7 @@ export interface ErrorResponse {
      */
     detail: string;
     /**
-     * Stable, machine-readable error code from a closed set. Branch on this instead of parsing 'detail'. 'quota_exceeded'/'too_many_requests' carry a Retry-After header; 'service_unavailable' is retryable.
+     * Stable, machine-readable error code from a closed set. Branch on this instead of parsing 'detail'. 'quota_exceeded'/'too_many_requests' carry a Retry-After header ('quota_exceeded' none when it never resets: seats, a one-time allowance); 'service_unavailable' is retryable.
      */
     code: ErrorResponseCodeEnum;
     /**
@@ -43,6 +57,14 @@ export interface ErrorResponse {
      * Set on 'quota_exceeded' and 'feature_not_available': which entitlement refused the request and what grants more of it.
      */
     entitlement?: EntitlementError | null;
+    /**
+     * Set on 'members_exceed_seats' and 'seats_above_plan_limit': the seats asked for and what refused them.
+     */
+    seats?: SeatsError | null;
+    /**
+     * Set on 'subscription_change_scheduled': the change it waits for.
+     */
+    scheduledChange?: ScheduledChange | null;
 }
 
 
@@ -65,6 +87,22 @@ export const ErrorResponseCodeEnum = {
     WrongAccount: 'wrong_account',
     MailboxInUse: 'mailbox_in_use',
     RunBusy: 'run_busy',
+    ManagedPath: 'managed_path',
+    NoSubscription: 'no_subscription',
+    LiveSubscription: 'live_subscription',
+    PlanUnchanged: 'plan_unchanged',
+    SubscriptionChangeScheduled: 'subscription_change_scheduled',
+    ContractedPlan: 'contracted_plan',
+    BilledPlan: 'billed_plan',
+    MembersExceedSeats: 'members_exceed_seats',
+    PlanHeld: 'plan_held',
+    PlanNameTaken: 'plan_name_taken',
+    PlanAlreadyGrants: 'plan_already_grants',
+    ConfiguredPlan: 'configured_plan',
+    SeatsAbovePlanLimit: 'seats_above_plan_limit',
+    TopupNotOnSale: 'topup_not_on_sale',
+    NotTenantOwner: 'not_tenant_owner',
+    BillingDisabled: 'billing_disabled',
     PayloadTooLarge: 'payload_too_large',
     UnsupportedMediaType: 'unsupported_media_type',
     UnprocessableEntity: 'unprocessable_entity',
@@ -129,6 +167,8 @@ export function ErrorResponseFromJSONTyped(json: any, ignoreDiscriminator: boole
         'code': json['code'],
         'requestId': json['request_id'] === undefined ? undefined : json['request_id'] === null ? null : json['request_id'],
         'entitlement': json['entitlement'] === undefined ? undefined : json['entitlement'] === null ? null : EntitlementErrorFromJSON(json['entitlement']),
+        'seats': json['seats'] === undefined ? undefined : json['seats'] === null ? null : SeatsErrorFromJSON(json['seats']),
+        'scheduledChange': json['scheduled_change'] === undefined ? undefined : json['scheduled_change'] === null ? null : ScheduledChangeFromJSON(json['scheduled_change']),
     };
 }
 
@@ -147,6 +187,8 @@ export function ErrorResponseToJSONTyped(value?: ErrorResponse | null, ignoreDis
         'code': value['code'],
         'request_id': value['requestId'],
         'entitlement': EntitlementErrorToJSON(value['entitlement']),
+        'seats': SeatsErrorToJSON(value['seats']),
+        'scheduled_change': ScheduledChangeToJSON(value['scheduledChange']),
     };
 }
 

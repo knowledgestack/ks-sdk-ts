@@ -187,6 +187,7 @@ docs/EmailUnfinishedRequest.md
 docs/EmailVerificationRequest.md
 docs/EnrichedCitation.md
 docs/EnrichedThreadMessageContent.md
+docs/EntitlementDefinitionResponse.md
 docs/EntitlementError.md
 docs/EntitlementKey.md
 docs/EntitlementKind.md
@@ -325,6 +326,7 @@ docs/PhoneVerificationRequest.md
 docs/PipelineState.md
 docs/PipelineStatus.md
 docs/PixelRegion.md
+docs/PlanChangeRequest.md
 docs/PlanCheckoutRequest.md
 docs/PlanEntitlementResponse.md
 docs/PlanRef.md
@@ -332,6 +334,8 @@ docs/PlanResponse.md
 docs/Polygon.md
 docs/PolygonReference.md
 docs/ProposeMemoryChunkRequest.md
+docs/RateLimit.md
+docs/RateLimitUsage.md
 docs/ReasoningPart.md
 docs/RecordRepoSaveSkipRequest.md
 docs/ReferenceType.md
@@ -344,7 +348,6 @@ docs/RepoTreeEntry.md
 docs/RepoTreeResponse.md
 docs/RepoVersionResponse.md
 docs/RequestPhoneChangeRequest.md
-docs/ResetPeriod.md
 docs/ResolvedRef.md
 docs/ResolvedReferenceInput.md
 docs/ResolvedReferenceOutput.md
@@ -357,8 +360,10 @@ docs/RotateMailCredentialResponse.md
 docs/RunFolder.md
 docs/RunFolderRef.md
 docs/RunTimeseriesResponse.md
+docs/RunsInProgressStatus.md
 docs/SSOInitiateResponse.md
 docs/ScheduleCadence.md
+docs/ScheduledChange.md
 docs/ScoredChunkResponse.md
 docs/SearchItemsResponse.md
 docs/SearchSkillsRequest.md
@@ -369,6 +374,7 @@ docs/SearchTablesResponse.md
 docs/SearchType.md
 docs/SearchablePartType.md
 docs/SeatQuotaStatus.md
+docs/SeatsError.md
 docs/SectionContentItem.md
 docs/SectionContentItemOrChunkContentItem.md
 docs/SectionResponse.md
@@ -732,6 +738,7 @@ src/models/EmailUnfinishedRequest.ts
 src/models/EmailVerificationRequest.ts
 src/models/EnrichedCitation.ts
 src/models/EnrichedThreadMessageContent.ts
+src/models/EntitlementDefinitionResponse.ts
 src/models/EntitlementError.ts
 src/models/EntitlementKey.ts
 src/models/EntitlementKind.ts
@@ -862,6 +869,7 @@ src/models/PhoneVerificationRequest.ts
 src/models/PipelineState.ts
 src/models/PipelineStatus.ts
 src/models/PixelRegion.ts
+src/models/PlanChangeRequest.ts
 src/models/PlanCheckoutRequest.ts
 src/models/PlanEntitlementResponse.ts
 src/models/PlanRef.ts
@@ -869,6 +877,8 @@ src/models/PlanResponse.ts
 src/models/Polygon.ts
 src/models/PolygonReference.ts
 src/models/ProposeMemoryChunkRequest.ts
+src/models/RateLimit.ts
+src/models/RateLimitUsage.ts
 src/models/ReasoningPart.ts
 src/models/RecordRepoSaveSkipRequest.ts
 src/models/ReferenceType.ts
@@ -881,7 +891,6 @@ src/models/RepoTreeEntry.ts
 src/models/RepoTreeResponse.ts
 src/models/RepoVersionResponse.ts
 src/models/RequestPhoneChangeRequest.ts
-src/models/ResetPeriod.ts
 src/models/ResolvedRef.ts
 src/models/ResolvedReferenceInput.ts
 src/models/ResolvedReferenceOutput.ts
@@ -894,8 +903,10 @@ src/models/RotateMailCredentialResponse.ts
 src/models/RunFolder.ts
 src/models/RunFolderRef.ts
 src/models/RunTimeseriesResponse.ts
+src/models/RunsInProgressStatus.ts
 src/models/SSOInitiateResponse.ts
 src/models/ScheduleCadence.ts
+src/models/ScheduledChange.ts
 src/models/ScoredChunkResponse.ts
 src/models/SearchItemsResponse.ts
 src/models/SearchSkillsRequest.ts
@@ -906,6 +917,7 @@ src/models/SearchTablesResponse.ts
 src/models/SearchType.ts
 src/models/SearchablePartType.ts
 src/models/SeatQuotaStatus.ts
+src/models/SeatsError.ts
 src/models/SectionContentItem.ts
 src/models/SectionContentItemOrChunkContentItem.ts
 src/models/SectionResponse.ts
