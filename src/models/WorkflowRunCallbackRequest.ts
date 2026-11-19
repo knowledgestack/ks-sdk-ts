@@ -13,6 +13,14 @@
  */
 
 import { mapValues } from '../runtime';
+import type { RunFailureCode } from './RunFailureCode';
+import {
+    RunFailureCodeFromJSON,
+    RunFailureCodeFromJSONTyped,
+    RunFailureCodeToJSON,
+    RunFailureCodeToJSONTyped,
+} from './RunFailureCode';
+
 /**
  * Request body for the runner callback endpoint.
  * @export
@@ -27,6 +35,10 @@ export interface WorkflowRunCallbackRequest {
      * 
      */
     error?: string | null;
+    /**
+     * 
+     */
+    failureCode?: RunFailureCode;
 }
 
 
@@ -83,6 +95,7 @@ export function WorkflowRunCallbackRequestFromJSONTyped(json: any, ignoreDiscrim
         
         'status': json['status'],
         'error': json['error'] === undefined ? undefined : json['error'] === null ? null : json['error'],
+        'failureCode': json['failure_code'] == null ? undefined : RunFailureCodeFromJSON(json['failure_code']),
     };
 }
 
@@ -99,6 +112,7 @@ export function WorkflowRunCallbackRequestToJSONTyped(value?: WorkflowRunCallbac
         
         'status': value['status'],
         'error': value['error'],
+        'failure_code': RunFailureCodeToJSON(value['failureCode']),
     };
 }
 

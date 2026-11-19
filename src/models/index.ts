@@ -325,6 +325,7 @@ export * from './RevisionEdit';
 export * from './RootResponse';
 export * from './RotateMailCredentialRequest';
 export * from './RotateMailCredentialResponse';
+export * from './RunFailureCode';
 export * from './RunFolder';
 export * from './RunFolderRef';
 export * from './RunTimeseriesResponse';

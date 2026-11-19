@@ -20,6 +20,13 @@ import {
     ItemPermissionsToJSON,
     ItemPermissionsToJSONTyped,
 } from './ItemPermissions';
+import type { RunFailureCode } from './RunFailureCode';
+import {
+    RunFailureCodeFromJSON,
+    RunFailureCodeFromJSONTyped,
+    RunFailureCodeToJSON,
+    RunFailureCodeToJSONTyped,
+} from './RunFailureCode';
 import type { RunFolderRef } from './RunFolderRef';
 import {
     RunFolderRefFromJSON,
@@ -147,6 +154,10 @@ export interface WorkflowRunResponse {
      */
     error: string | null;
     /**
+     * 
+     */
+    failureCode?: RunFailureCode;
+    /**
      * Whether the run dispatches itself once its ``inputs/`` uploads finish ingesting, with no separate Start call.
      */
     autoStart: boolean;
@@ -273,6 +284,7 @@ export function WorkflowRunResponseFromJSONTyped(json: any, ignoreDiscriminator:
         'completedAt': (json['completed_at'] == null ? null : parseDateTime(json['completed_at'])),
         'runSnapshot': WorkflowRunSnapshotFromJSON(json['run_snapshot']),
         'error': json['error'],
+        'failureCode': json['failure_code'] == null ? undefined : RunFailureCodeFromJSON(json['failure_code']),
         'autoStart': json['auto_start'],
         'autoStartUserMessage': json['auto_start_user_message'] === undefined ? undefined : json['auto_start_user_message'] === null ? null : json['auto_start_user_message'],
         'inputs': RunFolderFromJSON(json['inputs']),
@@ -313,6 +325,7 @@ export function WorkflowRunResponseToJSONTyped(value?: WorkflowRunResponse | nul
         'completed_at': value['completedAt'] == null ? value['completedAt'] : serializeDateTime(value['completedAt']),
         'run_snapshot': WorkflowRunSnapshotToJSON(value['runSnapshot']),
         'error': value['error'],
+        'failure_code': RunFailureCodeToJSON(value['failureCode']),
         'auto_start': value['autoStart'],
         'auto_start_user_message': value['autoStartUserMessage'],
         'inputs': RunFolderToJSON(value['inputs']),

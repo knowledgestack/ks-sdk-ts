@@ -357,6 +357,7 @@ docs/RevisionEdit.md
 docs/RootResponse.md
 docs/RotateMailCredentialRequest.md
 docs/RotateMailCredentialResponse.md
+docs/RunFailureCode.md
 docs/RunFolder.md
 docs/RunFolderRef.md
 docs/RunTimeseriesResponse.md
@@ -900,6 +901,7 @@ src/models/RevisionEdit.ts
 src/models/RootResponse.ts
 src/models/RotateMailCredentialRequest.ts
 src/models/RotateMailCredentialResponse.ts
+src/models/RunFailureCode.ts
 src/models/RunFolder.ts
 src/models/RunFolderRef.ts
 src/models/RunTimeseriesResponse.ts

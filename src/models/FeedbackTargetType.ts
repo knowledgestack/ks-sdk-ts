@@ -23,6 +23,7 @@ export const FeedbackTargetType = {
     Document: 'DOCUMENT',
     DocumentVersion: 'DOCUMENT_VERSION',
     Chunk: 'CHUNK',
+    WorkflowRun: 'WORKFLOW_RUN',
 } as const;
 export type FeedbackTargetType = typeof FeedbackTargetType[keyof typeof FeedbackTargetType];
 
