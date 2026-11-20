@@ -305,6 +305,7 @@ export * from './ProposeMemoryChunkRequest';
 export * from './RateLimit';
 export * from './RateLimitUsage';
 export * from './ReasoningPart';
+export * from './RecentDocumentResponse';
 export * from './RecordRepoSaveSkipRequest';
 export * from './ReferenceType';
 export * from './ReorderPathPartRequest';

@@ -99,6 +99,11 @@ import {
     PathOrderToJSON,
 } from '../models/PathOrder';
 import {
+    type RecentDocumentResponse,
+    RecentDocumentResponseFromJSON,
+    RecentDocumentResponseToJSON,
+} from '../models/RecentDocumentResponse';
+import {
     type SortDirection,
     SortDirectionFromJSON,
     SortDirectionToJSON,
@@ -341,6 +346,13 @@ export interface ListDocumentsRequest {
      * Sort direction (ASC or DESC); overrides the field's natural default. Every sort field supports both directions.
      */
     sortDir?: SortDirection;
+}
+
+export interface ListRecentDocumentsRequest {
+    /**
+     * 1 to 10
+     */
+    limit?: number;
 }
 
 export interface UpdateDocumentOperationRequest {
@@ -732,6 +744,30 @@ export interface DocumentsApiInterface {
      * List Documents Handler
      */
     listDocuments(requestParameters: ListDocumentsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedResponseDocumentResponse>;
+
+    /**
+     * Creates request options for listRecentDocuments without sending the request
+     * @param {number} [limit] 1 to 10
+     * @throws {RequiredError}
+     * @memberof DocumentsApiInterface
+     */
+    listRecentDocumentsRequestOpts(requestParameters: ListRecentDocumentsRequest): Promise<runtime.RequestOpts>;
+
+    /**
+     * Newest readable documents whose active version finished ingesting, with a section title.
+     * @summary List Recent Documents Handler
+     * @param {number} [limit] 1 to 10
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DocumentsApiInterface
+     */
+    listRecentDocumentsRaw(requestParameters: ListRecentDocumentsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<RecentDocumentResponse>>>;
+
+    /**
+     * Newest readable documents whose active version finished ingesting, with a section title.
+     * List Recent Documents Handler
+     */
+    listRecentDocuments(requestParameters: ListRecentDocumentsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<RecentDocumentResponse>>;
 
     /**
      * Creates request options for updateDocument without sending the request
@@ -1673,6 +1709,57 @@ export class DocumentsApi extends runtime.BaseAPI implements DocumentsApiInterfa
      */
     async listDocuments(requestParameters: ListDocumentsRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedResponseDocumentResponse> {
         const response = await this.listDocumentsRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for listRecentDocuments without sending the request
+     */
+    async listRecentDocumentsRequestOpts(requestParameters: ListRecentDocumentsRequest): Promise<runtime.RequestOpts> {
+        const queryParameters: any = {};
+
+        if (requestParameters['limit'] != null) {
+            queryParameters['limit'] = requestParameters['limit'];
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/v1/documents/recent`;
+
+        return {
+            path: urlPath,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Newest readable documents whose active version finished ingesting, with a section title.
+     * List Recent Documents Handler
+     */
+    async listRecentDocumentsRaw(requestParameters: ListRecentDocumentsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<RecentDocumentResponse>>> {
+        const requestOptions = await this.listRecentDocumentsRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(RecentDocumentResponseFromJSON));
+    }
+
+    /**
+     * Newest readable documents whose active version finished ingesting, with a section title.
+     * List Recent Documents Handler
+     */
+    async listRecentDocuments(requestParameters: ListRecentDocumentsRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<RecentDocumentResponse>> {
+        const response = await this.listRecentDocumentsRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

@@ -337,6 +337,7 @@ docs/ProposeMemoryChunkRequest.md
 docs/RateLimit.md
 docs/RateLimitUsage.md
 docs/ReasoningPart.md
+docs/RecentDocumentResponse.md
 docs/RecordRepoSaveSkipRequest.md
 docs/ReferenceType.md
 docs/ReorderPathPartRequest.md
@@ -881,6 +882,7 @@ src/models/ProposeMemoryChunkRequest.ts
 src/models/RateLimit.ts
 src/models/RateLimitUsage.ts
 src/models/ReasoningPart.ts
+src/models/RecentDocumentResponse.ts
 src/models/RecordRepoSaveSkipRequest.ts
 src/models/ReferenceType.ts
 src/models/ReorderPathPartRequest.ts
