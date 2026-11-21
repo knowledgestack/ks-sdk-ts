@@ -49,6 +49,10 @@ import {
  */
 export interface PipelineState {
     /**
+     * When ingestion published fully enriched content for workflow use; indexing may still be running. Managed by ingestion.
+     */
+    readonly contentReadyAt?: Date | null;
+    /**
      * Zero-based retry count for the current stage; maximum across fan-out activities. Managed by ingestion.
      */
     readonly lastStageRetryAttempt?: number;
@@ -142,6 +146,7 @@ export function PipelineStateFromJSONTyped(json: any, ignoreDiscriminator: boole
     }
     return {
         
+        'contentReadyAt': json['content_ready_at'] === undefined ? undefined : json['content_ready_at'] === null ? null : (parseDateTime(json['content_ready_at'])),
         'lastStageRetryAttempt': json['last_stage_retry_attempt'] == null ? undefined : json['last_stage_retry_attempt'],
         'status': PipelineStatusFromJSON(json['status']),
         'lastRunTimestamp': json['last_run_timestamp'] === undefined ? undefined : json['last_run_timestamp'] === null ? null : (parseDateTime(json['last_run_timestamp'])),
@@ -161,7 +166,7 @@ export function PipelineStateToJSON(json: any): PipelineState {
     return PipelineStateToJSONTyped(json, false);
 }
 
-export function PipelineStateToJSONTyped(value?: Omit<PipelineState, 'lastStageRetryAttempt'> | null, ignoreDiscriminator: boolean = false): any {
+export function PipelineStateToJSONTyped(value?: Omit<PipelineState, 'contentReadyAt'|'lastStageRetryAttempt'> | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
