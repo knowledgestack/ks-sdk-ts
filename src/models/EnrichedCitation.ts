@@ -36,17 +36,37 @@ export interface EnrichedCitation {
      */
     cellRanges?: Array<string> | null;
     /**
-     * The quote from the chunk; empty for Excel
+     * Legacy chunk preview; omitted for passage citations
      */
-    quote?: string;
+    quote?: string | null;
     /**
-     * The 0-based start character of the quote in the chunk
+     * The zero-based Unicode code-point offset of the quote in canonical chunk content
      */
     startChar?: number;
     /**
-     * Quote length; positive for chunks, zero for Excel
+     * Legacy chunk preview length in Unicode code points
      */
-    length?: number;
+    length?: number | null;
+    /**
+     * Original complete quote/anchor marker identifying this text citation
+     */
+    sourceMarker?: string | null;
+    /**
+     * Text selector resolved to a source span or a chunk fallback
+     */
+    resolution?: EnrichedCitationResolutionEnum | null;
+    /**
+     * Ending chunk when different from the starting chunk
+     */
+    endChunkId?: string | null;
+    /**
+     * Exclusive Unicode code-point offset in the ending chunk
+     */
+    endChar?: number | null;
+    /**
+     * SHA-256 of the UTF-8 compact JSON array of ordered [chunk ID, selected text] pairs
+     */
+    selectionHash?: string | null;
     /**
      * Start time (ms) of the cited chunk in the source media, for AUDIO/VIDEO — lets the client deep-link playback to the moment. None for non-media chunks.
      */
@@ -76,6 +96,17 @@ export interface EnrichedCitation {
      */
     materializedPath?: string | null;
 }
+
+
+/**
+ * @export
+ */
+export const EnrichedCitationResolutionEnum = {
+    Span: 'span',
+    Chunk: 'chunk',
+} as const;
+export type EnrichedCitationResolutionEnum = typeof EnrichedCitationResolutionEnum[keyof typeof EnrichedCitationResolutionEnum];
+
 export const EnrichedCitationPropertyValidationAttributesMap: {
     [property: string]: {
         dataType?: string,
@@ -103,6 +134,10 @@ export const EnrichedCitationPropertyValidationAttributesMap: {
         minimum: 0,
         exclusiveMinimum: false,
     },
+    selectionHash: {
+        dataType: "string",
+        pattern: '/^[0-9a-f]{64}$/',
+    },
 }
 
 
@@ -127,9 +162,14 @@ export function EnrichedCitationFromJSONTyped(json: any, ignoreDiscriminator: bo
         'documentVersionId': json['document_version_id'] === undefined ? undefined : json['document_version_id'] === null ? null : json['document_version_id'],
         'sheetName': json['sheet_name'] === undefined ? undefined : json['sheet_name'] === null ? null : json['sheet_name'],
         'cellRanges': json['cell_ranges'] === undefined ? undefined : json['cell_ranges'] === null ? null : json['cell_ranges'],
-        'quote': json['quote'] == null ? undefined : json['quote'],
+        'quote': json['quote'] === undefined ? undefined : json['quote'] === null ? null : json['quote'],
         'startChar': json['start_char'] == null ? undefined : json['start_char'],
-        'length': json['length'] == null ? undefined : json['length'],
+        'length': json['length'] === undefined ? undefined : json['length'] === null ? null : json['length'],
+        'sourceMarker': json['source_marker'] === undefined ? undefined : json['source_marker'] === null ? null : json['source_marker'],
+        'resolution': json['resolution'] === undefined ? undefined : json['resolution'] === null ? null : json['resolution'],
+        'endChunkId': json['end_chunk_id'] === undefined ? undefined : json['end_chunk_id'] === null ? null : json['end_chunk_id'],
+        'endChar': json['end_char'] === undefined ? undefined : json['end_char'] === null ? null : json['end_char'],
+        'selectionHash': json['selection_hash'] === undefined ? undefined : json['selection_hash'] === null ? null : json['selection_hash'],
         'startMs': json['start_ms'] === undefined ? undefined : json['start_ms'] === null ? null : json['start_ms'],
         'endMs': json['end_ms'] === undefined ? undefined : json['end_ms'] === null ? null : json['end_ms'],
         'documentId': json['document_id'] === undefined ? undefined : json['document_id'] === null ? null : json['document_id'],
@@ -158,6 +198,11 @@ export function EnrichedCitationToJSONTyped(value?: EnrichedCitation | null, ign
         'quote': value['quote'],
         'start_char': value['startChar'],
         'length': value['length'],
+        'source_marker': value['sourceMarker'],
+        'resolution': value['resolution'],
+        'end_chunk_id': value['endChunkId'],
+        'end_char': value['endChar'],
+        'selection_hash': value['selectionHash'],
         'start_ms': value['startMs'],
         'end_ms': value['endMs'],
         'document_id': value['documentId'],

@@ -38,8 +38,9 @@ import {
 /**
  * Partial update schema for document version metadata.
  * 
- * All fields are optional.  Only non-``None`` fields are merged into
- * the existing metadata dict.
+ * All fields are optional. Only non-``None`` fields are merged into
+ * the existing metadata dict. An explicit null for searchable_preview_s3
+ * clears the preview.
  * @export
  * @interface DocumentVersionMetadataUpdate
  */
@@ -60,6 +61,10 @@ export interface DocumentVersionMetadataUpdate {
      * 
      */
     citedSourceS3?: string | null;
+    /**
+     * 
+     */
+    searchablePreviewS3?: string | null;
     /**
      * 
      */
@@ -198,6 +203,7 @@ export function DocumentVersionMetadataUpdateFromJSONTyped(json: any, ignoreDisc
         'cleanedSourceS3': json['cleaned_source_s3'] === undefined ? undefined : json['cleaned_source_s3'] === null ? null : json['cleaned_source_s3'],
         'preconversionSourceS3': json['preconversion_source_s3'] === undefined ? undefined : json['preconversion_source_s3'] === null ? null : json['preconversion_source_s3'],
         'citedSourceS3': json['cited_source_s3'] === undefined ? undefined : json['cited_source_s3'] === null ? null : json['cited_source_s3'],
+        'searchablePreviewS3': json['searchable_preview_s3'] === undefined ? undefined : json['searchable_preview_s3'] === null ? null : json['searchable_preview_s3'],
         'standardPipelineJsonS3': json['standard_pipeline_json_s3'] === undefined ? undefined : json['standard_pipeline_json_s3'] === null ? null : json['standard_pipeline_json_s3'],
         'fastPlaintextS3': json['fast_plaintext_s3'] === undefined ? undefined : json['fast_plaintext_s3'] === null ? null : json['fast_plaintext_s3'],
         'transcriptS3': json['transcript_s3'] === undefined ? undefined : json['transcript_s3'] === null ? null : json['transcript_s3'],
@@ -240,6 +246,7 @@ export function DocumentVersionMetadataUpdateToJSONTyped(value?: DocumentVersion
         'cleaned_source_s3': value['cleanedSourceS3'],
         'preconversion_source_s3': value['preconversionSourceS3'],
         'cited_source_s3': value['citedSourceS3'],
+        'searchable_preview_s3': value['searchablePreviewS3'],
         'standard_pipeline_json_s3': value['standardPipelineJsonS3'],
         'fast_plaintext_s3': value['fastPlaintextS3'],
         'transcript_s3': value['transcriptS3'],

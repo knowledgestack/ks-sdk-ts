@@ -86,7 +86,11 @@ export interface DocumentVersionResponse {
      */
     assetS3Url?: string | null;
     /**
-     * Presigned URL (6-hour validity) to the agent's cited copy of the source, with KS Citation comments intact; null unless one was stored. For the agent edit round-trip only — human downloads and the FE viewer use asset_s3_url (clean) and render citations from citation_anchors.
+     * Presigned PDF preview URL (6-hour validity) with an invisible OCR text layer on scanned pages when available. Use asset_s3_url if null.
+     */
+    searchablePreviewUrl?: string | null;
+    /**
+     * Presigned URL (6-hour validity) to the agent's cited copy of the source, with KS Citation comments intact; null unless one was stored. For the agent edit round-trip only. Use asset_s3_url to download the clean source.
      */
     citedAssetS3Url?: string | null;
     /**
@@ -166,6 +170,7 @@ export function DocumentVersionResponseFromJSONTyped(json: any, ignoreDiscrimina
         'createdAt': (json['created_at'] == null ? json['created_at'] : parseDateTime(json['created_at'])),
         'updatedAt': (json['updated_at'] == null ? json['updated_at'] : parseDateTime(json['updated_at'])),
         'assetS3Url': json['asset_s3_url'] === undefined ? undefined : json['asset_s3_url'] === null ? null : json['asset_s3_url'],
+        'searchablePreviewUrl': json['searchable_preview_url'] === undefined ? undefined : json['searchable_preview_url'] === null ? null : json['searchable_preview_url'],
         'citedAssetS3Url': json['cited_asset_s3_url'] === undefined ? undefined : json['cited_asset_s3_url'] === null ? null : json['cited_asset_s3_url'],
         'fastPlaintextUrl': json['fast_plaintext_url'] === undefined ? undefined : json['fast_plaintext_url'] === null ? null : json['fast_plaintext_url'],
         'transcriptUrl': json['transcript_url'] === undefined ? undefined : json['transcript_url'] === null ? null : json['transcript_url'],
@@ -197,6 +202,7 @@ export function DocumentVersionResponseToJSONTyped(value?: DocumentVersionRespon
         'created_at': value['createdAt'] == null ? value['createdAt'] : serializeDateTime(value['createdAt']),
         'updated_at': value['updatedAt'] == null ? value['updatedAt'] : serializeDateTime(value['updatedAt']),
         'asset_s3_url': value['assetS3Url'],
+        'searchable_preview_url': value['searchablePreviewUrl'],
         'cited_asset_s3_url': value['citedAssetS3Url'],
         'fast_plaintext_url': value['fastPlaintextUrl'],
         'transcript_url': value['transcriptUrl'],

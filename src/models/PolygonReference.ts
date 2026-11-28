@@ -35,6 +35,14 @@ export interface PolygonReference {
      * 
      */
     polygon: Polygon;
+    /**
+     * Zero-based Unicode code-point start of this region's text in canonical chunk content
+     */
+    startChar?: number | null;
+    /**
+     * Length of this region's text in Unicode code points. Absent with start_char for unmapped geometry
+     */
+    length?: number | null;
 }
 export const PolygonReferencePropertyValidationAttributesMap: {
     [property: string]: {
@@ -53,6 +61,11 @@ export const PolygonReferencePropertyValidationAttributesMap: {
         uniqueItems?: boolean
     }
 } = {
+    startChar: {
+        dataType: "number",
+        minimum: 0,
+        exclusiveMinimum: false,
+    },
 }
 
 
@@ -77,6 +90,8 @@ export function PolygonReferenceFromJSONTyped(json: any, ignoreDiscriminator: bo
         
         'page': json['page'],
         'polygon': PolygonFromJSON(json['polygon']),
+        'startChar': json['start_char'] === undefined ? undefined : json['start_char'] === null ? null : json['start_char'],
+        'length': json['length'] === undefined ? undefined : json['length'] === null ? null : json['length'],
     };
 }
 
@@ -93,6 +108,8 @@ export function PolygonReferenceToJSONTyped(value?: PolygonReference | null, ign
         
         'page': value['page'],
         'polygon': PolygonToJSON(value['polygon']),
+        'start_char': value['startChar'],
+        'length': value['length'],
     };
 }
 
